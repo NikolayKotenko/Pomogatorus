@@ -6,6 +6,10 @@
 
 <script>
 export default {
-  name: 'IndexPage'
+  name: "_id.vue"
 }
 </script>
+
+<style scoped>
+
+</style>
