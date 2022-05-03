@@ -1,10 +1,9 @@
 <template>
   <div class="article-template">
-    <div class="article-template__title">
+    <h1 class="article-template__title">
       {{ article.name }}
-    </div>
-    <div class="article-template__content">
-      {{ article.content }}
+    </h1>
+    <div class="article-template__content" v-html="refactored_content">
     </div>
   </div>
 </template>
@@ -33,6 +32,11 @@ export default {
   data: () => ({
 
   }),
+  computed: {
+    refactored_content() {
+      return JSON.parse(JSON.parse(this.article.content))
+    }
+  },
 }
 </script>
 
@@ -41,5 +45,9 @@ export default {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
+  &__title {
+    width: 100%;
+    text-align: center;
+  }
 }
 </style>
