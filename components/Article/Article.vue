@@ -7,15 +7,37 @@
         alt=""
       >
     </div>
+    <div class="list_elem_wrapper__preview_content">
+      <div class="list_elem_wrapper__preview_content__short_info">
+        <h2>{{article.short_header}}</h2>
+        <h4>{{article.preview}}</h4>
+      </div>
+      <v-btn
+        text
+        color="blue darken-4"
+        @click="redirectToDetail(article.id)"
+      >
+        Читать
+      </v-btn>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "Article"
+  name: "Article",
+  props: ['article'],
+  data: () => ({
+
+  }),
+  methods: {
+    redirectToDetail(id) {
+      this.$router.push('/articles/' + id)
+    }
+  },
 }
 </script>
 
-<style scoped>
-
+<style lang="scss">
+@import '@/assets/styles/lists';
 </style>
