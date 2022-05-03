@@ -7,7 +7,7 @@
           <template v-slot:activator="{ on, attrs }">
             <img
                 class="help_img"
-                :src="require(`/assets/svg/help-circle.svg`)"
+                :src="require(`~/assets/svg/help-circle.svg`)"
                 alt="help"
                 v-bind="attrs"
                 v-on="on"
@@ -280,10 +280,11 @@ export default {
       }
     },
     getData() {
-      if (Object.keys(this.$store.state.TitlesModule.selectedComponent).length) {
-        this.index_question = this.$store.state.TitlesModule.count_of_questions
-        this.index_component = this.$store.state.TitlesModule.countLayout
-        this.question_data = Object.assign({}, this.$store.state.TitlesModule.selectedComponent)
+      console.log(this.$store)
+      if (Object.keys(this.$store.state.selectedComponent).length) {
+        this.index_question = this.$store.state.count_of_questions
+        this.index_component = this.$store.state.countLayout
+        this.question_data = Object.assign({}, this.$store.state.selectedComponent)
         this.getValue_type_answer()
         this.getHeightOfControls()
         this.getWidthOfControls()

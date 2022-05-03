@@ -16,7 +16,7 @@ export default {
   data: () => ({
   }),
   async fetch() {
-   await this.$store.dispatch('req_list_articles')
+   await this.$store.dispatch('req_list_articles', )
   },
   created() {
     // if (process.server) {
@@ -26,7 +26,10 @@ export default {
     //   console.log('client')
     //   this.$store.dispatch('req_list_articles')
     // }
-  }
+  },
+  methods: {
+
+  },
 }
 </script>
 
