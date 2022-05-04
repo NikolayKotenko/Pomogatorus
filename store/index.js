@@ -71,7 +71,6 @@ const createStore = () => {
 
           const list = await this.$axios(options)
           commit('change_list_articles', list.data.data)
-          console.log(list)
         } catch (error) {
           console.log(error.response.data.message)
         }

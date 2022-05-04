@@ -280,7 +280,6 @@ export default {
       }
     },
     getData() {
-      console.log(this.$store)
       if (Object.keys(this.$store.state.selectedComponent).length) {
         this.index_question = this.$store.state.count_of_questions
         this.index_component = this.$store.state.countLayout
@@ -347,47 +346,6 @@ export default {
   max-width: 600px;
   position: relative;
   padding: 16px 10px 8px 10px;
-  //border: 1px solid rgba(83, 158, 224, 0);
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  border-top-left-radius: 2px;
-  border-top-right-radius: 2px;
-  border-bottom: 1px solid rgba(83, 158, 224, 0);
-  border-right: 1px solid rgba(83, 158, 224, 0);
-  border-left: 1px solid rgba(83, 158, 224, 0);
-  transition: all .4s ease-in-out;
-
-
-  &:hover {
-    //border: 1px solid rgba(83, 158, 224, 0.7);
-    border-bottom: 1px solid rgba(83, 158, 224, 0.7);
-    border-right: 1px solid rgba(83, 158, 224, 0.7);
-    border-left: 1px solid rgba(83, 158, 224, 0.7);
-
-    .question_wrapper__admin_controls-header {
-      opacity: 1;
-    }
-  }
-
-  &__admin_controls-header {
-    background: rgba(83, 158, 224, 0.7);
-    position: absolute;
-    top: 0;
-    opacity: 0;
-    transition: all .4s ease-in-out;
-    border-radius: 2px;
-    right: 0;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding: 4px;
-    height: 16px;
-    width: 100%;
-    &__img {
-      width: 14px;
-      height: 14px;
-    }
-  }
 
   &__title {
     display: flex;

@@ -10,9 +10,7 @@
 
 <script>
 import Vue from "vue";
-// import vuetify from "../../plugins/vuetify";
-// import createStore from '../../store/index.js'
-// import {VIcon, VTextField, VToolTip, VTextArea} from 'vuetify/lib'
+const vuetify_class = require("vuetify")
 
 import ImageLayout from "../../components/frontLayouts/ImageLayout";
 import Question from "../../components/frontLayouts/Question";
@@ -30,7 +28,6 @@ export default {
     }
     try {
       const article_request = await $axios(options)
-      console.log(article_request.data.data)
       const article = article_request.data.data
       return {article}
     } catch (error) {
@@ -45,7 +42,7 @@ export default {
     data_of_components: [],
   }),
   mounted() {
-    /*if (JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components))).length) {
+    if (JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components))).length) {
       const arr_of_components = JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components)))
       const promises = []
 
@@ -78,6 +75,8 @@ export default {
                 let sub_url = full_url.split('.com')
                 const alt = document.getElementById(`component_wrapper-${elem.index}`).getElementsByClassName( 'inserted_image' )[0].alt
                 data = Object.assign({}, {name: alt}, {full_path: sub_url[1]})
+                this.$store.commit('M_selectedComponent', {})
+                return
               } else data = elem.data
 
               this.$store.commit('M_countLayout', elem.index)
@@ -87,10 +86,7 @@ export default {
               range.selectNode(document.getElementById(`component_wrapper-${elem.index}`));
               range.deleteContents()
               range.collapse(false);
-              console.log(this.data_of_components)
-              console.log(countLayout)
               this.data_of_components.push(this.getStructureForInstance(elem.component))
-              console.log(this.data_of_components[countLayout - 1].instance)
               this.data_of_components[countLayout - 1].instance.$mount() // pass nothing
               range.insertNode(this.data_of_components[elem.index-1].instance.$el)
               this.$store.commit('M_selectedComponent', {})
@@ -98,7 +94,7 @@ export default {
           })
         })
       })
-    }*/
+    }
   },
   computed: {
     refactored_content() {
@@ -116,12 +112,12 @@ export default {
       }
     },
     getStructureForInstance(data_component) {
-      // console.log(this.$vuetify)
-      // const vuetify = this.$vuetify
+      Vue.use(vuetify_class)
+      const vuetify = new vuetify_class
       const store = this.$store
       const instance = new this.componentLayout({
         store,
-        // vuetify,
+        vuetify,
       })
       const data = new this.Imported_component({index: this.$store.state.countLayout, component: data_component})
       const params = Object.assign({}, {instance: instance}, {data: data})
@@ -141,6 +137,12 @@ export default {
       this.data = data
       this.instance = instance
     },
+  },
+  beforeDestroy() {
+    this.$store.state.selectedComponent = {}
+    this.$store.state.countLayout = 0
+    this.$store.state.count_of_questions = 0
+    this.$store.state.components_after_request = []
   }
 }
 </script>

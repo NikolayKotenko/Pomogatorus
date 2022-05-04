@@ -1,5 +1,5 @@
 <template>
-  <div class="auth_container" contenteditable="false" :id="`component_wrapper-${index_component}`" :class="{insert_component_wrapper: isComponent}">
+  <div class="auth_container" contenteditable="false" :id="`component_wrapper-${index_component}`">
     <v-form v-model="valid" class="login" @submit.prevent="localLoginCreateUser()" contenteditable="false">
       <v-container>
         <v-row>
@@ -30,11 +30,12 @@
       <v-container>
         <v-row>
           <v-btn type="submit"
-                 color="primary"
+                 color="blue darken-1"
                  elevation="2"
                  large
                  rounded
                  block
+                 class="btn-auth"
           >
             Войти
           </v-btn>
@@ -67,20 +68,12 @@ export default {
       width: 0,
       height: 0,
       index_component: null,
-      index_auth: null,
-      inserting_component: false,
     }
   },
   mounted() {
-    this.inserting_component = this.$store.state.AuthModule.inserting_component
-    if (this.isComponent){
-      this.getData()
-    }
+    this.getData()
   },
   computed : {
-    isComponent() {
-      return this.$store.getters.checkAdminPanel && this.inserting_component
-    }
   },
   methods: {
     alertCall(response){
@@ -101,8 +94,7 @@ export default {
 
     // inserted_components
     getData() {
-      this.index_component = this.$store.state.TitlesModule.countLayout
-      this.index_auth = this.$store.state.TitlesModule.count_of_auth
+      this.index_component = this.$store.state.countLayout
       this.getHeightOfControls()
       this.getWidthOfControls()
     },
@@ -144,5 +136,10 @@ form.login{
 }
 .showBorder {
 
+}
+.btn-auth {
+  ::v-deep span {
+    color: white
+  }
 }
 </style>
