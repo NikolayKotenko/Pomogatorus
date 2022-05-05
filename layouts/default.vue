@@ -49,15 +49,15 @@ export default {
   min-height: 760px;
   // width: 1140px;
   // max-width: 1140px;
-  width: 1250px;
+  //width: 1250px;
   max-width: 1250px;
   margin: 15px auto 0 auto;
 }
 .header {
-  padding: 0 250px;
+  //padding: 0 250px;
   flex: unset !important;
-  ::v-deep .v-toolbar__content {
-    column-gap: 25px;
-  }
+  //::v-deep .v-toolbar__content {
+  //  column-gap: 25px;
+  //}
 }
 </style>

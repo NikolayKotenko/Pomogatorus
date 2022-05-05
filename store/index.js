@@ -1,4 +1,5 @@
 import Vuex from 'vuex'
+import Request from "../services/request";
 
 const createStore = () => {
   return new Vuex.Store({
