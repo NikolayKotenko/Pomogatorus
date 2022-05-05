@@ -1,3 +1,4 @@
+import Vue from "vue";
 import Vuex from 'vuex'
 import Request from "../services/request";
 
@@ -39,7 +40,8 @@ const createStore = () => {
           return false
 
         const {token, defined_ttl_minutes} = result.access_token;
-        Vue.$cookies.set("accessToken", token, defined_ttl_minutes+'min');
+
+        this.$cookiz.set("accessToken", token, {maxAge: defined_ttl_minutes});
       },
       // CONTENT
       changeSelectedComponent(state, {data, index, component}) {
@@ -93,8 +95,6 @@ const createStore = () => {
         return tokensData
       },
       async createAndAuthUserByEmail(_, objData) {
-        console.log(_)
-        console.log(objData)
         //Делаем запрос на создание пользователя, если такой есть то будет 409 конфликт ошибка ну и бог с ней
         return await Request.post(this.state.BASE_URL+'/users/create-from-only-email', objData)
       },
