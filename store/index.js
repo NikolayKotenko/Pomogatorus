@@ -93,6 +93,8 @@ const createStore = () => {
         return tokensData
       },
       async createAndAuthUserByEmail(_, objData) {
+        console.log(_)
+        console.log(objData)
         //Делаем запрос на создание пользователя, если такой есть то будет 409 конфликт ошибка ну и бог с ней
         return await Request.post(this.state.BASE_URL+'/users/create-from-only-email', objData)
       },
