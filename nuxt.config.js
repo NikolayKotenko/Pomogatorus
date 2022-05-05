@@ -43,9 +43,24 @@ export default {
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: '/',
+    proxy: true,
+    prefix: '/api', // it only work when proxy is enabled
+    credentials: true,
+    // baseURL: '/',
   },
+  proxy: {
+    // '/api/proxy/lylares': {
+    //   target: 'https://api.berryapi.net',
+    //   changeOrigin: true,
+    //   pathRewrite: { '^/api/proxy/lylares': '' },
+    // },
+    '/api': {
+      target: 'https://api.agregatorus.com',
+      changeOrigin: true,
+      pathRewrite: { '^/api': '' },
+    },
+  },
+
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {

@@ -1,5 +1,12 @@
 <template>
   <div class="article-template">
+
+    <v-btn @click="callGovnaSobachki();"
+           color="primary"
+           elevation="2"
+           outlined>SOBAKA ACTION
+    </v-btn>
+
     <h1 class="article-template__title">
       {{ article.name }}
     </h1>
@@ -137,6 +144,13 @@ export default {
       this.data = data
       this.instance = instance
     },
+
+    callGovnaSobachki(){
+      this.$axios.post(
+        `/auth/login`,
+        {'email': 'nikolay-kotenko@mail.ru'}
+      )
+    }
   },
   beforeDestroy() {
     this.$store.state.selectedComponent = {}
