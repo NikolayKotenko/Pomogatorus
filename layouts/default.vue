@@ -30,6 +30,7 @@
 <script>
 export default {
   name: 'DefaultLayout',
+  middleware: ['auth'],
   data () {
     return {
       menuItems: [
