@@ -1,6 +1,6 @@
 <template>
   <div class="image_wrapper" contenteditable="false" :id="`component_wrapper-${index_component}`">
-    <img class="inserted_image" :src="this.$store.state.BASE_URL+data_image.full_path" :alt="data_image.name">
+    <img class="inserted_image" :src="srcPath" :alt="altName">
   </div>
 </template>
 
@@ -17,6 +17,14 @@ export default {
   }),
   mounted() {
     this.getData()
+  },
+  computed: {
+    srcPath() {
+      return this.$store.state.BASE_URL+this.data_image?.full_path
+    },
+    altName() {
+      return this.data_image?.name
+    },
   },
   methods: {
     getData() {

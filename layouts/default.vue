@@ -6,7 +6,7 @@
           Главная
         </router-link>
       </v-toolbar-title>
-      <v-toolbar-items class="hidden-xs-only">
+      <v-toolbar-items>
         <v-btn
           text
           v-for="item in menuItems"
