@@ -29,6 +29,7 @@ export default class Logging {
      * @return {Boolean} true|false, Возвращает в зависимости от codeResponse - Булево.
      */
     static checkExistErr (request) {
+        console.log(request)
         if (!Array.isArray(request))
             return Boolean(request.codeResponse >= 400)
 

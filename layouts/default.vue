@@ -33,6 +33,7 @@ import Request from "@/services/request";
 
 export default {
   name: 'DefaultLayout',
+  middleware: ['auth'],
   data () {
     return {
       menuItems: [
