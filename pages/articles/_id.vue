@@ -137,17 +137,7 @@ export default {
           })
 
           if (this.$route.hash) {
-            // const element = document.getElementById(this.$route.hash.split('#').pop());
-            // const y = element.getBoundingClientRect().top + window.scrollY;
-            // window.scroll({
-            //   top: y,
-            //   behavior: 'smooth'
-            // });
-            // console.log(this.findPos(document.getElementById(this.$route.hash.split('#').pop())))
             window.scroll(0,this.findPos(document.getElementById(this.$route.hash.split('#').pop())));
-            // const elem = document.getElementById(this.$route.hash.split('#').pop());
-            // console.log(elem)
-            // if (elem) elem.scrollIntoView(true)
           }
         })
       }
