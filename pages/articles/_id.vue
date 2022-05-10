@@ -73,6 +73,15 @@ export default {
     }
   },
   methods: {
+    findPos(obj) {
+      let curtop = 0;
+      if (obj.offsetParent) {
+        do {
+          curtop += obj.offsetTop;
+        } while (obj = obj.offsetParent);
+        return [curtop];
+      }
+    },
     initializeContent() {
       if (JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components))).length) {
         const arr_of_components = JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components)))
@@ -128,8 +137,17 @@ export default {
           })
 
           if (this.$route.hash) {
-            const elem = document.getElementById(this.$route.hash.split('#').pop());
-            if (elem) elem.scrollIntoView()
+            // const element = document.getElementById(this.$route.hash.split('#').pop());
+            // const y = element.getBoundingClientRect().top + window.scrollY;
+            // window.scroll({
+            //   top: y,
+            //   behavior: 'smooth'
+            // });
+            // console.log(this.findPos(document.getElementById(this.$route.hash.split('#').pop())))
+            window.scroll(0,this.findPos(document.getElementById(this.$route.hash.split('#').pop())));
+            // const elem = document.getElementById(this.$route.hash.split('#').pop());
+            // console.log(elem)
+            // if (elem) elem.scrollIntoView(true)
           }
         })
       }
