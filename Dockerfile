@@ -19,7 +19,7 @@
 FROM node:16.13.1
 ENV APP_ROOT /
 
-ENV NODE_ENV production
+#ENV NODE_ENV production
 
 WORKDIR ${APP_ROOT}
 ADD . ${APP_ROOT}
