@@ -40,12 +40,12 @@ const createStore = () => {
         state.userData = []
         state.userData = result
 
-        if (!result.access_token)
-          return false
-
-        const {token, defined_ttl_minutes} = result.access_token;
-
-        this.$cookiz.set("accessToken", token, {maxAge: defined_ttl_minutes});
+        // if (!result.access_token)
+        //   return false
+        //
+        // const {token, defined_ttl_minutes} = result.access_token;
+        //
+        // this.$cookiz.set("accessToken", token, {maxAge: defined_ttl_minutes});
       },
       // CONTENT
       changeSelectedComponent(state, {data, index, component}) {
@@ -84,16 +84,13 @@ const createStore = () => {
       },
 
       // AUTH
-      async validateAuth(){
-        return await Request.post(this.state.BASE_URL+'/auth/validate-auth')
-      },
       async refreshTokens({commit}){
-        const tokensData = await Request.post(this.state.BASE_URL+'/auth/refresh')
+        const tokensData = await Request.post(window.location.origin + '/api/auth/refresh')
         commit('set_user_data', tokensData.data)
         return tokensData
       },
       async loginUser({commit}, objData) {
-        const tokensData = await Request.post(this.state.BASE_URL+'/auth/login', objData)
+        const tokensData = await Request.post(window.location.origin + '/api/auth/login', objData)
         commit('set_user_data', tokensData.data)
 
         return tokensData

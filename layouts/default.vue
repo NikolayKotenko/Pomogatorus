@@ -28,6 +28,9 @@
 </template>
 
 <script>
+import Logging from "@/services/logging";
+import Request from "@/services/request";
+
 export default {
   name: 'DefaultLayout',
   middleware: ['auth'],
@@ -39,11 +42,24 @@ export default {
     }
   },
   mounted() {
-    if (this.$route.query.userEmail) {
-      this.$store.commit('change_inititalize_state')
-      this.$cookiz.set('state', 'dsadasdasd', {maxAge: defined_ttl_minutes})
-    }
+    this.fuckinMiddleware();
   },
+  methods:{
+    async fuckinMiddleware(){
+      if (this.$route.query.userEmail)
+        await this.$store.dispatch('loginUser', {'userEmail': this.$route.query.userEmail } );
+
+      // if (process.env.NODE_ENV === 'production')
+      //   return false;
+
+      if (! Request.getAccessTokenInCookies()) {
+        const refreshResponse = await this.$store.dispatch('refreshTokens')
+        if (Logging.checkExistErr(refreshResponse))
+          console.log(refreshResponse.message)
+        // return redirect('/login')
+      }
+    }
+  }
 }
 </script>
 

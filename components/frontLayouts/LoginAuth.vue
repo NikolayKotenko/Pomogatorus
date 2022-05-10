@@ -1,6 +1,9 @@
 <template>
   <div class="auth_container" contenteditable="false" :id="`component_wrapper-${index_component}`">
-    <v-form v-model="valid" class="login" @submit.prevent="localLoginCreateUser()" contenteditable="false">
+    <v-form v-model="valid" class="login"
+            @submit.prevent="localLoginCreateUser(`component_wrapper-${index_component}`)"
+            contenteditable="false"
+    >
       <v-container>
         <v-row>
           <h1>Авторизация</h1>
@@ -81,13 +84,14 @@ export default {
       this.alert.message = Logging.getMessage(response)
       this.alert.type = Logging.checkExistErr(response) ? 'error' : 'success'
     },
-    async localLoginCreateUser(){
+    async localLoginCreateUser(index_component){
       if (this.valid === false)
         return false
 
         const res = await this.$store.dispatch(
             'createAndAuthUserByEmail', {
-              'email': this.email_user
+              'email': this.email_user,
+              'id_dom_elem': index_component
             })
         this.alertCall(res);
     },

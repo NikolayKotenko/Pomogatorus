@@ -1,5 +1,7 @@
 import Logging from "@/services/logging";
-import Vue from "vue";
+// import Vue from "vue";
+// import auth from "@/middleware/auth.js"
+// import cookies from 'cookie-universal-nuxt'
 
 /**
  * TODO я честно пытался подключить сюда store но не получилось
@@ -7,16 +9,15 @@ import Vue from "vue";
  */
 export default class Request {
 
-    static async request( url, params, method ) {
+    static async request(url, params, method ) {
         let options = {
             method: method, // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, *cors, same-origin
             cache: 'default', // *default, no-cache, reload, force-cache, only-if-cached
             credentials: 'include', // include, *same-origin, omit
             headers: {
-                Authorization: '666777',
-                // Authorization: 'Bearer ' + Vue.$cookies.get('accessToken'),
-                'Content-Type': 'application/json'
+                Authorization: 'Bearer ' + this.getAccessTokenInCookies(),
+                'Content-Type': 'application/json',
                 // 'Content-Type': 'application/x-www-form-urlencoded',
             },
             // redirect: 'follow', // manual, *follow, error
@@ -62,4 +63,25 @@ export default class Request {
         }
         return bodyFormData;
     }
+
+    static parseCookies = () => {
+      const list = {};
+      if (!document.cookie) return list;
+
+      document.cookie.split(`;`).forEach(function(cookie) {
+        let [ name, ...rest] = cookie.split(`=`);
+        name = name?.trim();
+        if (!name) return;
+        const value = rest.join(`=`).trim();
+        if (!value) return;
+        list[name] = decodeURIComponent(value);
+      });
+
+    return list;
+  }
+  static getAccessTokenInCookies = (() => {
+      // console.log('this.parseCookies()', this.parseCookies())
+      const checkExist = this.parseCookies();
+      return (checkExist) ? checkExist?.accessToken : null
+  })
 }
