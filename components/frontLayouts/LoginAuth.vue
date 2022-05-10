@@ -22,7 +22,6 @@
           ></v-text-field>
         <v-alert
             v-if="alert.state"
-            transition="scale-transition"
             dismissible
             :type="alert.type"
             :value="alert.state"
@@ -48,7 +47,6 @@
     </v-form>
     <v-alert
       v-else
-      transition="scale-transition"
       dismissible
       type="success"
     >

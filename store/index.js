@@ -15,6 +15,7 @@ const createStore = () => {
       selectedComponent: {},
       count_of_questions: 0,
       intialized_app: false,
+      refactoring_content: true,
     },
     getters: {
       stateAuth(state){
@@ -28,6 +29,9 @@ const createStore = () => {
       },
     },
     mutations: {
+      change_refactoring_content(state, value) {
+        state.refactoring_content = value
+      },
       change_list_articles(state, arr) {
         state.list_articles = arr
       },

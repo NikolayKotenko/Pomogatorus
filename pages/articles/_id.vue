@@ -3,7 +3,7 @@
     <h1 class="article-template__title">
       {{ article.name }}
     </h1>
-    <div class="article-template__content" v-html="refactored_content" v-if="!refactoring_content">
+    <div class="article-template__content" v-html="refactored_content" v-if="!$store.state.refactoring_content">
     </div>
     <v-progress-circular
       v-else
@@ -48,68 +48,20 @@ export default {
       name: '',
     },
     data_of_components: [],
-    refactoring_content: false,
   }),
+
   mounted() {
-    if (JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components))).length) {
-      this.refactoring_content = true
-      const arr_of_components = JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components)))
-      const promises = []
-
-      arr_of_components.forEach(elem => {
-        if (elem.component.name === 'questions') {
-          promises.push(this.$store.dispatch('getComponentsById', elem))
-        } else if (elem.component.name === 'image') {
-          promises.push(this.$store.dispatch('imageFromServer', elem))
-        } else if (elem.component.name === 'auth') {
-          promises.push(this.$store.dispatch('getAuth', elem))
+    if (!this.$store.state.refactoring_content) {
+      this.initializeContent()
+    }
+  },
+  watch: {
+    '$store.state.refactoring_content': {
+      handler(v) {
+        if (!v) {
+          this.initializeContent()
         }
-      })
-
-      Promise.all(promises).finally(() => {
-        const arr = []
-        this.$store.state.components_after_request.forEach(elem => {
-          arr.push(elem)
-        })
-        arr.sort((a,b) => {
-          return a.index - b.index
-        })
-
-        this.$nextTick(() => {
-          arr.forEach((elem) => {
-            setTimeout(() => {
-              this.checkTypeComponent(elem)
-              let data = {}
-              if (elem.component.name === 'image') {
-                const full_url = document.getElementById(`component_wrapper-${elem.index}`).getElementsByClassName( 'inserted_image' )[0].src
-                let sub_url = full_url.split('.com')
-                const alt = document.getElementById(`component_wrapper-${elem.index}`).getElementsByClassName( 'inserted_image' )[0].alt
-                data = Object.assign({}, {name: alt}, {full_path: sub_url[1]})
-                this.$store.commit('M_selectedComponent', {})
-                // return
-              } else data = elem.data
-
-              this.$store.commit('M_countLayout', elem.index)
-              this.$store.commit('M_selectedComponent', data)
-              const countLayout = this.$store.state.countLayout
-              let range = document.createRange();
-              range.selectNode(document.getElementById(`component_wrapper-${elem.index}`));
-              range.deleteContents()
-              range.collapse(false);
-              this.data_of_components.push(this.getStructureForInstance(elem.component))
-              this.data_of_components[countLayout - 1].instance.$mount() // pass nothing
-              range.insertNode(this.data_of_components[elem.index-1].instance.$el)
-              this.$store.commit('M_selectedComponent', {})
-            })
-          })
-          this.refactoring_content = false
-        })
-
-        if (this.$route.hash) {
-          const elem = document.getElementById(this.$route.hash.split('#').pop());
-          if (elem) elem.scrollIntoView()
-        }
-      })
+      }
     }
   },
   computed: {
@@ -121,6 +73,67 @@ export default {
     }
   },
   methods: {
+    initializeContent() {
+      if (JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components))).length) {
+        const arr_of_components = JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components)))
+        const promises = []
+
+        arr_of_components.forEach(elem => {
+          if (elem.component.name === 'questions') {
+            promises.push(this.$store.dispatch('getComponentsById', elem))
+          } else if (elem.component.name === 'image') {
+            promises.push(this.$store.dispatch('imageFromServer', elem))
+          } else if (elem.component.name === 'auth') {
+            promises.push(this.$store.dispatch('getAuth', elem))
+          }
+        })
+
+        Promise.all(promises).finally(() => {
+          const arr = []
+          this.$store.state.components_after_request.forEach(elem => {
+            arr.push(elem)
+          })
+          arr.sort((a,b) => {
+            return a.index - b.index
+          })
+
+          this.$nextTick(() => {
+            arr.forEach((elem) => {
+              setTimeout(() => {
+                this.checkTypeComponent(elem)
+                let data = {}
+                if (elem.component.name === 'image') {
+                  const full_url = document.getElementById(`component_wrapper-${elem.index}`).getElementsByClassName( 'inserted_image' )[0].src
+                  let sub_url = full_url.split('.com')
+                  const alt = document.getElementById(`component_wrapper-${elem.index}`).getElementsByClassName( 'inserted_image' )[0].alt
+                  data = Object.assign({}, {name: alt}, {full_path: sub_url[1]})
+                  this.$store.commit('M_selectedComponent', {})
+                  // return
+                } else data = elem.data
+
+                this.$store.commit('M_countLayout', elem.index)
+                this.$store.commit('M_selectedComponent', data)
+                const countLayout = this.$store.state.countLayout
+                let range = document.createRange();
+                range.selectNode(document.getElementById(`component_wrapper-${elem.index}`));
+                range.deleteContents()
+                range.collapse(false);
+                this.data_of_components.push(this.getStructureForInstance(elem.component))
+                this.data_of_components[countLayout - 1].instance.$mount() // pass nothing
+                range.insertNode(this.data_of_components[elem.index-1].instance.$el)
+                this.$store.commit('M_selectedComponent', {})
+              })
+            })
+            this.$store.commit('change_refactoring_content', false)
+          })
+
+          if (this.$route.hash) {
+            const elem = document.getElementById(this.$route.hash.split('#').pop());
+            if (elem) elem.scrollIntoView()
+          }
+        })
+      }
+    },
     checkTypeComponent(elem) {
       this.params_of_component.name = elem.component.name
       if (elem.component.name === 'questions') {

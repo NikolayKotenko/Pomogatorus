@@ -70,12 +70,15 @@ export default {
 
 <style scoped lang="scss">
 .image_wrapper {
-  min-height: 150px;
-  min-width: 50px;
-  max-width: 600px;
-  max-height: 600px;
+  //min-height: 150px;
+  //min-width: 50px;
+  //max-width: 600px;
+  //max-height: 600px;
   position: relative;
   padding: 16px 10px 8px 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .inserted_image {
   width: 100%;
