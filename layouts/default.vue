@@ -33,7 +33,6 @@ import Request from "@/services/request";
 
 export default {
   name: 'DefaultLayout',
-  middleware: ['auth'],
   data () {
     return {
       menuItems: [
@@ -46,6 +45,7 @@ export default {
   },
   methods:{
     async fuckinMiddleware(){
+      console.log(window.location.origin)
       if (this.$route.query.userEmail)
         await this.$store.dispatch('loginUser', {'userEmail': this.$route.query.userEmail } );
 

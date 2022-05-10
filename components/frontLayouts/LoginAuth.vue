@@ -3,6 +3,7 @@
     <v-form v-model="valid" class="login"
             @submit.prevent="localLoginCreateUser(`component_wrapper-${index_component}`)"
             contenteditable="false"
+            v-if="!hasCookie"
     >
       <v-container>
         <v-row>
@@ -45,11 +46,20 @@
         </v-row>
       </v-container>
     </v-form>
+    <v-alert
+      v-else
+      transition="scale-transition"
+      dismissible
+      type="success"
+    >
+      <span>Благодарим за авторизацию!</span>
+    </v-alert>
   </div>
 </template>
 
 <script>
 import Logging from "@/services/logging";
+import Request from "../../services/request";
 
 export default {
   name: "LoginAuth",
@@ -77,12 +87,15 @@ export default {
     this.getData()
   },
   computed : {
+    hasCookie() {
+      return Request.getAccessTokenInCookies()
+    }
   },
   methods: {
     alertCall(response){
       this.alert.state = true
       this.alert.message = Logging.getMessage(response)
-      this.alert.type = Logging.checkExistErr(response) ? 'error' : 'success'
+      this.alert.type = Logging.checkExistErr(response) ? 'error' : Request.getAccessTokenInCookies() ? 'success' : 'warning'
     },
     async localLoginCreateUser(index_component){
       if (this.valid === false)

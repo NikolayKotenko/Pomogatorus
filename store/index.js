@@ -90,6 +90,7 @@ const createStore = () => {
         return tokensData
       },
       async loginUser({commit}, objData) {
+        console.log(objData)
         const tokensData = await Request.post(window.location.origin + '/api/auth/login', objData)
         commit('set_user_data', tokensData.data)
 

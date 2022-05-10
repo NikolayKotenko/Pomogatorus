@@ -24,8 +24,6 @@ export default class Request {
             // referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
         }
 
-      console.log(this.$cookiz)
-
         if ( 'GET' === method ) {
             if (params !== null) {
                 url += '?' + (new URLSearchParams(params)).toString();

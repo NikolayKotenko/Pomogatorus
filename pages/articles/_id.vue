@@ -1,17 +1,5 @@
 <template>
   <div class="article-template">
-
-    <v-btn @click="callGovnaSobachki();"
-           color="primary"
-           elevation="2"
-           outlined>SOBAKA ACTION
-    </v-btn>
-    <v-btn @click="requestTest()"
-           color="primary"
-           elevation="2"
-           outlined>REFRESH ACTION
-    </v-btn>
-
     <h1 class="article-template__title">
       {{ article.name }}
     </h1>
@@ -116,6 +104,11 @@ export default {
           })
           this.refactoring_content = false
         })
+
+        if (this.$route.hash) {
+          const elem = document.getElementById(this.$route.hash.split('#').pop());
+          if (elem) elem.scrollIntoView()
+        }
       })
     }
   },
