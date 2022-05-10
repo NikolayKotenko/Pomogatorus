@@ -28,14 +28,35 @@
 </template>
 
 <script>
+import Logging from "@/services/logging";
+import Request from "@/services/request";
+
 export default {
   name: 'DefaultLayout',
-  middleware: ['auth'],
   data () {
     return {
       menuItems: [
         { title: 'Статьи', path: '/articles', icon: 'mdi-message-text' },
       ]
+    }
+  },
+  mounted() {
+    this.fuckinMiddleware();
+  },
+  methods:{
+    async fuckinMiddleware(){
+      if (this.$route.query.userEmail)
+        await this.$store.dispatch('loginUser', {'userEmail': this.$route.query.userEmail } );
+
+      // if (process.env.NODE_ENV === 'production')
+      //   return false;
+
+      if (! Request.getAccessTokenInCookies()) {
+        const refreshResponse = await this.$store.dispatch('refreshTokens')
+        if (Logging.checkExistErr(refreshResponse))
+          console.log(refreshResponse.message)
+        // return redirect('/login')
+      }
     }
   }
 }

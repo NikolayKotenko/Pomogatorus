@@ -6,6 +6,11 @@
            elevation="2"
            outlined>SOBAKA ACTION
     </v-btn>
+    <v-btn @click="requestTest()"
+           color="primary"
+           elevation="2"
+           outlined>REFRESH ACTION
+    </v-btn>
 
     <h1 class="article-template__title">
       {{ article.name }}
@@ -29,6 +34,7 @@ const vuetify_class = require("vuetify")
 import ImageLayout from "../../components/frontLayouts/ImageLayout";
 import Question from "../../components/frontLayouts/Question";
 import LoginAuth from "../../components/frontLayouts/LoginAuth";
+import Request from "@/services/request";
 
 export default {
   name: "_id.vue",
@@ -156,10 +162,11 @@ export default {
     },
 
     callGovnaSobachki(){
-      this.$axios.post(
-        `/auth/login`,
-        {'email': 'nikolay-kotenko@mail.ru'}
-      )
+      Request.get('https://api.agregatorus.com/dictionary/cities')
+    },
+    async requestTest(){
+      const war = await this.$store.dispatch('refreshTokens')
+      console.log('war', war)
     }
   },
   beforeDestroy() {

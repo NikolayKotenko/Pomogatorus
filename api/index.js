@@ -1,9 +1,11 @@
   const express = require("express");
   const app = express();
   const axios = require('axios');
-  const urlencodedParser = express.urlencoded({extended: false});  // создаем парсер для данных application/x-www-form-urlencoded
-  // cookieParser = require('cookie-parser')
-  // app.use(cookieParser())
+  // const urlencodedParser = express.urlencoded({extended: false});  // создаем парсер для данных application/x-www-form-urlencoded
+  app.use(express.json());
+
+  cookieParser = require('cookie-parser')
+  app.use(cookieParser())
 
   // app.get(
   //   '/',
@@ -12,9 +14,11 @@
   //   }
   // )
 
-  app.post('/auth/login', urlencodedParser, function(request, response) {
+  // LOGIN
+  app.post('/auth/login', function(request, response) {
+    console.log('request.body', request.body)
 
-    if(!request.body) return response.sendStatus(400);
+    if(!request.body) return response.status(400).send({message: 'Пустой request.body', codeResponse: 400 });
 
     axios.post('https://api.agregatorus.com/auth/login', request.body)
       .then((res) => {
@@ -27,7 +31,60 @@
         // console.log('jwtObj - ', jwtRefreshTokenObj)
         response.cookie(
           'refreshToken', refreshCookieObj?.refreshToken,
-          {expires: new Date(timeConverter(jwtRefreshTokenObj?.exp)), httpOnly: true}
+          {
+            expires: new Date(timeConverter(jwtRefreshTokenObj?.exp)),
+            httpOnly: true,
+            // sameSite: 'None',
+            // secure: true,
+            // domain: 'pomogatorus.ru'
+          }
+        );
+
+        // Set access token
+        const accessToken = res.data?.data?.access_token?.token;
+        const jwtAccessTokenObj = parseJwt(accessToken)
+        response.cookie(
+          'accessToken',
+          accessToken,
+          { expires: new Date(timeConverter(jwtAccessTokenObj?.exp)) }
+        )
+        // axios.defaults.headers.common['Authorization'] = 'Bearer ' + accessToken // for all requests
+        response.send(res.data);
+      })
+      .catch((err) => {
+        console.log(err.response.data);
+        // response.sendStatus(400);
+        response.send(err.response.data);
+    });
+  });
+  // REFRESH
+  app.post('/auth/refresh', function(request, response) {
+    // console.log('request.cookies', request.cookies?.refreshToken)
+    // console.log('request.headers.cookie', request.headers.cookie)
+    // console.log('REQUEST', request)
+
+    // return response.send(request.cookies);
+    if(! request.cookies?.refreshToken) return response.status(400).send({message: 'Пустая кука refreshToken', codeResponse: 400 });
+
+    const config = {
+      headers: {Cookie: request.headers.cookie},
+      withCredentials: true
+    }
+    axios.post('https://api.agregatorus.com/auth/refresh', false, config)
+      .then((res) => {
+        console.log('res.headers', res.headers);
+
+        // Set refresh token
+        const refreshCookieObj = parseCookies(res.headers["set-cookie"][0]);
+        const jwtRefreshTokenObj = parseJwt(refreshCookieObj['refreshToken']);
+        // console.log('refreshCookieObj', refreshCookieObj)
+        // console.log('jwtObj - ', jwtRefreshTokenObj)
+        response.cookie(
+          'refreshToken', refreshCookieObj?.refreshToken,
+          {
+            expires: new Date(timeConverter(jwtRefreshTokenObj?.exp)),
+            httpOnly: true,
+          }
         );
 
         // Set access token
@@ -41,10 +98,10 @@
         response.send(res.data);
       })
       .catch((err) => {
-        console.error(err.message);
-        response.sendStatus(400);
-        response.send(err.message); // TODO было бы заебись подключить класс services/logging.js сюда
-    });
+        console.log('err.response', err.response)
+        // response.sendStatus(400);
+        response.send(err.response.data);
+      });
   });
 
   // Export express app
