@@ -89,43 +89,22 @@ export default {
         return false
 
         const res = await this.$store.dispatch(
-            'createAndAuthUserByEmail', {
-              'email': this.email_user,
-              'id_dom_elem': index_component
-            })
+          'createAndAuthUserByEmail', {
+            'email': this.email_user,
+            'id_dom_elem': index_component,
+            'full_url': window.location.href
+          })
         this.alertCall(res);
     },
 
     // inserted_components
     getData() {
       this.index_component = this.$store.state.countLayout
-      this.getHeightOfControls()
-      this.getWidthOfControls()
     },
     deleteQuestion() {
       const elem = document.getElementById(`component_wrapper-${this.index_component}`)
       elem.remove()
       this.$store.dispatch('deleteComponent', this.index_component)
-    },
-    getWidthOfControls() {
-      this.$nextTick(() => {
-        const elem = document.getElementById(`component_wrapper-${this.index_component}`)
-        if (elem) {
-          this.controls_width = elem.getBoundingClientRect().width + 6;
-        } else {
-          this.controls_width = 0
-        }
-      })
-    },
-    getHeightOfControls() {
-      this.$nextTick(() => {
-        const elem = document.getElementById(`component_wrapper-${this.index_component}`)
-        if (elem) {
-          this.controls_height = elem.getBoundingClientRect().height + 22;
-        } else {
-          this.controls_height = 0
-        }
-      })
     },
   }
 }
