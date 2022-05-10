@@ -136,9 +136,16 @@ export default {
             this.$store.commit('change_refactoring_content', false)
           })
 
-          if (this.$route.hash) {
-            window.scroll(0,this.findPos(document.getElementById(this.$route.hash.split('#').pop())));
-          }
+          setTimeout(() => {
+            if (this.$route.hash) {
+              const elem = document.getElementById(this.$route.hash.split('#').pop())
+              const top = window.scrollY + elem.getBoundingClientRect().top;
+              window.scrollTo(0, top);
+              // console.log(document.getElementById(this.$route.hash.split('#').pop()))
+              // window.scroll(0,this.findPos(document.getElementById(this.$route.hash.split('#').pop())));
+            }
+          }, 200)
+
         })
       }
     },
