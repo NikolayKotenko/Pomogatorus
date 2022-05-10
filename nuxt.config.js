@@ -3,7 +3,7 @@ import colors from 'vuetify/es5/util/colors'
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - pomogatorus-service',
+    // titleTemplate: '%s - pomogatorus-service',
     title: 'pomogatorus-service',
     meta: [
       { charset: 'utf-8' },
@@ -39,6 +39,7 @@ export default {
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
+    ['cookie-universal-nuxt', { alias: 'cookiz' }]
   ],
   serverMiddleware: [
     '~/api/index.js',
@@ -55,25 +56,6 @@ export default {
   pwa: {
     manifest: {
       lang: 'en'
-    }
-  },
-
-  // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
-  vuetify: {
-    customVariables: ['~/assets/variables.scss'],
-    theme: {
-      dark: true,
-      themes: {
-        dark: {
-          primary: colors.blue.darken2,
-          accent: colors.grey.darken3,
-          secondary: colors.amber.darken3,
-          info: colors.teal.lighten1,
-          warning: colors.amber.base,
-          error: colors.deepOrange.accent4,
-          success: colors.green.accent3
-        }
-      }
     }
   },
 
