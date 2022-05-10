@@ -91,7 +91,8 @@ export default {
         const res = await this.$store.dispatch(
             'createAndAuthUserByEmail', {
               'email': this.email_user,
-              'id_dom_elem': index_component
+              'id_dom_elem': index_component,
+              'full_url': window.location.href
             })
         this.alertCall(res);
     },
