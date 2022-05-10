@@ -10,8 +10,15 @@
     <h1 class="article-template__title">
       {{ article.name }}
     </h1>
-    <div class="article-template__content" v-html="refactored_content">
+    <div class="article-template__content" v-html="refactored_content" v-if="!refactoring_content">
     </div>
+    <v-progress-circular
+      v-else
+      :size="50"
+      color="primary"
+      indeterminate
+      style="margin-top: 20px"
+    ></v-progress-circular>
   </div>
 </template>
 
@@ -47,9 +54,11 @@ export default {
       name: '',
     },
     data_of_components: [],
+    refactoring_content: false,
   }),
   mounted() {
     if (JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components))).length) {
+      this.refactoring_content = true
       const arr_of_components = JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components)))
       const promises = []
 
@@ -83,7 +92,7 @@ export default {
                 const alt = document.getElementById(`component_wrapper-${elem.index}`).getElementsByClassName( 'inserted_image' )[0].alt
                 data = Object.assign({}, {name: alt}, {full_path: sub_url[1]})
                 this.$store.commit('M_selectedComponent', {})
-                return
+                // return
               } else data = elem.data
 
               this.$store.commit('M_countLayout', elem.index)
@@ -99,6 +108,7 @@ export default {
               this.$store.commit('M_selectedComponent', {})
             })
           })
+          this.refactoring_content = false
         })
       })
     }
