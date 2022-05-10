@@ -37,7 +37,13 @@ export default {
         { title: 'Статьи', path: '/articles', icon: 'mdi-message-text' },
       ]
     }
-  }
+  },
+  mounted() {
+    if (this.$route.query.userEmail) {
+      this.$store.commit('change_inititalize_state')
+      this.$cookiz.set('state', 'dsadasdasd', {maxAge: defined_ttl_minutes})
+    }
+  },
 }
 </script>
 

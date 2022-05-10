@@ -14,6 +14,7 @@ const createStore = () => {
       countLayout: 0,
       selectedComponent: {},
       count_of_questions: 0,
+      intialized_app: false,
     },
     getters: {
       stateAuth(state){
@@ -29,6 +30,9 @@ const createStore = () => {
     mutations: {
       change_list_articles(state, arr) {
         state.list_articles = arr
+      },
+      change_inititalize_state(state, value) {
+        state.intialized_app = value
       },
 
       //  AUTH

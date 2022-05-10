@@ -9,7 +9,7 @@
     </div>
     <div class="list_elem_wrapper__preview_content">
       <div class="list_elem_wrapper__preview_content__short_info">
-        <h2 class="list_elem_wrapper__preview_content__short_info__title">{{article.short_header}}</h2>
+        <h2 class="list_elem_wrapper__preview_content__short_info__title">{{article.name}}</h2>
         <h4 class="list_elem_wrapper__preview_content__short_info__short" v-if="article.preview">{{article.preview}}</h4>
         <h4 class="list_elem_wrapper__preview_content__short_info__short" v-else>Краткое описание статьи или анонс статьи</h4>
       </div>
