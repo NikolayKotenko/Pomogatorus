@@ -44,11 +44,7 @@ export default {
   methods:{
     async fuckinMiddleware(){
       if (this.$route.query.userEmail)
-        this.$store.commit('change_refactoring_content', true)
-        await this.$store.dispatch('loginUser', {'userEmail': this.$route.query.userEmail } );
-
-      // if (process.env.NODE_ENV === 'production')
-      //   return false;
+        await this.$store.dispatch('loginUser', {'userEmail': this.$route.query.userEmail});
 
       if (! Request.getAccessTokenInCookies()) {
         const refreshResponse = await this.$store.dispatch('refreshTokens')
@@ -56,6 +52,7 @@ export default {
           console.log(refreshResponse.message)
         // return redirect('/login')
       }
+
       this.$store.commit('change_refactoring_content', false)
     }
   }
