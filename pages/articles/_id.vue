@@ -1,8 +1,10 @@
 <template>
   <div class="article-template">
-    <h1 class="article-template__title">
-      {{ article.name }}
-    </h1>
+    <div class="article-template__header">
+      <h1 class="article-template__header__title">
+        {{ article.name }}
+      </h1>
+    </div>
     <div class="article-template__content" v-html="refactored_content" v-if="!$store.state.refactoring_content">
     </div>
     <v-progress-circular
@@ -73,15 +75,6 @@ export default {
     }
   },
   methods: {
-    findPos(obj) {
-      let curtop = 0;
-      if (obj.offsetParent) {
-        do {
-          curtop += obj.offsetTop;
-        } while (obj = obj.offsetParent);
-        return [curtop];
-      }
-    },
     initializeContent() {
       if (JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components))).length) {
         const arr_of_components = JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components)))
@@ -141,8 +134,6 @@ export default {
               const elem = document.getElementById(this.$route.hash.split('#').pop())
               const top = window.scrollY + elem.getBoundingClientRect().top;
               window.scrollTo(0, top);
-              // console.log(document.getElementById(this.$route.hash.split('#').pop()))
-              // window.scroll(0,this.findPos(document.getElementById(this.$route.hash.split('#').pop())));
             }
           }, 200)
 
@@ -202,11 +193,16 @@ export default {
 <style lang="scss" scoped>
 .article-template {
   margin: 0 auto;
+  padding: 0 10px;
   display: flex;
   flex-direction: column;
-  &__title {
-    width: 100%;
-    text-align: center;
+  &__header {
+    position: sticky;
+    top: 64px;
+    &__title {
+      text-align: center;
+      margin: 20px;
+    }
   }
 }
 </style>

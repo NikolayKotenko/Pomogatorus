@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar class="header">
+  <v-app-bar class="header" dark elevate-on-scroll app>
     <v-toolbar-title>
       <router-link to="/" tag="span" style="cursor: pointer">
         Главная
@@ -17,7 +17,7 @@
         {{ item.title }}
       </v-btn>
     </v-toolbar-items>
-  </v-toolbar>
+  </v-app-bar>
 </template>
 
 <script>
@@ -38,11 +38,14 @@ export default {
   display: flex;
   flex: unset !important;
   width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 404;
   ::v-deep .v-toolbar__content {
     width: 100%;
-    max-width: 1200px;
+    max-width: 1140px;
     margin: 0 auto;
-    padding: 4px 25px;
+    padding: 4px 0;
     column-gap: 10px;
   }
 }
