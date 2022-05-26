@@ -3,11 +3,23 @@
     display: flex !important;
     flex-direction: column !important;
     row-gap: 35px !important;
+    font-size: 14px !important;
+  }
+  .list_elem_wrapper {
+    &__preview_content {
+      &__short_info {
+        height: 140px !important;
+        &__short {
+          -webkit-line-clamp: 3 !important;
+        }
+      }
+    }
   }
 }
 @media only screen and (max-width: 924px) {
   .list_container {
     grid-template-columns: repeat(2, 1fr) !important;
+    //font-size: 12px;
   }
 }
 

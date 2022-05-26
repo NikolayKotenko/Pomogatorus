@@ -1,7 +1,7 @@
 <template>
   <v-app class="app">
     <Header/>
-    <SubHeader/>
+    <SubHeader v-if="$device.isDesktop" />
     <v-main class="main" id="main_content">
       <Nuxt />
     </v-main>
