@@ -1,27 +1,35 @@
+@media only screen and (max-width: 600px) {
+  .list_container {
+    display: flex !important;
+    flex-direction: column !important;
+    row-gap: 35px !important;
+  }
+}
+@media only screen and (max-width: 924px) {
+  .list_container {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+
 .list_container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  column-gap: 10%;
-  row-gap: 10%;
-  //display: flex;
-  //flex-direction: column;
+  column-gap: 6%;
+  row-gap: 2%;
 }
 
 .list_elem_wrapper {
   display: flex;
   flex-direction: column;
-  //display: grid;
-  //grid-template-columns: 20% auto;
-  //margin: 15px;
-  //box-shadow: 0 0 4px 1px #2d2d2d;
   &__img_container {
     display: flex;
     align-content: center;
     justify-content: center;
     align-items: center;
     position: relative;
-    height: 200px;
-    max-width: 332px;
+    height: 170px;
+    //max-width: 332px;
     &__img {
       width: 100%;
       height: 100%;
@@ -34,20 +42,41 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    //align-items: center;
 
     &__short_info {
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
-      align-items: center;
-      padding: 10px;
+      padding: 10px 10px 0 10px;
+      height: 200px;
       &__title {
-
+        font-size: 1.3em;
+        line-height: 28px;
+        background: linear-gradient(0deg, slateblue, slateblue) no-repeat right bottom / 0 var(--bg-h);
+        transition: background-size 350ms;
+        --bg-h: 2px;
+        &:where(:hover, :focus-visible) {
+          background-size: 100% var(--bg-h);
+          background-position-x: left;
+        }
       }
       &__short {
-        color: #b6b6b6
+        padding-top: 6px;
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        color: #7A7A7A;
+        font-weight: 500;
       }
     }
+  }
+}
+
+.article_card {
+  transition: all 0.4s ease-in-out;
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0px 5px 20px 7px rgba(34, 60, 80, 0.2) !important;
   }
 }
