@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar class="header" dark elevate-on-scroll app>
+  <v-app-bar class="header" dark elevate-on-scroll app id="navbar">
     <v-toolbar-title>
       <router-link to="/" tag="span" style="cursor: pointer">
         Главная
@@ -30,6 +30,27 @@ export default {
       ]
     }
   },
+  mounted() {
+    if (!process.server) {
+      this.onScroll()
+    }
+  },
+  methods: {
+    onScroll() {
+      if (this.$device.isDesktop) {
+        let prevScrollpos = window.pageYOffset;
+        window.onscroll = function() {
+          let currentScrollPos = window.pageYOffset;
+          if (prevScrollpos > currentScrollPos) {
+            document.getElementById("navbar").style.top = "0";
+          } else {
+            document.getElementById("navbar").style.top = "-70px";
+          }
+          prevScrollpos = currentScrollPos;
+        }
+      }
+    },
+  }
 }
 </script>
 
@@ -41,6 +62,7 @@ export default {
   position: sticky;
   top: 0;
   z-index: 404;
+  transition: all 0.4s ease-in-out;
   ::v-deep .v-toolbar__content {
     width: 100%;
     max-width: 1140px;

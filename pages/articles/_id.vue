@@ -1,6 +1,11 @@
 <template>
   <div class="article-template">
-    <div class="article-template__header">
+    <transition name="fade">
+      <div class="article-template__subHeader" v-show="isShowTitle">
+        <h1>DSADASDASD</h1>
+      </div>
+    </transition>
+    <div class="article-template__header" ref="nav">
       <h1 class="article-template__header__title">
         {{ article.name }}
       </h1>
@@ -50,9 +55,13 @@ export default {
       name: '',
     },
     data_of_components: [],
+    coordYNav: null,
+    heightNav: 70,
   }),
-
   mounted() {
+    if (process.client) {
+      window.addEventListener('scroll', this.scrollWindow)
+    }
     if (!this.$store.state.refactoring_content) {
       this.initializeContent()
     }
@@ -72,9 +81,22 @@ export default {
     },
     componentLayout() {
       return this.params_of_component.name === 'questions' ? Vue.extend(Question) : this.params_of_component.name === 'image' ? Vue.extend(ImageLayout) : Vue.extend(LoginAuth)
-    }
+    },
+    isShowTitle() {
+      return this.coordYNav <= 0 && this.coordYNav !== null
+    },
   },
   methods: {
+    scrollWindow() {
+      setTimeout(() => {
+        if (this.$refs.nav) {
+          //@ts-ignore
+          this.coordYNav = this.$refs.nav.getBoundingClientRect().y
+          //@ts-ignore
+          this.heightNav = this.$refs.nav.getBoundingClientRect().height
+        }
+      }, 1000)
+    },
     initializeContent() {
       if (JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components))).length) {
         const arr_of_components = JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components)))
@@ -186,7 +208,13 @@ export default {
     this.$store.state.countLayout = 0
     this.$store.state.count_of_questions = 0
     this.$store.state.components_after_request = []
-  }
+  },
+  destroyed() {
+    if (process.client) {
+      //@ts-ignore
+      window.removeEventListener('scroll', this.scrollWindow)
+    }
+  },
 }
 </script>
 
@@ -196,9 +224,13 @@ export default {
   padding: 0 10px;
   display: flex;
   flex-direction: column;
-  &__header {
+  &__subHeader {
     position: sticky;
-    top: 64px;
+    top: 0;
+  }
+  &__header {
+    //position: sticky;
+    //top: 64px;
     &__title {
       text-align: center;
       margin: 20px;
