@@ -27,24 +27,37 @@ export default {
     return {
       menuItems: [
         { title: 'Статьи', path: '/articles', icon: 'mdi-message-text' },
-      ]
+      ],
+      debounceTimeout: null,
     }
   },
   mounted() {
+    console.log(this.$store.state.show_header)
     if (!process.server) {
       this.onScroll()
     }
   },
   methods: {
+    setHeader(value) {
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+      this.debounceTimeout = setTimeout(() => {
+        this.$store.commit('change_show_header', value)
+      })
+    },
     onScroll() {
       if (this.$device.isDesktop) {
         let prevScrollpos = window.pageYOffset;
+        const _this = this
         window.onscroll = function() {
           let currentScrollPos = window.pageYOffset;
           if (prevScrollpos > currentScrollPos) {
+            // console.log('pokazuvay')
             document.getElementById("navbar").style.top = "0";
+            _this.setHeader(true)
           } else {
+            // console.log('pryachy')
             document.getElementById("navbar").style.top = "-70px";
+            _this.setHeader(false)
           }
           prevScrollpos = currentScrollPos;
         }

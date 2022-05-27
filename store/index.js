@@ -5,10 +5,11 @@ import Request from "../services/request";
 const createStore = () => {
   return new Vuex.Store({
     state: {
-      list_articles: [],
       BASE_URL: process.env.NODE_ENV === 'development' ? 'https://api-test.agregatorus.com' : 'https://api.agregatorus.com',
+      show_header: false,
 
       /* TODO: need module */
+      list_articles: [],
       userData: {},
       components_after_request: [],
       countLayout: 0,
@@ -29,6 +30,10 @@ const createStore = () => {
       },
     },
     mutations: {
+      change_show_header(state, value) {
+        state.show_header = value
+      },
+
       change_refactoring_content(state, value) {
         state.refactoring_content = value
       },

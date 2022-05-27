@@ -163,9 +163,11 @@ export default {
       }
     },
     checkTypeComponent(elem) {
+      console.log(elem.component.name)
       this.params_of_component.name = elem.component.name
       if (elem.component.name === 'questions') {
-        this.$store.commit('M_count_of_questions', elem.component.index_question)
+        const name = Object.prototype.hasOwnProperty.call(elem.component, 'index_question') ? 'question' : elem.component.name
+        this.$store.commit('M_count_of_questions', elem.component[`index_${name}`])
       }
     },
     getStructureForInstance(data_component) {
