@@ -1,14 +1,30 @@
 <template>
   <div class="article-template">
     <transition name="fade">
-      <div class="article-template__subHeader" v-show="isShowTitle">
-        <h1>DSADASDASD</h1>
+      <div
+        class="article-template__subHeader"
+        v-show="isShowTitle"
+        :class="{subHeader: $store.state.show_header}"
+      >
+        <h2>{{ article.name }}</h2>
       </div>
     </transition>
     <div class="article-template__header" ref="nav">
+      <Author/>
       <h1 class="article-template__header__title">
         {{ article.name }}
       </h1>
+      <div class="tags">
+        <v-chip color="green" outlined small>
+          Полезно
+        </v-chip>
+        <v-chip color="green" outlined small>
+          Котел
+        </v-chip>
+        <v-chip color="green" outlined small>
+          Другой тэг
+        </v-chip>
+      </div>
     </div>
     <div class="article-template__content" v-html="refactored_content" v-if="!$store.state.refactoring_content">
     </div>
@@ -30,9 +46,11 @@ import ImageLayout from "../../components/frontLayouts/ImageLayout";
 import Question from "../../components/frontLayouts/Question";
 import LoginAuth from "../../components/frontLayouts/LoginAuth";
 import Request from "@/services/request";
+import Author from "../../components/Article/Author";
 
 export default {
   name: "_id.vue",
+  components: {Author},
   async asyncData({$axios, store, params}) {
     const options = {
       method: 'GET',
@@ -221,22 +239,44 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active до версии 2.1.8 */ {
+  opacity: 0;
+}
+
 .article-template {
   margin: 0 auto;
   padding: 0 10px;
   display: flex;
   flex-direction: column;
   &__subHeader {
+    transition: all 0.4s ease-in-out;
+    box-shadow: 0px 7px 10px 2px rgba(34, 60, 80, 0.2);
+    padding: 10px;
     position: sticky;
     top: 0;
+    z-index: 404;
+    //background: #FFFFFF;
+    background: #f3f3f3;
+    width: 100%;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
   }
   &__header {
     //position: sticky;
     //top: 64px;
     &__title {
-      text-align: center;
-      margin: 20px;
+      //text-align: center;
+      margin: 10px 0 10px 0;
     }
   }
+}
+.subHeader {
+  top: 64px;
+}
+.tags {
+  margin-bottom: 15px;
 }
 </style>

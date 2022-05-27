@@ -14,11 +14,7 @@
           <h4 class="list_elem_wrapper__preview_content__short_info__short" v-if="article.preview || article.short_header">{{preview}}</h4>
           <h4 class="list_elem_wrapper__preview_content__short_info__short" v-else>Краткое описание статьи или анонс статьи</h4>
         </div>
-        <div class="author_wrapper">
-          <img class="author_wrapper__img" alt="" src="https://png.pngtree.com/png-vector/20200614/ourlarge/pngtree-businessman-user-avatar-character-vector-illustration-png-image_2242909.jpg">
-          <span class="author_wrapper__name">Копыткин Владислав</span>
-          <span class="author_wrapper__date">26/05/2022</span>
-        </div>
+        <Author :preview="previewAuthor"/>
 <!--        <v-btn-->
 <!--          text-->
 <!--          color="blue darken-4"-->
@@ -32,11 +28,13 @@
 </template>
 
 <script>
+import Author from "./Author";
 export default {
   name: "Article",
+  components: {Author},
   props: ['article'],
   data: () => ({
-
+    previewAuthor: true,
   }),
   computed: {
     preview() {
@@ -53,28 +51,4 @@ export default {
 
 <style lang="scss">
 @import '@/assets/styles/lists';
-
-.author_wrapper {
-  display: flex;
-  width: 100%;
-  column-gap: 10px;
-  align-items: center;
-  font-size: 0.9em;
-  padding: 5px;
-  background: #FCFCFC;
-  color: #999999;
-  &__img {
-    width: 28px;
-    height: 28px;
-    object-fit: cover;
-    -o-object-fit: cover;
-    border-radius: 50%;
-  }
-  &__name {
-    flex: 1;
-  }
-  &__date {
-
-  }
-}
 </style>

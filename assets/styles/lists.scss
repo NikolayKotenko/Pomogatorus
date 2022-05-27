@@ -85,6 +85,53 @@
   }
 }
 
+.author_wrapper {
+  display: flex;
+  width: 100%;
+  column-gap: 10px;
+  align-items: center;
+  font-size: 0.9em;
+  padding: 5px;
+  background: #FCFCFC;
+  color: #999999;
+  &__img {
+    width: 28px;
+    height: 28px;
+    object-fit: cover;
+    -o-object-fit: cover;
+    border-radius: 50%;
+  }
+  &__name {
+    flex: 1;
+  }
+  .preview {
+    color: #1976d2;
+    font-size: 1.2em;
+    font-weight: 500;
+  }
+  &__date {
+
+  }
+}
+
+.preview-block {
+  padding: 0 !important;
+  align-items: flex-end;
+  //.author_wrapper__img {
+  //  //margin-bottom: 6px;
+  //}
+  //.author_wrapper__name {
+  //  padding-top: 10px;
+  //  //line-height: 18px;
+  //}
+  //.author_wrapper__date {
+  //  padding-top: 10px;
+  //}
+  //.author_wrapper__views {
+  //  padding-top: 10px;
+  //}
+}
+
 .article_card {
   transition: all 0.4s ease-in-out;
   &:hover {
