@@ -7,6 +7,7 @@ const createStore = () => {
     state: {
       BASE_URL: process.env.NODE_ENV === 'development' ? 'https://api-test.agregatorus.com' : 'https://api.agregatorus.com',
       show_header: false,
+      breadcrumbs: [],
 
       /* TODO: need module */
       list_articles: [],
@@ -30,6 +31,10 @@ const createStore = () => {
       },
     },
     mutations: {
+      change_breadcrumbs(state, arr) {
+        state.breadcrumbs = []
+        state.breadcrumbs = arr
+      },
       change_show_header(state, value) {
         state.show_header = value
       },

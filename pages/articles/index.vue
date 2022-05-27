@@ -15,6 +15,8 @@ export default {
   components: {Article},
   data: () => ({
   }),
+  meta: {
+  },
   async fetch() {
    await this.$store.dispatch('req_list_articles', )
   },
@@ -26,6 +28,12 @@ export default {
     //   console.log('client')
     //   this.$store.dispatch('req_list_articles')
     // }
+  },
+  mounted() {
+    this.$store.commit('change_breadcrumbs', [
+      { text: 'Главная', disabled: false, link: true, exact: true, to: '/'},
+      { text: 'Статьи', disabled: true, link: true, exact: true, to: '/articles'}
+    ])
   },
   methods: {
 

@@ -1,13 +1,15 @@
 <template>
   <div class="article-template">
     <transition name="fade">
-      <div
-        class="article-template__subHeader"
-        v-show="isShowTitle"
-        :class="{subHeader: $store.state.show_header}"
-      >
-        <h2>{{ article.name }}</h2>
-      </div>
+      <template v-if="$device.isDesktop">
+        <div
+          class="article-template__subHeader"
+          v-show="isShowTitle"
+          :class="{subHeader: $store.state.show_header}"
+        >
+          <h2>{{ article.name }}</h2>
+        </div>
+      </template>
     </transition>
     <div class="article-template__header" ref="nav">
       <Author/>
@@ -66,7 +68,6 @@ export default {
     } catch (error) {
       console.log(error.response.data.message)
     }
-
   },
   data: () => ({
     params_of_component: {
@@ -76,7 +77,14 @@ export default {
     coordYNav: null,
     heightNav: 70,
   }),
+  created() {
+  },
   mounted() {
+    this.$store.commit('change_breadcrumbs', [
+      { text: 'Главная', disabled: false, link: true, exact: true, nuxt: true, replace: true, to: '/' },
+      { text: 'Статьи', disabled: false, link: true, exact: true, nuxt: true, replace: true, to: '/articles' },
+      { text: `${this.article.name}`, disabled: true, link: true, exact: true, nuxt: true, replace: true, to: '' }
+    ])
     if (process.client) {
       window.addEventListener('scroll', this.scrollWindow)
     }

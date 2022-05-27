@@ -1,6 +1,6 @@
 <template>
   <div class="subheader">
-    <v-breadcrumbs :items="items">
+    <v-breadcrumbs :items="$store.state.breadcrumbs">
       <template v-slot:divider>
         <v-icon>mdi-chevron-right</v-icon>
       </template>
@@ -12,24 +12,15 @@
 export default {
   name: "SubHeader",
   data: () => ({
-    items: [
-      {
-        text: 'Главная',
-        disabled: false,
-        href: 'breadcrumbs_dashboard',
-      },
-      {
-        text: 'Статьи',
-        disabled: false,
-        href: 'breadcrumbs_link_1',
-      },
-      {
-        text: 'Статья #1',
-        disabled: true,
-        href: 'breadcrumbs_link_2',
-      },
-    ],
   }),
+  mounted() {
+  },
+  watch: {
+  },
+  computed: {
+  },
+  methods: {
+  }
 }
 </script>
 
