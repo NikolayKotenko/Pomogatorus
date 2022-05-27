@@ -1,16 +1,15 @@
 <template>
   <div class="article-template">
-    <transition name="fade">
-      <template v-if="$device.isDesktop">
-        <div
-          class="article-template__subHeader"
-          v-show="isShowTitle"
-          :class="{subHeader: $store.state.show_header}"
-        >
-          <h2>{{ article.name }}</h2>
-        </div>
-      </template>
-    </transition>
+    <div
+      class="article-template__subHeader"
+      :class="[
+        {showArticleHeader: isShowTitle},
+        {subHeader: ($store.state.show_header && isShowTitle) && $device.isDesktop},
+        {subHeaderMobile: $device.isMobile}
+      ]"
+    >
+      <h2>{{ article.name }}</h2>
+    </div>
     <div class="article-template__header" ref="nav">
       <Author/>
       <h1 class="article-template__header__title">
@@ -263,26 +262,37 @@ export default {
     transition: all 0.4s ease-in-out;
     box-shadow: 0px 7px 10px 2px rgba(34, 60, 80, 0.2);
     padding: 10px;
-    position: sticky;
-    top: 0;
-    z-index: 404;
-    //background: #FFFFFF;
+    position: fixed;
+    top: -40px;
+    opacity: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: -1;
     background: #f3f3f3;
+    max-width: 1140px;
     width: 100%;
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
   }
   &__header {
-    //position: sticky;
-    //top: 64px;
     &__title {
-      //text-align: center;
       margin: 10px 0 10px 0;
     }
   }
 }
+.showArticleHeader {
+  opacity: 1;
+  top: 0;
+  z-index: 404;
+}
 .subHeader {
   top: 64px;
+}
+.subHeaderMobile {
+  top: 56px;
+  h2 {
+    font-size: 1.1em;
+  }
 }
 .tags {
   margin-bottom: 15px;

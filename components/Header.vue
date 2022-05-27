@@ -80,7 +80,7 @@ export default {
     width: 100%;
     max-width: 1140px;
     margin: 0 auto;
-    padding: 4px 0;
+    padding: 4px 10px;
     column-gap: 10px;
   }
 }
