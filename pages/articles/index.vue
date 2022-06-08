@@ -18,7 +18,7 @@ export default {
   meta: {
   },
   async fetch() {
-   await this.$store.dispatch('req_list_articles', )
+   await this.$store.dispatch('req_list_articles')
   },
   created() {
     // if (process.server) {

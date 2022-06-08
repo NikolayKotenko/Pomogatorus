@@ -120,23 +120,10 @@
 .preview-block {
   padding: 0 !important;
   align-items: flex-end;
-  //.author_wrapper__img {
-  //  //margin-bottom: 6px;
-  //}
-  //.author_wrapper__name {
-  //  padding-top: 10px;
-  //  //line-height: 18px;
-  //}
-  //.author_wrapper__date {
-  //  padding-top: 10px;
-  //}
-  //.author_wrapper__views {
-  //  padding-top: 10px;
-  //}
 }
 
 .article_card {
-  transition: all 0.4s ease-in-out;
+  transition: all 0.4s ease-in-out !important;
   &:hover {
     transform: scale(1.1);
     box-shadow: 0px 5px 20px 7px rgba(34, 60, 80, 0.2) !important;

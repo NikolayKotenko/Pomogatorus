@@ -1,5 +1,5 @@
 <template>
-  <div class="question_wrapper" contenteditable="false" :id="`component_wrapper-${index_component}`">
+  <div class="question_wrapper question_hover" contenteditable="false" :id="`component_wrapper-${index_component}`">
     <div class="question_wrapper__title">
       <h3>{{ index_question }}. {{ question_data.name }}</h3>
       <div class="helper_wrapper" v-if="question_data.title">
@@ -25,6 +25,7 @@
             hide-details
             solo
             placeholder="Введите ответ"
+            v-model="answer"
         >
         </v-text-field>
       </template>
@@ -38,6 +39,7 @@
             rows="3"
             row-height="25"
             placeholder="Введите ответ"
+            v-model="answer"
         >
         </v-textarea>
       </template>
@@ -45,11 +47,13 @@
         <v-radio-group
             dense
             hide-details
+            v-model="answer"
         >
           <v-radio
               v-for="(item, index) in value_type_answer"
               :key="index"
               :value="item.answer"
+              :disabled="!!detailed_response"
           >
             <template slot="label">
               <div style="display: flex; column-gap: 20px; align-items: center">
@@ -82,6 +86,8 @@
             v-for="(item, index) in value_type_answer"
             :key="index"
             :value="item.answer"
+            v-model="answer"
+            :disabled="!!detailed_response"
         >
           <template slot="label">
             <div style="display: flex; column-gap: 20px">
@@ -117,6 +123,8 @@
             return-object
             item-text="answer"
             :menu-props="{closeOnContentClick: true, bottom: true, offsetY: true }"
+            v-model="answer"
+            :disabled="!!detailed_response"
         >
           <template v-slot:item="{ active, item, attrs, on }">
             <v-list-item v-on="on" v-bind="attrs">
@@ -209,6 +217,15 @@
           Неккоректные значения
         </small>
       </template>
+      <v-text-field
+        v-if="question_data.state_detailed_response"
+        solo
+        dense
+        hide-details
+        placeholder="Место для развернутого ответа"
+        class="py-2"
+        v-model="detailed_response"
+      ></v-text-field>
     </div>
   </div>
 </template>
@@ -225,6 +242,8 @@ export default {
     value_type_answer: [],
     debounceTimeout: null,
 
+    detailed_response: "",
+    answer: null,
     /* DATA_BY_TYPES */
     rangeError: false,
     range_one: null,
@@ -242,6 +261,13 @@ export default {
         this.debounceTimeout = setTimeout(() => {
           this.rangeError = ((parseInt(this.range_one) < parseInt(this.value_type_answer[0].answer)) || (parseInt(this.range_one) > parseInt(this.value_type_answer[1].answer)));
         })
+      },
+    },
+    'detailed_response': {
+      handler(v) {
+        if (v) {
+          this.answer = null
+        }
       },
     }
   },
@@ -346,6 +372,13 @@ export default {
   max-width: 600px;
   position: relative;
   padding: 16px 10px 8px 10px;
+  border: 2px solid white;
+  border-radius: 15px;
+  transition: border-color 0.6s ease-in-out;
+
+  &:hover {
+    border-color: lighten(yellow, 15%);
+  }
 
   &__title {
     display: flex;
