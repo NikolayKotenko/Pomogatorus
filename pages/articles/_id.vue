@@ -27,6 +27,11 @@
         </v-chip>
       </div>
     </div>
+
+    <v-btn
+      @click="sendData()"
+    >TEST</v-btn>
+
     <div class="article-template__content" v-html="refactored_content" v-if="!$store.state.refactoring_content">
     </div>
     <v-progress-circular
@@ -48,6 +53,8 @@ import Question from "../../components/frontLayouts/Question";
 import LoginAuth from "../../components/frontLayouts/LoginAuth";
 import Request from "@/services/request";
 import Author from "../../components/Article/Author";
+
+import answers from "../../services/answers/answers";
 
 export default {
   name: "_id.vue",
@@ -112,6 +119,9 @@ export default {
     },
   },
   methods: {
+    sendData() {
+      answers.send({id_type_answer: 1, id_question: 1, detailed_response: 'rtrsr', attachment_files: []})
+    },
     scrollWindow() {
       setTimeout(() => {
         if (this.$refs.nav) {
@@ -123,7 +133,6 @@ export default {
       }, 1000)
     },
     initializeContent() {
-      console.log(this.article.inserted_components)
       if (JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components))).length) {
         const arr_of_components = JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components)))
         const promises = []
