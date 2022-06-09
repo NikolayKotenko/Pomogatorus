@@ -58,6 +58,7 @@
 <script>
 import Logging from "@/services/logging";
 import Request from "../../services/request";
+import ArticleModule from "../../store/modules/article";
 
 export default {
   name: "LoginAuth",
@@ -110,7 +111,7 @@ export default {
 
     // inserted_components
     getData() {
-      this.index_component = this.$store.state.countLayout
+      this.index_component = this.$store.state.ArticleModule.countLayout
     },
     deleteQuestion() {
       const elem = document.getElementById(`component_wrapper-${this.index_component}`)

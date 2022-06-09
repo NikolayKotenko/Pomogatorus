@@ -34,11 +34,11 @@ export default {
     }
   },
   actions: {
-    async req_list_articles({state, commit}) {
+    async req_list_articles({commit}) {
       try {
         const options = {
           method: 'GET',
-          url: `${state.BASE_URL}/entity/articles`,
+          url: `${this.state.BASE_URL}/entity/articles`,
           headers: {
             Authorization: '666777'
           },
@@ -86,7 +86,7 @@ export default {
       return new Promise((resolve, reject) => {
         const {index, component} = params
 
-        this.$axios.get(`${state.BASE_URL}/entity/${component.name}/${component.id}`, {
+        this.$axios.get(`${this.state.BASE_URL}/entity/${component.name}/${component.id}`, {
           headers: {
             Authorization: '666777'
           },

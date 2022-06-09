@@ -87,9 +87,9 @@ export default {
     if (process.client) {
       window.addEventListener('scroll', this.scrollWindow)
     }
-    if (!this.$store.state.refactoring_content) {
+    // if (!this.$store.state.ArticleModule.refactoring_content) {
       this.initializeContent()
-    }
+    // }
   },
   watch: {
     '$store.state.refactoring_content': {
@@ -123,6 +123,7 @@ export default {
       }, 1000)
     },
     initializeContent() {
+      console.log(this.article.inserted_components)
       if (JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components))).length) {
         const arr_of_components = JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components)))
         const promises = []
@@ -139,7 +140,7 @@ export default {
 
         Promise.all(promises).finally(() => {
           const arr = []
-          this.$store.state.components_after_request.forEach(elem => {
+          this.$store.state.ArticleModule.components_after_request.forEach(elem => {
             arr.push(elem)
           })
           arr.sort((a,b) => {
@@ -162,7 +163,7 @@ export default {
 
                 this.$store.commit('M_countLayout', elem.index)
                 this.$store.commit('M_selectedComponent', data)
-                const countLayout = this.$store.state.countLayout
+                const countLayout = this.$store.state.ArticleModule.countLayout
                 let range = document.createRange();
                 range.selectNode(document.getElementById(`component_wrapper-${elem.index}`));
                 range.deleteContents()
@@ -203,7 +204,7 @@ export default {
         store,
         vuetify,
       })
-      const data = new this.Imported_component({index: this.$store.state.countLayout, component: data_component})
+      const data = new this.Imported_component({index: this.$store.state.ArticleModule.countLayout, component: data_component})
       const params = Object.assign({}, {instance: instance}, {data: data})
       return new this.Constructor_instance(params)
     },
@@ -231,10 +232,10 @@ export default {
     }
   },
   beforeDestroy() {
-    this.$store.state.selectedComponent = {}
-    this.$store.state.countLayout = 0
-    this.$store.state.count_of_questions = 0
-    this.$store.state.components_after_request = []
+    this.$store.state.ArticleModule.selectedComponent = {}
+    this.$store.state.ArticleModule.countLayout = 0
+    this.$store.state.ArticleModule.count_of_questions = 0
+    this.$store.state.ArticleModule.components_after_request = []
   },
   destroyed() {
     if (process.client) {

@@ -231,6 +231,8 @@
 </template>
 
 <script>
+import ArticleModule from "../../store/modules/article";
+
 export default {
   name: "Question",
   data: () => ({
@@ -306,10 +308,10 @@ export default {
       }
     },
     getData() {
-      if (Object.keys(this.$store.state.selectedComponent).length) {
-        this.index_question = this.$store.state.count_of_questions
-        this.index_component = this.$store.state.countLayout
-        this.question_data = Object.assign({}, this.$store.state.selectedComponent)
+      if (Object.keys(this.$store.state.ArticleModule.selectedComponent).length) {
+        this.index_question = this.$store.state.ArticleModule.count_of_questions
+        this.index_component = this.$store.state.ArticleModule.countLayout
+        this.question_data = Object.assign({}, this.$store.state.ArticleModule.selectedComponent)
         this.getValue_type_answer()
         this.getHeightOfControls()
         this.getWidthOfControls()

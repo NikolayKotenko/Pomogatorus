@@ -1,7 +1,7 @@
 <template>
   <div class="list_container">
     <Article
-      v-for="(article, index) in $store.state.list_articles"
+      v-for="(article, index) in $store.state.ArticleModule.list_articles"
       :key="index"
       :article="article"
     />
@@ -20,6 +20,7 @@ export default {
   async fetch() {
    await this.$store.dispatch('req_list_articles')
   },
+  // fetchOnServer: false,
   created() {
     // if (process.server) {
     //   console.log('server')

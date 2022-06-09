@@ -5,6 +5,8 @@
 </template>
 
 <script>
+import ArticleModule from "../../store/modules/article";
+
 export default {
   name: "ImageLayout",
   data: () => ({
@@ -28,8 +30,8 @@ export default {
   },
   methods: {
     getData() {
-      this.data_image = this.$store.state.selectedComponent
-      this.index_component = this.$store.state.countLayout
+      this.data_image = this.$store.state.ArticleModule.selectedComponent
+      this.index_component = this.$store.state.ArticleModule.countLayout
       this.getHeightOfControls()
       this.getWidthOfControls()
     },
