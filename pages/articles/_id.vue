@@ -54,7 +54,7 @@ import LoginAuth from "../../components/frontLayouts/LoginAuth";
 import Request from "@/services/request";
 import Author from "../../components/Article/Author";
 
-import answers from "../../services/answers/answers";
+import Answers from "../../services/answers/answers";
 
 export default {
   name: "_id.vue",
@@ -120,7 +120,7 @@ export default {
   },
   methods: {
     sendData() {
-      answers.send({id_type_answer: 1, id_question: 1, detailed_response: 'rtrsr', attachment_files: []})
+      Answers.send({id_type_answer: 1, id_question: 1, detailed_response: 'rtrsr', attachment_files: []})
     },
     scrollWindow() {
       setTimeout(() => {

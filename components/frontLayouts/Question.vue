@@ -1,5 +1,6 @@
 <template>
   <div class="question_wrapper question_hover" contenteditable="false" :id="`component_wrapper-${index_component}`">
+    <v-btn @click="check_status = !check_status">OPSO</v-btn>
     <div class="question_wrapper__title">
       <h3>{{ index_question }}. {{ question_data.name }}</h3>
       <div class="helper_wrapper" v-if="question_data.title">
@@ -18,19 +19,46 @@
       </div>
     </div>
 
+    <!-- STATUS -->
     <div class="question_wrapper__content">
-      <template v-if="question_data.id_type_answer == '1'">
-        <v-text-field
+      <transition name="slide-fade">
+        <div class="question_wrapper__content__status" v-if="check_status">
+          <v-progress-circular
+            v-if="status_question.type === 'sending'"
+            :size="30"
+            color="primary"
+            indeterminate
+          ></v-progress-circular>
+          <v-tooltip right v-else>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                :color="status_question.color"
+                large
+                v-bind="attrs"
+                v-on="on"
+              >
+                {{ status_question.icon }}
+              </v-icon>
+            </template>
+            <span> {{ status_question.text }} </span>
+          </v-tooltip>
+        </div>
+      </transition>
+
+      <!-- QUESTION -->
+      <div class="question_wrapper__content__question">
+        <template v-if="question_data.id_type_answer == '1'">
+          <v-text-field
             dense
             hide-details
             solo
             placeholder="Введите ответ"
             v-model="answer"
-        >
-        </v-text-field>
-      </template>
-      <template v-else-if="question_data.id_type_answer == '2'">
-        <v-textarea
+          >
+          </v-text-field>
+        </template>
+        <template v-else-if="question_data.id_type_answer == '2'">
+          <v-textarea
             solo
             dense
             hide-details
@@ -40,23 +68,58 @@
             row-height="25"
             placeholder="Введите ответ"
             v-model="answer"
-        >
-        </v-textarea>
-      </template>
-      <template v-else-if="question_data.id_type_answer == '3'">
-        <v-radio-group
+          >
+          </v-textarea>
+        </template>
+        <template v-else-if="question_data.id_type_answer == '3'">
+          <v-radio-group
             dense
             hide-details
             v-model="answer"
-        >
-          <v-radio
+          >
+            <v-radio
               v-for="(item, index) in value_type_answer"
               :key="index"
               :value="item.answer"
               :disabled="!!detailed_response"
+            >
+              <template slot="label">
+                <div style="display: flex; column-gap: 20px; align-items: center">
+                <span>
+                  {{item.answer}}
+                </span>
+                  <div v-if="item.commentary">
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on, attrs }">
+                        <img
+                          class="help_img"
+                          :src="require(`/assets/svg/help-circle.svg`)"
+                          alt="help"
+                          v-bind="attrs"
+                          v-on="on"
+                        >
+                      </template>
+                      <span>{{ item.commentary }}</span>
+                    </v-tooltip>
+                  </div>
+                </div>
+              </template>
+            </v-radio>
+          </v-radio-group>
+        </template>
+        <template v-else-if="question_data.id_type_answer == '4'">
+          <v-checkbox
+            hide-details
+            dense
+            multiple
+            v-for="(item, index) in value_type_answer"
+            :key="index"
+            :value="item.answer"
+            v-model="answer"
+            :disabled="!!detailed_response"
           >
             <template slot="label">
-              <div style="display: flex; column-gap: 20px; align-items: center">
+              <div style="display: flex; column-gap: 20px">
                 <span>
                   {{item.answer}}
                 </span>
@@ -64,11 +127,11 @@
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
                       <img
-                          class="help_img"
-                          :src="require(`/assets/svg/help-circle.svg`)"
-                          alt="help"
-                          v-bind="attrs"
-                          v-on="on"
+                        class="help_img"
+                        :src="require(`/assets/svg/help-circle.svg`)"
+                        alt="help"
+                        v-bind="attrs"
+                        v-on="on"
                       >
                     </template>
                     <span>{{ item.commentary }}</span>
@@ -76,44 +139,10 @@
                 </div>
               </div>
             </template>
-          </v-radio>
-        </v-radio-group>
-      </template>
-      <template v-else-if="question_data.id_type_answer == '4'">
-        <v-checkbox
-            hide-details
-            dense
-            v-for="(item, index) in value_type_answer"
-            :key="index"
-            :value="item.answer"
-            v-model="answer"
-            :disabled="!!detailed_response"
-        >
-          <template slot="label">
-            <div style="display: flex; column-gap: 20px">
-                <span>
-                  {{item.answer}}
-                </span>
-              <div v-if="item.commentary">
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on, attrs }">
-                    <img
-                        class="help_img"
-                        :src="require(`/assets/svg/help-circle.svg`)"
-                        alt="help"
-                        v-bind="attrs"
-                        v-on="on"
-                    >
-                  </template>
-                  <span>{{ item.commentary }}</span>
-                </v-tooltip>
-              </div>
-            </div>
-          </template>
-        </v-checkbox>
-      </template>
-      <template v-else-if="question_data.id_type_answer == '5'">
-        <v-select
+          </v-checkbox>
+        </template>
+        <template v-else-if="question_data.id_type_answer == '5'">
+          <v-select
             solo
             dense
             hide-details
@@ -125,38 +154,38 @@
             :menu-props="{closeOnContentClick: true, bottom: true, offsetY: true }"
             v-model="answer"
             :disabled="!!detailed_response"
-        >
-          <template v-slot:item="{ active, item, attrs, on }">
-            <v-list-item v-on="on" v-bind="attrs">
-              <v-list-item-content>
-                <v-list-item-title>
-                  <v-row no-gutters align="center">
-                    <span>{{ item.answer }}</span>
-                    <v-spacer></v-spacer>
-                    <div v-if="item.commentary">
-                      <v-tooltip bottom>
-                        <template v-slot:activator="{ on, attrs }">
-                          <img
+          >
+            <template v-slot:item="{ active, item, attrs, on }">
+              <v-list-item v-on="on" v-bind="attrs">
+                <v-list-item-content>
+                  <v-list-item-title>
+                    <v-row no-gutters align="center">
+                      <span>{{ item.answer }}</span>
+                      <v-spacer></v-spacer>
+                      <div v-if="item.commentary">
+                        <v-tooltip bottom>
+                          <template v-slot:activator="{ on, attrs }">
+                            <img
                               class="help_img"
                               :src="require(`/assets/svg/help-circle.svg`)"
                               alt="help"
                               v-bind="attrs"
                               v-on="on"
-                          >
-                        </template>
-                        <span>{{ item.commentary }}</span>
-                      </v-tooltip>
-                    </div>
-                  </v-row>
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </template>
-        </v-select>
-      </template>
-      <template v-else-if="question_data.id_type_answer == '6'">
-        <span>Укажите число в диапозоне от {{ value_type_answer[0].answer }} и до {{ value_type_answer[1].answer }}</span>
-        <v-text-field
+                            >
+                          </template>
+                          <span>{{ item.commentary }}</span>
+                        </v-tooltip>
+                      </div>
+                    </v-row>
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+          </v-select>
+        </template>
+        <template v-else-if="question_data.id_type_answer == '6'">
+          <span>Укажите число в диапозоне от {{ value_type_answer[0].answer }} и до {{ value_type_answer[1].answer }}</span>
+          <v-text-field
             solo
             dense
             hide-details
@@ -164,34 +193,34 @@
             v-model="range_one"
             type="number"
             :class="{rangeError: rangeError}"
-        >
-          <template slot="prepend-inner">
-            <v-icon color="primary" @click="rangeEdit('minus')">
-              mdi-minus
-            </v-icon>
-          </template>
-          <template slot="append">
-            <v-icon color="primary" @click="rangeEdit('plus')">
-              mdi-plus
-            </v-icon>
-          </template>
-        </v-text-field>
-        <small v-if="rangeError" style="color: lightcoral">
-          Неккоректные значения
-        </small>
-      </template>
-      <template v-else-if="question_data.id_type_answer == '7'">
-        <span>Укажите число в диапозоне от {{ value_type_answer[0].answer }} и до {{ value_type_answer[1].answer }}</span>
-        <v-range-slider
+          >
+            <template slot="prepend-inner">
+              <v-icon color="primary" @click="rangeEdit('minus')">
+                mdi-minus
+              </v-icon>
+            </template>
+            <template slot="append">
+              <v-icon color="primary" @click="rangeEdit('plus')">
+                mdi-plus
+              </v-icon>
+            </template>
+          </v-text-field>
+          <small v-if="rangeError" style="color: lightcoral">
+            Неккоректные значения
+          </small>
+        </template>
+        <template v-else-if="question_data.id_type_answer == '7'">
+          <span>Укажите число в диапозоне от {{ value_type_answer[0].answer }} и до {{ value_type_answer[1].answer }}</span>
+          <v-range-slider
             v-model="range_two"
             :max="max"
             :min="min"
             hide-details
             type="number"
             class="align-center"
-        >
-          <template v-slot:prepend>
-            <v-text-field
+          >
+            <template v-slot:prepend>
+              <v-text-field
                 :value="range_two[0]"
                 class="mt-0 pt-0"
                 hide-details
@@ -199,10 +228,10 @@
                 type="number"
                 style="width: 60px"
                 @change="$set(range_two, 0, $event)"
-            ></v-text-field>
-          </template>
-          <template v-slot:append>
-            <v-text-field
+              ></v-text-field>
+            </template>
+            <template v-slot:append>
+              <v-text-field
                 :value="range_two[1]"
                 class="mt-0 pt-0"
                 hide-details
@@ -210,28 +239,31 @@
                 type="number"
                 style="width: 60px"
                 @change="$set(range_two, 1, $event)"
-            ></v-text-field>
-          </template>
-        </v-range-slider>
-        <small v-if="rangeError" style="color: lightcoral">
-          Неккоректные значения
-        </small>
-      </template>
-      <v-text-field
-        v-if="question_data.state_detailed_response"
-        solo
-        dense
-        hide-details
-        placeholder="Место для развернутого ответа"
-        class="py-2"
-        v-model="detailed_response"
-      ></v-text-field>
+              ></v-text-field>
+            </template>
+          </v-range-slider>
+          <small v-if="rangeError" style="color: lightcoral">
+            Неккоректные значения
+          </small>
+        </template>
+
+        <!-- DETAILED RESPONSE -->
+        <v-text-field
+          v-if="question_data.state_detailed_response"
+          solo
+          dense
+          hide-details
+          placeholder="Место для развернутого ответа"
+          class="py-2"
+          v-model="detailed_response"
+        ></v-text-field>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import ArticleModule from "../../store/modules/article";
+import Answers from "../../services/answers/answers";
 
 export default {
   name: "Question",
@@ -244,6 +276,7 @@ export default {
     value_type_answer: [],
     debounceTimeout: null,
 
+    check_status: false,
     detailed_response: "",
     answer: null,
     /* DATA_BY_TYPES */
@@ -274,7 +307,9 @@ export default {
     }
   },
   computed: {
-
+    status_question() {
+      return new Answers().create_status('warning')
+    },
   },
   methods: {
     deleteQuestion() {
@@ -370,6 +405,18 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.slide-fade-enter-active {
+  transition: all .8s ease;
+}
+.slide-fade-leave-active {
+  transition: all .6s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-fade-enter, .slide-fade-leave-to
+  /* .slide-fade-leave-active до версии 2.1.8 */ {
+  transform: translateX(10px);
+  opacity: 0;
+}
+
 .question_wrapper {
   max-width: 600px;
   position: relative;
@@ -394,6 +441,16 @@ export default {
     width: 100%;
     background: darkgrey;
     box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
+  }
+  &__content {
+    display: flex;
+    align-items: center;
+    column-gap: 15px;
+    position: relative;
+    &__question {
+      flex: 1;
+      transition: all 0.4s ease-in-out;
+    }
   }
 }
 
