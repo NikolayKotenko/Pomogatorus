@@ -53,7 +53,7 @@ class Status_warning {
     this.color = 'yellow darken-1'
     this.type = type
     this.icon = 'mdi-alert-circle-outline'
-    this.text = 'Необходимо авторизоваться для сохранения вашего ответа'
+    this.text = `Необходимо <strong>авторизоваться</strong> для сохранения вашего ответа`
   }
 }
 

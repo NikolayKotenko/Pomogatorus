@@ -259,6 +259,13 @@
         ></v-text-field>
       </div>
     </div>
+
+    <transition name="list">
+      <div class="question_wrapper__content__alert" v-if="status_question.type !== 'sending' && check_status">
+        <v-alert :type="status_question.type" v-html="status_question.text">
+        </v-alert>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -405,6 +412,15 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.list-enter-active, .list-leave-active {
+  transition: all .8s;
+}
+
+.list-enter, .list-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
+}
+
 .slide-fade-enter-active {
   transition: all .8s ease;
 }
