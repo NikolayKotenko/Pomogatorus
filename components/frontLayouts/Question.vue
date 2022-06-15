@@ -495,11 +495,14 @@ export default {
   &__content {
     display: flex;
     align-items: center;
-    column-gap: 15px;
+    //column-gap: 15px;
     position: relative;
     &__question {
       flex: 1;
       transition: all 0.4s ease-in-out;
+    }
+    &__status {
+      padding: 5px;
     }
   }
 }
