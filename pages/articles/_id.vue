@@ -186,6 +186,7 @@ export default {
             this.$store.commit('change_refactoring_content', false)
           })
 
+          // SCROLL TO AUTH BLOCK IF WE COME FROM EMAIL MESSAGE
           setTimeout(() => {
             if (this.$route.hash) {
               const elem = document.getElementById(this.$route.hash.split('#').pop())
@@ -193,7 +194,6 @@ export default {
               window.scrollTo(0, top);
             }
           }, 200)
-
         })
       }
     },
@@ -248,7 +248,6 @@ export default {
   },
   destroyed() {
     if (process.client) {
-      //@ts-ignore
       window.removeEventListener('scroll', this.scrollWindow)
     }
   },

@@ -24,12 +24,12 @@ export default class Answers {
       })
   }
 
-  create_status(type) {
+  create_status(type, auth_block) {
     let status
     if (type === 'sending') {
       status = new Status_sending(type)
     } else if (type === 'warning') {
-      status = new Status_warning(type)
+      status = new Status_warning(type, auth_block)
     } else if (type === 'error') {
       status = new Status_error(type)
     } else if (type === 'success') {
@@ -44,16 +44,16 @@ class Status_sending {
     this.color = 'primary'
     this.type = type
     this.icon = 'v-progress-circular'
-    this.text = 'Отправляем ответ'
+    this.text = `Отправляем ответ`
   }
 }
 
 class Status_warning {
-  constructor(type) {
+  constructor(type, auth_block) {
     this.color = 'yellow darken-1'
     this.type = type
     this.icon = 'mdi-alert-circle-outline'
-    this.text = `Необходимо <strong>авторизоваться</strong> для сохранения вашего ответа`
+    this.text = `Необходимо <a href="#component_wrapper-${auth_block}"><strong>авторизоваться</strong></a> для сохранения вашего ответа`
   }
 }
 
@@ -62,7 +62,7 @@ class Status_error {
     this.color = 'red darken-1'
     this.type = type
     this.icon = 'mdi-close-octagon-outline'
-    this.text = 'Произошла ошибка'
+    this.text = `Произошла ошибка`
   }
 }
 
@@ -71,6 +71,6 @@ class Status_success {
     this.color = 'green darken-1'
     this.type = type
     this.icon = 'mdi-check-circle-outline'
-    this.text = 'Необходимо авторизоваться для сохранения вашего ответа'
+    this.text = `Ответ записан, спасибо!`
   }
 }

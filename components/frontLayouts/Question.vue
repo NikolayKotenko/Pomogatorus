@@ -1,6 +1,5 @@
 <template>
   <div class="question_wrapper question_hover" contenteditable="false" :id="`component_wrapper-${index_component}`">
-    <v-btn @click="check_status = !check_status">OPSO</v-btn>
     <div class="question_wrapper__title">
       <h3>{{ index_question }}. {{ question_data.name }}</h3>
       <div class="helper_wrapper" v-if="question_data.title">
@@ -19,8 +18,8 @@
       </div>
     </div>
 
-    <!-- STATUS -->
     <div class="question_wrapper__content">
+      <!-- STATUS -->
       <transition name="slide-fade">
         <div class="question_wrapper__content__status" v-if="check_status">
           <v-progress-circular
@@ -29,7 +28,7 @@
             color="primary"
             indeterminate
           ></v-progress-circular>
-          <v-tooltip right v-else>
+<!--          <v-tooltip right v-else>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
                 :color="status_question.color"
@@ -41,7 +40,7 @@
               </v-icon>
             </template>
             <span> {{ status_question.text }} </span>
-          </v-tooltip>
+          </v-tooltip>-->
         </div>
       </transition>
 
@@ -54,6 +53,8 @@
             solo
             placeholder="Введите ответ"
             v-model="answer"
+            :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
+            @change="changeAnswer()"
           >
           </v-text-field>
         </template>
@@ -68,6 +69,8 @@
             row-height="25"
             placeholder="Введите ответ"
             v-model="answer"
+            :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
+            @change="changeAnswer()"
           >
           </v-textarea>
         </template>
@@ -81,7 +84,8 @@
               v-for="(item, index) in value_type_answer"
               :key="index"
               :value="item.answer"
-              :disabled="!!detailed_response"
+              :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
+              @change="changeAnswer()"
             >
               <template slot="label">
                 <div style="display: flex; column-gap: 20px; align-items: center">
@@ -116,7 +120,8 @@
             :key="index"
             :value="item.answer"
             v-model="answer"
-            :disabled="!!detailed_response"
+            :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
+            @change="changeAnswer()"
           >
             <template slot="label">
               <div style="display: flex; column-gap: 20px">
@@ -153,7 +158,8 @@
             item-text="answer"
             :menu-props="{closeOnContentClick: true, bottom: true, offsetY: true }"
             v-model="answer"
-            :disabled="!!detailed_response"
+            :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
+            @change="changeAnswer()"
           >
             <template v-slot:item="{ active, item, attrs, on }">
               <v-list-item v-on="on" v-bind="attrs">
@@ -193,6 +199,8 @@
             v-model="range_one"
             type="number"
             :class="{rangeError: rangeError}"
+            :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
+            @change="changeAnswer()"
           >
             <template slot="prepend-inner">
               <v-icon color="primary" @click="rangeEdit('minus')">
@@ -218,6 +226,8 @@
             hide-details
             type="number"
             class="align-center"
+            :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
+            @change="changeAnswer()"
           >
             <template v-slot:prepend>
               <v-text-field
@@ -262,7 +272,11 @@
 
     <transition name="list">
       <div class="question_wrapper__content__alert" v-if="status_question.type !== 'sending' && check_status">
-        <v-alert :type="status_question.type" v-html="status_question.text">
+        <v-alert
+          :type="status_question.type"
+          :icon="status_question.icon"
+        >
+          <span v-html="status_question.text"></span>
         </v-alert>
       </div>
     </transition>
@@ -284,6 +298,7 @@ export default {
     debounceTimeout: null,
 
     check_status: false,
+    status_name: 'sending',
     detailed_response: "",
     answer: null,
     /* DATA_BY_TYPES */
@@ -315,10 +330,29 @@ export default {
   },
   computed: {
     status_question() {
-      return new Answers().create_status('warning')
+      let auth_block
+      let index = this.$store.state.ArticleModule.components_after_request.findIndex(i => {
+        return i.component.name === 'auth'
+      })
+      if (index !== -1) auth_block = this.$store.state.ArticleModule.components_after_request[index].index
+
+      return new Answers().create_status(this.status_name, auth_block)
     },
   },
   methods: {
+    changeAnswer() {
+      this.check_status = true
+      this.status_name = 'sending'
+      setTimeout(() => {
+        this.status_name = 'warning'
+        /*setTimeout(() => {
+          this.status_name = 'success'
+          setTimeout(() => {
+            this.status_name = 'error'
+          }, 2000)
+        }, 2000)*/
+      }, 2000)
+    },
     deleteQuestion() {
       const elem = document.getElementById(`component_wrapper-${this.index_component}`)
       elem.remove()
