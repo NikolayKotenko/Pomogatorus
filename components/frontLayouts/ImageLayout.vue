@@ -1,6 +1,6 @@
 <template>
   <div class="image_wrapper" contenteditable="false" :id="`component_wrapper-${index_component}`">
-    <img class="inserted_image" :src="srcPath" :alt="altName">
+    <img class="inserted_image" :src="srcPath" :alt="altName" :title="titleName">
   </div>
 </template>
 
@@ -27,6 +27,9 @@ export default {
     altName() {
       return this.data_image?.name
     },
+    titleName() {
+      return this.data_image?.title
+    }
   },
   methods: {
     getData() {

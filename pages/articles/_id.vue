@@ -28,19 +28,20 @@
       </div>
     </div>
 
-    <v-btn
-      @click="sendData()"
-    >TEST</v-btn>
+<!--    <v-btn-->
+<!--      @click="sendData()"-->
+<!--    >TEST</v-btn>-->
 
-    <div class="article-template__content" v-html="refactored_content" v-if="!$store.state.refactoring_content">
-    </div>
-    <v-progress-circular
-      v-else
-      :size="50"
-      color="primary"
-      indeterminate
-      style="margin-top: 20px"
-    ></v-progress-circular>
+    <div class="article-template__content" v-html="refactored_content"></div>
+    <div class="hidden-mask" v-if="$store.state.ArticleModule.refactoring_content"></div>
+    <v-overlay :value="$store.state.ArticleModule.refactoring_content">
+      <v-progress-circular
+        :size="50"
+        color="primary"
+        indeterminate
+        style="margin-top: 20px"
+      ></v-progress-circular>
+    </v-overlay>
   </div>
 </template>
 
@@ -165,7 +166,8 @@ export default {
                   const full_url = document.getElementById(`component_wrapper-${elem.index}`).getElementsByClassName( 'inserted_image' )[0].src
                   let sub_url = full_url.split('.com')
                   const alt = document.getElementById(`component_wrapper-${elem.index}`).getElementsByClassName( 'inserted_image' )[0].alt
-                  data = Object.assign({}, {name: alt}, {full_path: sub_url[1]})
+                  const title = document.getElementById(`component_wrapper-${elem.index}`).getElementsByClassName( 'inserted_image' )[0].title
+                  data = Object.assign({}, {name: alt}, {full_path: sub_url[1]}, {title: title})
                   this.$store.commit('M_selectedComponent', {})
                   // return
                 } else data = elem.data
@@ -183,8 +185,8 @@ export default {
                 this.$store.commit('M_selectedComponent', {})
               })
             })
-            this.$store.commit('change_refactoring_content', false)
           })
+          this.$store.commit('change_refactoring_content', false)
 
           // SCROLL TO AUTH BLOCK IF WE COME FROM EMAIL MESSAGE
           setTimeout(() => {
@@ -260,6 +262,14 @@ export default {
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active до версии 2.1.8 */ {
   opacity: 0;
+}
+
+.hidden-mask {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  background: #FFFFFF;
 }
 
 .article-template {
