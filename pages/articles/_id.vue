@@ -192,7 +192,7 @@ export default {
           setTimeout(() => {
             if (this.$route.hash) {
               const elem = document.getElementById(this.$route.hash.split('#').pop())
-              const top = window.scrollY + elem.getBoundingClientRect().top;
+              const top = window.scrollY + elem.getBoundingClientRect().top + this.heightNav;
               window.scrollTo(0, top);
             }
           }, 200)
