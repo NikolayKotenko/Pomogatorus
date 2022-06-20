@@ -56,6 +56,8 @@
 </template>
 
 <script>
+import {mapGetters} from "vuex";
+
 import Logging from "@/services/logging";
 import Request from "../../services/request";
 import ArticleModule from "../../store/modules/article";
@@ -86,8 +88,11 @@ export default {
     this.getData()
   },
   computed : {
+    ...mapGetters([
+      'stateAuth',
+    ]),
     hasCookie() {
-      return Request.getAccessTokenInCookies()
+      return Request.getAccessTokenInCookies() && this.stateAuth
     }
   },
   methods: {
