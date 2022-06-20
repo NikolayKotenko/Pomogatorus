@@ -270,6 +270,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 import Answers from "../../services/answers/answers";
 
 export default {
@@ -315,6 +317,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'stateAuth',
+    ]),
     status_question() {
       let auth_block
       let index = this.$store.state.ArticleModule.components_after_request.findIndex(i => {
@@ -330,13 +335,27 @@ export default {
       this.check_status = true
       this.status_name = 'sending'
       setTimeout(() => {
-        this.status_name = 'warning'
-        setTimeout(() => {
-          this.status_name = 'success'
+        if (!this.stateAuth) {
+          this.status_name = 'warning'
+          this.$nextTick(() => {
+            /* Fix default scroll by hash on page */
+            document.querySelectorAll('#authAnchor').forEach((anchor) => {
+              const elem = document.getElementById(this.status_question?.anchor)
+              const top = window.scrollY + elem.getBoundingClientRect().top - this.heightNav - 54;
+              anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                window.scrollTo(0, top);
+              });
+            })
+          })
+        } else {
           setTimeout(() => {
-            this.status_name = 'error'
+            this.status_name = 'success'
+            // setTimeout(() => {
+            //   this.status_name = 'error'
+            // }, 2000)
           }, 2000)
-        }, 2000)
+        }
       }, 2000)
     },
     deleteQuestion() {

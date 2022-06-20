@@ -39,7 +39,7 @@ export default {
   },
   getters: {
     stateAuth(state){
-      return Object.keys(state.userData).length !== 0
+      return state.userData && Object.keys(state.userData).length !== 0
     },
     checkAdminPanel() {
       if (!process.env.VUE_APP_SERVER)
