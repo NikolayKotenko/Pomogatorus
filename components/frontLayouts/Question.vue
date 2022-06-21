@@ -341,10 +341,12 @@ export default {
             /* Fix default scroll by hash on page */
             document.querySelectorAll('#authAnchor').forEach((anchor) => {
               const elem = document.getElementById(this.status_question?.anchor)
-              const top = window.scrollY + elem.getBoundingClientRect().top - this.heightNav - 54;
+              const heightNav = 70
+              const headerTitle = 54
+              const top = window.scrollY + elem.getBoundingClientRect().top - heightNav - headerTitle;
               anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-                window.scrollTo(0, top);
+                window.scrollTo(0, top)
               });
             })
           })
