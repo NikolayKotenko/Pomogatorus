@@ -105,13 +105,25 @@ export default {
       if (this.valid === false)
         return false
 
-        const res = await this.$store.dispatch(
-          'createAndAuthUserByEmail', {
-            'email': this.email_user,
-            'id_dom_elem': index_component,
-            'full_url': window.location.href
-          })
+      // Пытаемся создать пользователя
+      const res = await this.$store.dispatch(
+        'createUserByEmail', {
+          'email': this.email_user,
+          'id_dom_elem': index_component,
+          'full_url': window.location.href
+        })
+      // Если такой еще не зарегестрирован придет - 200
+      if (res.codeResponse === 200) {
         this.alertCall(res);
+        return false;
+      }
+      // Такой пользователь уже есть в базе - авторизоваться
+      if (res.codeResponse === 409){
+        const res = await this.$store.dispatch('loginUser', {'email': this.email_user});
+        this.alertCall(res);
+        return false;
+      }
+      this.alertCall(res);
     },
 
     // inserted_components
