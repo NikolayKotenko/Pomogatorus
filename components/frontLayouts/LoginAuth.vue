@@ -92,7 +92,7 @@ export default {
       'stateAuth',
     ]),
     hasCookie() {
-      return Request.getAccessTokenInCookies() && this.stateAuth
+      return Request.getAccessTokenInCookies()
     }
   },
   methods: {
