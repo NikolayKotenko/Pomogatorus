@@ -37,6 +37,10 @@ export default {
         // return redirect('/login')
       }
 
+      if (Request.getAccessTokenInCookies() && (this.$route.query.agent)){
+        const wtf = Request.get(this.$store.state.BASE_URL+'/entity/articles', this.$route.query)
+      }
+
       this.$store.commit('change_refactoring_content', false)
     }
   }
