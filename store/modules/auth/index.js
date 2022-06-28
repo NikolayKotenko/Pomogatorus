@@ -32,6 +32,9 @@ export default {
 
       return tokensData
     },
+    async sendEmail({commit}, objData){
+      return await Request.post(this.state.BASE_URL+'/email/send', objData)
+    },
     async createUserByEmail(_, objData) {
       //Делаем запрос на создание пользователя, если такой есть то будет 409 конфликт ошибка ну и бог с ней
       return await Request.post(this.state.BASE_URL+'/users/create-from-only-email', objData)

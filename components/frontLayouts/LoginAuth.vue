@@ -118,7 +118,12 @@ export default {
           'full_url': window.location.href
       });
       if (res.codeResponse === 409) {
-        const res = await this.$store.dispatch('loginUser', {'email': this.email_user});
+        const res = await this.$store.dispatch('sendEmail',
+          {
+            'email': this.email_user,
+            'id_dom_elem': index_component,
+            'full_url': window.location.href
+          });
         this.alertCall(res);
         this.$nextTick(() => {
           this.hasCookie();
