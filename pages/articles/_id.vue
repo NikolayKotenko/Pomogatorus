@@ -211,9 +211,11 @@ export default {
       Vue.use(vuetify_class)
       const vuetify = new vuetify_class
       const store = this.$store
+      const router = this.$router
       const instance = new this.componentLayout({
         store,
         vuetify,
+        router,
       })
       const data = new this.Imported_component({index: this.$store.state.ArticleModule.countLayout, component: data_component})
       const params = Object.assign({}, {instance: instance}, {data: data})

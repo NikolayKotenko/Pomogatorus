@@ -10,6 +10,7 @@ const createStore = () => {
       BASE_URL: process.env.NODE_ENV === 'development' ? 'https://api-test.agregatorus.com' : 'https://api.agregatorus.com',
       show_header: false,
       breadcrumbs: [],
+      agent_utm: null,
     },
     getters: {
 
@@ -21,6 +22,9 @@ const createStore = () => {
       },
       change_show_header(state, value) {
         state.show_header = value
+      },
+      change_agent_utm(state, value) {
+        state.agent_utm = value
       },
     },
     actions: {

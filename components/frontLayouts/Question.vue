@@ -183,7 +183,7 @@
           dense
           hide-details
           placeholder="Введите ответ"
-          v-model="range_one"
+          v-model="answer"
           type="number"
           :class="{rangeError: rangeError}"
           :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
@@ -207,7 +207,7 @@
       <template v-else-if="question_data.id_type_answer == '7'">
         <span>Укажите число в диапозоне от {{ value_type_answer[0].answer }} и до {{ value_type_answer[1].answer }}</span>
         <v-range-slider
-          v-model="range_two"
+          v-model="answer"
           :max="max"
           :min="min"
           hide-details
@@ -218,24 +218,24 @@
         >
           <template v-slot:prepend>
             <v-text-field
-              :value="range_two[0]"
+              :value="answer[0]"
               class="mt-0 pt-0"
               hide-details
               single-line
               type="number"
               style="width: 60px"
-              @change="$set(range_two, 0, $event)"
+              @change="$set(answer, 0, $event)"
             ></v-text-field>
           </template>
           <template v-slot:append>
             <v-text-field
-              :value="range_two[1]"
+              :value="answer[1]"
               class="mt-0 pt-0"
               hide-details
               single-line
               type="number"
               style="width: 60px"
-              @change="$set(range_two, 1, $event)"
+              @change="$set(answer, 1, $event)"
             ></v-text-field>
           </template>
         </v-range-slider>
@@ -273,6 +273,7 @@
 import { mapGetters } from 'vuex'
 
 import Answers from "../../services/answers/answers";
+import AuthModule from "../../store/modules/auth";
 
 export default {
   name: "Question",
@@ -300,12 +301,14 @@ export default {
     this.getData()
   },
   watch: {
-    'range_one': {
+    'answer': {
       handler() {
-        if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
-        this.debounceTimeout = setTimeout(() => {
-          this.rangeError = ((parseInt(this.range_one) < parseInt(this.value_type_answer[0].answer)) || (parseInt(this.range_one) > parseInt(this.value_type_answer[1].answer)));
-        })
+        if (this.question_data.id_type_answer == '6') {
+          if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+          this.debounceTimeout = setTimeout(() => {
+            this.rangeError = ((parseInt(this.answer) < parseInt(this.value_type_answer[0].answer)) || (parseInt(this.answer) > parseInt(this.value_type_answer[1].answer)));
+          })
+        }
       },
     },
     'detailed_response': {
@@ -333,32 +336,58 @@ export default {
   methods: {
     changeAnswer() {
       this.check_status = true
-      this.status_name = 'sending'
-      setTimeout(() => {
-        if (!this.stateAuth) {
-          this.status_name = 'warning'
-          this.$nextTick(() => {
-            /* Fix default scroll by hash on page */
-            document.querySelectorAll('#authAnchor').forEach((anchor) => {
-              const elem = document.getElementById(this.status_question?.anchor)
-              const heightNav = 70
-              const headerTitle = 54
-              const top = window.scrollY + elem.getBoundingClientRect().top - heightNav - headerTitle;
-              anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                window.scrollTo(0, top)
-              });
-            })
+      if (!this.stateAuth) {
+        this.status_name = 'warning'
+        this.$nextTick(() => {
+          /* Fix default scroll by hash on page */
+          this.createAnchorToAuth()
+        })
+      } else {
+        this.status_name = 'sending'
+        this.$nextTick(() => {
+          Answers.send({
+            'id_type_answer': this.question_data.id_type_answer,
+            'id_question': this.question_data.id,
+            'id_user': this.$store.state.AuthModule.userData.user_data.id,
+            'id_agent_utm': this.$store.state.agent_utm,
+            'id_article': this.$route.params.id,
+            'value_answer': JSON.stringify(this.answer),
+            'detailed_response': this.detailed_response,
+            'attachment_files': '',
           })
-        } else {
-          setTimeout(() => {
-            this.status_name = 'success'
-            // setTimeout(() => {
-            //   this.status_name = 'error'
-            // }, 2000)
-          }, 2000)
+        })
+        // Request.get()
+      }
+      // setTimeout(() => {
+      //   if (!this.stateAuth) {
+      //     this.status_name = 'warning'
+      //     this.$nextTick(() => {
+      //       /* Fix default scroll by hash on page */
+      //       this.createAnchorToAuth()
+      //     })
+      //   } else {
+      //     setTimeout(() => {
+      //       this.status_name = 'success'
+      //       // setTimeout(() => {
+      //       //   this.status_name = 'error'
+      //       // }, 2000)
+      //     }, 2000)
+      //   }
+      // }, 2000)
+    },
+    createAnchorToAuth() {
+      document.querySelectorAll('#authAnchor').forEach((anchor) => {
+        const elem = document.getElementById(this.status_question?.anchor)
+        if (elem) {
+          const heightNav = 70
+          const headerTitle = 54
+          const top = window.scrollY + elem.getBoundingClientRect().top - heightNav - headerTitle;
+          anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            window.scrollTo(0, top)
+          });
         }
-      }, 2000)
+      })
     },
     deleteQuestion() {
       const elem = document.getElementById(`component_wrapper-${this.index_component}`)
@@ -367,26 +396,26 @@ export default {
     },
     rangeEdit(action) {
       if (action === 'plus') {
-        if (!this.range_one) {
+        if (!this.this.answer) {
           this.$nextTick(() => {
-            this.range_one = 1
+            this.this.answer = 1
           })
         } else {
           this.$nextTick(() => {
-            this.range_one = parseInt(this.range_one)+1
+            this.this.answer = parseInt(this.this.answer)+1
           })
         }
       } else {
-        if (!this.range_one) {
+        if (!this.this.answer) {
           this.$nextTick(() => {
-            this.range_one = 0
+            this.this.answer = 0
           })
-        } else if (parseInt(this.range_one) > 0) {
+        } else if (parseInt(this.this.answer) > 0) {
           this.$nextTick(() => {
-            this.range_one = parseInt(this.range_one)-1
+            this.this.answer = parseInt(this.this.answer)-1
           })
         } else this.$nextTick(() => {
-          this.range_one = 0
+          this.this.answer = 0
         })
       }
     },
@@ -412,9 +441,9 @@ export default {
         if (this.value_type_answer.length) {
           this.min = this.value_type_answer[0].answer
           this.max = this.value_type_answer[1].answer
-          this.range_two = []
-          this.range_two.push(this.min)
-          this.range_two.push(this.max)
+          this.answer = []
+          this.answer.push(this.min)
+          this.answer.push(this.max)
         }
       } else if (this.question_data['id_type_answer'] !== 1 && this.question_data['id_type_answer'] !== 2) {
         let parsed = null
