@@ -3,7 +3,7 @@
     <v-form v-model="valid" class="login"
             @submit.prevent="localLoginCreateUser(`component_wrapper-${index_component}`)"
             contenteditable="false"
-            v-if="!hasCookie"
+            v-if="stateAuthBlock"
     >
       <v-container>
         <v-row>
@@ -82,25 +82,30 @@ export default {
       width: 0,
       height: 0,
       index_component: null,
+      stateAuthBlock: true,
     }
   },
   mounted() {
     this.getData()
+    this.hasCookie()
   },
   computed : {
     ...mapGetters([
       'stateAuth',
     ]),
-    hasCookie() {
-      return Request.getAccessTokenInCookies()
-    }
   },
   methods: {
+    hasCookie() {
+      if (Request.getAccessTokenInCookies()){
+        this.stateAuthBlock = false;
+      }
+    },
     alertCall(response){
       this.alert.state = true
       this.alert.message = Logging.getMessage(response)
       this.alert.type = Logging.checkExistErr(response) ? 'error' : Request.getAccessTokenInCookies() ? 'success' : 'warning'
     },
+
     async localLoginCreateUser(index_component){
       if (this.valid === false)
         return false
@@ -111,19 +116,25 @@ export default {
           'email': this.email_user,
           'id_dom_elem': index_component,
           'full_url': window.location.href
-        })
-      // Если такой еще не зарегестрирован придет - 200
-      if (res.codeResponse === 200) {
+      });
+      if (res.codeResponse === 409) {
+        const res = await this.$store.dispatch('sendEmail',
+          {
+            'email': this.email_user,
+            'id_dom_elem': index_component,
+            'full_url': window.location.href
+          });
         this.alertCall(res);
-        return false;
+        this.$nextTick(() => {
+          this.hasCookie();
+        })
+      }
+      else{
+        this.alertCall(res);
       }
       // Такой пользователь уже есть в базе - авторизоваться
-      if (res.codeResponse === 409){
-        const res = await this.$store.dispatch('loginUser', {'email': this.email_user});
-        this.alertCall(res);
-        return false;
-      }
-      this.alertCall(res);
+      // Если такой еще не зарегестрирован придет - 200
+
     },
 
     // inserted_components
