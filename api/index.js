@@ -3,6 +3,7 @@
   const axios = require('axios');
   // const urlencodedParser = express.urlencoded({extended: false});  // создаем парсер для данных application/x-www-form-urlencoded
   app.use(express.json());
+  const BASE_URL = process.env.production ? 'https://api.agregatorus.com' : 'https://api-test.agregatorus.com'
 
   cookieParser = require('cookie-parser')
   app.use(cookieParser())
@@ -20,7 +21,7 @@
 
     if(!request.body) return response.status(400).send({message: 'Пустой request.body', codeResponse: 400 });
 
-    axios.post('https://api.agregatorus.com/auth/login', request.body)
+    axios.post(BASE_URL+'/auth/login', request.body)
       .then((res) => {
         // console.log(res.config);
 
@@ -70,7 +71,7 @@
       headers: {Cookie: request.headers.cookie},
       withCredentials: true
     }
-    axios.post('https://api.agregatorus.com/auth/refresh', false, config)
+    axios.post(BASE_URL+'/auth/refresh', false, config)
       .then((res) => {
         console.log('res.headers', res.headers);
 

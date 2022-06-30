@@ -1,6 +1,6 @@
 import Logging from "@/services/logging";
 // import Vue from "vue";
-// import auth from "@/middleware/auth.js"
+// import auth from "@/middleware/redirectArticles.js"
 // import cookies from 'cookie-universal-nuxt'
 
 /**
@@ -33,8 +33,8 @@ export default class Request {
             options.body = JSON.stringify(params) // body data type must match "Content-Type" header
         }
 
-        console.log('options.body');
-        console.log(options.body);
+        // console.log('options.body');
+        // console.log(options.body);
 
         return await fetch(url, options)
             .then(response => response.json())
@@ -80,6 +80,6 @@ export default class Request {
   static getAccessTokenInCookies = (() => {
       // console.log('this.parseCookies()', this.parseCookies())
       const checkExist = this.parseCookies();
-      return (checkExist) ? checkExist?.accessToken : null
+      return (checkExist.hasOwnProperty('accessToken')) ? checkExist?.accessToken : null
   })
 }

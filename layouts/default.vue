@@ -26,19 +26,25 @@ export default {
     this.fuckinMiddleware();
   },
   methods:{
-    async fuckinMiddleware(){
-      if (this.$route.query.userEmail)
+    async fuckinMiddleware() {
+      if (this.$route.query.userEmail) {
         await this.$store.dispatch('loginUser', {'userEmail': this.$route.query.userEmail});
+        this.$store.commit('change_changedCookie', true)
+      } else {
+        if (Request.getAccessTokenInCookies() && (this.$route.query.agent)){
+          const wtf = Request.get(this.$store.state.BASE_URL+'/entity/articles', this.$route.query)
+        }
+        if (!Request.getAccessTokenInCookies()) {
+          const refreshResponse = await this.$store.dispatch('refreshTokens')
 
-      if (! Request.getAccessTokenInCookies()) {
-        const refreshResponse = await this.$store.dispatch('refreshTokens')
-        if (Logging.checkExistErr(refreshResponse))
-          console.log(refreshResponse.message)
-        // return redirect('/login')
-      }
+          if (Logging.checkExistErr(refreshResponse))
+            console.log(refreshResponse.message)
+          // return redirect('/login')
 
-      if (Request.getAccessTokenInCookies() && (this.$route.query.agent)){
-        const wtf = Request.get(this.$store.state.BASE_URL+'/entity/articles', this.$route.query)
+        } else {
+          const loginResponse = await Request.post(this.$store.state.BASE_URL+'/auth/validate-auth')
+          console.log(loginResponse)
+        }
       }
 
       this.$store.commit('change_refactoring_content', false)

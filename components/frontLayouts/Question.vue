@@ -253,6 +253,7 @@
         placeholder="Место для развернутого ответа"
         class="py-2"
         v-model="detailed_response"
+        @change="changeAnswer"
       ></v-text-field>
     </div>
 
@@ -344,8 +345,8 @@ export default {
         })
       } else {
         this.status_name = 'sending'
-        this.$nextTick(() => {
-          Answers.send({
+        this.$nextTick( async () => {
+          const result = await Answers.send({
             'id_type_answer': this.question_data.id_type_answer,
             'id_question': this.question_data.id,
             'id_user': this.$store.state.AuthModule.userData.user_data.id,
@@ -355,25 +356,13 @@ export default {
             'detailed_response': this.detailed_response,
             'attachment_files': '',
           })
+          if (result.codeResponse != '201') {
+            this.status_name = 'error'
+          } else {
+            this.status_name = 'success'
+          }
         })
-        // Request.get()
       }
-      // setTimeout(() => {
-      //   if (!this.stateAuth) {
-      //     this.status_name = 'warning'
-      //     this.$nextTick(() => {
-      //       /* Fix default scroll by hash on page */
-      //       this.createAnchorToAuth()
-      //     })
-      //   } else {
-      //     setTimeout(() => {
-      //       this.status_name = 'success'
-      //       // setTimeout(() => {
-      //       //   this.status_name = 'error'
-      //       // }, 2000)
-      //     }, 2000)
-      //   }
-      // }, 2000)
     },
     createAnchorToAuth() {
       document.querySelectorAll('#authAnchor').forEach((anchor) => {

@@ -87,16 +87,23 @@ export default {
   },
   mounted() {
     this.getData()
-    this.hasCookie()
   },
   computed : {
     ...mapGetters([
       'stateAuth',
     ]),
   },
+  watch: {
+    '$store.state.changedCookie': {
+      handler() {
+        this.hasCookie();
+      }
+    }
+  },
   methods: {
     hasCookie() {
-      if (Request.getAccessTokenInCookies()){
+      console.log(Request.getAccessTokenInCookies())
+      if (Request.getAccessTokenInCookies()) {
         this.stateAuthBlock = false;
       }
     },

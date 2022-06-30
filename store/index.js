@@ -11,6 +11,7 @@ const createStore = () => {
       show_header: false,
       breadcrumbs: [],
       agent_utm: null,
+      changedCookie: false,
     },
     getters: {
 
@@ -26,6 +27,9 @@ const createStore = () => {
       change_agent_utm(state, value) {
         state.agent_utm = value
       },
+      change_changedCookie(state, value) {
+        state.changedCookie = value
+      }
     },
     actions: {
       // nuxtServerInit({dispatch}) {
