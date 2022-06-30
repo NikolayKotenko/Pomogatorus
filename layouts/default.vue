@@ -42,7 +42,7 @@ export default {
           // return redirect('/login')
 
         } else {
-          const loginResponse = await Request.post(this.$store.state.BASE_URL+'/auth/validate-auth')
+          const loginResponse = await Request.post(window.location.origin+'/api/auth/validate-auth')
           console.log(loginResponse)
         }
       }

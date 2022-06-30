@@ -104,6 +104,28 @@
         response.send(err.response.data);
       });
   });
+  // GET DATA
+  app.post('/auth/validate-auth', function(request, response) {
+    console.log('request.cookies', request.cookies?.accessToken)
+
+    if(!request.cookies?.refreshToken || !request.cookies?.accessToken) return response.status(400).send({message: 'Пустая кука refreshToken или accessToken', codeResponse: 400 });
+
+    const config = {
+      headers: {Cookie: request.headers.cookie, Authorization: `Bearer ${request.cookies?.accessToken}`},
+      withCredentials: true
+    }
+
+    axios.post(BASE_URL+'/auth/validate-auth', false, config)
+      .then((res) => {
+        console.log('res.headers', res.headers);
+        response.send(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+        // response.sendStatus(400);
+        response.send(err);
+      });
+  });
 
   // Export express app
   module.exports = {
