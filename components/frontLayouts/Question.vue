@@ -257,6 +257,63 @@
       ></v-text-field>
     </div>
 
+    <div class="py-3 file_input">
+      <template v-if="answer || detailed_response">
+        <v-btn
+          color="primary"
+          rounded
+          dark
+          :loading="isSelecting"
+          :outlined="!!files.length"
+          @click="handleFileImport"
+        >
+          <v-icon>mdi-upload</v-icon>
+          {{ !!files.length ? 'Добавить еще' : 'Загрузить файл' }}
+        </v-btn>
+        <input
+          ref="uploader"
+          class="d-none"
+          type="file"
+          @change="onFileChanged"
+        >
+        <v-btn
+          v-if="files.length"
+          rounded
+          color="green lighten-1"
+          @click="uploadToServer"
+        >Загрузить файлы</v-btn>
+      </template>
+      <template v-else>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <div v-bind="attrs" v-on="on">
+              <v-btn
+                rounded
+                :loading="isSelecting"
+                disabled
+              >
+                <v-icon>mdi-upload</v-icon>
+                Добавить еще
+              </v-btn>
+            </div>
+          </template>
+          <span>Сначала необходимо выбрать вариант ответа!</span>
+        </v-tooltip>
+      </template>
+    </div>
+
+    <div v-if="files.length" class="files_chips">
+      <h5 class="files_chips__title">Добавленные файлы</h5>
+      <div class="files_chips__wrapper">
+        <div v-for="(file, index) in files" class="files_chips__wrapper__chip">
+          <v-chip  small :key="index" class="mr-1 text-truncate" @click:close="remove(index)" close>
+            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ file.name }}</span>
+          </v-chip>
+          <span class="files_chips__wrapper__chip__type">{{ file.name.split('.')[1] }}</span>
+        </div>
+      </div>
+    </div>
+
     <transition name="list">
       <div class="question_wrapper__content__alert" v-if="status_question.type !== 'sending' && check_status">
         <v-alert
@@ -291,12 +348,19 @@ export default {
     status_name: 'sending',
     detailed_response: "",
     answer: null,
+    id_answer: null,
+
     /* DATA_BY_TYPES */
     rangeError: false,
     range_one: null,
     min: 0,
     max: 0,
     range_two: [],
+
+    /* FILES */
+    files: [],
+    isSelecting: false,
+    selectedFile: null,
   }),
   mounted() {
     this.getData()
@@ -335,6 +399,46 @@ export default {
     },
   },
   methods: {
+    /* FILES UPLOAD */
+    remove(index) {
+      this.files.splice(index, 1)
+    },
+    handleFileImport() {
+      this.isSelecting = true;
+
+      // After obtaining the focus when closing the FilePicker, return the button state to normal
+      window.addEventListener('focus', () => {
+        this.isSelecting = false
+      }, { once: true });
+
+      // Trigger click on the FileInput
+      this.$refs.uploader.click();
+    },
+    onFileChanged(e) {
+      this.selectedFile = e.target.files;
+      this.files = [
+        ...this.selectedFile,
+        ...this.files
+      ]
+    },
+    uploadToServer() {
+      this.files.forEach(this.requestFunc)
+    },
+    async requestFunc(element) {
+      const formData = new FormData()
+      formData.append('file', element)
+      console.log(formData)
+
+
+      const result = await Answers.sendFile({
+        'id_answer': this.id_answer,
+        'uuid': Answers.create_UUID(),
+        'file': element,
+      })
+      console.log(result)
+    },
+
+    /* ANSWER LOGIC */
     changeAnswer() {
       this.check_status = true
       if (!this.stateAuth) {
@@ -360,6 +464,7 @@ export default {
             this.status_name = 'error'
           } else {
             this.status_name = 'success'
+            this.id_answer = result.data.id
           }
         })
       }
@@ -471,6 +576,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import "assets/styles/fileChips";
+
 .list-enter-active, .list-leave-active {
   transition: all .8s;
 }

@@ -1,12 +1,40 @@
-import axios from "axios";
 import createStore from "../../store";
-const _store = createStore()
-
 import Request from "../request";
+import axios from "axios";
+
+const _store = createStore()
 
 export default class Answers {
   static async send(params) {
     return await Request.post(`${_store.state.BASE_URL}/entity/answers`, params)
+  }
+
+  static async sendFile(params) {
+
+    const {id_answer, uuid, file} = params
+
+    let formData = new FormData()
+    formData.append('id_answer', id_answer)
+    formData.append('uuid', Answers.create_UUID())
+    formData.append('file', file)
+    return axios({
+      method: 'post',
+      url: `${_store.state.BASE_URL}/entity/files`,
+      data: formData,
+      headers: {
+        Authorization: '666777'
+      }
+    });
+    // return await Request.post(`${_store.state.BASE_URL}/entity/files`, params)
+  }
+
+  static create_UUID(){
+    let dt = new Date().getTime();
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      let r = (dt + Math.random() * 16) % 16 | 0;
+      dt = Math.floor(dt / 16);
+      return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
   }
 
   create_status(type, auth_block) {

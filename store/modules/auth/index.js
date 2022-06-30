@@ -25,8 +25,13 @@ export default {
       commit('set_user_data', tokensData.data)
       return tokensData
     },
+    async loginByToken({commit},) {
+      const tokensData = await Request.post(window.location.origin+'/api/auth/validate-auth')
+      commit('set_user_data', tokensData.data)
+      commit('change_changedCookie', true, { root: true })
+      return tokensData
+    },
     async loginUser({commit}, objData) {
-      console.log(objData)
       const tokensData = await Request.post(window.location.origin + '/api/auth/login', objData)
       commit('set_user_data', tokensData.data)
 
