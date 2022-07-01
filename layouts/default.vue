@@ -32,6 +32,7 @@ export default {
         this.$store.commit('change_changedCookie', true)
       } else {
         if (Request.getAccessTokenInCookies() && (this.$route.query.agent)){
+          this.$store.commit('change_agent_utm', this.$route.query.agent)
           const wtf = Request.get(this.$store.state.BASE_URL+'/entity/articles', this.$route.query)
         }
         if (!Request.getAccessTokenInCookies()) {
