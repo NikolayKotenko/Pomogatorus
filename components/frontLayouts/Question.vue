@@ -295,7 +295,7 @@
                 disabled
               >
                 <v-icon>mdi-upload</v-icon>
-                Добавить еще
+                Загрузить файл
               </v-btn>
             </div>
           </template>
@@ -471,21 +471,50 @@ export default {
       } else {
         this.status_name = 'sending'
         this.$nextTick( async () => {
-          const result = await Answers.send({
-            'id_type_answer': this.question_data.id_type_answer,
-            'id_question': this.question_data.id,
-            'id_user': this.$store.state.AuthModule.userData.user_data.id,
-            'id_agent_utm': this.$store.state.agent_utm,
-            'id_article': this.$route.params.id,
-            'value_answer': JSON.stringify(this.answer),
-            'detailed_response': this.detailed_response,
-            'attachment_files': '',
-          })
-          if (result.codeResponse != '201') {
-            this.status_name = 'error'
+          if (this.id_answer) {
+            try {
+              const result = await Answers.update({
+                'id_type_answer': this.question_data.id_type_answer,
+                'id_question': this.question_data.id,
+                'id_user': this.$store.state.AuthModule.userData.user_data.id,
+                'id_agent_utm': this.$store.state.agent_utm ? this.$store.state.agent_utm : '',
+                'id_article': this.$route.params.id,
+                'value_answer': JSON.stringify(this.answer),
+                'detailed_response': this.detailed_response,
+                'attachment_files': '',
+              }, this.id_answer)
+              if (result.codeResponse != '202') {
+                this.status_name = 'error'
+              } else {
+                this.status_name = 'success'
+                this.id_answer = result.data.id
+              }
+            } catch(e) {
+              this.status_name = 'error'
+              console.log(e)
+            }
           } else {
-            this.status_name = 'success'
-            this.id_answer = result.data.id
+            try {
+              const result = await Answers.create({
+                'id_type_answer': this.question_data.id_type_answer,
+                'id_question': this.question_data.id,
+                'id_user': this.$store.state.AuthModule.userData.user_data.id,
+                'id_agent_utm': this.$store.state.agent_utm,
+                'id_article': this.$route.params.id,
+                'value_answer': JSON.stringify(this.answer),
+                'detailed_response': this.detailed_response,
+                'attachment_files': '',
+              })
+              if (result.codeResponse != '201') {
+                this.status_name = 'error'
+              } else {
+                this.status_name = 'success'
+                this.id_answer = result.data.id
+              }
+            } catch(e) {
+              this.status_name = 'error'
+              console.log(e)
+            }
           }
         })
       }

@@ -46,8 +46,11 @@ export default class Request {
             if (params !== null) {
                 url += '?' + (new URLSearchParams(params)).toString();
             }
-        }
-        else {
+        } else if ( 'PUT' === method ) {
+            if (params !== null) {
+              url += '?' + (new URLSearchParams(params)).toString();
+            }
+        } else {
           if (formData) {
             console.log('test')
             console.log(Request.bodyFormData(params))
@@ -56,6 +59,7 @@ export default class Request {
             options.body = JSON.stringify(params) // body data type must match "Content-Type" header
           }
         }
+
 
         // console.log('options.body');
         // console.log(options.body);
@@ -74,6 +78,9 @@ export default class Request {
     }
     static async post ( url, params, formData ) {
         return this.request( url, params, 'POST', formData );
+    }
+    static async put (url, params = null) {
+        return this.request(url, params, 'PUT')
     }
 
     static bodyFormData(paramBody) {

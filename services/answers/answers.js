@@ -5,12 +5,13 @@ import axios from "axios";
 const _store = createStore()
 
 export default class Answers {
-  static async send(params) {
+  static async create(params) {
     return await Request.post(`${_store.state.BASE_URL}/entity/answers`, params)
   }
-
+  static async update(params, id) {
+    return await Request.put(`${_store.state.BASE_URL}/entity/answers/${id}`, params)
+  }
   static async sendFile(params) {
-
     // const {id_answer, uuid, file} = params
     //
     // let formData = new FormData()
