@@ -11,21 +11,21 @@ export default class Answers {
 
   static async sendFile(params) {
 
-    const {id_answer, uuid, file} = params
-
-    let formData = new FormData()
-    formData.append('id_answer', id_answer)
-    formData.append('uuid', Answers.create_UUID())
-    formData.append('file', file)
-    return axios({
-      method: 'post',
-      url: `${_store.state.BASE_URL}/entity/files`,
-      data: formData,
-      headers: {
-        Authorization: '666777'
-      }
-    });
-    // return await Request.post(`${_store.state.BASE_URL}/entity/files`, params)
+    // const {id_answer, uuid, file} = params
+    //
+    // let formData = new FormData()
+    // formData.append('id_answer', id_answer)
+    // formData.append('uuid', uuid)
+    // formData.append('file', file)
+    // return axios({
+    //   method: 'post',
+    //   url: `${_store.state.BASE_URL}/entity/files`,
+    //   data: formData,
+    //   headers: {
+    //     Authorization: '666777'
+    //   }
+    // });
+    return await Request.post(`${_store.state.BASE_URL}/entity/files`, params, true)
   }
 
   static create_UUID(){

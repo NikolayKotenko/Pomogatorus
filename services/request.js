@@ -9,20 +9,38 @@ import Logging from "@/services/logging";
  */
 export default class Request {
 
-    static async request(url, params, method ) {
-        let options = {
-            method: method, // *GET, POST, PUT, DELETE, etc.
-            mode: 'cors', // no-cors, *cors, same-origin
-            cache: 'default', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'include', // include, *same-origin, omit
-            headers: {
-                Authorization: 'Bearer ' + this.getAccessTokenInCookies(),
-                'Content-Type': 'application/json',
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            // redirect: 'follow', // manual, *follow, error
-            // referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    static async request(url, params, method, formData) {
+
+      let options = {}
+
+      if (formData) {
+        options = {
+          method: method, // *GET, POST, PUT, DELETE, etc.
+          mode: 'cors', // no-cors, *cors, same-origin
+          cache: 'default', // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: 'include', // include, *same-origin, omit
+          headers: {
+            Authorization: 'Bearer ' + this.getAccessTokenInCookies(),
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          // redirect: 'follow', // manual, *follow, error
+          // referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
         }
+      } else {
+        options = {
+          method: method, // *GET, POST, PUT, DELETE, etc.
+          mode: 'cors', // no-cors, *cors, same-origin
+          cache: 'default', // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: 'include', // include, *same-origin, omit
+          headers: {
+            Authorization: 'Bearer ' + this.getAccessTokenInCookies(),
+            'Content-Type': 'application/json',
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          // redirect: 'follow', // manual, *follow, error
+          // referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        }
+      }
 
         if ( 'GET' === method ) {
             if (params !== null) {
@@ -30,7 +48,13 @@ export default class Request {
             }
         }
         else {
+          if (formData) {
+            console.log('test')
+            console.log(Request.bodyFormData(params))
+            options.body = Request.bodyFormData(params) // for formData e.g Files to server
+          } else {
             options.body = JSON.stringify(params) // body data type must match "Content-Type" header
+          }
         }
 
         // console.log('options.body');
@@ -48,11 +72,11 @@ export default class Request {
     static async get ( url, params = null ) {
         return this.request( url, params, 'GET' )
     }
-    static async post ( url, params ) {
-        return this.request( url, params, 'POST' );
+    static async post ( url, params, formData ) {
+        return this.request( url, params, 'POST', formData );
     }
 
-    static bodyFromData(paramBody) {
+    static bodyFormData(paramBody) {
         let bodyFormData = new FormData()
 
         for (const [key, value] of Object.entries(paramBody)) {

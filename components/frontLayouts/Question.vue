@@ -281,6 +281,8 @@
           rounded
           color="green lighten-1"
           @click="uploadToServer"
+          :disabled="(!!uploadedFiles.length && statusFile) || status_name === 'sending'"
+          :loading="status_name === 'sending'"
         >Загрузить файлы</v-btn>
       </template>
       <template v-else>
@@ -331,7 +333,7 @@
 import { mapGetters } from 'vuex'
 
 import Answers from "../../services/answers/answers";
-import AuthModule from "../../store/modules/auth";
+import CompareArrays from "../../utils/compareArrays";
 
 export default {
   name: "Question",
@@ -361,6 +363,7 @@ export default {
     files: [],
     isSelecting: false,
     selectedFile: null,
+    uploadedFiles: [],
   }),
   mounted() {
     this.getData()
@@ -397,6 +400,9 @@ export default {
 
       return new Answers().create_status(this.status_name, auth_block)
     },
+    statusFile() {
+      return CompareArrays(this.files, this.uploadedFiles)
+    },
   },
   methods: {
     /* FILES UPLOAD */
@@ -422,20 +428,35 @@ export default {
       ]
     },
     uploadToServer() {
-      this.files.forEach(this.requestFunc)
+      this.status_name = 'sending'
+      const promises = []
+      this.files.forEach(elem => {
+        promises.push(this.requestFunc(elem))
+      })
+      Promise.all(promises)
+        .then(values => {
+          console.log(values)
+          if (values.some(elem => {
+            return elem.codeResponse != '201'
+          })) {
+            this.status_name = 'error'
+          } else {
+            this.uploadedFiles = [...this.files]
+            this.status_name = 'success'
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+          this.status_name = 'error'
+        })
     },
     async requestFunc(element) {
-      const formData = new FormData()
-      formData.append('file', element)
-      console.log(formData)
-
-
-      const result = await Answers.sendFile({
+      return Answers.sendFile({
         'id_answer': this.id_answer,
         'uuid': Answers.create_UUID(),
         'file': element,
-      })
-      console.log(result)
+      });
+
     },
 
     /* ANSWER LOGIC */
