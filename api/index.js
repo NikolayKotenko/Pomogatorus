@@ -3,7 +3,7 @@
   const axios = require('axios');
   // const urlencodedParser = express.urlencoded({extended: false});  // создаем парсер для данных application/x-www-form-urlencoded
   app.use(express.json());
-  const BASE_URL = process.env.production ? 'https://api.agregatorus.com' : 'https://api-test.agregatorus.com'
+  const PORT = 3000
 
   cookieParser = require('cookie-parser')
   app.use(cookieParser())
@@ -21,7 +21,7 @@
 
     if(!request.body) return response.status(400).send({message: 'Пустой request.body', codeResponse: 400 });
 
-    axios.post(BASE_URL+'/auth/login', request.body)
+    axios.post(getUrl(request, response)+'/auth/login', request.body)
       .then((res) => {
         // console.log(res.config);
 
@@ -71,7 +71,7 @@
       headers: {Cookie: request.headers.cookie},
       withCredentials: true
     }
-    axios.post(BASE_URL+'/auth/refresh', false, config)
+    axios.post(getUrl(request, response)+'/auth/refresh', false, config)
       .then((res) => {
         console.log('res.headers', res.headers);
 
@@ -115,7 +115,7 @@
       withCredentials: true
     }
 
-    axios.post(BASE_URL+'/auth/validate-auth', false, config)
+    axios.post(getUrl(request, response)+'/auth/validate-auth', false, config)
       .then((res) => {
         console.log('res.headers', res.headers);
         response.send(res.data);
@@ -133,8 +133,17 @@
     handler: app
   }
 
-  app.listen(3000, ()=>console.log("Сервер запущен..."));
+  app.listen(PORT, ()=>console.log("Сервер запущен..."));
 
+
+  function getUrl(req, res) {
+    const protocol = req.protocol;
+    const host = req.hostname;
+    const url = req.originalUrl;
+    const port = process.env.PORT || PORT;
+    const fullUrl = `${protocol}://${host}:${port}${url}`
+    return (fullUrl.includes('pomogatorus')) ? 'https://api.agregatorus.com' : 'https://api-test.agregatorus.com';
+  }
 
   function parseCookies (cookieHeader) {
     const list = {};
