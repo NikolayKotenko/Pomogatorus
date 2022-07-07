@@ -20,7 +20,6 @@ export default {
   async fetch() {
    await this.$store.dispatch('req_list_articles')
   },
-  // fetchOnServer: false,
   created() {
     // if (process.server) {
     //   console.log('server')

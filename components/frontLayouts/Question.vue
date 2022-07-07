@@ -112,8 +112,8 @@
         >
           <template slot="label">
             <div style="display: flex; column-gap: 20px">
-              <span>
-                {{item.answer}}
+              <span v-html="item.answer" @click.stop>
+<!--                {{}}-->
               </span>
               <div v-if="item.commentary">
                 <v-tooltip bottom>
