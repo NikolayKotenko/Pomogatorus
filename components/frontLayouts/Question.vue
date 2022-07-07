@@ -76,9 +76,7 @@
           >
             <template slot="label">
               <div style="display: flex; column-gap: 20px; align-items: center">
-              <span>
-                {{item.answer}}
-              </span>
+              <span v-html="item.answer" @click.stop></span>
                 <div v-if="item.commentary">
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
@@ -112,9 +110,7 @@
         >
           <template slot="label">
             <div style="display: flex; column-gap: 20px">
-              <span v-html="item.answer" @click.stop>
-<!--                {{}}-->
-              </span>
+              <span v-html="item.answer" @click.stop></span>
               <div v-if="item.commentary">
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
@@ -153,7 +149,7 @@
               <v-list-item-content>
                 <v-list-item-title>
                   <v-row no-gutters align="center">
-                    <span>{{ item.answer }}</span>
+                    <span v-html="item.answer" @click.stop></span>
                     <v-spacer></v-spacer>
                     <div v-if="item.commentary">
                       <v-tooltip bottom>
@@ -253,11 +249,11 @@
         placeholder="Место для развернутого ответа"
         class="py-2"
         v-model="detailed_response"
-        @change="changeAnswer"
+        @change="changeAnswer()"
       ></v-text-field>
     </div>
 
-    <div class="py-3 file_input">
+    <div class="py-3 file_input" v-if="question_data.state_attachment_response">
       <template v-if="answer || detailed_response">
         <v-btn
           color="primary"
@@ -266,6 +262,7 @@
           :loading="isSelecting"
           :outlined="!!files.length"
           @click="handleFileImport"
+          :disabled="!stateAuth"
         >
           <v-icon>mdi-upload</v-icon>
           {{ !!files.length ? 'Добавить еще' : 'Загрузить файл' }}
@@ -385,7 +382,12 @@ export default {
           this.answer = null
         }
       },
-    }
+    },
+    '$store.state.changedCookie': {
+      handler() {
+        this.changeAnswer();
+      }
+    },
   },
   computed: {
     ...mapGetters([
@@ -456,7 +458,6 @@ export default {
         'uuid': Answers.create_UUID(),
         'file': element,
       });
-
     },
 
     /* ANSWER LOGIC */
@@ -540,28 +541,29 @@ export default {
     },
     rangeEdit(action) {
       if (action === 'plus') {
-        if (!this.this.answer) {
+        if (!this.answer) {
           this.$nextTick(() => {
-            this.this.answer = 1
+            this.answer = 1
           })
         } else {
           this.$nextTick(() => {
-            this.this.answer = parseInt(this.this.answer)+1
+            this.answer = parseInt(this.answer)+1
           })
         }
       } else {
-        if (!this.this.answer) {
+        if (!this.answer) {
           this.$nextTick(() => {
-            this.this.answer = 0
+            this.answer = 0
           })
-        } else if (parseInt(this.this.answer) > 0) {
+        } else if (parseInt(this.answer) > 0) {
           this.$nextTick(() => {
-            this.this.answer = parseInt(this.this.answer)-1
+            this.answer = parseInt(this.answer)-1
           })
         } else this.$nextTick(() => {
-          this.this.answer = 0
+          this.answer = 0
         })
       }
+      this.changeAnswer()
     },
     getData() {
       if (Object.keys(this.$store.state.ArticleModule.selectedComponent).length) {
