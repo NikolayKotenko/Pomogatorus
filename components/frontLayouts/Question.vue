@@ -75,8 +75,8 @@
             @change="changeAnswer()"
           >
             <template slot="label">
-              <div style="display: flex; column-gap: 20px; align-items: center">
-              <span v-html="item.answer" @click.stop></span>
+              <div style="display: flex; column-gap: 20px; align-items: flex-start">
+                <span v-html="item.answer" @click.stop></span>
                 <div v-if="item.commentary">
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
@@ -151,7 +151,7 @@
                   <v-row no-gutters align="center">
                     <span v-html="item.answer" @click.stop></span>
                     <v-spacer></v-spacer>
-                    <div v-if="item.commentary">
+                    <div class="helper_wrapper" v-if="item.commentary">
                       <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
                           <img
