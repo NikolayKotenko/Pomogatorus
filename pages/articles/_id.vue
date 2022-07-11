@@ -95,15 +95,28 @@ export default {
     if (process.client) {
       window.addEventListener('scroll', this.scrollWindow)
     }
-    // if (!this.$store.state.ArticleModule.refactoring_content) {
-      this.initializeContent()
-    // }
+    this.initializeContent().then(() => {
+      setTimeout(() => {
+        this.changeIndexQuestion()
+        this.$store.commit('change_refactoring_content', false)
+      })
+      // SCROLL TO AUTH BLOCK IF WE COME FROM EMAIL MESSAGE
+      setTimeout(() => {
+        if (this.$route.hash) {
+          const elem = document.getElementById(this.$route.hash.split('#').pop())
+          const top = window.scrollY + elem.getBoundingClientRect().top - this.heightNav - 54;
+          window.scrollTo(0, top);
+        }
+      }, 200)
+    })
   },
   watch: {
     '$store.state.refactoring_content': {
       handler(v) {
         if (!v) {
-          this.initializeContent()
+          this.initializeContent().then(() => {
+            this.$store.commit('change_refactoring_content', false)
+          })
         }
       }
     }
@@ -133,74 +146,89 @@ export default {
         }
       }, 1000)
     },
-    initializeContent() {
-      if (JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components))).length) {
-        const arr_of_components = JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components)))
-        const promises = []
+    changeIndexQuestion() {
+      let questions = [...document.getElementsByClassName('question_wrapper')]
 
-        arr_of_components.forEach(elem => {
-          if (elem.component.name === 'questions') {
-            promises.push(this.$store.dispatch('getComponentsById', elem))
-          } else if (elem.component.name === 'image') {
-            promises.push(this.$store.dispatch('imageFromServer', elem))
-          } else if (elem.component.name === 'auth') {
-            promises.push(this.$store.dispatch('getAuth', elem))
-          }
+      this.$nextTick(() => {
+        let counter = 1
+
+        questions.forEach(elem => {
+          let tmpStr = elem.id.match("-(.*)")
+          let id = tmpStr[tmpStr.length-1]
+
+          let component = this.data_of_components.filter(elem => {
+            return (elem.data.component.name === 'question' || elem.data.component.name === 'questions')
+          }).filter(elem => {
+            return (elem.data.index == id)
+          })
+
+          const key_data = `index_${component[0].data.component.name}`
+          component[0].instance.$data[key_data] = counter
+
+          counter++
         })
+      })
+    },
+    initializeContent() {
+      return new Promise((resolve) => {
+        if (JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components))).length) {
+          const arr_of_components = JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components)))
+          const promises = []
 
-        Promise.all(promises).finally(() => {
-          const arr = []
-          this.$store.state.ArticleModule.components_after_request.forEach(elem => {
-            arr.push(elem)
-          })
-          arr.sort((a,b) => {
-            return a.index - b.index
+          arr_of_components.forEach(elem => {
+            if (elem.component.name === 'questions') {
+              promises.push(this.$store.dispatch('getComponentsById', elem))
+            } else if (elem.component.name === 'image') {
+              promises.push(this.$store.dispatch('imageFromServer', elem))
+            } else if (elem.component.name === 'auth') {
+              promises.push(this.$store.dispatch('getAuth', elem))
+            }
           })
 
-          this.$nextTick(() => {
-            arr.forEach((elem) => {
-              setTimeout(() => {
-                this.checkTypeComponent(elem)
-                let data = {}
-                if (elem.component.name === 'image') {
-                  const full_url = document.getElementById(`component_wrapper-${elem.index}`).getElementsByClassName( 'inserted_image' )[0].src
-                  let sub_url = full_url.split('.com')
-                  const alt = document.getElementById(`component_wrapper-${elem.index}`).getElementsByClassName( 'inserted_image' )[0].alt
-                  const title = document.getElementById(`component_wrapper-${elem.index}`).getElementsByClassName( 'inserted_image' )[0].title
-                  data = Object.assign({}, {name: alt}, {full_path: sub_url[1]}, {title: title})
+          Promise.all(promises).finally(() => {
+            const arr = []
+            this.$store.state.ArticleModule.components_after_request.forEach(elem => {
+              arr.push(elem)
+            })
+            arr.sort((a,b) => {
+              return a.index - b.index
+            })
+
+            this.$nextTick(() => {
+              arr.forEach((elem) => {
+                setTimeout(() => {
+                  this.checkTypeComponent(elem)
+                  let data = {}
+                  if (elem.component.name === 'image') {
+                    const full_url = document.getElementById(`component_wrapper-${elem.index}`).getElementsByClassName( 'inserted_image' )[0].src
+                    let sub_url = full_url.split('.com')
+                    const alt = document.getElementById(`component_wrapper-${elem.index}`).getElementsByClassName( 'inserted_image' )[0].alt
+                    const title = document.getElementById(`component_wrapper-${elem.index}`).getElementsByClassName( 'inserted_image' )[0].title
+                    data = Object.assign({}, {name: alt}, {full_path: sub_url[1]}, {title: title})
+                    this.$store.commit('M_selectedComponent', {})
+                    // return
+                  } else data = elem.data
+
+                  this.$store.commit('M_countLayout', elem.index)
+                  this.$store.commit('M_selectedComponent', data)
+                  const countLayout = this.$store.state.ArticleModule.countLayout
+                  let range = document.createRange();
+                  range.selectNode(document.getElementById(`component_wrapper-${elem.index}`));
+                  range.deleteContents()
+                  range.collapse(false);
+                  this.data_of_components.push(this.getStructureForInstance(elem.component))
+                  this.data_of_components[countLayout - 1].instance.$mount() // pass nothing
+                  range.insertNode(this.data_of_components[elem.index-1].instance.$el)
                   this.$store.commit('M_selectedComponent', {})
-                  // return
-                } else data = elem.data
-
-                this.$store.commit('M_countLayout', elem.index)
-                this.$store.commit('M_selectedComponent', data)
-                const countLayout = this.$store.state.ArticleModule.countLayout
-                let range = document.createRange();
-                range.selectNode(document.getElementById(`component_wrapper-${elem.index}`));
-                range.deleteContents()
-                range.collapse(false);
-                this.data_of_components.push(this.getStructureForInstance(elem.component))
-                this.data_of_components[countLayout - 1].instance.$mount() // pass nothing
-                range.insertNode(this.data_of_components[elem.index-1].instance.$el)
-                this.$store.commit('M_selectedComponent', {})
+                })
               })
             })
+            resolve()
           })
-          this.$store.commit('change_refactoring_content', false)
-
-          // SCROLL TO AUTH BLOCK IF WE COME FROM EMAIL MESSAGE
-          setTimeout(() => {
-            if (this.$route.hash) {
-              const elem = document.getElementById(this.$route.hash.split('#').pop())
-              const top = window.scrollY + elem.getBoundingClientRect().top - this.heightNav - 54;
-              window.scrollTo(0, top);
-            }
-          }, 200)
-        })
-      }
+        }
+      })
     },
     checkTypeComponent(elem) {
-      console.log(elem.component.name)
       this.params_of_component.name = elem.component.name
       if (elem.component.name === 'questions') {
         const name = Object.prototype.hasOwnProperty.call(elem.component, 'index_question') ? 'question' : elem.component.name

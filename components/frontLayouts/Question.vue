@@ -2,7 +2,7 @@
   <div class="question_wrapper question_hover" contenteditable="false" :id="`component_wrapper-${index_component}`">
     <div class="question_wrapper__content">
       <div class="question_wrapper__title">
-        <h3>{{ index_question }}. {{ question_data.name }}</h3>
+        <h3>{{ index_questions }}. {{ question_data.name }}</h3>
         <div class="helper_wrapper" v-if="question_data.title">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
@@ -254,7 +254,7 @@
     </div>
 
     <div class="py-3 file_input" v-if="question_data.state_attachment_response">
-      <template v-if="answer || detailed_response">
+      <template v-if="(answer || detailed_response) && !disableBtn">
         <v-btn
           color="primary"
           rounded
@@ -262,7 +262,6 @@
           :loading="isSelecting"
           :outlined="!!files.length"
           @click="handleFileImport"
-          :disabled="!stateAuth"
         >
           <v-icon>mdi-upload</v-icon>
           {{ !!files.length ? 'Добавить еще' : 'Загрузить файл' }}
@@ -296,7 +295,7 @@
               </v-btn>
             </div>
           </template>
-          <span>Сначала необходимо выбрать вариант ответа!</span>
+          <span>Сначала необходимо выбрать вариант ответа и авторизоваться!</span>
         </v-tooltip>
       </template>
     </div>
@@ -337,7 +336,7 @@ export default {
   data: () => ({
     question_data: {},
     index_component: null,
-    index_question: null,
+    index_questions: null,
     controls_height: 0,
     controls_width: 0,
     value_type_answer: [],
@@ -405,6 +404,9 @@ export default {
     statusFile() {
       return CompareArrays(this.files, this.uploadedFiles)
     },
+    disableBtn() {
+      return !this.stateAuth
+    }
   },
   methods: {
     /* FILES UPLOAD */
@@ -437,7 +439,6 @@ export default {
       })
       Promise.all(promises)
         .then(values => {
-          console.log(values)
           if (values.some(elem => {
             return elem.codeResponse != '201'
           })) {
@@ -567,7 +568,7 @@ export default {
     },
     getData() {
       if (Object.keys(this.$store.state.ArticleModule.selectedComponent).length) {
-        this.index_question = this.$store.state.ArticleModule.count_of_questions
+        this.index_questions = this.$store.state.ArticleModule.count_of_questions
         this.index_component = this.$store.state.ArticleModule.countLayout
         this.question_data = Object.assign({}, this.$store.state.ArticleModule.selectedComponent)
         this.getValue_type_answer()
@@ -667,7 +668,7 @@ export default {
     display: flex;
     column-gap: 15px;
     padding-bottom: 5px;
-    align-items: center;
+    align-items: flex-start;
   }
   &__divider {
     margin-top: 10px;
@@ -698,6 +699,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-top: 2px;
 }
 .helper_wrapper__help {
   opacity: 0;
