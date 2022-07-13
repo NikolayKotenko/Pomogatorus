@@ -4,6 +4,8 @@ import Vuex from 'vuex'
 import AuthModule from "./modules/auth"
 import ArticleModule from "./modules/article"
 
+import Request from "../services/request";
+
 const createStore = () => {
   return new Vuex.Store({
     state: {
@@ -29,6 +31,9 @@ const createStore = () => {
       },
       change_changedCookie(state, value) {
         state.changedCookie = value
+      },
+      change_listAgents(state, array) {
+        state.listAgents = array
       }
     },
     actions: {

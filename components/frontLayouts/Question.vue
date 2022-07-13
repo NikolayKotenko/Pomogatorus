@@ -73,6 +73,7 @@
             :value="item.answer"
             :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
             @change="changeAnswer()"
+            class="answerList"
           >
             <template slot="label">
               <div style="display: flex; column-gap: 20px; align-items: flex-start">
@@ -107,6 +108,7 @@
           v-model="answer"
           :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
           @change="changeAnswer()"
+          class="answerList"
         >
           <template slot="label">
             <div style="display: flex; column-gap: 20px">
@@ -145,7 +147,7 @@
           @change="changeAnswer()"
         >
           <template v-slot:item="{ active, item, attrs, on }">
-            <v-list-item v-on="on" v-bind="attrs">
+            <v-list-item v-on="on" v-bind="attrs" class="answerList">
               <v-list-item-content>
                 <v-list-item-title>
                   <v-row no-gutters align="center">
@@ -347,6 +349,7 @@ export default {
     detailed_response: "",
     answer: null,
     id_answer: null,
+    agentCode: "",
 
     /* DATA_BY_TYPES */
     rangeError: false,
@@ -406,9 +409,26 @@ export default {
     },
     disableBtn() {
       return !this.stateAuth
-    }
+    },
   },
   methods: {
+    /* AGENT PROP */
+    getHTML(e) {
+      let _this = this;
+      console.log(e)
+      e.addEventListener('click', function(){
+        _this.agentCode =  e.id;
+        console.log(e.id)
+      })
+    },
+    setFunction() {
+      let div = document.querySelectorAll('.answerList');
+      console.log(div)
+      div.forEach(elem => this.getHTML(elem));
+      /*let str = '<a href="dasdasdasd" class="" id="aquatechnik">';
+      str.split(/[id=]['|"]['|"]/);*/
+    },
+
     /* FILES UPLOAD */
     remove(index) {
       this.files.splice(index, 1)
@@ -574,6 +594,9 @@ export default {
         this.getValue_type_answer()
         this.getHeightOfControls()
         this.getWidthOfControls()
+        this.$nextTick(() => {
+          this.setFunction()
+        })
       }
     },
     getValue_type_answer() {

@@ -28,10 +28,6 @@
       </div>
     </div>
 
-<!--    <v-btn-->
-<!--      @click="sendData()"-->
-<!--    >TEST</v-btn>-->
-
     <div class="article-template__content" v-html="refactored_content"></div>
     <div class="hidden-mask" v-if="$store.state.ArticleModule.refactoring_content"></div>
     <v-overlay :value="$store.state.ArticleModule.refactoring_content">
@@ -64,9 +60,6 @@ export default {
     const options = {
       method: 'GET',
       url: `${store.state.BASE_URL}/entity/articles/${params.id}`,
-      headers: {
-        Authorization: '666777'
-      },
     }
     try {
       const article_request = await $axios(options)
@@ -133,9 +126,6 @@ export default {
     },
   },
   methods: {
-    sendData() {
-      Answers.send({id_type_answer: 1, id_question: 1, detailed_response: 'rtrsr', attachment_files: []})
-    },
     scrollWindow() {
       setTimeout(() => {
         if (this.$refs.nav) {

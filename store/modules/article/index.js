@@ -39,9 +39,6 @@ export default {
         const options = {
           method: 'GET',
           url: `${this.state.BASE_URL}/entity/articles`,
-          headers: {
-            Authorization: '666777'
-          },
         }
 
         const list = await this.$axios(options)
