@@ -144,6 +144,12 @@
           :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
           @change="changeAnswer()"
         >
+          <template v-slot:selection="data">
+            <span
+              v-bind="data.attrs"
+              v-html="data.item.answer"
+            ></span>
+          </template>
           <template v-slot:item="{ active, item, attrs, on }">
             <v-list-item v-on="on" v-bind="attrs">
               <v-list-item-content>
@@ -695,6 +701,7 @@ export default {
     &__question {
       flex: 1;
       transition: all 0.4s ease-in-out;
+      padding-bottom: 10px;
     }
     &__status {
     }
