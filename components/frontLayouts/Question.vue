@@ -77,7 +77,7 @@
             <template slot="label">
               <div style="display: flex; column-gap: 20px; align-items: flex-start">
                 <span v-html="item.answer" class="answerList" @click.stop @click="getIdElem($event)"></span>
-                <div v-if="item.commentary">
+                <div class="helper_wrapper" v-if="item.commentary">
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
                       <img
@@ -111,7 +111,7 @@
           <template slot="label">
             <div style="display: flex; column-gap: 20px">
               <span v-html="item.answer" class="answerList" @click.stop @click="getIdElem($event)"></span>
-              <div v-if="item.commentary">
+              <div class="helper_wrapper" v-if="item.commentary">
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
                     <img
@@ -420,7 +420,6 @@ export default {
     getIdElem(event) {
       if (event) {
         if (event.target.children.length) {
-          console.log('menyau')
           this.agentCode = event.target.children[0].id
         } else this.agentCode = null
       }
@@ -647,6 +646,13 @@ export default {
 
 <style scoped lang="scss">
 @import "assets/styles/fileChips";
+@media only screen and (max-width: 600px) {
+  .file_input {
+    flex-direction: column !important;
+    row-gap: 7px !important;
+  }
+}
+
 
 .list-enter-active, .list-leave-active {
   transition: all .8s;
@@ -727,7 +733,12 @@ export default {
   width: 20px;
   height: 20px;
   margin-bottom: 3px;
-  padding-top: 2px;
+  //padding-top: 2px;
+}
+
+.file_input {
+  display: flex;
+  column-gap: 10px;
 }
 
 .v-input--selection-controls {
