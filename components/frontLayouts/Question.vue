@@ -73,11 +73,10 @@
             :value="item.answer"
             :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
             @change="changeAnswer()"
-            class="answerList"
           >
             <template slot="label">
               <div style="display: flex; column-gap: 20px; align-items: flex-start">
-                <span v-html="item.answer" @click.stop></span>
+                <span v-html="item.answer" class="answerList" @click.stop @click="getIdElem($event)"></span>
                 <div v-if="item.commentary">
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
@@ -108,11 +107,10 @@
           v-model="answer"
           :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
           @change="changeAnswer()"
-          class="answerList"
         >
           <template slot="label">
             <div style="display: flex; column-gap: 20px">
-              <span v-html="item.answer" @click.stop></span>
+              <span v-html="item.answer" class="answerList" @click.stop @click="getIdElem($event)"></span>
               <div v-if="item.commentary">
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
@@ -147,11 +145,11 @@
           @change="changeAnswer()"
         >
           <template v-slot:item="{ active, item, attrs, on }">
-            <v-list-item v-on="on" v-bind="attrs" class="answerList">
+            <v-list-item v-on="on" v-bind="attrs">
               <v-list-item-content>
                 <v-list-item-title>
                   <v-row no-gutters align="center">
-                    <span v-html="item.answer" @click.stop></span>
+                    <span v-html="item.answer" class="answerList" @click.stop @click="getIdElem($event)"></span>
                     <v-spacer></v-spacer>
                     <div class="helper_wrapper" v-if="item.commentary">
                       <v-tooltip bottom>
@@ -349,7 +347,7 @@ export default {
     detailed_response: "",
     answer: null,
     id_answer: null,
-    agentCode: "",
+    agentCode: null,
 
     /* DATA_BY_TYPES */
     rangeError: false,
@@ -387,7 +385,7 @@ export default {
     },
     '$store.state.changedCookie': {
       handler() {
-        this.changeAnswer();
+        // this.changeAnswer();
       }
     },
   },
@@ -413,20 +411,13 @@ export default {
   },
   methods: {
     /* AGENT PROP */
-    getHTML(e) {
-      let _this = this;
-      console.log(e)
-      e.addEventListener('click', function(){
-        _this.agentCode =  e.id;
-        console.log(e.id)
-      })
-    },
-    setFunction() {
-      let div = document.querySelectorAll('.answerList');
-      console.log(div)
-      div.forEach(elem => this.getHTML(elem));
-      /*let str = '<a href="dasdasdasd" class="" id="aquatechnik">';
-      str.split(/[id=]['|"]['|"]/);*/
+    getIdElem(event) {
+      if (event) {
+        if (event.target.children.length) {
+          console.log('menyau')
+          this.agentCode = event.target.children[0].id
+        } else this.agentCode = null
+      }
     },
 
     /* FILES UPLOAD */
@@ -499,7 +490,7 @@ export default {
                 'id_type_answer': this.question_data.id_type_answer,
                 'id_question': this.question_data.id,
                 'id_user': this.$store.state.AuthModule.userData.user_data.id,
-                'id_agent_utm': this.$store.state.agent_utm ? this.$store.state.agent_utm : '',
+                'id_agent_utm': this.agentCode,
                 'id_article': this.$route.params.id,
                 'value_answer': JSON.stringify(this.answer),
                 'detailed_response': this.detailed_response,
@@ -521,7 +512,7 @@ export default {
                 'id_type_answer': this.question_data.id_type_answer,
                 'id_question': this.question_data.id,
                 'id_user': this.$store.state.AuthModule.userData.user_data.id,
-                'id_agent_utm': this.$store.state.agent_utm,
+                'id_agent_utm': this.agentCode,
                 'id_article': this.$route.params.id,
                 'value_answer': JSON.stringify(this.answer),
                 'detailed_response': this.detailed_response,
@@ -594,9 +585,6 @@ export default {
         this.getValue_type_answer()
         this.getHeightOfControls()
         this.getWidthOfControls()
-        this.$nextTick(() => {
-          this.setFunction()
-        })
       }
     },
     getValue_type_answer() {
