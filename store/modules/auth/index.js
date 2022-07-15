@@ -23,6 +23,7 @@ export default {
     async refreshTokens({commit}){
       const tokensData = await Request.post(window.location.origin + '/api/auth/refresh')
       commit('set_user_data', tokensData.data)
+      commit('change_changedCookie', true, { root: true })
       return tokensData
     },
     async loginByToken({commit},) {
@@ -34,7 +35,7 @@ export default {
     async loginUser({commit}, objData) {
       const tokensData = await Request.post(window.location.origin + '/api/auth/login', objData)
       commit('set_user_data', tokensData.data)
-
+      commit('change_changedCookie', true, { root: true })
       return tokensData
     },
     async sendEmail({commit}, objData){

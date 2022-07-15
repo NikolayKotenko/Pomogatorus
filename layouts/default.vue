@@ -29,7 +29,6 @@ export default {
     async fuckinMiddleware() {
       if (this.$route.query.userEmail) {
         await this.$store.dispatch('loginUser', {'userEmail': this.$route.query.userEmail});
-        this.$store.commit('change_changedCookie', true)
       } else {
         if (Request.getAccessTokenInCookies() && (this.$route.query.agent)){
           this.$store.commit('change_agent_utm', this.$route.query.agent)
