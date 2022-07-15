@@ -73,11 +73,12 @@
             :value="item.answer"
             :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
             @change="changeAnswer()"
+            @click="getIdElem($event)"
           >
             <template slot="label">
               <div style="display: flex; column-gap: 20px; align-items: flex-start">
-                <span v-html="item.answer" class="answerList" @click.stop @click="getIdElem($event)"></span>
-                <div class="helper_wrapper" v-if="item.commentary">
+                <span v-html="item.answer" class="answerList" @click.stop></span>
+                <div class="helper_wrapper" v-if="item.commentary" @click.stop>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
                       <img
@@ -107,11 +108,12 @@
           v-model="answer"
           :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
           @change="changeAnswer()"
+          @click="getIdElem($event)"
         >
           <template slot="label">
             <div style="display: flex; column-gap: 20px">
-              <span v-html="item.answer" class="answerList" @click.stop @click="getIdElem($event)"></span>
-              <div class="helper_wrapper" v-if="item.commentary">
+              <span v-html="item.answer" class="answerList" @click.stop></span>
+              <div class="helper_wrapper" v-if="item.commentary" @click.stop>
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
                     <img
@@ -151,13 +153,13 @@
             ></span>
           </template>
           <template v-slot:item="{ active, item, attrs, on }">
-            <v-list-item v-on="on" v-bind="attrs">
+            <v-list-item v-on="on" v-bind="attrs" @click="getIdElem($event)">
               <v-list-item-content>
                 <v-list-item-title>
                   <v-row no-gutters align="center">
-                    <span v-html="item.answer" class="answerList" @click.stop @click="getIdElem($event)"></span>
+                    <span v-html="item.answer" class="answerList" @click.stop></span>
                     <v-spacer></v-spacer>
-                    <div class="helper_wrapper" v-if="item.commentary">
+                    <div class="helper_wrapper" v-if="item.commentary" @click.stop>
                       <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
                           <img
@@ -418,11 +420,16 @@ export default {
   methods: {
     /* AGENT PROP */
     getIdElem(event) {
-      if (event) {
-        if (event.target.children.length) {
-          this.agentCode = event.target.children[0].id
+      let child = event.target.parentElement.parentElement.querySelectorAll(".answerList") ||
+      event.target.nextElementSibling;
+      if (child) {
+        if (Array.from(child).length === 1) {
+          if (Array.from(child)[0].children.length) {
+            console.log(Array.from(child)[0].children[0].id)
+            this.agentCode = Array.from(child)[0].children[0].id
+          } else this.agentCode = null
         } else this.agentCode = null
-      }
+      } else this.agentCode = null
     },
 
     /* FILES UPLOAD */
@@ -495,7 +502,7 @@ export default {
                 'id_type_answer': this.question_data.id_type_answer,
                 'id_question': this.question_data.id,
                 'id_user': this.$store.state.AuthModule.userData.user_data.id,
-                'id_agent_utm': this.agentCode,
+                'code_agent': this.agentCode,
                 'id_article': this.$route.params.id,
                 'value_answer': JSON.stringify(this.answer),
                 'detailed_response': this.detailed_response,
