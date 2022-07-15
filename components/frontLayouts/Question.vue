@@ -524,7 +524,7 @@ export default {
                 'id_type_answer': this.question_data.id_type_answer,
                 'id_question': this.question_data.id,
                 'id_user': this.$store.state.AuthModule.userData.user_data.id,
-                'id_agent_utm': this.agentCode,
+                'code_agent': this.agentCode,
                 'id_article': this.$route.params.id,
                 'value_answer': JSON.stringify(this.answer),
                 'detailed_response': this.detailed_response,
