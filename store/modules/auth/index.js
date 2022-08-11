@@ -45,6 +45,10 @@ export default {
       //Делаем запрос на создание пользователя, если такой есть то будет 409 конфликт ошибка ну и бог с ней
       return await Request.post(this.state.BASE_URL+'/users/create-from-only-email', objData)
     },
+    async createUserFromEmailAndPass(_, objData) {
+      //Делаем запрос на создание пользователя, если такой есть то будет 409 конфликт ошибка ну и бог с ней
+      return await Request.post(this.state.BASE_URL+'/users/create-from-full-credentials', objData)
+    },
   },
   getters: {
     stateAuth(state){
