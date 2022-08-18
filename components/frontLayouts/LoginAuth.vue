@@ -1,9 +1,11 @@
 <template>
   <div class="auth_container" contenteditable="false" :id="`component_wrapper-${index_component}`" v-if="stateAuthBlock">
       <v-container>
-        <v-tabs>
+        <v-tabs v-model="tab">
+          <v-tab :key="0" light>Авторизация</v-tab>
+          <v-tab :key="1">Регистрация</v-tab>
           <!--Авторизация-->
-          <v-tab-item>
+          <v-tab-item :key="0">
             <v-form v-model="valid" class="login"
                     @submit.prevent="localLoginUser(`component_wrapper-${index_component}`)"
                     contenteditable="false"
@@ -16,17 +18,21 @@
                 :rules="emailRules"
                 single-line
                 required
+                :class="'required'"
               ></v-text-field>
               <v-text-field
                 v-model="password"
                 :append-icon="passStateEye ? 'mdi-eye' : 'mdi-eye-off'"
                 :rules="passRules"
+                maxlength="4"
                 :type="passStateEye ? 'text' : 'password'"
                 name="password"
-                label="Введите пинкод"
-                hint="Не менее 4 символов"
+                label="Введите код доступа"
+                hint="4 символа"
                 counter
                 @click:append="passStateEye = !passStateEye"
+                required
+                :class="'required'"
               ></v-text-field>
               <v-btn type="submit"
                      color="blue darken-1"
@@ -41,19 +47,11 @@
             </v-form>
           </v-tab-item>
           <!--Регистрация-->
-          <v-tab-item>
+          <v-tab-item :key="1">
             <v-form v-model="valid" class="login"
                     @submit.prevent="localCreateUser(`component_wrapper-${index_component}`)"
                     contenteditable="false"
             >
-              <v-text-field
-                type="text"
-                name="name"
-                v-model="name"
-                label="Введите имя"
-                single-line
-                required
-              ></v-text-field>
               <v-text-field
                 type="email"
                 name="email"
@@ -62,17 +60,14 @@
                 :rules="emailRules"
                 single-line
                 required
+                :class="'required'"
               ></v-text-field>
               <v-text-field
-                v-model="password"
-                :append-icon="passStateEye ? 'mdi-eye' : 'mdi-eye-off'"
-                :rules="passRules"
-                :type="passStateEye ? 'text' : 'password'"
-                name="password"
-                label="Введите пинкод"
-                hint="Не менее 4 символов"
-                counter
-                @click:append="passStateEye = !passStateEye"
+                type="text"
+                name="name"
+                v-model="name"
+                label="Как к вам обращаться ?"
+                single-line
               ></v-text-field>
               <v-btn type="submit"
                      color="blue darken-0"
@@ -86,8 +81,6 @@
               </v-btn>
             </v-form>
           </v-tab-item>
-          <v-tab light>Авторизация</v-tab>
-          <v-tab>Регистрация</v-tab>
         </v-tabs>
       </v-container>
       <v-container>
@@ -107,7 +100,7 @@
     dismissible
     type="success"
   >
-    <span>Вы успешно авторизованы!</span>
+    <span>Здравствуйте {{$store.state.AuthModule.userData.user_data.first_name}}</span>
   </v-alert>
 </template>
 
@@ -122,6 +115,7 @@ export default {
   name: "LoginAuth",
   data(){
     return {
+      tab: 0,
       valid: false,
       emailRules: [
         v => !!v || 'Обязательное для заполнение поле',
@@ -129,7 +123,7 @@ export default {
       ],
       passRules: [
         v => !!v || 'Обязательное для заполнение поле',
-        v => v.length >= 4 || 'Необходимо минимум 4 символа',
+        v => v.length === 4 || 'Необходимо 4 символа',
       ],
       passStateEye: false,
       email_user: '',
@@ -200,32 +194,16 @@ export default {
 
       // Пытаемся создать пользователя
       const res = await this.$store.dispatch(
-        'createUserFromEmailAndPass', {
+        'createUserByEmail', {
           'email': this.email_user,
-          'password': this.password,
           'name': this.name,
           'id_dom_elem': index_component,
           'full_url': window.location.href
       });
-      if (res.codeResponse === 202) {
-        const res = await this.$store.dispatch('loginUser',
-          {
-            'email': this.email_user,
-            'password': this.password,
-            'id_dom_elem': index_component,
-            'full_url': window.location.href
-          });
-        this.alertCall(res);
-        this.$nextTick(() => {
-          this.hasCookie();
-        })
+      if (res.codeResponse === 200) {
+        this.tab = 0;
       }
-      else{
-        this.alertCall(res);
-      }
-      // Такой пользователь уже есть в базе - авторизоваться
-      // Если такой еще не зарегестрирован придет - 200
-
+      this.alertCall(res);
     },
 
     // inserted_components
@@ -263,6 +241,12 @@ form.login{
 </style>
 
 <style lang="scss">
+.auth_container {
+  .required .v-label::after {
+    content: " *";
+    color: red;
+  }
+}
 .v-tabs-items{
   margin-top: 10px!important;
   button{
