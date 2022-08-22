@@ -1,58 +1,107 @@
 <template>
-  <div class="auth_container" contenteditable="false" :id="`component_wrapper-${index_component}`">
-    <v-form v-model="valid" class="login"
-            @submit.prevent="localLoginCreateUser(`component_wrapper-${index_component}`)"
-            contenteditable="false"
-            v-if="stateAuthBlock"
-    >
+  <div class="auth_container" contenteditable="false" :id="`component_wrapper-${index_component}`" v-if="stateAuthBlock">
       <v-container>
-        <v-row>
-          <h1>Авторизация</h1>
-        </v-row>
+        <v-tabs v-model="tab">
+          <v-tab :key="0" light>Авторизация</v-tab>
+          <v-tab :key="1">Регистрация</v-tab>
+          <!--Авторизация-->
+          <v-tab-item :key="0">
+            <v-form v-model="valid" class="login"
+                    @submit.prevent="localLoginUser(`component_wrapper-${index_component}`)"
+                    contenteditable="false"
+            >
+              <v-text-field
+                type="email"
+                name="email"
+                v-model="email_user"
+                label="Введите почту"
+                :rules="emailRules"
+                single-line
+                required
+                :class="'required'"
+              ></v-text-field>
+              <v-text-field
+                v-model="password"
+                :append-icon="passStateEye ? 'mdi-eye' : 'mdi-eye-off'"
+                :rules="passRules"
+                maxlength="4"
+                :type="passStateEye ? 'text' : 'password'"
+                name="password"
+                label="Введите код доступа"
+                hint="4 символа"
+                counter
+                @click:append="passStateEye = !passStateEye"
+                required
+                :class="'required'"
+              ></v-text-field>
+              <v-btn type="submit"
+                     color="blue darken-1"
+                     elevation="2"
+                     large
+                     rounded
+                     block
+                     class="btn-auth"
+              >
+                Войти
+              </v-btn>
+            </v-form>
+          </v-tab-item>
+          <!--Регистрация-->
+          <v-tab-item :key="1">
+            <v-form v-model="valid" class="login"
+                    @submit.prevent="localCreateUser(`component_wrapper-${index_component}`)"
+                    contenteditable="false"
+            >
+              <v-text-field
+                type="email"
+                name="email"
+                v-model="email_user"
+                label="Введите почту"
+                :rules="emailRules"
+                single-line
+                required
+                :class="'required'"
+              ></v-text-field>
+              <v-text-field
+                type="text"
+                name="name"
+                v-model="name"
+                label="Как к вам обращаться ?"
+                single-line
+              ></v-text-field>
+              <v-btn type="submit"
+                     color="blue darken-0"
+                     elevation="2"
+                     large
+                     rounded
+                     block
+                     class="btn-auth"
+              >
+                Зарегестрироваться
+              </v-btn>
+            </v-form>
+          </v-tab-item>
+        </v-tabs>
       </v-container>
       <v-container>
-          <v-text-field
-              type="text"
-              name="email"
-              v-model="email_user"
-              label="Введите почту"
-              :rules="emailRules"
-              single-line
-              required
-          ></v-text-field>
-        <v-alert
-            v-if="alert.state"
-            dismissible
-            :type="alert.type"
-            :value="alert.state"
-            @input="alert.state = false"
-        >
-          <span v-html="alert.message"></span>
-        </v-alert>
+      <v-alert
+          v-if="alert.state"
+          dismissible
+          :type="alert.type"
+          :value="alert.state"
+          @input="alert.state = false"
+      >
+        <span v-html="alert.message"></span>
+      </v-alert>
       </v-container>
-      <v-container>
-        <v-row>
-          <v-btn type="submit"
-                 color="blue darken-1"
-                 elevation="2"
-                 large
-                 rounded
-                 block
-                 class="btn-auth"
-          >
-            Войти
-          </v-btn>
-        </v-row>
-      </v-container>
-    </v-form>
-    <v-alert
-      v-else
-      dismissible
-      type="success"
-    >
-      <span>Благодарим за авторизацию!</span>
-    </v-alert>
   </div>
+  <v-alert
+    v-else
+    dismissible
+    type="success"
+  >
+    <span>Здравствуйте {{$store.state.AuthModule.userData.user_data.first_name}}</span>
+  </v-alert>
 </template>
 
 <script>
@@ -66,12 +115,20 @@ export default {
   name: "LoginAuth",
   data(){
     return {
+      tab: 0,
       valid: false,
       emailRules: [
         v => !!v || 'Обязательное для заполнение поле',
         v => /.+@.+/.test(v) || 'E-mail должен быть валидным.',
       ],
+      passRules: [
+        v => !!v || 'Обязательное для заполнение поле',
+        v => v.length === 4 || 'Необходимо 4 символа',
+      ],
+      passStateEye: false,
       email_user: '',
+      password: '',
+      name: '',
       alert:{
         state: false,
         type: 'info',
@@ -115,21 +172,14 @@ export default {
       this.alert.type = Logging.checkExistErr(response) ? 'error' : Request.getAccessTokenInCookies() ? 'success' : 'warning'
     },
 
-    async localLoginCreateUser(index_component){
+    async localLoginUser(index_component){
       if (this.valid === false)
         return false
 
-      // Пытаемся создать пользователя
-      const res = await this.$store.dispatch(
-        'createUserByEmail', {
-          'email': this.email_user,
-          'id_dom_elem': index_component,
-          'full_url': window.location.href
-      });
-      if (res.codeResponse === 409) {
-        const res = await this.$store.dispatch('sendEmail',
+        const res = await this.$store.dispatch('loginUser',
           {
             'email': this.email_user,
+            'password': this.password,
             'id_dom_elem': index_component,
             'full_url': window.location.href
           });
@@ -137,13 +187,23 @@ export default {
         this.$nextTick(() => {
           this.hasCookie();
         })
-      }
-      else{
-        this.alertCall(res);
-      }
-      // Такой пользователь уже есть в базе - авторизоваться
-      // Если такой еще не зарегестрирован придет - 200
+    },
+    async localCreateUser(index_component){
+      if (this.valid === false)
+        return false
 
+      // Пытаемся создать пользователя
+      const res = await this.$store.dispatch(
+        'createUserByEmail', {
+          'email': this.email_user,
+          'name': this.name,
+          'id_dom_elem': index_component,
+          'full_url': window.location.href
+      });
+      if (res.codeResponse === 200) {
+        this.tab = 0;
+      }
+      this.alertCall(res);
     },
 
     // inserted_components
@@ -165,6 +225,10 @@ form.login{
   h1{
     margin: auto;
   }
+  .v-tab {
+    font-size: 1em;
+    text-transform: none !important;
+  }
 }
 .showBorder {
 
@@ -172,6 +236,21 @@ form.login{
 .btn-auth {
   ::v-deep span {
     color: white
+  }
+}
+</style>
+
+<style lang="scss">
+.auth_container {
+  .required .v-label::after {
+    content: " *";
+    color: red;
+  }
+}
+.v-tabs-items{
+  margin-top: 10px!important;
+  button{
+    margin-top: 10px;
   }
 }
 </style>
