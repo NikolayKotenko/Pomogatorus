@@ -8,27 +8,16 @@
         {subHeaderMobile: $device.isMobile}
       ]"
     >
-      <h2>{{ article.name }}</h2>
+      <h2 class="mainTitleFont">{{ article.name }}</h2>
     </div>
     <div class="article-template__header" ref="nav">
-      <Author/>
-      <h1 class="article-template__header__title">
+      <h1 class="article-template__header__title mainTitleFont">
         {{ article.name }}
       </h1>
-      <div class="tags">
-        <v-chip color="green" outlined small>
-          Полезно
-        </v-chip>
-        <v-chip color="green" outlined small>
-          Котел
-        </v-chip>
-        <v-chip color="green" outlined small>
-          Другой тэг
-        </v-chip>
-      </div>
+      <ArticleInfo/>
     </div>
 
-    <div class="article-template__content" v-html="refactored_content"></div>
+    <div class="article-template__content mainContentFont" v-html="refactored_content"></div>
     <div class="hidden-mask" v-if="$store.state.ArticleModule.refactoring_content"></div>
     <v-overlay :value="$store.state.ArticleModule.refactoring_content">
       <v-progress-circular
@@ -52,10 +41,11 @@ import Request from "@/services/request";
 import Author from "../../components/Article/Author";
 
 import Answers from "../../services/answers/answers";
+import ArticleInfo from "../../components/Article/ArticleInfo";
 
 export default {
   name: "_id.vue",
-  components: {Author},
+  components: {ArticleInfo, Author},
   async asyncData({$axios, store, params}) {
     const options = {
       method: 'GET',
@@ -312,11 +302,17 @@ export default {
     width: 100%;
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
+    font-size: 1.5rem !important;
   }
   &__header {
     &__title {
       margin: 10px 0 10px 0;
+      padding-bottom: 6px;
+      border-bottom: 1px solid darkgrey;
     }
+  }
+  &__content {
+    word-break: normal;
   }
 }
 .showArticleHeader {
@@ -332,8 +328,5 @@ export default {
   h2 {
     font-size: 1.1em;
   }
-}
-.tags {
-  margin-bottom: 15px;
 }
 </style>

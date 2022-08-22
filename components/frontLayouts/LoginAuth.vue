@@ -241,6 +241,12 @@ form.login{
 </style>
 
 <style lang="scss">
+@media only screen and (max-width: 375px) {
+  .v-slide-group__prev {
+    display: none !important;
+  }
+}
+
 .auth_container {
   .required .v-label::after {
     content: " *";
