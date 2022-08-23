@@ -1,24 +1,29 @@
 <template>
   <div class="article-template">
-    <div
-      class="article-template__subHeader"
-      :class="[
+    <template v-if="article">
+      <div
+        class="article-template__subHeader"
+        :class="[
         {showArticleHeader: isShowTitle},
         {subHeader: ($store.state.show_header && isShowTitle) && $device.isDesktop},
         {subHeaderMobile: $device.isMobile}
       ]"
-    >
-      <h2 class="mainTitleFont">{{ article.name }}</h2>
-    </div>
-    <div class="article-template__header" ref="nav">
-      <h1 class="article-template__header__title mainTitleFont">
-        {{ article.name }}
-      </h1>
-      <ArticleInfo/>
-    </div>
+      >
+        <h2 class="mainTitleFont">{{ article.name }}</h2>
+      </div>
+      <div class="article-template__header" ref="nav">
+        <h1 class="article-template__header__title mainTitleFont">
+          {{ article.name }}
+        </h1>
+        <ArticleInfo
+          :article_data="article"
+        />
+      </div>
 
-    <div class="article-template__content mainContentFont" v-html="refactored_content"></div>
-    <div class="hidden-mask" v-if="$store.state.ArticleModule.refactoring_content"></div>
+      <div class="article-template__content mainContentFont" v-html="refactored_content"></div>
+    </template>
+
+    <div class="hidden-mask" v-if="$store.state.ArticleModule.refactoring_content || !article"></div>
     <v-overlay :value="$store.state.ArticleModule.refactoring_content">
       <v-progress-circular
         :size="50"

@@ -32,7 +32,6 @@ export default {
     }
   },
   mounted() {
-    console.log(this.$store.state.show_header)
     if (!process.server) {
       this.onScroll()
     }
