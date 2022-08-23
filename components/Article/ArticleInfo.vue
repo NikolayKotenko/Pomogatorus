@@ -119,6 +119,24 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+@media only screen and (max-width: 600px) {
+  .article_info_wrapper__info {
+    flex-direction: column !important;
+    row-gap: 10px;
+
+    &__left {
+      &__block {
+        align-items: flex-start !important;
+        &__value {
+          display: flex;
+          flex-wrap: wrap;
+        }
+      }
+    }
+  }
+}
+
 .article_info_wrapper {
   color: black;
 

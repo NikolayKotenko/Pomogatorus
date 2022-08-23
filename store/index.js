@@ -14,6 +14,7 @@ const createStore = () => {
       breadcrumbs: [],
       agent_utm: null,
       changedCookie: false,
+      showCabinet: false,
     },
     getters: {
 
