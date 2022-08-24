@@ -1,34 +1,24 @@
 <template>
   <v-dialog
     v-model="$store.state.showCabinet"
-    max-width="600"
+    max-width="800"
   >
     <v-card>
       <v-card-title class="card_title">
         Выберите объект для сохранения
       </v-card-title>
       <v-card-text class="card_object">
-        <div class="card_object_container" v-if="true">
-          <ObjectCard/>
-
-          <ObjectCard/>
-
-          <ObjectCard/>
-
-          <ObjectCard/>
-
-          <ObjectCard/>
-
-          <ObjectCard/>
-
-          <ObjectCard/>
-
-          <ObjectCard/>
+        <div class="card_object_container" v-if="showObjects">
+          <ObjectCard
+            v-for="(object, index) in $store.state.AuthModule.userData.user_data.objects"
+            :key="index"
+            :object_data="object"
+          />
         </div>
         <LoginAuth v-else/>
       </v-card-text>
       <v-card-actions class="modal_footer">
-        <div class="modal_footer__new" v-if="true">
+        <div class="modal_footer__new" v-if="showObjects">
           <v-divider/>
           <div class="card_object_new">
             <div class="card_object_new__card">
@@ -54,6 +44,8 @@
                 <v-btn
                   class="card_object_new__card__inputs__btn"
                   color="green lighten-1"
+                  @click="createNewObject"
+                  :disabled="!newObjAddress"
                 >
                   Добавить
                 </v-btn>
@@ -77,6 +69,9 @@
 <script>
 import ObjectCard from "./ObjectCard";
 import LoginAuth from "../frontLayouts/LoginAuth";
+
+import Request from "../../services/request";
+
 export default {
   name: "ListObjects",
   components: {LoginAuth, ObjectCard},
@@ -93,6 +88,26 @@ export default {
       return this.$store.state.AuthModule.userData && Object.keys(this.$store.state.AuthModule.userData).length
     },
   },
+  watch: {
+    '$store.state.showCabinet': {
+      handler(v) {
+        // if (v && this.showObjects) this.$store.dispatch('getListObjects')
+      }
+    }
+  },
+  methods: {
+    async createNewObject() {
+      this.$store.commit('change_loaderObjects', true)
+
+      let { data } = await Request.post(this.$store.state.BASE_URL+'/entity/objects', {
+        address: this.newObjAddress
+      })
+      await this.$store.dispatch('loginByToken')
+      this.$store.commit('change_listObjects', [data])
+
+      this.$store.commit('change_loaderObjects', false)
+    },
+  }
 }
 </script>
 

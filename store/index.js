@@ -14,7 +14,13 @@ const createStore = () => {
       breadcrumbs: [],
       agent_utm: null,
       changedCookie: false,
+
+      /* Objects */
       showCabinet: false,
+      showDetailObj: false,
+      loading_objects: false,
+      listObjects: [],
+      currentObject: {},
     },
     getters: {
 
@@ -35,9 +41,34 @@ const createStore = () => {
       },
       change_listAgents(state, array) {
         state.listAgents = array
-      }
+      },
+
+      /* Objects */
+      change_showCabinet(state, value) {
+        state.showCabinet = value
+      },
+      change_showDetailObj(state, value) {
+        state.showDetailObj = value
+      },
+      change_loaderObjects(state, value) {
+        state.loading_objects = value
+      },
+      change_listObjects(state, array) {
+        state.listObjects = array
+      },
+      set_currentObject(state, value) {
+        state.currentObject = value
+      },
     },
     actions: {
+      async getListObjects({state, commit}) {
+        state.loading_objects = true
+
+        let { data } = await Request.get(state.BASE_URL+'/entity/objects', {
+          'filter[id_user]': this.state.AuthModule.userData.user_data.id
+        })
+        commit('change_listObjects', data)
+      },
       // nuxtServerInit({dispatch}) {
       //   dispatch('req_list_articles')
       // },

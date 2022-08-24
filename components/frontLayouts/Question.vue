@@ -425,7 +425,6 @@ export default {
       if (child) {
         if (Array.from(child).length === 1) {
           if (Array.from(child)[0].children.length) {
-            console.log(Array.from(child)[0].children[0].id)
             this.agentCode = Array.from(child)[0].children[0].id
           } else this.agentCode = null
         } else this.agentCode = null
@@ -494,54 +493,63 @@ export default {
           this.createAnchorToAuth()
         })
       } else {
-        this.status_name = 'sending'
-        this.$nextTick( async () => {
-          if (this.id_answer) {
-            try {
-              const result = await Answers.update({
-                'id_type_answer': this.question_data.id_type_answer,
-                'id_question': this.question_data.id,
-                'id_user': this.$store.state.AuthModule.userData.user_data.id,
-                'code_agent': this.agentCode,
-                'id_article': this.$route.params.id,
-                'value_answer': JSON.stringify(this.answer),
-                'detailed_response': this.detailed_response,
-                'attachment_files': '',
-              }, this.id_answer)
-              if (result.codeResponse != '202') {
+        if (!this.$store.state.currentObject || !Object.keys(this.$store.state.currentObject).length) {
+          this.check_status = false
+          this.$store.commit('change_showCabinet', true)
+          this.$nextTick(() => {
+            this.answer = null
+            this.detailed_response = ''
+          })
+        } else {
+          this.status_name = 'sending'
+          this.$nextTick( async () => {
+            if (this.id_answer) {
+              try {
+                const result = await Answers.update({
+                  'id_type_answer': this.question_data.id_type_answer,
+                  'id_question': this.question_data.id,
+                  'id_user': this.$store.state.AuthModule.userData.user_data.id,
+                  'code_agent': this.agentCode,
+                  'id_article': this.$route.params.id,
+                  'value_answer': JSON.stringify(this.answer),
+                  'detailed_response': this.detailed_response,
+                  'attachment_files': '',
+                }, this.id_answer)
+                if (result.codeResponse != '202') {
+                  this.status_name = 'error'
+                } else {
+                  this.status_name = 'success'
+                  this.id_answer = result.data.id
+                }
+              } catch(e) {
                 this.status_name = 'error'
-              } else {
-                this.status_name = 'success'
-                this.id_answer = result.data.id
+                console.log(e)
               }
-            } catch(e) {
-              this.status_name = 'error'
-              console.log(e)
-            }
-          } else {
-            try {
-              const result = await Answers.create({
-                'id_type_answer': this.question_data.id_type_answer,
-                'id_question': this.question_data.id,
-                'id_user': this.$store.state.AuthModule.userData.user_data.id,
-                'code_agent': this.agentCode,
-                'id_article': this.$route.params.id,
-                'value_answer': JSON.stringify(this.answer),
-                'detailed_response': this.detailed_response,
-                'attachment_files': '',
-              })
-              if (result.codeResponse != '201') {
+            } else {
+              try {
+                const result = await Answers.create({
+                  'id_type_answer': this.question_data.id_type_answer,
+                  'id_question': this.question_data.id,
+                  'id_user': this.$store.state.AuthModule.userData.user_data.id,
+                  'code_agent': this.agentCode,
+                  'id_article': this.$route.params.id,
+                  'value_answer': JSON.stringify(this.answer),
+                  'detailed_response': this.detailed_response,
+                  'attachment_files': '',
+                })
+                if (result.codeResponse != '201') {
+                  this.status_name = 'error'
+                } else {
+                  this.status_name = 'success'
+                  this.id_answer = result.data.id
+                }
+              } catch(e) {
                 this.status_name = 'error'
-              } else {
-                this.status_name = 'success'
-                this.id_answer = result.data.id
+                console.log(e)
               }
-            } catch(e) {
-              this.status_name = 'error'
-              console.log(e)
             }
-          }
-        })
+          })
+        }
       }
     },
     createAnchorToAuth() {

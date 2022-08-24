@@ -36,6 +36,7 @@
     &__info {
       display: flex;
       flex-direction: column;
+      cursor: pointer;
       &__block {
         display: flex;
         column-gap: 10px;
