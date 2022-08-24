@@ -72,7 +72,7 @@
             :key="index"
             :value="item.answer"
             :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
-            @change="changeAnswer()"
+            @change="changeAnswer(item.dataEnv)"
             @click="getIdElem($event)"
           >
             <template slot="label">
@@ -107,7 +107,7 @@
           :value="item.answer"
           v-model="answer"
           :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
-          @change="changeAnswer()"
+          @change="changeAnswer(item.dataEnv)"
           @click="getIdElem($event)"
         >
           <template slot="label">
@@ -356,6 +356,7 @@ export default {
     answer: null,
     id_answer: null,
     agentCode: null,
+    data_env: null,
 
     /* DATA_BY_TYPES */
     rangeError: false,
@@ -484,7 +485,44 @@ export default {
     },
 
     /* ANSWER LOGIC */
-    changeAnswer() {
+    setDataEnv(dataEnv) {
+      if (dataEnv) {
+        this.data_env = {
+          "model": dataEnv.data.model,
+          "controller": dataEnv.data.controller,
+          "name": dataEnv.data.name,
+          "data": {
+            "id": this.$store.state.currentObject.id,
+          }
+        }
+        this.data_env.data[dataEnv.data.data.column] = JSON.stringify(this.answer)
+      } else {
+        if (typeof this.answer === 'string') {
+          this.data_env = {
+            "model": this.value_type_answer[0].dataEnv.data.model,
+            "controller":  this.value_type_answer[0].dataEnv.data.controller,
+            "name":  this.value_type_answer[0].dataEnv.data.name,
+            "data": {
+              "id": this.$store.state.currentObject.id,
+            }
+          }
+          this.data_env.data[this.value_type_answer[0].dataEnv.data.data.column] = JSON.stringify(this.answer)
+        } else {
+          if (this.answer?.dataEnv) {
+            this.data_env = {
+              "model": this.answer.dataEnv.data.model,
+              "controller":  this.answer.dataEnv.data.controller,
+              "name":  this.answer.dataEnv.data.name,
+              "data": {
+                "id": this.$store.state.currentObject.id,
+              }
+            }
+            this.data_env.data[this.answer.dataEnv.data.data.column] = JSON.stringify(this.answer)
+          }
+        }
+      }
+    },
+    changeAnswer(dataEnv) {
       this.check_status = true
       if (!this.stateAuth) {
         this.status_name = 'warning'
@@ -503,6 +541,7 @@ export default {
         } else {
           this.status_name = 'sending'
           this.$nextTick( async () => {
+            this.setDataEnv(dataEnv)
             if (this.id_answer) {
               try {
                 const result = await Answers.update({
@@ -512,6 +551,7 @@ export default {
                   'code_agent': this.agentCode,
                   'id_article': this.$route.params.id,
                   'value_answer': JSON.stringify(this.answer),
+                  'data_env': JSON.stringify(this.data_env),
                   'detailed_response': this.detailed_response,
                   'attachment_files': '',
                 }, this.id_answer)
@@ -534,6 +574,7 @@ export default {
                   'code_agent': this.agentCode,
                   'id_article': this.$route.params.id,
                   'value_answer': JSON.stringify(this.answer),
+                  'data_env': JSON.stringify(this.data_env),
                   'detailed_response': this.detailed_response,
                   'attachment_files': '',
                 })
@@ -623,7 +664,7 @@ export default {
           this.answer.push(this.min)
           this.answer.push(this.max)
         }
-      } else if (this.question_data['id_type_answer'] !== 1 && this.question_data['id_type_answer'] !== 2) {
+      } else {
         let parsed = null
         parsed = JSON.parse(JSON.parse(this.question_data['value_type_answer']))
         if (Array.isArray(parsed)) {
@@ -631,8 +672,6 @@ export default {
         } else {
           this.value_type_answer = []
         }
-      } else {
-        this.value_type_answer = JSON.parse(this.question_data['value_type_answer'])
       }
     },
     getWidthOfControls() {
