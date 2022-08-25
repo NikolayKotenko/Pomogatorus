@@ -2,11 +2,12 @@
   <div class="auth_container" contenteditable="false" :id="`component_wrapper-${index_component}`" v-if="stateAuthBlock">
       <v-container>
         <v-tabs v-model="tab">
-          <v-tab :key="0" light>Авторизация</v-tab>
+          <v-tab :key="0">Авторизация</v-tab>
           <v-tab :key="1">Регистрация</v-tab>
           <!--Авторизация-->
           <v-tab-item :key="0">
             <v-form v-model="valid" class="login" ref="form"
+                    color="red"
                     @submit.prevent="localLoginUser(`component_wrapper-${index_component}`)"
                     contenteditable="false"
             >
@@ -291,9 +292,18 @@ form.login{
 </style>
 
 <style lang="scss">
+$yellowBackground: rgb(255, 235, 153);
+
 .auth_container {
   border-radius: 10px;
   border: 1px solid lightgrey;
+  background: $yellowBackground;
+  .v-tabs > .v-tabs-bar{
+    background: $yellowBackground;
+  }
+  .v-window-item{
+    background: $yellowBackground;
+  }
   @media only screen and (min-width: 768px) {
     width: 50%;
     margin: auto;
