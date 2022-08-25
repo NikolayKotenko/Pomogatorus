@@ -7,7 +7,6 @@
           <!--Авторизация-->
           <v-tab-item :key="0">
             <v-form v-model="valid" class="login" ref="form"
-                    color="red"
                     @submit.prevent="localLoginUser(`component_wrapper-${index_component}`)"
                     contenteditable="false"
             >
@@ -293,6 +292,12 @@ form.login{
 
 <style lang="scss">
 $yellowBackground: rgb(255, 235, 153);
+
+@media only screen and (max-width: 375px) {
+  .v-slide-group__prev {
+    display: none !important;
+  }
+}
 
 .auth_container {
   border-radius: 10px;

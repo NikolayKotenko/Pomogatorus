@@ -72,7 +72,7 @@
             :key="index"
             :value="item.answer"
             :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
-            @change="changeAnswer()"
+            @change="changeAnswer(item.dataEnv)"
             @click="getIdElem($event)"
           >
             <template slot="label">
@@ -107,7 +107,7 @@
           :value="item.answer"
           v-model="answer"
           :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
-          @change="changeAnswer()"
+          @change="changeAnswer(item.dataEnv)"
           @click="getIdElem($event)"
         >
           <template slot="label">
@@ -356,6 +356,7 @@ export default {
     answer: null,
     id_answer: null,
     agentCode: null,
+    data_env: null,
 
     /* DATA_BY_TYPES */
     rangeError: false,
@@ -425,7 +426,6 @@ export default {
       if (child) {
         if (Array.from(child).length === 1) {
           if (Array.from(child)[0].children.length) {
-            console.log(Array.from(child)[0].children[0].id)
             this.agentCode = Array.from(child)[0].children[0].id
           } else this.agentCode = null
         } else this.agentCode = null
@@ -485,7 +485,44 @@ export default {
     },
 
     /* ANSWER LOGIC */
-    changeAnswer() {
+    setDataEnv(dataEnv) {
+      if (dataEnv) {
+        this.data_env = {
+          "model": dataEnv.data.model,
+          "controller": dataEnv.data.controller,
+          "name": dataEnv.data.name,
+          "data": {
+            "id": this.$store.state.currentObject.id,
+          }
+        }
+        this.data_env.data[dataEnv.data.data.column] = JSON.stringify(this.answer)
+      } else {
+        if (typeof this.answer === 'string') {
+          this.data_env = {
+            "model": this.value_type_answer[0].dataEnv.data.model,
+            "controller":  this.value_type_answer[0].dataEnv.data.controller,
+            "name":  this.value_type_answer[0].dataEnv.data.name,
+            "data": {
+              "id": this.$store.state.currentObject.id,
+            }
+          }
+          this.data_env.data[this.value_type_answer[0].dataEnv.data.data.column] = JSON.stringify(this.answer)
+        } else {
+          if (this.answer?.dataEnv) {
+            this.data_env = {
+              "model": this.answer.dataEnv.data.model,
+              "controller":  this.answer.dataEnv.data.controller,
+              "name":  this.answer.dataEnv.data.name,
+              "data": {
+                "id": this.$store.state.currentObject.id,
+              }
+            }
+            this.data_env.data[this.answer.dataEnv.data.data.column] = JSON.stringify(this.answer)
+          }
+        }
+      }
+    },
+    changeAnswer(dataEnv) {
       this.check_status = true
       if (!this.stateAuth) {
         this.status_name = 'warning'
@@ -494,54 +531,66 @@ export default {
           this.createAnchorToAuth()
         })
       } else {
-        this.status_name = 'sending'
-        this.$nextTick( async () => {
-          if (this.id_answer) {
-            try {
-              const result = await Answers.update({
-                'id_type_answer': this.question_data.id_type_answer,
-                'id_question': this.question_data.id,
-                'id_user': this.$store.state.AuthModule.userData.user_data.id,
-                'code_agent': this.agentCode,
-                'id_article': this.$route.params.id,
-                'value_answer': JSON.stringify(this.answer),
-                'detailed_response': this.detailed_response,
-                'attachment_files': '',
-              }, this.id_answer)
-              if (result.codeResponse != '202') {
+        if (!this.$store.state.currentObject || !Object.keys(this.$store.state.currentObject).length) {
+          this.check_status = false
+          this.$store.commit('change_showCabinet', true)
+          this.$nextTick(() => {
+            this.answer = null
+            this.detailed_response = ''
+          })
+        } else {
+          this.status_name = 'sending'
+          this.$nextTick( async () => {
+            this.setDataEnv(dataEnv)
+            if (this.id_answer) {
+              try {
+                const result = await Answers.update({
+                  'id_type_answer': this.question_data.id_type_answer,
+                  'id_question': this.question_data.id,
+                  'id_user': this.$store.state.AuthModule.userData.user_data.id,
+                  'code_agent': this.agentCode,
+                  'id_article': this.$route.params.id,
+                  'value_answer': JSON.stringify(this.answer),
+                  'data_env': JSON.stringify(this.data_env),
+                  'detailed_response': this.detailed_response,
+                  'attachment_files': '',
+                }, this.id_answer)
+                if (result.codeResponse != '202') {
+                  this.status_name = 'error'
+                } else {
+                  this.status_name = 'success'
+                  this.id_answer = result.data.id
+                }
+              } catch(e) {
                 this.status_name = 'error'
-              } else {
-                this.status_name = 'success'
-                this.id_answer = result.data.id
+                console.log(e)
               }
-            } catch(e) {
-              this.status_name = 'error'
-              console.log(e)
-            }
-          } else {
-            try {
-              const result = await Answers.create({
-                'id_type_answer': this.question_data.id_type_answer,
-                'id_question': this.question_data.id,
-                'id_user': this.$store.state.AuthModule.userData.user_data.id,
-                'code_agent': this.agentCode,
-                'id_article': this.$route.params.id,
-                'value_answer': JSON.stringify(this.answer),
-                'detailed_response': this.detailed_response,
-                'attachment_files': '',
-              })
-              if (result.codeResponse != '201') {
+            } else {
+              try {
+                const result = await Answers.create({
+                  'id_type_answer': this.question_data.id_type_answer,
+                  'id_question': this.question_data.id,
+                  'id_user': this.$store.state.AuthModule.userData.user_data.id,
+                  'code_agent': this.agentCode,
+                  'id_article': this.$route.params.id,
+                  'value_answer': JSON.stringify(this.answer),
+                  'data_env': JSON.stringify(this.data_env),
+                  'detailed_response': this.detailed_response,
+                  'attachment_files': '',
+                })
+                if (result.codeResponse != '201') {
+                  this.status_name = 'error'
+                } else {
+                  this.status_name = 'success'
+                  this.id_answer = result.data.id
+                }
+              } catch(e) {
                 this.status_name = 'error'
-              } else {
-                this.status_name = 'success'
-                this.id_answer = result.data.id
+                console.log(e)
               }
-            } catch(e) {
-              this.status_name = 'error'
-              console.log(e)
             }
-          }
-        })
+          })
+        }
       }
     },
     createAnchorToAuth() {
@@ -615,7 +664,7 @@ export default {
           this.answer.push(this.min)
           this.answer.push(this.max)
         }
-      } else if (this.question_data['id_type_answer'] !== 1 && this.question_data['id_type_answer'] !== 2) {
+      } else {
         let parsed = null
         parsed = JSON.parse(JSON.parse(this.question_data['value_type_answer']))
         if (Array.isArray(parsed)) {
@@ -623,8 +672,6 @@ export default {
         } else {
           this.value_type_answer = []
         }
-      } else {
-        this.value_type_answer = JSON.parse(this.question_data['value_type_answer'])
       }
     },
     getWidthOfControls() {
