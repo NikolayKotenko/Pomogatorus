@@ -363,8 +363,8 @@ export default {
     word-break: normal;
     h2 {
       font-family: 'Google Sans', sans-serif !important;
-      color: rgb(32,33,36);
-      font-size: 1.25rem;
+      color: rgb(32,33,36) !important;
+      font-size: 1.25rem !important;
     }
   }
 }
