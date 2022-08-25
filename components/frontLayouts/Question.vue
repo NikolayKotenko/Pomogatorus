@@ -394,8 +394,12 @@ export default {
     },
     'stateAuth': {
       handler(v) {
-        if (v) {
-          this.changeAnswer();
+        if (v && !this.$store.state.showCabinet) {
+          this.check_status = false
+          this.$nextTick(() => {
+            this.answer = null
+            this.detailed_response = ''
+          })
         }
       },
       deep: true
@@ -405,6 +409,7 @@ export default {
         if (!v) {
           if (this.$store.state.idQuestionWhenModal === this.question_data.id) {
             if (this.$store.state.currentObject && Object.keys(this.$store.state.currentObject).length) {
+              console.log('srabotal 2')
               this.changeAnswer()
             } else {
               this.$nextTick(() => {
@@ -412,6 +417,7 @@ export default {
                 this.detailed_response = ''
               })
             }
+            this.$store.commit('set_idQuestionWhenModal', null)
           }
         }
       },
