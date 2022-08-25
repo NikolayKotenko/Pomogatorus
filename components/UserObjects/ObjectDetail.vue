@@ -24,7 +24,7 @@
               :solo="!isMobile"
               :placeholder="`Введите ${param.value}`"
               :label="isMobile ? param.value : ''"
-              v-model="object_data[param.key]"
+              v-model="refactored_object_data[param.key]"
             >
             </v-text-field>
           </template>
@@ -179,38 +179,61 @@ export default {
   computed: {
     isMobile() {
       return this.$device.isMobile
+    },
+    refactored_object_data() {
+      let refactored = {}
+      for (let key in this.object_data) {
+        if (this.isJson(this.object_data[key])) {
+          if (this.isJson(JSON.parse(this.object_data[key]))) {
+            refactored[key] = JSON.parse(JSON.parse(this.object_data[key]))
+          } else {
+            refactored[key] = JSON.parse(this.object_data[key])
+          }
+        } else {
+          refactored[key] = this.object_data[key]
+        }
+      }
+      return refactored
     }
   },
   methods: {
+    isJson(str) {
+      try {
+        JSON.parse(str);
+      } catch (e) {
+        return false;
+      }
+      return true;
+    },
     closeDetail() {
       this.$emit('closeDetail')
     },
     async saveData() {
       await Request.put(this.$store.state.BASE_URL+`/entity/objects/${this.object_data.id}`, {
-        id_region: parseInt(this.object_data.id_region) ? parseInt(this.object_data.id_region) : 0,
-        lat: this.object_data.id_region ? parseInt(this.object_data.id_region) : 0,
-        long: this.object_data.long ? parseInt(this.object_data.long) : 0,
-        address: this.object_data.address,
-        hide_manager_geotag: this.object_data.hide_manager_geotag,
-        notes: this.object_data.notes,
-        id_type_object: parseInt(this.object_data.id_type_object) ? parseInt(this.object_data.id_type_object) : 0,
-        id_floor: parseInt(this.object_data.id_floor) ? parseInt(this.object_data.id_floor) : 0,
-        id_wall: parseInt(this.object_data.id_wall) ? parseInt(this.object_data.id_wall) : 0,
-        id_fuel_current: parseInt(this.object_data.id_fuel_current) ? parseInt(this.object_data.id_fuel_current) : 0,
-        id_fuel_reserve: parseInt(this.object_data.id_fuel_reserve) ? parseInt(this.object_data.id_fuel_reserve) : 0,
-        id_fuel_future: parseInt(this.object_data.id_fuel_future) ? parseInt(this.object_data.id_fuel_future) : 0,
-        id_boiler_room: parseInt(this.object_data.id_boiler_room) ? parseInt(this.object_data.id_boiler_room) : 0,
-        id_cold_water_source: parseInt(this.object_data.id_cold_water_source) ? parseInt(this.object_data.id_cold_water_source) : 0,
-        total_area: this.object_data.total_area ? this.object_data.total_area : '',
-        heating_area: this.object_data.heating_area ? this.object_data.heating_area : '',
-        basement_area: !!this.object_data.basement_area ? this.object_data.basement_area : '',
-        heat_loss_total: this.object_data.heat_loss_total ? this.object_data.heat_loss_total : '',
-        dedicated_electrical_power: this.object_data.dedicated_electrical_power ? this.object_data.dedicated_electrical_power : '',
-        number_of_toilets: this.object_data.number_of_toilets ? this.object_data.number_of_toilets : '',
-        number_of_sinks: this.object_data.number_of_sinks ? this.object_data.number_of_sinks : '',
-        number_of_showers: this.object_data.number_of_showers ? this.object_data.number_of_showers : '',
-        number_of_baths: this.object_data.number_of_baths ? this.object_data.number_of_baths : '',
-        number_of_bidets: this.object_data.number_of_bidets ? this.object_data.number_of_bidets : '',
+        id_region: parseInt(this.refactored_object_data.id_region) ? parseInt(this.refactored_object_data.id_region) : 0,
+        lat: this.refactored_object_data.id_region ? parseInt(this.object_data.id_region) : 0,
+        long: this.refactored_object_data.long ? parseInt(this.object_data.long) : 0,
+        address: this.refactored_object_data.address,
+        hide_manager_geotag: this.refactored_object_data.hide_manager_geotag,
+        notes: this.refactored_object_data.notes,
+        id_type_object: parseInt(this.refactored_object_data.id_type_object) ? parseInt(this.refactored_object_data.id_type_object) : 0,
+        id_floor: parseInt(this.refactored_object_data.id_floor) ? parseInt(this.refactored_object_data.id_floor) : 0,
+        id_wall: parseInt(this.refactored_object_data.id_wall) ? parseInt(this.object_data.id_wall) : 0,
+        id_fuel_current: parseInt(this.refactored_object_data.id_fuel_current) ? parseInt(this.refactored_object_data.id_fuel_current) : 0,
+        id_fuel_reserve: parseInt(this.refactored_object_data.id_fuel_reserve) ? parseInt(this.refactored_object_data.id_fuel_reserve) : 0,
+        id_fuel_future: parseInt(this.refactored_object_data.id_fuel_future) ? parseInt(this.refactored_object_data.id_fuel_future) : 0,
+        id_boiler_room: parseInt(this.refactored_object_data.id_boiler_room) ? parseInt(this.refactored_object_data.id_boiler_room) : 0,
+        id_cold_water_source: parseInt(this.refactored_object_data.id_cold_water_source) ? parseInt(this.refactored_object_data.id_cold_water_source) : 0,
+        total_area: this.refactored_object_data.total_area ? this.refactored_object_data.total_area : '',
+        heating_area: this.refactored_object_data.heating_area ? this.refactored_object_data.heating_area : '',
+        basement_area: !!this.refactored_object_data.basement_area ? this.refactored_object_data.basement_area : '',
+        heat_loss_total: this.refactored_object_data.heat_loss_total ? this.refactored_object_data.heat_loss_total : '',
+        dedicated_electrical_power: this.refactored_object_data.dedicated_electrical_power ? this.refactored_object_data.dedicated_electrical_power : '',
+        number_of_toilets: this.refactored_object_data.number_of_toilets ? this.refactored_object_data.number_of_toilets : '',
+        number_of_sinks: this.refactored_object_data.number_of_sinks ? this.refactored_object_data.number_of_sinks : '',
+        number_of_showers: this.refactored_object_data.number_of_showers ? this.refactored_object_data.number_of_showers : '',
+        number_of_baths: this.refactored_object_data.number_of_baths ? this.refactored_object_data.number_of_baths : '',
+        number_of_bidets: this.refactored_object_data.number_of_bidets ? this.refactored_object_data.number_of_bidets : '',
       })
       this.closeDetail()
     },

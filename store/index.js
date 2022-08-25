@@ -21,9 +21,12 @@ const createStore = () => {
       loading_objects: false,
       listObjects: [],
       currentObject: {},
+      idQuestionWhenModal: null,
     },
     getters: {
-
+      open_close_cabinet(state) {
+        return state.showCabinet
+      }
     },
     mutations: {
       change_breadcrumbs(state, arr) {
@@ -59,6 +62,9 @@ const createStore = () => {
       set_currentObject(state, value) {
         state.currentObject = value
       },
+      set_idQuestionWhenModal(state, value) {
+        state.idQuestionWhenModal = value
+      }
     },
     actions: {
       async getListObjects({state, commit}) {

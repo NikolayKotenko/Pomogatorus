@@ -392,10 +392,30 @@ export default {
         }
       },
     },
-    '$store.state.changedCookie': {
-      handler() {
-        // this.changeAnswer();
-      }
+    'stateAuth': {
+      handler(v) {
+        if (v) {
+          this.changeAnswer();
+        }
+      },
+      deep: true
+    },
+    '$store.state.showCabinet': {
+      handler(v) {
+        if (!v) {
+          if (this.$store.state.idQuestionWhenModal === this.question_data.id) {
+            if (this.$store.state.currentObject && Object.keys(this.$store.state.currentObject).length) {
+              this.changeAnswer()
+            } else {
+              this.$nextTick(() => {
+                this.answer = null
+                this.detailed_response = ''
+              })
+            }
+          }
+        }
+      },
+      deep: true
     },
   },
   computed: {
@@ -497,16 +517,35 @@ export default {
         }
         this.data_env.data[dataEnv.data.data.column] = JSON.stringify(this.answer)
       } else {
-        if (typeof this.answer === 'string') {
-          this.data_env = {
-            "model": this.value_type_answer[0].dataEnv.data.model,
-            "controller":  this.value_type_answer[0].dataEnv.data.controller,
-            "name":  this.value_type_answer[0].dataEnv.data.name,
-            "data": {
-              "id": this.$store.state.currentObject.id,
+        if (!this.answer && this.detailed_response) {
+          if (this.value_type_answer && this.value_type_answer.length) {
+            this.data_env = {
+              "model": this.value_type_answer[0].dataEnv.data.model,
+              "controller":  this.value_type_answer[0].dataEnv.data.controller,
+              "name":  this.value_type_answer[0].dataEnv.data.name,
+              "data": {
+                "id": this.$store.state.currentObject.id,
+              }
+            }
+            this.value_type_answer.forEach(elem => {
+              this.data_env.data[elem.dataEnv.data.data.column] = JSON.stringify(this.detailed_response)
+            })
+            console.log(this.data_env)
+          }
+        } else if (typeof this.answer === 'string') {
+          if (this.value_type_answer && this.value_type_answer.length) {
+            if (this.value_type_answer[0]?.dataEnv) {
+              this.data_env = {
+                "model": this.value_type_answer[0].dataEnv.data.model,
+                "controller":  this.value_type_answer[0].dataEnv.data.controller,
+                "name":  this.value_type_answer[0].dataEnv.data.name,
+                "data": {
+                  "id": this.$store.state.currentObject.id,
+                }
+              }
+              this.data_env.data[this.value_type_answer[0].dataEnv.data.data.column] = JSON.stringify(this.answer)
             }
           }
-          this.data_env.data[this.value_type_answer[0].dataEnv.data.data.column] = JSON.stringify(this.answer)
         } else {
           if (this.answer?.dataEnv) {
             this.data_env = {
@@ -533,11 +572,8 @@ export default {
       } else {
         if (!this.$store.state.currentObject || !Object.keys(this.$store.state.currentObject).length) {
           this.check_status = false
+          this.$store.commit('set_idQuestionWhenModal', this.question_data.id)
           this.$store.commit('change_showCabinet', true)
-          this.$nextTick(() => {
-            this.answer = null
-            this.detailed_response = ''
-          })
         } else {
           this.status_name = 'sending'
           this.$nextTick( async () => {
