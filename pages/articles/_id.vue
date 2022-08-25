@@ -45,7 +45,6 @@ import LoginAuth from "../../components/frontLayouts/LoginAuth";
 import Request from "@/services/request";
 import Author from "../../components/Article/Author";
 
-import Answers from "../../services/answers/answers";
 import ArticleInfo from "../../components/Article/ArticleInfo";
 
 export default {
@@ -72,6 +71,50 @@ export default {
     coordYNav: null,
     heightNav: 70,
   }),
+  head() {
+    return {
+      title: `${this.article.name}`,
+      meta: [
+        {charset: 'utf-8'},
+        {name: 'viewport', content: 'width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1'},
+        {
+          hid: 'keywords',
+          name: 'keywords',
+          content: `${this.article.seo_keywords}`
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: `${this.article.seo_description}`
+        },
+        {hid: 'theme-color', name: 'theme-color', content: 'blue'},
+      ],
+    }
+  },
+  jsonld() {
+    return [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        "name": "Pomogatorus",
+        "headline": this.article.preview,
+        "image": "",
+        "author": {
+          "@type": "Organization",
+          "name": "Pomogatorus"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Pomogatorus",
+          "logo": {
+            "@type": "ImageObject",
+            "url": ""
+          }
+        },
+        "datePublished": this.article.created_at
+      },
+    ]
+  },
   created() {
   },
   mounted() {
