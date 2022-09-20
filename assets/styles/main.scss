@@ -1,17 +1,16 @@
-@import "assets/fonts/GoogleSans/style.css";
-@import "assets/fonts/OpenSans/stylesheet.css";
-
+@import 'assets/fonts/GoogleSans/style.css';
+@import 'assets/fonts/OpenSans/stylesheet.css';
 
 .mainTitleFont {
-  font-family: 'Google Sans', sans-serif !important;
-  color: rgb(32,33,36);
-  //font-weight: 500;
-  font-size: 1.75rem;
-  text-transform: uppercase;
+   font-family: 'Google Sans', sans-serif !important;
+   color: rgb(32, 33, 36);
+   //font-weight: 500;
+   font-size: 1.75rem;
+   text-transform: uppercase;
 }
 
 .mainContentFont {
-  font-family: 'Open Sans', sans-serif !important;
-  font-size: 14px;
-  color: #606060;
+   font-family: 'Open Sans', sans-serif !important;
+   font-size: 14px;
+   color: #606060;
 }
