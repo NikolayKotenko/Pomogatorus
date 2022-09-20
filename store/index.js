@@ -3,13 +3,14 @@ import Vuex from 'vuex'
 
 import AuthModule from "./modules/auth"
 import ArticleModule from "./modules/article"
+import PopularSelectionsModule from "./modules/popular-selections"
 
 import Request from "../services/request";
 
 const createStore = () => {
   return new Vuex.Store({
     state: {
-      BASE_URL: process.env.NODE_ENV === 'development' ? 'https://api-test.agregatorus.com' : 'https://api.agregatorus.com',
+      BASE_URL: process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8000' : 'https://api.agregatorus.com',
       show_header: false,
       breadcrumbs: [],
       agent_utm: null,
@@ -81,7 +82,8 @@ const createStore = () => {
     },
     modules: {
       AuthModule,
-      ArticleModule
+      ArticleModule,
+      PopularSelectionsModule,
     }
   })
 }
