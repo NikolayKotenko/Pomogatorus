@@ -1,18 +1,18 @@
 .files_chips {
-   width: 300px;
-   padding-bottom: 15px;
-   &__title {
-      padding: 4px 0 0 10px;
-   }
-   &__wrapper {
-      &__chip {
-         display: flex;
-         align-items: center;
-      }
-   }
-   &__btn {
-   }
-   ::v-deep .v-chip {
-      margin: 4px;
-   }
+  width: 300px;
+  padding-bottom: 15px;
+  &__title {
+    padding: 4px 0 0 10px;
+  }
+  &__wrapper {
+    &__chip {
+      display: flex;
+      align-items: center;
+    }
+  }
+  &__btn {
+  }
+  ::v-deep .v-chip {
+    margin: 4px;
+  }
 }

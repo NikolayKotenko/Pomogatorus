@@ -1,59 +1,59 @@
 @media only screen and (max-width: 600px) {
-   .card_object_container {
-      &__wrapper {
-         font-size: 0.9rem !important;
-      }
-   }
+  .card_object_container {
+    &__wrapper {
+      font-size: 0.9rem !important;
+    }
+  }
 }
 
 .card_object_container {
-   display: flex;
-   flex-direction: column;
-   row-gap: 20px;
-   &__wrapper {
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+  &__wrapper {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 15px;
+    border: 1px solid darkgrey;
+    border-radius: 10px;
+    box-shadow: 0px 3px 8px 2px rgba(34, 60, 80, 0.2);
+    font-size: 1.25rem;
+    color: black;
+    row-gap: 6px;
+    transition: all 0.4s ease-in-out;
+
+    &:hover {
+      box-shadow: 0px 3px 10px 4px rgba(34, 60, 80, 0.2);
+      transform: scale(1.02);
+    }
+
+    &__header {
+      display: flex;
+      column-gap: 10px;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+    &__info {
       display: flex;
       flex-direction: column;
-      padding: 10px 15px;
-      border: 1px solid darkgrey;
-      border-radius: 10px;
-      box-shadow: 0px 3px 8px 2px rgba(34, 60, 80, 0.2);
-      font-size: 1.25rem;
-      color: black;
-      row-gap: 6px;
-      transition: all 0.4s ease-in-out;
-
-      &:hover {
-         box-shadow: 0px 3px 10px 4px rgba(34, 60, 80, 0.2);
-         transform: scale(1.02);
+      cursor: pointer;
+      &__block {
+        display: flex;
+        column-gap: 10px;
+        &__title {
+        }
+        &__divider {
+          flex: 1;
+          border-bottom: 1px dashed gray;
+          margin-bottom: 4px;
+        }
+        &__value {
+        }
       }
-
-      &__header {
-         display: flex;
-         column-gap: 10px;
-         justify-content: space-between;
-         cursor: pointer;
-      }
-      &__info {
-         display: flex;
-         flex-direction: column;
-         cursor: pointer;
-         &__block {
-            display: flex;
-            column-gap: 10px;
-            &__title {
-            }
-            &__divider {
-               flex: 1;
-               border-bottom: 1px dashed gray;
-               margin-bottom: 4px;
-            }
-            &__value {
-            }
-         }
-      }
-      &__footer {
-         display: flex;
-         justify-content: flex-end;
-      }
-   }
+    }
+    &__footer {
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
 }

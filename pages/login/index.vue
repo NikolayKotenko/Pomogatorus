@@ -1,14 +1,14 @@
 <template>
-   <div>
-      <LoginAuth />
-   </div>
+  <div>
+    <LoginAuth />
+  </div>
 </template>
 
 <script>
 import LoginAuth from '../../components/frontLayouts/LoginAuth'
 export default {
-   name: 'index',
-   components: { LoginAuth },
+  name: 'index',
+  components: { LoginAuth },
 }
 </script>
 

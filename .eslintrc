@@ -1,12 +1,20 @@
 {
-   "root": true,
-   "env": {
-      "browser": true,
-      "node": true
-   },
-   "parser": "@babel/eslint-parser",
-   "parserOptions": {
-      "sourceType": "module"
-   },
-   "extends": ["@nuxtjs", "plugin:prettier/recommended", "prettier"]
+  "root": true,
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "parser": "@babel/eslint-parser",
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "rules": {
+    "max-len": [
+      "error",
+      {
+        "code": 120
+      }
+    ]
+  },
+  "extends": ["@nuxtjs", "plugin:prettier/recommended", "prettier"]
 }
