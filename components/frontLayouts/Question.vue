@@ -341,6 +341,16 @@ import CompareArrays from "../../utils/compareArrays";
 
 export default {
   name: "Question",
+  props: {
+    propsData: {
+      type: Object,
+      default: () => ({}),
+    },
+    propsIndex: {
+      type: Number,
+      default: 0,
+    },
+  },
   data: () => ({
     question_data: {},
     index_component: null,
@@ -372,7 +382,13 @@ export default {
     uploadedFiles: [],
   }),
   mounted() {
-    this.getData()
+    if (Object.keys(this.propsData).length) {
+      this.index_questions = this.propsIndex
+      this.index_component = Math.floor(Math.random() * 100)
+      this.question_data = this.propsData
+    } else {
+      this.getData()
+    }
   },
   watch: {
     'answer': {

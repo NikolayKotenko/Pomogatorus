@@ -4,6 +4,7 @@
       :href="$route.path+'/'+item.code"
       hover
       v-for="(item, key) in $store.state.PopularSelectionsModule.list_selections"
+      :key="key"
     >
       <v-card-title>
         {{ item.name }}
@@ -21,8 +22,6 @@ export default {
   data: () => ({
   }),
   meta: {
-  },
-  async fetch() {
   },
   created() {
     // if (process.server) {

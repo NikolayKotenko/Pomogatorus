@@ -4,12 +4,12 @@ import Vue from "vue";
 export default {
   state: {
     list_selections: [],
-    popular_selections: [],
+    popular_selections: {},
     loadingState: false,
   },
   mutations: {
     setPopularSelections(state, result) {
-      state.popular_selections = [];
+      state.popular_selections = {};
       state.popular_selections = result;
 
       state.loadingState = false;

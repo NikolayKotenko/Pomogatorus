@@ -1,36 +1,43 @@
 <template>
   <v-app>
-    <div class="tag-template">
-<!--      <v-textarea-->
-<!--        outlined-->
-<!--        label="Default style"-->
-<!--        value="Learning about textareas at Coding Beauty!"-->
-<!--      >-->
-<!--      </v-textarea>-->
-      <v-textarea
-        outlined
-        single-line
-        v-if="$store.state.PopularSelectionsModule.popular_selections.length !== 0"
-        :loading="$store.state.PopularSelectionsModule.loadingState"
-      >
-        <template v-slot:label>
+    <template v-if="Object.keys($store.state.PopularSelectionsModule.popular_selections).length">
+      <div class="tag-template">
+        <!--      <v-textarea-->
+        <!--        outlined-->
+        <!--        label="Default style"-->
+        <!--        value="Learning about textareas at Coding Beauty!"-->
+        <!--      >-->
+        <!--      </v-textarea>-->
+        <v-textarea
+          outlined
+          single-line
+          :loading="$store.state.PopularSelectionsModule.loadingState"
+        >
+          <template v-slot:label>
             <p v-html="$store.state.PopularSelectionsModule.popular_selections.tag.description"></p>
-        </template>
-      </v-textarea>
-    </div>
-    <div class="auth-template mt-5">
-      <LoginAuth/>
-    </div>
-    <div class="article-template list_container mt-5">
-      <Article
-        v-for="(article, index) in $store.state.PopularSelectionsModule.popular_selections.articles"
-        :key="index"
-        :article="article"
-      />
-    </div>
-    <div class="question-template mt-5">
-      <question v-if="$store.state.PopularSelectionsModule.popular_selections.length !==0"></question>
-    </div>
+          </template>
+        </v-textarea>
+      </div>
+      <div class="auth-template mt-5">
+        <LoginAuth/>
+      </div>
+      <div class="article-template list_container mt-5">
+        <Article
+          v-for="(article, index) in $store.state.PopularSelectionsModule.popular_selections.articles"
+          :key="index"
+          :article="article"
+        />
+      </div>
+      <div class="question-template mt-5">
+        <Question
+          v-for="(question, index) in $store.state.PopularSelectionsModule.popular_selections.questions"
+          :key="index"
+          :props-data="question"
+          :props-index="question.id"
+        />
+        <!--      <question v-if="$store.state.PopularSelectionsModule.popular_selections.length !==0"></question>-->
+      </div>
+    </template>
   </v-app>
 </template>
 
