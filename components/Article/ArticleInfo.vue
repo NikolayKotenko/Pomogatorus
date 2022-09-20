@@ -38,12 +38,13 @@
             </span>
           </div>
           <div class="article_info_wrapper__info__left__block__value tags">
-            <span
+            <a
               v-for="(tag, index) in article_data._all_tags"
               :key="index"
+              :href="'/podborki/'+tag.code"
             >
               {{ tag.name.trim() + (index === article_data._all_tags.length-1 ? '' : ',') }}
-            </span>
+            </a>
           </div>
         </div>
         <div class="article_info_wrapper__info__left__block">
@@ -67,18 +68,7 @@
           dense
         >
           <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                value="normal"
-                v-bind="attrs"
-                v-on="on"
-                large
-              >
-                <v-icon>
-                  mdi-text-box-search-outline
-                </v-icon>
-              </v-btn>
-            </template>
+
             <span>Переключить на обычное отображение статьи</span>
           </v-tooltip>
           <v-tooltip bottom>
