@@ -2,12 +2,7 @@
   <v-app>
     <template v-if="Object.keys($store.state.PopularSelectionsModule.popular_selections).length">
       <div class="tag-template">
-        <v-textarea :value="$store.state.PopularSelectionsModule.popular_selections.tag.description" readonly>
-        </v-textarea>
-        <v-textarea :loading="$store.state.PopularSelectionsModule.loadingState" outlined single-line>
-          <template v-slot:label>
-            <p v-html=""></p>
-          </template>
+        <v-textarea class="textarea" v-html="$store.state.PopularSelectionsModule.popular_selections.tag.description" readonly>
         </v-textarea>
       </div>
       <div class="auth-template mt-5">
@@ -107,4 +102,17 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/styles/lists';
+
+.tag-template{
+  .textarea{
+    box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+
+    padding: 1em;
+    word-break: break-word;
+  }
+}
+.auth_container{
+  margin-right: auto!important;
+  margin:unset;
+}
 </style>

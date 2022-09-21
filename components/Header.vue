@@ -33,6 +33,11 @@ export default {
           path: '/articles',
           icon: 'mdi-message-text',
         },
+        {
+          title: 'Подборки',
+          path: '/podborki',
+          icon: 'mdi-bullseye-arrow',
+        },
       ],
       debounceTimeout: null,
     }

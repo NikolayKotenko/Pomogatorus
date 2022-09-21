@@ -32,13 +32,7 @@ export default {
       this.state.loadingState = true
 
       const response = await Request.get(this.state.BASE_URL + '/entity/popular-selections/' + code)
-      console.log('response')
-      console.log(response)
       commit('setPopularSelections', response.data)
-      commit('M_selectedComponent', response.data.questions[0])
-      commit('M_selectedComponent', {})
-      commit('M_selectedComponent', response.data.questions[1])
-      commit('M_selectedComponent', {})
       return response
     },
   },

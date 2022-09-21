@@ -1,6 +1,7 @@
 <template>
-  <div class="list_container">
+  <div>
     <v-card
+      class="ma-5"
       :href="$route.path + '/' + item.code"
       hover
       v-for="(item, key) in $store.state.PopularSelectionsModule.list_selections"

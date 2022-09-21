@@ -50,6 +50,8 @@ class Status_sending {
 
 class Status_warning {
   constructor(type, auth_block) {
+    if (!auth_block) auth_block = 0;
+
     this.color = 'yellow darken-1'
     this.type = type
     this.icon = 'mdi-alert-circle-outline'
