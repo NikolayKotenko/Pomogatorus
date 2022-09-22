@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import Vuex from 'vuex'
 
 import AuthModule from './modules/auth'
@@ -19,6 +18,7 @@ const createStore = () => {
 
       /* Objects */
       showCabinet: false,
+      isAnotherOpen: false,
       showDetailObj: false,
       loading_objects: false,
       listObjects: [],
