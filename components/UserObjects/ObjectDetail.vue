@@ -1,43 +1,48 @@
 <template>
   <v-card>
-    <v-card-title class="detail_object_title"> Объект: {{ object_data.address }} </v-card-title>
-    <v-card-text class="detail_object_wrapper">
+    <v-card-title class='detail_object_title d-flex justify-space-between'>
+           <span>
+             Объект: {{ object_data.address }}
+            </span>
+      <v-icon large @click='closeDetail'>mdi-close</v-icon>
+    </v-card-title>
+    <v-card-text class='detail_object_wrapper'>
       <h3>Параметры:</h3>
-      <div class="detail_object_block" v-for="(param, index) in paramsDetail">
-        <span class="detail_object_block__count">
-          {{ index + 1 }}
-        </span>
-        <span class="detail_object_block__title" v-if="!isMobile">
-          {{ param.value }}
-        </span>
-        <div class="detail_object_block__divider" v-if="!isMobile"></div>
+      <div v-for='(param, index) in paramsDetail' class='detail_object_block'>
+          <span class='detail_object_block__count'>
+            {{ index + 1 }}
+          </span>
+        <span v-if='!isMobile' class='detail_object_block__title'>
+            {{ param.value }}
+          </span>
+        <div v-if='!isMobile' class='detail_object_block__divider'></div>
         <div
-          class="detail_object_block__value"
-          :class="{
-            full_size_value: param.canEdit && !isMobile,
-          }"
+          :class='{
+              full_size_value: param.canEdit && !isMobile,
+            }'
+          class='detail_object_block__value'
         >
-          <template v-if="param.canEdit">
+          <template v-if='param.canEdit'>
             <v-text-field
+              v-model='refactored_object_data[param.key]'
+              :label="isMobile ? param.value : ''"
+              :placeholder='`Введите ${param.value}`'
+              :solo='!isMobile'
               dense
               hide-details
-              :solo="!isMobile"
-              :placeholder="`Введите ${param.value}`"
-              :label="isMobile ? param.value : ''"
-              v-model="refactored_object_data[param.key]"
             >
             </v-text-field>
           </template>
           <template v-else>
-            <span v-if="isMobile">{{ `${param.value} - ${object_data[param.key]}` }}</span>
+            <span v-if='isMobile'>{{ `${param.value} - ${object_data[param.key]}` }}</span>
             <span v-else> {{ object_data[param.key] }} </span>
           </template>
         </div>
       </div>
     </v-card-text>
-    <v-card-actions class="detail_obj_footer">
-      <v-btn text color="red lighten-1" @click="closeDetail"> Закрыть </v-btn>
-      <v-btn outlined color="green lighten-1" @click="saveData"> Сохранить </v-btn>
+    <v-card-actions class='detail_obj_footer'>
+      <v-btn color='red lighten-1' text @click='closeDetail'> Закрыть</v-btn>
+      <v-btn color='green lighten-1' outlined @click='saveData'> Сохранить</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -52,117 +57,118 @@ export default {
     paramsDetail: [
       {
         key: 'address',
-        value: 'Адресс',
-        canEdit: true,
+        value: 'Адрес',
+        canEdit: true
       },
       {
         key: 'notes',
         value: 'Заметки',
-        canEdit: true,
+        canEdit: true
       },
       {
         key: 'id_type_object',
         value: 'Тип объекта',
-        canEdit: true,
+        canEdit: true
       },
       {
         key: 'id_floor',
         value: 'Этажность',
-        canEdit: true,
+        canEdit: true
       },
       {
         key: 'id_wall',
         value: 'Тип стен',
-        canEdit: true,
+        canEdit: true
       },
       {
         key: 'id_fuel_current',
         value: 'Тип топлива',
-        canEdit: true,
+        canEdit: true
       },
       {
         key: 'id_fuel_reserve',
         value: 'Тип топлива резервный',
-        canEdit: true,
+        canEdit: true
       },
       {
         key: 'id_fuel_future',
         value: 'Тип топлива перспективный',
-        canEdit: true,
+        canEdit: true
       },
       {
         key: 'id_boiler_room',
         value: 'Расположение котельной',
-        canEdit: true,
+        canEdit: true
       },
       {
         key: 'number_of_bidets',
         value: 'Кол-во биде',
-        canEdit: true,
+        canEdit: true
       },
       {
         key: 'number_of_baths',
         value: 'Кол-во ванн',
-        canEdit: true,
+        canEdit: true
       },
       {
         key: 'number_of_showers',
         value: 'Кол-во душей',
-        canEdit: true,
+        canEdit: true
       },
       {
         key: 'number_of_sinks',
         value: 'Кол-во раковин',
-        canEdit: true,
+        canEdit: true
       },
       {
         key: 'number_of_toilets',
         value: 'Кол-во унитазов',
-        canEdit: true,
+        canEdit: true
       },
       {
         key: 'id_cold_water_source',
         value: 'Источник холодной воды',
-        canEdit: true,
+        canEdit: true
       },
       {
         key: 'dedicated_electrical_power',
         value: 'Выделенная электрическая мощность',
-        canEdit: true,
+        canEdit: true
       },
       {
         key: 'heat_loss_total',
         value: 'Общие теплопотери',
-        canEdit: true,
+        canEdit: true
       },
       {
         key: 'basement_area',
         value: 'Наличие подвала',
-        canEdit: true,
+        canEdit: true
       },
       {
         key: 'heating_area',
         value: 'Отапливаемая площадь',
-        canEdit: true,
+        canEdit: true
       },
       {
         key: 'total_area',
         value: 'Общая площадь',
-        canEdit: true,
+        canEdit: true
       },
       {
         key: 'created_at',
         value: 'Дата создания',
-        canEdit: false,
+        canEdit: false
       },
       {
         key: 'updated_at',
         value: 'Дата изменения',
-        canEdit: false,
-      },
-    ],
+        canEdit: false
+      }
+    ]
   }),
-  mounted() {},
+  mounted() {
+  },
   computed: {
     isMobile() {
       return this.$device.isMobile
@@ -181,7 +187,7 @@ export default {
         }
       }
       return refactored
-    },
+    }
   },
   methods: {
     isJson(str) {
@@ -242,15 +248,15 @@ export default {
         number_of_baths: this.refactored_object_data.number_of_baths ? this.refactored_object_data.number_of_baths : '',
         number_of_bidets: this.refactored_object_data.number_of_bidets
           ? this.refactored_object_data.number_of_bidets
-          : '',
+          : ''
       })
       this.closeDetail()
-    },
-  },
+    }
+  }
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 @media only screen and (max-width: 600px) {
   .detail_object_wrapper {
     row-gap: 25px !important;
@@ -277,11 +283,13 @@ export default {
   display: flex;
   column-gap: 10px;
   align-items: flex-end;
+
   &__divider {
     flex: 1;
     border-bottom: 1px dashed darkgrey;
     margin-bottom: 4px;
   }
+
   &__value {
   }
 }

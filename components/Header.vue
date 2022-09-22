@@ -1,40 +1,38 @@
 <template>
-  <v-app-bar class="header" dark elevate-on-scroll app id="navbar">
-    <v-toolbar-title class="header_title">
-      <router-link to="/" tag="span" style="cursor: pointer"> Главная </router-link>
+  <v-app-bar id='navbar' app class='header' dark elevate-on-scroll>
+    <v-toolbar-title class='header_title'>
+      <router-link style='cursor: pointer' tag='span' to='/'> Главная</router-link>
     </v-toolbar-title>
-    <v-toolbar-items class="header_center">
-      <v-btn text v-for="item in menuItems" :key="item.title" :to="item.path" class="text-capitalize link_btn">
-        <v-icon left dark>{{ item.icon }}</v-icon>
+    <v-toolbar-items class='header_center'>
+      <v-btn v-for='item in menuItems' :key='item.title' :to='item.path' class='text-capitalize link_btn' text>
+        <v-icon dark left>{{ item.icon }}</v-icon>
         {{ item.title }}
       </v-btn>
     </v-toolbar-items>
-    <v-toolbar-items class="header_right">
-      <v-btn text class="text-capitalize link_btn" @click="$store.state.showCabinet = true">
-        <v-icon :large="isMobile">mdi-home-account</v-icon>
-        <span v-if="!isMobile">Кабинет</span>
+    <v-toolbar-items class='header_right'>
+      <v-btn class='text-capitalize link_btn' text @click='$store.state.showCabinet = true'>
+        <v-icon :large='isMobile'>mdi-home-account</v-icon>
+        <span v-if='!isMobile'>Кабинет</span>
       </v-btn>
     </v-toolbar-items>
-
-    <ListObjects />
   </v-app-bar>
 </template>
 
 <script>
-import ListObjects from './UserObjects/ListObjects'
 export default {
   name: 'Header',
-  components: { ListObjects },
   data() {
     return {
       menuItems: [
         {
           title: 'Статьи',
           path: '/articles',
-          icon: 'mdi-message-text',
-        },
+          icon: 'mdi-message-text'
+        }
       ],
       debounceTimeout: null,
+      openLeftNavigationDrawer: false,
+      openRightNavigationDrawer: false
     }
   },
   mounted() {
@@ -45,9 +43,20 @@ export default {
   computed: {
     isMobile() {
       return this.$device.isMobile
-    },
+    }
   },
   methods: {
+    handleDrawerChange(type, isOpen) {
+      if (type === 'left') {
+        this.openLeftNavigationDrawer = isOpen
+      } else {
+        this.openRightNavigationDrawer = isOpen
+      }
+    },
+    anotherOpened() {
+      this.handleDrawerChange('left', true)
+    },
+
     setHeader(value) {
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
       this.debounceTimeout = setTimeout(() => {
@@ -58,7 +67,7 @@ export default {
       if (this.$device.isDesktop) {
         let prevScrollpos = window.pageYOffset
         const _this = this
-        window.onscroll = function () {
+        window.onscroll = function() {
           let currentScrollPos = window.pageYOffset
           if (prevScrollpos > currentScrollPos) {
             // console.log('pokazuvay')
@@ -72,12 +81,12 @@ export default {
           prevScrollpos = currentScrollPos
         }
       }
-    },
-  },
+    }
+  }
 }
 </script>
 
-<style scoped lang="scss">
+<style lang='scss' scoped>
 .header {
   display: flex;
   flex: unset !important;
@@ -86,6 +95,7 @@ export default {
   top: 0;
   z-index: 404;
   transition: all 0.4s ease-in-out;
+
   ::v-deep .v-toolbar__content {
     width: 100%;
     max-width: 1140px;
@@ -94,18 +104,22 @@ export default {
     column-gap: 10px;
   }
 }
+
 .header_center {
   flex: 1;
 }
+
 .header_right {
   flex: unset;
 }
+
 .link_btn {
   font-size: 1.25rem !important;
   line-height: 1.5;
   letter-spacing: 1px;
   font-weight: 400;
 }
+
 .header_title {
   font-size: 1.25rem !important;
   line-height: 1.5;

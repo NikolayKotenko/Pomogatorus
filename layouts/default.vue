@@ -1,10 +1,21 @@
 <template>
-  <v-app class="app">
+  <v-app class='app'>
     <Header />
-    <SubHeader v-if="$device.isDesktop" />
-    <v-main class="main" id="main_content">
+    <SubHeader v-if='$device.isDesktop' />
+    <v-main id='main_content' class='main'>
       <Nuxt />
     </v-main>
+    <ListObjects />
+    <!--    <v-navigation-drawer-->
+    <!--      v-model='$store.state.isAnotherOpen'-->
+    <!--      :width='modalWidth'-->
+    <!--      absolute-->
+    <!--      class='secondModal'-->
+    <!--      right-->
+    <!--      temporary-->
+    <!--    >-->
+    <!--      <ObjectDetail v-if='$store.state.isAnotherOpen' />-->
+    <!--    </v-navigation-drawer>-->
   </v-app>
 </template>
 
@@ -13,21 +24,23 @@ import Logging from '@/services/logging'
 import Request from '@/services/request'
 import Header from '../components/Header'
 import SubHeader from '../components/SubHeader'
+import ListObjects from '../components/UserObjects/ListObjects'
+import ObjectDetail from '../components/UserObjects/ObjectDetail'
 
 export default {
   name: 'DefaultLayout',
-  components: { SubHeader, Header },
+  components: { SubHeader, Header, ListObjects, ObjectDetail },
   async fetch() {
     const options = {
       method: 'GET',
-      url: `${this.$store.state.BASE_URL}/entity/articles/`,
+      url: `${this.$store.state.BASE_URL}/entity/articles/`
     }
     try {
       const articles_request = await this.$axios(options)
       this.articles_breadcrumbs = articles_request.data.data.map((elem) => {
         return {
           url: `https://pomogatorus.ru/articles/${elem.id}`,
-          text: elem.preview,
+          text: elem.preview
         }
       })
     } catch (error) {
@@ -39,14 +52,14 @@ export default {
       breadcrumbs: [
         {
           url: 'https://pomogatorus.ru',
-          text: 'Этот сервис поможем вам в подборе и установке газового оборудования',
+          text: 'Этот сервис поможем вам в подборе и установке газового оборудования'
         },
         {
           url: 'https://pomogatorus.ru/articles',
-          text: 'Эти статьи помогут вам подобрать решение для вашей проблемы',
-        },
+          text: 'Эти статьи помогут вам подобрать решение для вашей проблемы'
+        }
       ],
-      articles_breadcrumbs: [],
+      articles_breadcrumbs: []
     }
   },
   jsonld() {
@@ -55,14 +68,14 @@ export default {
       position: index + 1,
       item: {
         '@id': item.url,
-        name: item.text,
-      },
+        name: item.text
+      }
     }))
     return [
       {
         '@context': 'https://schema.org',
         '@type': 'BreadcrumbList',
-        itemListElement: items,
+        itemListElement: items
       },
       {
         '@context': 'https://schema.org',
@@ -75,10 +88,10 @@ export default {
           addressLocality: 'Chelyabinsk',
           addressRegion: 'Chelyabinsk region',
           postalCode: '454000',
-          addressCountry: 'Russia',
+          addressCountry: 'Russia'
         },
-        sameAs: ['https://www.instagram.com/pomogatorus_official/'],
-      },
+        sameAs: ['https://www.instagram.com/pomogatorus_official/']
+      }
     ]
   },
   mounted() {
@@ -89,12 +102,19 @@ export default {
       if (!this.articles_breadcrumbs || !this.articles_breadcrumbs.length) return this.breadcrumbs
       return this.articles_breadcrumbs.concat(this.breadcrumbs)
     },
+    modalWidth() {
+      if (process.client) {
+        return window.innerWidth * 0.4
+      } else {
+        return 0
+      }
+    }
   },
   methods: {
     async fuckinMiddleware() {
       if (this.$route.query.userEmail) {
         await this.$store.dispatch('loginUser', {
-          userEmail: this.$route.query.userEmail,
+          userEmail: this.$route.query.userEmail
         })
       } else {
         if (Request.getAccessTokenInCookies() && this.$route.query.agent) {
@@ -112,12 +132,12 @@ export default {
       }
 
       this.$store.commit('change_refactoring_content', false)
-    },
-  },
+    }
+  }
 }
 </script>
 
-<style lang="scss">
+<style lang='scss'>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 @import 'assets/styles/main';
 
@@ -125,13 +145,16 @@ body {
   background: #f3f3f3 !important;
   font-family: 'Roboto', sans-serif;
 }
+
 .app {
   background: #f3f3f3 !important;
 }
+
 ::v-deep .v-btn {
   box-shadow: unset !important;
   background-color: unset !important;
 }
+
 .main {
   width: 1140px;
   margin: 5px auto 0 auto;
@@ -142,5 +165,9 @@ body {
   //-webkit-box-shadow: 0px 0px 15px -1px rgba(34, 60, 80, 0.2);
   //-moz-box-shadow: 0px 0px 15px -1px rgba(34, 60, 80, 0.2);
   //box-shadow: 0px 0px 15px -1px rgba(34, 60, 80, 0.2);
+}
+
+.secondModal {
+  z-index: 666 !important;
 }
 </style>
