@@ -9,6 +9,7 @@
     &__preview_content {
       &__short_info {
         height: 140px !important;
+
         &__short {
           -webkit-line-clamp: 3 !important;
         }
@@ -19,10 +20,10 @@
     font-size: 10px !important;
   }
 }
+
 @media only screen and (max-width: 924px) {
   .list_container {
     grid-template-columns: repeat(2, 1fr) !important;
-    //font-size: 12px;
   }
 }
 
@@ -36,14 +37,15 @@
 .list_elem_wrapper {
   display: flex;
   flex-direction: column;
+
   &__img_container {
     display: flex;
     align-content: center;
     justify-content: center;
     align-items: center;
     position: relative;
-    height: 170px;
-    //max-width: 332px;
+    max-height: 335px;
+
     &__img {
       width: 100%;
       height: 100%;
@@ -52,6 +54,7 @@
       -o-object-fit: cover;
     }
   }
+
   &__preview_content {
     display: flex;
     flex-direction: column;
@@ -61,19 +64,22 @@
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
-      padding: 10px 10px 0 10px;
+      padding: 10px;
       height: 200px;
+
       &__title {
-        font-size: 1.3em;
+        font-size: 1.2em;
         line-height: 28px;
         background: linear-gradient(0deg, slateblue, slateblue) no-repeat right bottom / 0 var(--bg-h);
         transition: background-size 350ms;
         --bg-h: 2px;
+
         &:where(:hover, :focus-visible) {
           background-size: 100% var(--bg-h);
           background-position-x: left;
         }
       }
+
       &__short {
         padding-top: 6px;
         display: -webkit-box;
@@ -82,6 +88,7 @@
         overflow: hidden;
         color: #7a7a7a;
         font-weight: 500;
+        font-size: 0.95em !important;
       }
     }
   }
@@ -96,6 +103,7 @@
   padding: 5px;
   background: #fcfcfc;
   color: #999999;
+
   &__img {
     width: 28px;
     height: 28px;
@@ -103,14 +111,17 @@
     -o-object-fit: cover;
     border-radius: 50%;
   }
+
   &__name {
     flex: 1;
   }
+
   .preview {
     color: #1976d2;
     font-size: 1.2em;
     font-weight: 500;
   }
+
   &__date {
   }
 }
@@ -122,6 +133,7 @@
 
 .article_card {
   transition: all 0.4s ease-in-out !important;
+
   &:hover {
     transform: scale(1.1);
     box-shadow: 0px 5px 20px 7px rgba(34, 60, 80, 0.2) !important;
