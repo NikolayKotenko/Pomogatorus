@@ -10,7 +10,7 @@
       </v-btn>
     </v-toolbar-items>
     <v-toolbar-items class='header_right'>
-      <v-btn class='text-capitalize link_btn' text @click='$store.state.showCabinet = true'>
+      <v-btn class='text-capitalize link_btn' text @click='openModals'>
         <v-icon :large='isMobile'>mdi-home-account</v-icon>
         <span v-if='!isMobile'>Кабинет</span>
       </v-btn>
@@ -19,6 +19,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   name: 'Header',
   data() {
@@ -32,10 +34,10 @@ export default {
         {
           title: 'Подборки',
           path: '/podborki',
-          icon: 'mdi-bullseye-arrow',
-        },
+          icon: 'mdi-bullseye-arrow'
+        }
       ],
-      debounceTimeout: null,
+      debounceTimeout: null
     }
   },
   mounted() {
@@ -44,11 +46,19 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      listModal: state => state.listModal
+    }),
+
     isMobile() {
       return this.$device.isMobile
     }
   },
   methods: {
+    openModals() {
+      // TODO: Продумать логику открывания модалки независимо от index'a
+      this.listModal[0].isOpen = true
+    },
     setHeader(value) {
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
       this.debounceTimeout = setTimeout(() => {
@@ -85,7 +95,7 @@ export default {
   width: 100%;
   position: sticky;
   top: 0;
-  z-index: 404;
+  z-index: 399;
   transition: all 0.4s ease-in-out;
 
   ::v-deep .v-toolbar__content {

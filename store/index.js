@@ -24,10 +24,28 @@ const createStore = () => {
       listObjects: [],
       currentObject: {},
       idQuestionWhenModal: null,
+
+      /* MODALS */
+      listModal: [
+        {
+          name: 'ListObjects',
+          isOpen: false,
+          index: 1,
+        },
+        {
+          name: 'ObjectDetail',
+          isOpen: false,
+          index: 2,
+        },
+      ],
+      modalCurrentObject: {},
     },
     getters: {
       open_close_cabinet(state) {
         return state.showCabinet
+      },
+      isSomeOpen(state) {
+        return state.listModal.map((elem) => elem.isOpen).includes(true)
       },
     },
     mutations: {
@@ -66,6 +84,11 @@ const createStore = () => {
       },
       set_idQuestionWhenModal(state, value) {
         state.idQuestionWhenModal = value
+      },
+
+      /* MODALS */
+      set_listModal(state, payload) {
+        state.listModal = payload
       },
     },
     actions: {
