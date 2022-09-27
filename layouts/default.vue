@@ -5,31 +5,32 @@
     <v-main id='main_content' class='main'>
       <Nuxt />
     </v-main>
-    <ListObjects />
-    <!--    <v-navigation-drawer-->
-    <!--      v-model='$store.state.isAnotherOpen'-->
-    <!--      :width='modalWidth'-->
-    <!--      absolute-->
-    <!--      class='secondModal'-->
-    <!--      right-->
-    <!--      temporary-->
-    <!--    >-->
-    <!--      <ObjectDetail v-if='$store.state.isAnotherOpen' />-->
-    <!--    </v-navigation-drawer>-->
+
+    <!-- КАСКАДНЫЕ МОДАЛКИ -->
+    <div
+      v-for='(item, index) in listModal'
+      :key='index'
+    >
+      <Right :data='item' :index='index' />
+    </div>
   </v-app>
 </template>
 
 <script>
 import Logging from '@/services/logging'
 import Request from '@/services/request'
+
 import Header from '../components/Header'
 import SubHeader from '../components/SubHeader'
 import ListObjects from '../components/UserObjects/ListObjects'
 import ObjectDetail from '../components/UserObjects/ObjectDetail'
+import Right from '../components/CascadModels/Right'
+
+import { mapState } from 'vuex'
 
 export default {
   name: 'DefaultLayout',
-  components: { SubHeader, Header, ListObjects, ObjectDetail },
+  components: { Right, SubHeader, Header, ListObjects, ObjectDetail },
   async fetch() {
     const options = {
       method: 'GET',
@@ -98,16 +99,13 @@ export default {
     this.fuckinMiddleware()
   },
   computed: {
+    ...mapState({
+      listModal: state => state.listModal
+    }),
+
     computedBreadcrumbs() {
       if (!this.articles_breadcrumbs || !this.articles_breadcrumbs.length) return this.breadcrumbs
       return this.articles_breadcrumbs.concat(this.breadcrumbs)
-    },
-    modalWidth() {
-      if (process.client) {
-        return window.innerWidth * 0.4
-      } else {
-        return 0
-      }
     }
   },
   methods: {
@@ -139,7 +137,7 @@ export default {
 
 <style lang='scss'>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
-@import 'assets/styles/main';
+@import 'assets/styles/style';
 
 body {
   background: #f3f3f3 !important;
@@ -162,12 +160,5 @@ body {
   padding: 10px 15px !important;
   border-radius: 5px;
   height: 100%;
-  //-webkit-box-shadow: 0px 0px 15px -1px rgba(34, 60, 80, 0.2);
-  //-moz-box-shadow: 0px 0px 15px -1px rgba(34, 60, 80, 0.2);
-  //box-shadow: 0px 0px 15px -1px rgba(34, 60, 80, 0.2);
-}
-
-.secondModal {
-  z-index: 666 !important;
 }
 </style>

@@ -22,13 +22,6 @@
       <v-btn v-if='selectedObj' color='green lighten-1' min-width='150' outlined small> Выбран</v-btn>
       <v-btn v-else color='primary' min-width='150' small @click='setObject'> Выбрать</v-btn>
     </div>
-
-    <v-dialog
-      v-model='showDetailObj'
-      max-width='600'
-    >
-      <ObjectDetail v-if='showDetailObj' :object_data='object_data' @closeDetail='closeDetail' />
-    </v-dialog>
   </div>
 </template>
 
@@ -44,13 +37,7 @@ export default {
   }),
   mounted() {
   },
-  watch: {
-    'showDetailObj': {
-      handler(v) {
-        this.$store.state.isAnotherOpen = v
-      }
-    }
-  },
+  watch: {},
   computed: {
     selectedObj() {
       if (!this.$store.state.currentObject) return false
@@ -70,7 +57,9 @@ export default {
       this.$store.commit('set_currentObject', this.object_data)
     },
     openDetailCard() {
-      this.showDetailObj = true
+      this.$store.state.modalCurrentObject = this.object_data
+      // TODO: Продумать логику открывания модалки независимо от index'a
+      this.$store.state.listModal[1].isOpen = true
     },
     async closeDetail() {
       this.showDetailObj = false

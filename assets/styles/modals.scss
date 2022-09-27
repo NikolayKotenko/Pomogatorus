@@ -1,0 +1,12 @@
+@media only screen and (max-width: 600px) {
+  .modal_wrapper {
+    padding: 10px !important;
+  }
+}
+
+.modal_wrapper {
+  height: 100%;
+  padding: 20px 30px;
+  display: flex;
+  flex-direction: column;
+}
