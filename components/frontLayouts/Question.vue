@@ -1,88 +1,124 @@
 <template>
-  <div class="question_wrapper question_hover" contenteditable="false" :id="`component_wrapper-${index_component}`">
-    <div class="question_wrapper__content">
-      <div class="question_wrapper__title">
-        <h3>{{ index_questions }}. {{ question_data.name }}</h3>
-        <div class="helper_wrapper" v-if="question_data.title">
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <img
-                class="help_img"
-                :src="require(`~/assets/svg/help-circle.svg`)"
-                alt="help"
-                v-bind="attrs"
-                v-on="on"
-              />
-            </template>
-            <span>{{ question_data.title }}</span>
-          </v-tooltip>
+  <div :id='`component_wrapper-${index_component}`' class='question_wrapper question_hover' contenteditable='false'>
+    <template v-if='Object.keys(question_data).length'>
+      <div class='question_wrapper__content'>
+        <div class='question_wrapper__title'>
+          <h3>{{ index_questions }}. {{ question_data.name }}</h3>
+          <div v-if='question_data.title' class='helper_wrapper'>
+            <v-tooltip bottom>
+              <template v-slot:activator='{ on, attrs }'>
+                <img
+                  :src='require(`~/assets/svg/help-circle.svg`)'
+                  alt='help'
+                  class='help_img'
+                  v-bind='attrs'
+                  v-on='on'
+                />
+              </template>
+              <span>{{ question_data.title }}</span>
+            </v-tooltip>
+          </div>
         </div>
+        <!-- STATUS -->
+        <transition name='slide-fade'>
+          <div v-if='check_status' class='question_wrapper__content__status'>
+            <v-progress-circular
+              v-if="status_question.type === 'sending'"
+              :size='20'
+              color='primary'
+              indeterminate
+            ></v-progress-circular>
+          </div>
+        </transition>
       </div>
-      <!-- STATUS -->
-      <transition name="slide-fade">
-        <div class="question_wrapper__content__status" v-if="check_status">
-          <v-progress-circular
-            v-if="status_question.type === 'sending'"
-            :size="20"
-            color="primary"
-            indeterminate
-          ></v-progress-circular>
-        </div>
-      </transition>
-    </div>
 
-    <!-- QUESTION -->
-    <div class="question_wrapper__content__question">
-      <template v-if="question_data.id_type_answer == '1'">
-        <v-text-field
-          dense
-          hide-details
-          solo
-          placeholder="Введите ответ"
-          v-model="answer"
-          :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
-          @change="changeAnswer()"
-        >
-        </v-text-field>
-      </template>
-      <template v-else-if="question_data.id_type_answer == '2'">
-        <v-textarea
-          solo
-          dense
-          hide-details
-          clearable
-          auto-grow
-          rows="3"
-          row-height="25"
-          placeholder="Введите ответ"
-          v-model="answer"
-          :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
-          @change="changeAnswer()"
-        >
-        </v-textarea>
-      </template>
-      <template v-else-if="question_data.id_type_answer == '3'">
-        <v-radio-group dense hide-details v-model="answer">
-          <v-radio
-            v-for="(item, index) in value_type_answer"
-            :key="index"
-            :value="item.answer"
+      <!-- QUESTION -->
+      <div class='question_wrapper__content__question'>
+        <template v-if="question_data.id_type_answer == '1'">
+          <v-text-field
+            v-model='answer'
             :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
-            @change="changeAnswer(item.dataEnv)"
-            @click="getIdElem($event)"
+            dense
+            hide-details
+            placeholder='Введите ответ'
+            solo
+            @change='changeAnswer()'
           >
-            <template slot="label">
-              <div style="display: flex; column-gap: 20px; align-items: flex-start">
-                <span v-html="item.answer" class="answerList" @click.stop></span>
-                <div class="helper_wrapper" v-if="item.commentary" @click.stop>
+          </v-text-field>
+        </template>
+        <template v-else-if="question_data.id_type_answer == '2'">
+          <v-textarea
+            v-model='answer'
+            :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
+            auto-grow
+            clearable
+            dense
+            hide-details
+            placeholder='Введите ответ'
+            row-height='25'
+            rows='3'
+            solo
+            @change='changeAnswer()'
+          >
+          </v-textarea>
+        </template>
+        <template v-else-if="question_data.id_type_answer == '3'">
+          <v-radio-group v-model='answer' dense hide-details>
+            <v-radio
+              v-for='(item, index) in value_type_answer'
+              :key='index'
+              :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
+              :value='item.answer'
+              @change='changeAnswer(item.dataEnv)'
+              @click='getIdElem($event)'
+            >
+              <template slot='label'>
+                <div style='display: flex; column-gap: 20px; align-items: flex-start'>
+                  <span class='answerList' v-html='item.answer' @click.stop></span>
+                  <div v-if='item.commentary' class='helper_wrapper' @click.stop>
+                    <v-tooltip bottom>
+                      <template v-slot:activator='{ on, attrs }'>
+                        <img
+                          :src='require(`/assets/svg/help-circle.svg`)'
+                          alt='help'
+                          class='help_img'
+                          v-bind='attrs'
+                          v-on='on'
+                        />
+                      </template>
+                      <span>{{ item.commentary }}</span>
+                    </v-tooltip>
+                  </div>
+                </div>
+              </template>
+            </v-radio>
+          </v-radio-group>
+        </template>
+        <template v-else-if="question_data.id_type_answer == '4'">
+          <v-checkbox
+            v-for='(item, index) in value_type_answer'
+            :key='index'
+            v-model='answer'
+            :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
+            :value='item.answer'
+            dense
+            hide-details
+            multiple
+            @change='changeAnswer(item.dataEnv)'
+            @click='getIdElem($event)'
+          >
+            <template slot='label'>
+              <div style='display: flex; column-gap: 20px'>
+                <span class='answerList' v-html='item.answer' @click.stop></span>
+                <div v-if='item.commentary' class='helper_wrapper' @click.stop>
                   <v-tooltip bottom>
-                    <template v-slot:activator="{ on, attrs }">
+                    <template v-slot:activator='{ on, attrs }'>
                       <img
-                        class="help_img"
-                        :src="require(`/assets/svg/help-circle.svg`)"
-                        alt="help"
-                        v-bind="attrs"
-                        v-on="on"
+                        :src='require(`/assets/svg/help-circle.svg`)'
+                        alt='help'
+                        class='help_img'
+                        v-bind='attrs'
+                        v-on='on'
                       />
                     </template>
                     <span>{{ item.commentary }}</span>
@@ -90,221 +126,189 @@
                 </div>
               </div>
             </template>
-          </v-radio>
-        </v-radio-group>
-      </template>
-      <template v-else-if="question_data.id_type_answer == '4'">
-        <v-checkbox
-          hide-details
-          dense
-          multiple
-          v-for="(item, index) in value_type_answer"
-          :key="index"
-          :value="item.answer"
-          v-model="answer"
-          :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
-          @change="changeAnswer(item.dataEnv)"
-          @click="getIdElem($event)"
-        >
-          <template slot="label">
-            <div style="display: flex; column-gap: 20px">
-              <span v-html="item.answer" class="answerList" @click.stop></span>
-              <div class="helper_wrapper" v-if="item.commentary" @click.stop>
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on, attrs }">
-                    <img
-                      class="help_img"
-                      :src="require(`/assets/svg/help-circle.svg`)"
-                      alt="help"
-                      v-bind="attrs"
-                      v-on="on"
-                    />
-                  </template>
-                  <span>{{ item.commentary }}</span>
-                </v-tooltip>
-              </div>
-            </div>
-          </template>
-        </v-checkbox>
-      </template>
-      <template v-else-if="question_data.id_type_answer == '5'">
-        <v-select
-          solo
-          dense
-          hide-details
-          clearable
-          placeholder="Введите ответ"
-          :items="value_type_answer"
-          return-object
-          item-text="answer"
-          :menu-props="{
+          </v-checkbox>
+        </template>
+        <template v-else-if="question_data.id_type_answer == '5'">
+          <v-select
+            v-model='answer'
+            :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
+            :items='value_type_answer'
+            :menu-props='{
             closeOnContentClick: true,
             bottom: true,
             offsetY: true,
-          }"
-          v-model="answer"
-          :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
-          @change="changeAnswer()"
-        >
-          <template v-slot:selection="data">
-            <span v-bind="data.attrs" v-html="data.item.answer"></span>
-          </template>
-          <template v-slot:item="{ active, item, attrs, on }">
-            <v-list-item v-on="on" v-bind="attrs" @click="getIdElem($event)">
-              <v-list-item-content>
-                <v-list-item-title>
-                  <v-row no-gutters align="center">
-                    <span v-html="item.answer" class="answerList" @click.stop></span>
-                    <v-spacer></v-spacer>
-                    <div class="helper_wrapper" v-if="item.commentary" @click.stop>
-                      <v-tooltip bottom>
-                        <template v-slot:activator="{ on, attrs }">
-                          <img
-                            class="help_img"
-                            :src="require(`/assets/svg/help-circle.svg`)"
-                            alt="help"
-                            v-bind="attrs"
-                            v-on="on"
-                          />
-                        </template>
-                        <span>{{ item.commentary }}</span>
-                      </v-tooltip>
-                    </div>
-                  </v-row>
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </template>
-        </v-select>
-      </template>
-      <template v-else-if="question_data.id_type_answer == '6'">
+          }'
+            clearable
+            dense
+            hide-details
+            item-text='answer'
+            placeholder='Введите ответ'
+            return-object
+            solo
+            @change='changeAnswer()'
+          >
+            <template v-slot:selection='data'>
+              <span v-bind='data.attrs' v-html='data.item.answer'></span>
+            </template>
+            <template v-slot:item='{ active, item, attrs, on }'>
+              <v-list-item v-bind='attrs' @click='getIdElem($event)' v-on='on'>
+                <v-list-item-content>
+                  <v-list-item-title>
+                    <v-row align='center' no-gutters>
+                      <span class='answerList' v-html='item.answer' @click.stop></span>
+                      <v-spacer></v-spacer>
+                      <div v-if='item.commentary' class='helper_wrapper' @click.stop>
+                        <v-tooltip bottom>
+                          <template v-slot:activator='{ on, attrs }'>
+                            <img
+                              :src='require(`/assets/svg/help-circle.svg`)'
+                              alt='help'
+                              class='help_img'
+                              v-bind='attrs'
+                              v-on='on'
+                            />
+                          </template>
+                          <span>{{ item.commentary }}</span>
+                        </v-tooltip>
+                      </div>
+                    </v-row>
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+          </v-select>
+        </template>
+        <template v-else-if="question_data.id_type_answer == '6'">
         <span
-          >Укажите число в диапозоне от {{ value_type_answer[0].answer }} и до {{ value_type_answer[1].answer }}</span
+        >Укажите число в диапозоне от {{ value_type_answer[0].answer }} и до {{ value_type_answer[1].answer }}</span
         >
+          <v-text-field
+            v-model='answer'
+            :class='{ rangeError: rangeError }'
+            :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
+            dense
+            hide-details
+            placeholder='Введите ответ'
+            solo
+            type='number'
+            @change='changeAnswer()'
+          >
+            <template slot='prepend-inner'>
+              <v-icon color='primary' @click="rangeEdit('minus')"> mdi-minus</v-icon>
+            </template>
+            <template slot='append'>
+              <v-icon color='primary' @click="rangeEdit('plus')"> mdi-plus</v-icon>
+            </template>
+          </v-text-field>
+          <small v-if='rangeError' style='color: lightcoral'> Неккоректные значения </small>
+        </template>
+        <template v-else-if="question_data.id_type_answer == '7'">
+        <span
+        >Укажите число в диапозоне от {{ value_type_answer[0].answer }} и до {{ value_type_answer[1].answer }}</span
+        >
+          <v-range-slider
+            v-model='answer'
+            :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
+            :max='max'
+            :min='min'
+            class='align-center'
+            hide-details
+            type='number'
+            @change='changeAnswer()'
+          >
+            <template v-slot:prepend>
+              <v-text-field
+                :value='answer[0]'
+                class='mt-0 pt-0'
+                hide-details
+                single-line
+                style='width: 60px'
+                type='number'
+                @change='$set(answer, 0, $event)'
+              ></v-text-field>
+            </template>
+            <template v-slot:append>
+              <v-text-field
+                :value='answer[1]'
+                class='mt-0 pt-0'
+                hide-details
+                single-line
+                style='width: 60px'
+                type='number'
+                @change='$set(answer, 1, $event)'
+              ></v-text-field>
+            </template>
+          </v-range-slider>
+          <small v-if='rangeError' style='color: lightcoral'> Неккоректные значения </small>
+        </template>
+
+        <!-- DETAILED RESPONSE -->
         <v-text-field
-          solo
+          v-if='question_data.state_detailed_response'
+          v-model='detailed_response'
+          class='py-2'
           dense
           hide-details
-          placeholder="Введите ответ"
-          v-model="answer"
-          type="number"
-          :class="{ rangeError: rangeError }"
-          :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
-          @change="changeAnswer()"
-        >
-          <template slot="prepend-inner">
-            <v-icon color="primary" @click="rangeEdit('minus')"> mdi-minus </v-icon>
-          </template>
-          <template slot="append">
-            <v-icon color="primary" @click="rangeEdit('plus')"> mdi-plus </v-icon>
-          </template>
-        </v-text-field>
-        <small v-if="rangeError" style="color: lightcoral"> Неккоректные значения </small>
-      </template>
-      <template v-else-if="question_data.id_type_answer == '7'">
-        <span
-          >Укажите число в диапозоне от {{ value_type_answer[0].answer }} и до {{ value_type_answer[1].answer }}</span
-        >
-        <v-range-slider
-          v-model="answer"
-          :max="max"
-          :min="min"
-          hide-details
-          type="number"
-          class="align-center"
-          :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
-          @change="changeAnswer()"
-        >
-          <template v-slot:prepend>
-            <v-text-field
-              :value="answer[0]"
-              class="mt-0 pt-0"
-              hide-details
-              single-line
-              type="number"
-              style="width: 60px"
-              @change="$set(answer, 0, $event)"
-            ></v-text-field>
-          </template>
-          <template v-slot:append>
-            <v-text-field
-              :value="answer[1]"
-              class="mt-0 pt-0"
-              hide-details
-              single-line
-              type="number"
-              style="width: 60px"
-              @change="$set(answer, 1, $event)"
-            ></v-text-field>
-          </template>
-        </v-range-slider>
-        <small v-if="rangeError" style="color: lightcoral"> Неккоректные значения </small>
-      </template>
+          placeholder='Место для развернутого ответа'
+          solo
+          @change='changeAnswer()'
+        ></v-text-field>
+      </div>
 
-      <!-- DETAILED RESPONSE -->
-      <v-text-field
-        v-if="question_data.state_detailed_response"
-        solo
-        dense
-        hide-details
-        placeholder="Место для развернутого ответа"
-        class="py-2"
-        v-model="detailed_response"
-        @change="changeAnswer()"
-      ></v-text-field>
-    </div>
+      <div v-if='question_data.state_attachment_response' class='py-3 file_input'>
+        <template v-if='(answer || detailed_response) && !disableBtn'>
+          <v-btn :loading='isSelecting' :outlined='!!files.length' color='primary' dark rounded
+                 @click='handleFileImport'>
+            <v-icon>mdi-upload</v-icon>
+            {{ !!files.length ? 'Добавить еще' : 'Загрузить файл' }}
+          </v-btn>
+          <input ref='uploader' class='d-none' type='file' @change='onFileChanged' />
+          <v-btn
+            v-if='files.length'
+            :disabled="(!!uploadedFiles.length && statusFile) || status_name === 'sending'"
+            :loading="status_name === 'sending'"
+            color='green lighten-1'
+            rounded
+            @click='uploadToServer'
+          >Загрузить файлы
+          </v-btn
+          >
+        </template>
+        <template v-else>
+          <v-tooltip bottom>
+            <template v-slot:activator='{ on, attrs }'>
+              <div v-bind='attrs' v-on='on'>
+                <v-btn :loading='isSelecting' disabled rounded>
+                  <v-icon>mdi-upload</v-icon>
+                  Загрузить файл
+                </v-btn>
+              </div>
+            </template>
+            <span>Сначала необходимо выбрать вариант ответа и авторизоваться!</span>
+          </v-tooltip>
+        </template>
+      </div>
 
-    <div class="py-3 file_input" v-if="question_data.state_attachment_response">
-      <template v-if="(answer || detailed_response) && !disableBtn">
-        <v-btn color="primary" rounded dark :loading="isSelecting" :outlined="!!files.length" @click="handleFileImport">
-          <v-icon>mdi-upload</v-icon>
-          {{ !!files.length ? 'Добавить еще' : 'Загрузить файл' }}
-        </v-btn>
-        <input ref="uploader" class="d-none" type="file" @change="onFileChanged" />
-        <v-btn
-          v-if="files.length"
-          rounded
-          color="green lighten-1"
-          @click="uploadToServer"
-          :disabled="(!!uploadedFiles.length && statusFile) || status_name === 'sending'"
-          :loading="status_name === 'sending'"
-          >Загрузить файлы</v-btn
-        >
-      </template>
-      <template v-else>
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on, attrs }">
-            <div v-bind="attrs" v-on="on">
-              <v-btn rounded :loading="isSelecting" disabled>
-                <v-icon>mdi-upload</v-icon>
-                Загрузить файл
-              </v-btn>
-            </div>
-          </template>
-          <span>Сначала необходимо выбрать вариант ответа и авторизоваться!</span>
-        </v-tooltip>
-      </template>
-    </div>
-
-    <div v-if="files.length" class="files_chips">
-      <h5 class="files_chips__title">Добавленные файлы</h5>
-      <div class="files_chips__wrapper">
-        <div v-for="(file, index) in files" class="files_chips__wrapper__chip">
-          <v-chip small :key="index" class="mr-1 text-truncate" @click:close="remove(index)" close>
-            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ file.name }}</span>
-          </v-chip>
-          <span class="files_chips__wrapper__chip__type">{{ file.name.split('.')[1] }}</span>
+      <div v-if='files.length' class='files_chips'>
+        <h5 class='files_chips__title'>Добавленные файлы</h5>
+        <div class='files_chips__wrapper'>
+          <div v-for='(file, index) in files' class='files_chips__wrapper__chip'>
+            <v-chip :key='index' class='mr-1 text-truncate' close small @click:close='remove(index)'>
+              <span style='white-space: nowrap; overflow: hidden; text-overflow: ellipsis'>{{ file.name }}</span>
+            </v-chip>
+            <span class='files_chips__wrapper__chip__type'>{{ file.name.split('.')[1] }}</span>
+          </div>
         </div>
       </div>
-    </div>
 
-    <transition name="list">
-      <div class="question_wrapper__content__alert" v-if="status_question.type !== 'sending' && check_status">
-        <v-alert :type="status_question.type" :icon="status_question.icon">
-          <span v-html="status_question.text"></span>
-        </v-alert>
-      </div>
-    </transition>
+      <transition name='list'>
+        <div v-if="status_question.type !== 'sending' && check_status" class='question_wrapper__content__alert'>
+          <v-alert :icon='status_question.icon' :type='status_question.type'>
+            <span v-html='status_question.text'></span>
+          </v-alert>
+        </div>
+      </transition>
+    </template>
   </div>
 </template>
 
@@ -319,12 +323,12 @@ export default {
   props: {
     propsData: {
       type: Object,
-      default: () => ({}),
+      default: () => ({})
     },
     propsIndex: {
       type: Number,
-      default: 0,
-    },
+      default: 0
+    }
   },
   data: () => ({
     question_data: {},
@@ -354,7 +358,7 @@ export default {
     files: [],
     isSelecting: false,
     selectedFile: null,
-    uploadedFiles: [],
+    uploadedFiles: []
   }),
   mounted() {
     if (Object.keys(this.propsData).length) {
@@ -376,14 +380,14 @@ export default {
               parseInt(this.answer) > parseInt(this.value_type_answer[1].answer)
           })
         }
-      },
+      }
     },
     detailed_response: {
       handler(v) {
         if (v) {
           this.answer = null
         }
-      },
+      }
     },
     stateAuth: {
       handler(v) {
@@ -395,7 +399,7 @@ export default {
           })
         }
       },
-      deep: true,
+      deep: true
     },
     '$store.state.showCabinet': {
       handler(v) {
@@ -414,8 +418,8 @@ export default {
           }
         }
       },
-      deep: true,
-    },
+      deep: true
+    }
   },
   computed: {
     ...mapGetters(['stateAuth']),
@@ -433,7 +437,7 @@ export default {
     },
     disableBtn() {
       return !this.stateAuth
-    },
+    }
   },
   methods: {
     /* AGENT PROP */
@@ -500,7 +504,7 @@ export default {
       return Answers.sendFile({
         id_answer: this.id_answer,
         uuid: Answers.create_UUID(),
-        file: element,
+        file: element
       })
     },
 
@@ -512,8 +516,8 @@ export default {
           controller: dataEnv.data.controller,
           name: dataEnv.data.name,
           data: {
-            id: this.$store.state.currentObject.id,
-          },
+            id: this.$store.state.currentObject.id
+          }
         }
         this.data_env.data[dataEnv.data.data.column] = JSON.stringify(this.answer)
       } else {
@@ -524,8 +528,8 @@ export default {
               controller: this.value_type_answer[0].dataEnv.data.controller,
               name: this.value_type_answer[0].dataEnv.data.name,
               data: {
-                id: this.$store.state.currentObject.id,
-              },
+                id: this.$store.state.currentObject.id
+              }
             }
             this.value_type_answer.forEach((elem) => {
               this.data_env.data[elem.dataEnv.data.data.column] = JSON.stringify(this.detailed_response)
@@ -540,8 +544,8 @@ export default {
                 controller: this.value_type_answer[0].dataEnv.data.controller,
                 name: this.value_type_answer[0].dataEnv.data.name,
                 data: {
-                  id: this.$store.state.currentObject.id,
-                },
+                  id: this.$store.state.currentObject.id
+                }
               }
               this.data_env.data[this.value_type_answer[0].dataEnv.data.data.column] = JSON.stringify(this.answer)
             }
@@ -553,8 +557,8 @@ export default {
               controller: this.answer.dataEnv.data.controller,
               name: this.answer.dataEnv.data.name,
               data: {
-                id: this.$store.state.currentObject.id,
-              },
+                id: this.$store.state.currentObject.id
+              }
             }
             this.data_env.data[this.answer.dataEnv.data.data.column] = JSON.stringify(this.answer)
           }
@@ -590,7 +594,7 @@ export default {
                     value_answer: JSON.stringify(this.answer),
                     data_env: JSON.stringify(this.data_env),
                     detailed_response: this.detailed_response,
-                    attachment_files: '',
+                    attachment_files: ''
                   },
                   this.id_answer
                 )
@@ -615,7 +619,7 @@ export default {
                   value_answer: JSON.stringify(this.answer),
                   data_env: JSON.stringify(this.data_env),
                   detailed_response: this.detailed_response,
-                  attachment_files: '',
+                  attachment_files: ''
                 })
                 if (result.codeResponse != '201') {
                   this.status_name = 'error'
@@ -639,7 +643,7 @@ export default {
           const heightNav = 70
           const headerTitle = 54
           const top = window.scrollY + elem.getBoundingClientRect().top - heightNav - headerTitle
-          anchor.addEventListener('click', function (e) {
+          anchor.addEventListener('click', function(e) {
             e.preventDefault()
             window.scrollTo(0, top)
           })
@@ -735,13 +739,14 @@ export default {
           this.controls_height = 0
         }
       })
-    },
-  },
+    }
+  }
 }
 </script>
 
-<style scoped lang="scss">
+<style lang='scss' scoped>
 @import 'assets/styles/fileChips';
+
 @media only screen and (max-width: 600px) {
   .file_input {
     flex-direction: column !important;
@@ -763,11 +768,14 @@ export default {
 .slide-fade-enter-active {
   transition: all 0.8s ease;
 }
+
 .slide-fade-leave-active {
   transition: all 0.6s cubic-bezier(1, 0.5, 0.8, 1);
 }
+
 .slide-fade-enter, .slide-fade-leave-to
-  /* .slide-fade-leave-active до версии 2.1.8 */ {
+  /* .slide-fade-leave-active до версии 2.1.8 */
+{
   transform: translateX(-30px);
   opacity: 0;
 }
@@ -790,6 +798,7 @@ export default {
     padding-bottom: 5px;
     align-items: flex-start;
   }
+
   &__divider {
     margin-top: 10px;
     height: 1px;
@@ -797,15 +806,18 @@ export default {
     background: darkgrey;
     box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
   }
+
   &__content {
     display: flex;
     align-items: flex-start;
     column-gap: 15px;
+
     &__question {
       flex: 1;
       transition: all 0.4s ease-in-out;
       padding-bottom: 10px;
     }
+
     &__status {
     }
   }
@@ -822,10 +834,12 @@ export default {
   align-items: center;
   padding-top: 2px;
 }
+
 .helper_wrapper__help {
   opacity: 0;
   transition: 0.2s ease-in-out;
 }
+
 .help_img {
   width: 20px;
   height: 20px;
@@ -845,9 +859,11 @@ export default {
 
 .rangeError {
   border: 1px solid lightcoral !important;
+
   .question_main_wrapper__item {
     border-bottom: unset;
   }
+
   ::v-deep input {
     color: lightcoral;
   }
