@@ -10,7 +10,7 @@ const createStore = () => {
   return new Vuex.Store({
     state: {
       BASE_URL:
-        process.env.NODE_ENV === 'development' ? 'https://api-test.agregatorus.com' : 'https://api.agregatorus.com',
+      process.env.NODE_ENV === 'development' ? 'https://api.agregatorus.com' : 'https://api.agregatorus.com',
       show_header: false,
       breadcrumbs: [],
       agent_utm: null,

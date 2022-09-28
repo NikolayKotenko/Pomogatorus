@@ -16,12 +16,14 @@
         />
       </div>
       <div class="question-template mt-5">
-        <Question
-          v-for="(question, index) in $store.state.PopularSelectionsModule.popular_selections.questions"
-          :key="index"
-          :props-data="question"
-          :props-index="question.id"
-        />
+        <template v-if="$store.state.PopularSelectionsModule.popular_selections.questions.length">
+          <Question
+            v-for="(question, index) in $store.state.PopularSelectionsModule.popular_selections.questions"
+            :key="index"
+            :props-data="question"
+            :props-index="index + 1"
+          />
+        </template>
         <!--      <question v-if="$store.state.PopularSelectionsModule.popular_selections.length !==0"></question>-->
       </div>
     </template>
@@ -52,7 +54,7 @@ export default {
   }),
   head() {
     return {
-      title: `${this.$store.state.PopularSelectionsModule.popular_selections.tag.seo_title}`,
+      title: `${this.$store.state.PopularSelectionsModule.popular_selections.tag?.seo_title}`,
       meta: [
         { charset: 'utf-8' },
         {
@@ -62,12 +64,12 @@ export default {
         {
           hid: 'keywords',
           name: 'keywords',
-          content: `${this.$store.state.PopularSelectionsModule.popular_selections.tag.seo_keywords}`,
+          content: `${this.$store.state.PopularSelectionsModule.popular_selections.tag?.seo_keywords}`,
         },
         {
           hid: 'description',
           name: 'description',
-          content: `${this.$store.state.PopularSelectionsModule.popular_selections.tag.seo_description}`,
+          content: `${this.$store.state.PopularSelectionsModule.popular_selections.tag?.seo_description}`,
         },
         {
           hid: 'theme-color',
@@ -102,7 +104,7 @@ export default {
         to: '/podborki',
       },
       {
-        text: `${this.$store.state.PopularSelectionsModule.popular_selections.tag.name}`,
+        text: `${this.$store.state.PopularSelectionsModule.popular_selections.tag?.name}`,
         disabled: true,
         link: true,
         exact: true,
