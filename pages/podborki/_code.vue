@@ -50,9 +50,38 @@ export default {
     coordYNav: null,
     heightNav: 70,
   }),
+  head() {
+    return {
+      title: `${this.$store.state.PopularSelectionsModule.popular_selections.tag.seo_title}`,
+      meta: [
+        { charset: 'utf-8' },
+        {
+          name: 'viewport',
+          content: 'width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1',
+        },
+        {
+          hid: 'keywords',
+          name: 'keywords',
+          content: `${this.$store.state.PopularSelectionsModule.popular_selections.tag.seo_keywords}`,
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: `${this.$store.state.PopularSelectionsModule.popular_selections.tag.seo_description}`,
+        },
+        {
+          hid: 'theme-color',
+          name: 'theme-color',
+          content: 'blue',
+        },
+      ],
+    }
+  },
+  async fetch() {
+    await this.$store.dispatch('getSelections', this.$route.params.code)
+  },
   created() {},
   async mounted() {
-    await this.$store.dispatch('getSelections', this.$route.params.code)
     this.$store.commit('change_breadcrumbs', [
       {
         text: 'Главная',
@@ -87,10 +116,6 @@ export default {
   computed: {},
   methods: {},
   beforeDestroy() {
-    this.$store.state.ArticleModule.selectedComponent = {}
-    this.$store.state.ArticleModule.countLayout = 0
-    this.$store.state.ArticleModule.count_of_questions = 0
-    this.$store.state.ArticleModule.components_after_request = []
   },
   destroyed() {
     if (process.client) {

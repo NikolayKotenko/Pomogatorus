@@ -31,9 +31,16 @@ export default {
     async getSelections({ commit }, code) {
       this.state.loadingState = true
 
-      const response = await Request.get(this.state.BASE_URL + '/entity/popular-selections/' + code)
-      commit('setPopularSelections', response.data)
-      return response
+      try {
+        const options = {
+          method: 'GET',
+          url: `${this.state.BASE_URL}/entity/popular-selections/`+code,
+        }
+        const response = await this.$axios(options)
+        commit('setPopularSelections', response.data.data)
+      } catch (error) {
+        console.log(error.response.data.message)
+      }
     },
   },
   getters: {},
