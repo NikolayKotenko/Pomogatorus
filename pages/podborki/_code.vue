@@ -1,24 +1,23 @@
 <template>
   <v-app>
-    <template v-if="Object.keys($store.state.PopularSelectionsModule.popular_selections).length">
-      <div class="tag-template">
-        <v-textarea class="textarea" v-html="$store.state.PopularSelectionsModule.popular_selections.tag.description" readonly>
-        </v-textarea>
+    <template>
+      <div class="tag-template" v-if="Object.keys($store.state.PopularSelectionsModule.main_tag).length">
+        <v-textarea class="textarea" v-html="$store.state.PopularSelectionsModule.main_tag.description" readonly></v-textarea>
       </div>
       <div class="auth-template mt-5">
         <LoginAuth />
       </div>
-      <div class="article-template list_container mt-5">
+      <div class="article-template list_container mt-5" v-if="Object.keys($store.state.PopularSelectionsModule.article).length">
         <Article
-          v-for="(article, index) in $store.state.PopularSelectionsModule.popular_selections.articles"
+          v-for="(article, index) in $store.state.PopularSelectionsModule.article"
           :key="index"
           :article="article"
         />
       </div>
       <div class="question-template mt-5">
-        <template v-if="$store.state.PopularSelectionsModule.popular_selections.questions.length">
+        <template v-if="$store.state.PopularSelectionsModule.questions.length">
           <Question
-            v-for="(question, index) in $store.state.PopularSelectionsModule.popular_selections.questions"
+            v-for="(question, index) in $store.state.PopularSelectionsModule.questions"
             :key="index"
             :props-data="question"
             :props-index="index + 1"
@@ -54,7 +53,7 @@ export default {
   }),
   head() {
     return {
-      title: `${this.$store.state.PopularSelectionsModule.popular_selections.tag?.seo_title}`,
+      title: `${this.$store.state.PopularSelectionsModule.main_tag?.seo_title}`,
       meta: [
         { charset: 'utf-8' },
         {
@@ -64,12 +63,12 @@ export default {
         {
           hid: 'keywords',
           name: 'keywords',
-          content: `${this.$store.state.PopularSelectionsModule.popular_selections.tag?.seo_keywords}`,
+          content: `${this.$store.state.PopularSelectionsModule.main_tag?.seo_keywords}`,
         },
         {
           hid: 'description',
           name: 'description',
-          content: `${this.$store.state.PopularSelectionsModule.popular_selections.tag?.seo_description}`,
+          content: `${this.$store.state.PopularSelectionsModule.main_tag?.seo_description}`,
         },
         {
           hid: 'theme-color',
@@ -80,10 +79,13 @@ export default {
     }
   },
   async fetch() {
-    await this.$store.dispatch('getSelections', this.$route.params.code)
+    await this.$store.dispatch('getMainTagInfo', this.$route.params.code)
   },
   created() {},
   async mounted() {
+    await this.$store.dispatch('getArticlesInfo', this.$route.params.code);
+    await this.$store.dispatch('getQuestionsInfo', this.$route.params.code);
+
     this.$store.commit('change_breadcrumbs', [
       {
         text: 'Главная',
@@ -104,7 +106,7 @@ export default {
         to: '/podborki',
       },
       {
-        text: `${this.$store.state.PopularSelectionsModule.popular_selections.tag?.name}`,
+        text: `${this.$store.state.PopularSelectionsModule.main_tag?.name}`,
         disabled: true,
         link: true,
         exact: true,
