@@ -10,6 +10,7 @@
     <div
       v-for='(item, index) in listModal'
       :key='index'
+      style='height: 100vh'
     >
       <Right :data='item' :index='index' />
     </div>

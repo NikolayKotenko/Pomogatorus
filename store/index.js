@@ -9,8 +9,7 @@ import Request from '../services/request'
 const createStore = () => {
   return new Vuex.Store({
     state: {
-      BASE_URL:
-      process.env.NODE_ENV === 'development' ? 'https://api.agregatorus.com' : 'https://api.agregatorus.com',
+      BASE_URL: process.env.NODE_ENV === 'development' ? 'https://api.agregatorus.com' : 'https://api.agregatorus.com',
       show_header: false,
       breadcrumbs: [],
       agent_utm: null,
@@ -41,17 +40,14 @@ const createStore = () => {
       modalCurrentObject: {},
     },
     getters: {
-      getImageByEClientFilesObj:(state) => (eClientFilesObj) => {
-        const templateImage = 'https://cdn.dribbble.com/users/41613/screenshots/3848663/chronicle_prev.jpg?compress=1&resize=400x300';
+      getImageByEClientFilesObj: (state) => (eClientFilesObj) => {
+        const templateImage =
+          'https://cdn.dribbble.com/users/41613/screenshots/3848663/chronicle_prev.jpg?compress=1&resize=400x300'
 
-        if (!eClientFilesObj) return templateImage;
+        if (!eClientFilesObj) return templateImage
 
-        const firstElem = eClientFilesObj.find(e => typeof e !== 'undefined');
-        return (firstElem)
-          ?
-          state.BASE_URL + firstElem.full_path
-          :
-          templateImage;
+        const firstElem = eClientFilesObj.find((e) => typeof e !== 'undefined')
+        return firstElem ? state.BASE_URL + firstElem.full_path : templateImage
       },
       open_close_cabinet(state) {
         return state.showCabinet
@@ -80,7 +76,7 @@ const createStore = () => {
 
       /* Objects */
       change_showCabinet(state, value) {
-        state.showCabinet = value
+        state.listModal[0].isOpen = value
       },
       change_showDetailObj(state, value) {
         state.showDetailObj = value
