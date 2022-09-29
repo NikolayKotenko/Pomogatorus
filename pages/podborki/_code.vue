@@ -1,32 +1,29 @@
 <template>
-  <v-app>
-    <template>
-      <div class="tag-template" v-if="Object.keys($store.state.PopularSelectionsModule.main_tag).length">
-        <v-textarea class="textarea" v-html="$store.state.PopularSelectionsModule.main_tag.description" readonly></v-textarea>
+    <div>
+      <div class="tag-template" v-if="main_tag">
+        <v-card class="mt-5 mb-5 pa-5" style="word-break: break-word" v-html="main_tag.description"></v-card>
       </div>
       <div class="auth-template mt-5">
         <LoginAuth />
       </div>
-      <div class="article-template list_container mt-5" v-if="Object.keys($store.state.PopularSelectionsModule.article).length">
-        <Article
-          v-for="(article, index) in $store.state.PopularSelectionsModule.article"
-          :key="index"
-          :article="article"
-        />
+      <div class="article-template list_container mt-5" v-if="$store.state.PopularSelectionsModule.article.length">
+        <div v-for="(article, index) in $store.state.PopularSelectionsModule.article">
+          <Article
+            :key="index"
+            :article="article"
+          />
+        </div>
       </div>
-      <div class="question-template mt-5">
-        <template v-if="$store.state.PopularSelectionsModule.questions.length">
+      <div class="question-template mt-5" v-if="$store.state.PopularSelectionsModule.questions.length">
+        <div v-for="(question, index) in $store.state.PopularSelectionsModule.questions">
           <Question
-            v-for="(question, index) in $store.state.PopularSelectionsModule.questions"
             :key="index"
             :props-data="question"
             :props-index="index + 1"
           />
-        </template>
-        <!--      <question v-if="$store.state.PopularSelectionsModule.popular_selections.length !==0"></question>-->
+        </div>
       </div>
-    </template>
-  </v-app>
+    </div>
 </template>
 
 <script>
@@ -43,6 +40,19 @@ export default {
     LoginAuth,
     Article,
   },
+  async asyncData({ $axios, store, params }) {
+    const options = {
+      method: 'GET',
+      url: `${store.state.BASE_URL}/dictionary/tags-by-code/${params.code}`,
+    }
+    try {
+      const request = await $axios(options)
+      const main_tag = request.data.data
+      return { main_tag }
+    } catch (error) {
+      console.log(error.response.data.message)
+    }
+  },
   data: () => ({
     params_of_component: {
       name: '',
@@ -53,7 +63,7 @@ export default {
   }),
   head() {
     return {
-      title: `${this.$store.state.PopularSelectionsModule.main_tag?.seo_title}`,
+      title: `${this.main_tag?.seo_title}`,
       meta: [
         { charset: 'utf-8' },
         {
@@ -63,12 +73,12 @@ export default {
         {
           hid: 'keywords',
           name: 'keywords',
-          content: `${this.$store.state.PopularSelectionsModule.main_tag?.seo_keywords}`,
+          content: `${this.main_tag?.seo_keywords}`,
         },
         {
           hid: 'description',
           name: 'description',
-          content: `${this.$store.state.PopularSelectionsModule.main_tag?.seo_description}`,
+          content: `${this.main_tag?.seo_description}`,
         },
         {
           hid: 'theme-color',
@@ -77,9 +87,6 @@ export default {
         },
       ],
     }
-  },
-  async fetch() {
-    await this.$store.dispatch('getMainTagInfo', this.$route.params.code)
   },
   created() {},
   async mounted() {
@@ -106,7 +113,7 @@ export default {
         to: '/podborki',
       },
       {
-        text: `${this.$store.state.PopularSelectionsModule.main_tag?.name}`,
+        text: `${this.main_tag?.name}`,
         disabled: true,
         link: true,
         exact: true,
@@ -119,13 +126,6 @@ export default {
   watch: {},
   computed: {},
   methods: {},
-  beforeDestroy() {
-  },
-  destroyed() {
-    if (process.client) {
-      window.removeEventListener('scroll', this.scrollWindow)
-    }
-  },
 }
 </script>
 

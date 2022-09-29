@@ -6,8 +6,8 @@ export default {
     list_selections: [],
     popular_selections: {},
     main_tag: {},
-    article: {},
-    questions: {},
+    article: [],
+    questions: [],
     loadingState: false,
   },
   mutations: {
@@ -18,13 +18,13 @@ export default {
       state.loadingState = false
     },
     setArticle(state, result){
-      state.article = {}
+      state.article = []
       state.article = result
 
       state.loadingState = false
     },
     setQuestions(state, result){
-      state.questions = {}
+      state.questions = []
       state.questions = result
 
       state.loadingState = false
