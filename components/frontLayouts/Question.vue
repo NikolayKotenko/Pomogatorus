@@ -361,8 +361,6 @@ export default {
     uploadedFiles: []
   }),
   mounted() {
-    console.log('this.propsData');
-    console.log(this.propsData);
     if (Object.keys(this.propsData).length) {
       this.index_questions = this.propsIndex
       this.index_component = Math.floor(Math.random() * 100)
