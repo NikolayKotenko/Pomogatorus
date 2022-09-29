@@ -299,6 +299,8 @@ $yellowBackground: rgb(255, 235, 153);
   border-radius: 10px;
   border: 1px solid lightgrey;
   background: $yellowBackground;
+  max-width: 500px;
+
   .v-tabs > .v-tabs-bar {
     background: $yellowBackground;
   }
@@ -306,8 +308,8 @@ $yellowBackground: rgb(255, 235, 153);
     background: $yellowBackground;
   }
   @media only screen and (min-width: 768px) {
-    width: 50%;
-    margin: auto;
+    //width: 50%;
+    //margin: auto;
   }
   .required .v-label::after {
     content: ' *';

@@ -41,6 +41,18 @@ const createStore = () => {
       modalCurrentObject: {},
     },
     getters: {
+      getImageByEClientFilesObj:(state) => (eClientFilesObj) => {
+        const templateImage = 'https://cdn.dribbble.com/users/41613/screenshots/3848663/chronicle_prev.jpg?compress=1&resize=400x300';
+
+        if (!eClientFilesObj) return templateImage;
+
+        const firstElem = eClientFilesObj.find(e => typeof e !== 'undefined');
+        return (firstElem)
+          ?
+          state.BASE_URL + firstElem.full_path
+          :
+          templateImage;
+      },
       open_close_cabinet(state) {
         return state.showCabinet
       },

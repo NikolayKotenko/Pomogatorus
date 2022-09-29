@@ -685,9 +685,7 @@ export default {
       this.changeAnswer()
     },
     getData() {
-      console.log('NENENENE ')
       if (Object.keys(this.$store.state.ArticleModule.selectedComponent).length) {
-        console.log('TUTTUTTU')
         this.index_questions = this.$store.state.ArticleModule.count_of_questions
         this.index_component = this.$store.state.ArticleModule.countLayout
         this.question_data = Object.assign({}, this.$store.state.ArticleModule.selectedComponent)

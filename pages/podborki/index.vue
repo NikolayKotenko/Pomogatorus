@@ -8,7 +8,7 @@
       :key="key"
     >
       <div class="wrapper_list">
-        <v-img max-height="150" :aspect-ratio="4/4" :src="getImageByEClientFilesObj(item.e_client_files)"></v-img>
+        <v-img cover :src="$store.getters.getImageByEClientFilesObj(item.e_client_files)"></v-img>
         <div >
           <v-card-title>{{ item.name }}</v-card-title>
           <v-card-text v-html="item.description" style="word-break: break-word; "></v-card-text>
@@ -53,15 +53,6 @@ export default {
     ])
   },
   methods: {
-    getImageByEClientFilesObj(eClientFilesObj){
-      const templateImage = 'https://cdn.dribbble.com/users/41613/screenshots/3848663/chronicle_prev.jpg?compress=1&resize=400x300';
-      const firstElem = eClientFilesObj.find(e => typeof e !== 'undefined');
-      return (firstElem)
-        ?
-        this.$store.state.BASE_URL + firstElem.full_path
-        :
-        templateImage;
-    },
   },
 }
 </script>
@@ -70,7 +61,7 @@ export default {
 .wrapper_list{
   @media (min-width: 500px) {
     display: grid;
-    grid-template-columns: 30% auto
+    grid-template-columns: 150px auto
   }
 }
 </style>

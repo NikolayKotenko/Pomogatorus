@@ -73,6 +73,11 @@
         </v-btn-toggle>
       </div>
     </div>
+    <v-img class="mt-5"
+           max-width="500"
+           contain
+           :src="$store.getters.getImageByEClientFilesObj(article_data.image)"
+    ></v-img>
     <div v-if='article_data.preview' class='article_info_wrapper__anons'>
       <span>
         {{ article_data.preview }}
