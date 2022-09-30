@@ -1,39 +1,37 @@
 <template>
-  <div class="article-template">
-    <template v-if="article">
+  <div class='article-template'>
+    <template v-if='article'>
       <div
-        class="article-template__subHeader"
-        :class="[
+        :class='[
           { showArticleHeader: isShowTitle },
           {
             subHeader: $store.state.show_header && isShowTitle && $device.isDesktop,
           },
           { subHeaderMobile: $device.isMobile },
-        ]"
+        ]'
+        class='article-template__subHeader'
       >
-        <h2 class="mainTitleFont">{{ article.name }}</h2>
+        <h2 class='mainTitleFont'>{{ article.name }}</h2>
       </div>
-      <div class="article-template__header" ref="nav">
-        <h1 class="article-template__header__title mainTitleFont">
+      <div ref='nav' class='article-template__header'>
+        <h1 class='article-template__header__title mainTitleFont'>
           {{ article.name }}
         </h1>
-        <ArticleInfo :article_data="article" />
+        <ArticleInfo :article_data='article' />
       </div>
 
-      <div class="article-template__content mainContentFont" v-html="refactored_content"></div>
+      <div class='article-template__content mainContentFont' v-html='refactored_content'></div>
     </template>
 
-    <div class="hidden-mask" v-if="$store.state.ArticleModule.refactoring_content || !article"></div>
-    <v-overlay :value="$store.state.ArticleModule.refactoring_content">
-      <v-progress-circular :size="50" color="primary" indeterminate style="margin-top: 20px"></v-progress-circular>
+    <div v-if='$store.state.ArticleModule.refactoring_content || !article' class='hidden-mask'></div>
+    <v-overlay :value='$store.state.ArticleModule.refactoring_content'>
+      <v-progress-circular :size='50' color='primary' indeterminate style='margin-top: 20px'></v-progress-circular>
     </v-overlay>
   </div>
 </template>
 
 <script>
 import Vue from 'vue'
-const vuetify_class = require('vuetify')
-
 import ImageLayout from '../../components/frontLayouts/ImageLayout'
 import Question from '../../components/frontLayouts/Question'
 import LoginAuth from '../../components/frontLayouts/LoginAuth'
@@ -42,13 +40,15 @@ import Author from '../../components/Article/Author'
 
 import ArticleInfo from '../../components/Article/ArticleInfo'
 
+const vuetify_class = require('vuetify')
+
 export default {
   name: '_id.vue',
   components: { ArticleInfo, Author },
   async asyncData({ $axios, store, params }) {
     const options = {
       method: 'GET',
-      url: `${store.state.BASE_URL}/entity/articles/${params.id}`,
+      url: `${store.state.BASE_URL}/entity/articles/${params.id}`
     }
     try {
       const article_request = await $axios(options)
@@ -60,11 +60,11 @@ export default {
   },
   data: () => ({
     params_of_component: {
-      name: '',
+      name: ''
     },
     data_of_components: [],
     coordYNav: null,
-    heightNav: 70,
+    heightNav: 70
   }),
   head() {
     return {
@@ -73,24 +73,24 @@ export default {
         { charset: 'utf-8' },
         {
           name: 'viewport',
-          content: 'width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1',
+          content: 'width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1'
         },
         {
           hid: 'keywords',
           name: 'keywords',
-          content: `${this.article.seo_keywords}`,
+          content: `${this.article.seo_keywords}`
         },
         {
           hid: 'description',
           name: 'description',
-          content: `${this.article.seo_description}`,
+          content: `${this.article.seo_description}`
         },
         {
           hid: 'theme-color',
           name: 'theme-color',
-          content: 'blue',
-        },
-      ],
+          content: 'blue'
+        }
+      ]
     }
   },
   jsonld() {
@@ -103,21 +103,22 @@ export default {
         image: '',
         author: {
           '@type': 'Organization',
-          name: 'Pomogatorus',
+          name: 'Pomogatorus'
         },
         publisher: {
           '@type': 'Organization',
           name: 'Pomogatorus',
           logo: {
             '@type': 'ImageObject',
-            url: '',
-          },
+            url: ''
+          }
         },
-        datePublished: this.article.created_at,
-      },
+        datePublished: this.article.created_at
+      }
     ]
   },
-  created() {},
+  created() {
+  },
   mounted() {
     this.$store.commit('change_breadcrumbs', [
       {
@@ -127,7 +128,7 @@ export default {
         exact: true,
         nuxt: true,
         replace: true,
-        to: '/',
+        to: '/'
       },
       {
         text: 'Статьи',
@@ -136,7 +137,7 @@ export default {
         exact: true,
         nuxt: true,
         replace: true,
-        to: '/articles',
+        to: '/articles'
       },
       {
         text: `${this.article.name}`,
@@ -145,8 +146,8 @@ export default {
         exact: true,
         nuxt: true,
         replace: true,
-        to: '',
-      },
+        to: ''
+      }
     ])
     if (process.client) {
       window.addEventListener('scroll', this.scrollWindow)
@@ -174,8 +175,8 @@ export default {
             this.$store.commit('change_refactoring_content', false)
           })
         }
-      },
-    },
+      }
+    }
   },
   computed: {
     refactored_content() {
@@ -185,12 +186,12 @@ export default {
       return this.params_of_component.name === 'questions'
         ? Vue.extend(Question)
         : this.params_of_component.name === 'image'
-        ? Vue.extend(ImageLayout)
-        : Vue.extend(LoginAuth)
+          ? Vue.extend(ImageLayout)
+          : Vue.extend(LoginAuth)
     },
     isShowTitle() {
       return this.coordYNav <= 0 && this.coordYNav !== null
-    },
+    }
   },
   methods: {
     scrollWindow() {
@@ -273,7 +274,7 @@ export default {
                       {},
                       { name: alt },
                       {
-                        full_path: sub_url[1],
+                        full_path: sub_url[1]
                       },
                       { title: title }
                     )
@@ -317,11 +318,11 @@ export default {
       const instance = new this.componentLayout({
         store,
         vuetify,
-        router,
+        router
       })
       const data = new this.Imported_component({
         index: this.$store.state.ArticleModule.countLayout,
-        component: data_component,
+        component: data_component
       })
       const params = Object.assign({}, { instance: instance }, { data: data })
       return new this.Constructor_instance(params)
@@ -347,7 +348,7 @@ export default {
     async requestTest() {
       const war = await this.$store.dispatch('refreshTokens')
       console.log('war', war)
-    },
+    }
   },
   beforeDestroy() {
     this.$store.state.ArticleModule.selectedComponent = {}
@@ -359,16 +360,18 @@ export default {
     if (process.client) {
       window.removeEventListener('scroll', this.scrollWindow)
     }
-  },
+  }
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s;
 }
-.fade-enter, .fade-leave-to /* .fade-leave-active до версии 2.1.8 */ {
+
+.fade-enter, .fade-leave-to /* .fade-leave-active до версии 2.1.8 */
+{
   opacity: 0;
 }
 
@@ -385,6 +388,7 @@ export default {
   padding: 0 10px;
   display: flex;
   flex-direction: column;
+
   &__subHeader {
     transition: all 0.4s ease-in-out;
     box-shadow: 0px 7px 10px 2px rgba(34, 60, 80, 0.2);
@@ -402,6 +406,7 @@ export default {
     border-bottom-right-radius: 15px;
     font-size: 1.5rem !important;
   }
+
   &__header {
     &__title {
       margin: 10px 0 10px 0;
@@ -409,8 +414,10 @@ export default {
       border-bottom: 1px solid darkgrey;
     }
   }
+
   &__content {
     word-break: normal;
+
     h2 {
       font-family: 'Google Sans', sans-serif !important;
       color: rgb(32, 33, 36) !important;
@@ -418,16 +425,20 @@ export default {
     }
   }
 }
+
 .showArticleHeader {
   opacity: 1;
   top: 0;
-  z-index: 404;
+  z-index: 399;
 }
+
 .subHeader {
   top: 64px;
 }
+
 .subHeaderMobile {
   top: 56px;
+
   h2 {
     font-size: 1.1em;
   }

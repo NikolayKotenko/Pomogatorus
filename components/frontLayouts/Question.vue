@@ -315,6 +315,7 @@
 <script>
 import { mapGetters } from 'vuex'
 
+import Request from '../../services/request'
 import Answers from '../../services/answers/answers'
 import CompareArrays from '../../utils/compareArrays'
 
@@ -346,6 +347,7 @@ export default {
     id_answer: null,
     agentCode: null,
     data_env: null,
+    isSilentCreated: false,
 
     /* DATA_BY_TYPES */
     rangeError: false,
@@ -391,7 +393,7 @@ export default {
     },
     stateAuth: {
       handler(v) {
-        if (v && !this.$store.state.showCabinet) {
+        if (v && !this.$store.state.listModal[0].isOpen && !this.isSilentCreated) {
           this.check_status = false
           this.$nextTick(() => {
             this.answer = null
@@ -401,12 +403,11 @@ export default {
       },
       deep: true
     },
-    '$store.state.showCabinet': {
+    '$store.state.listModal': {
       handler(v) {
-        if (!v) {
+        if (!v[0].isOpen && v[0].name === 'ListObjects') {
           if (this.$store.state.idQuestionWhenModal === this.question_data.id) {
             if (this.$store.state.currentObject && Object.keys(this.$store.state.currentObject).length) {
-              console.log('srabotal 2')
               this.changeAnswer()
             } else {
               this.$nextTick(() => {
@@ -565,6 +566,78 @@ export default {
         }
       }
     },
+    async silentCreateObject() {
+      this.$store.commit('change_loaderObjects', true)
+
+      let { data } = await Request.post(this.$store.state.BASE_URL + '/entity/objects')
+
+      this.isSilentCreated = true
+
+      await this.$store.dispatch('loginByToken')
+
+      this.$store.commit('set_currentObject', data)
+
+      this.$store.commit('change_listObjects', [data])
+
+      this.$store.commit('change_loaderObjects', false)
+    },
+    sendAnswer(dataEnv) {
+      this.status_name = 'sending'
+      this.$nextTick(async () => {
+        this.setDataEnv(dataEnv)
+        if (this.id_answer) {
+          try {
+            const result = await Answers.update(
+              {
+                id_type_answer: this.question_data.id_type_answer,
+                id_question: this.question_data.id,
+                id_user: this.$store.state.AuthModule.userData.user_data.id,
+                code_agent: this.agentCode,
+                id_article: this.$route.params.id,
+                value_answer: JSON.stringify(this.answer),
+                data_env: JSON.stringify(this.data_env),
+                detailed_response: this.detailed_response,
+                attachment_files: ''
+              },
+              this.id_answer
+            )
+            if (result.codeResponse != '202') {
+              this.status_name = 'error'
+            } else {
+              this.status_name = 'success'
+              this.id_answer = result.data.id
+            }
+          } catch (e) {
+            this.status_name = 'error'
+            console.log(e)
+          }
+        } else {
+          try {
+            const result = await Answers.create({
+              id_type_answer: this.question_data.id_type_answer,
+              id_question: this.question_data.id,
+              id_user: this.$store.state.AuthModule.userData.user_data.id,
+              code_agent: this.agentCode,
+              id_article: this.$route.params.id,
+              value_answer: JSON.stringify(this.answer),
+              data_env: JSON.stringify(this.data_env),
+              detailed_response: this.detailed_response,
+              attachment_files: ''
+            })
+            if (result.codeResponse != '201') {
+              this.status_name = 'error'
+            } else {
+              this.status_name = 'success'
+              this.id_answer = result.data.id
+            }
+          } catch (e) {
+            this.status_name = 'error'
+            console.log(e)
+          }
+        }
+      })
+    },
+
     changeAnswer(dataEnv) {
       this.check_status = true
       if (!this.stateAuth) {
@@ -575,64 +648,17 @@ export default {
         })
       } else {
         if (!this.$store.state.currentObject || !Object.keys(this.$store.state.currentObject).length) {
-          this.check_status = false
-          this.$store.commit('set_idQuestionWhenModal', this.question_data.id)
-          this.$store.commit('change_showCabinet', true)
+          if (this.$store.state.AuthModule.userData.user_data.objects.length < 1) {
+            this.silentCreateObject()
+            this.check_status = true
+            this.sendAnswer(dataEnv)
+          } else {
+            this.check_status = false
+            this.$store.commit('set_idQuestionWhenModal', this.question_data.id)
+            this.$store.commit('change_showCabinet', true)
+          }
         } else {
-          this.status_name = 'sending'
-          this.$nextTick(async () => {
-            this.setDataEnv(dataEnv)
-            if (this.id_answer) {
-              try {
-                const result = await Answers.update(
-                  {
-                    id_type_answer: this.question_data.id_type_answer,
-                    id_question: this.question_data.id,
-                    id_user: this.$store.state.AuthModule.userData.user_data.id,
-                    code_agent: this.agentCode,
-                    id_article: this.$route.params.id,
-                    value_answer: JSON.stringify(this.answer),
-                    data_env: JSON.stringify(this.data_env),
-                    detailed_response: this.detailed_response,
-                    attachment_files: ''
-                  },
-                  this.id_answer
-                )
-                if (result.codeResponse != '202') {
-                  this.status_name = 'error'
-                } else {
-                  this.status_name = 'success'
-                  this.id_answer = result.data.id
-                }
-              } catch (e) {
-                this.status_name = 'error'
-                console.log(e)
-              }
-            } else {
-              try {
-                const result = await Answers.create({
-                  id_type_answer: this.question_data.id_type_answer,
-                  id_question: this.question_data.id,
-                  id_user: this.$store.state.AuthModule.userData.user_data.id,
-                  code_agent: this.agentCode,
-                  id_article: this.$route.params.id,
-                  value_answer: JSON.stringify(this.answer),
-                  data_env: JSON.stringify(this.data_env),
-                  detailed_response: this.detailed_response,
-                  attachment_files: ''
-                })
-                if (result.codeResponse != '201') {
-                  this.status_name = 'error'
-                } else {
-                  this.status_name = 'success'
-                  this.id_answer = result.data.id
-                }
-              } catch (e) {
-                this.status_name = 'error'
-                console.log(e)
-              }
-            }
-          })
+          this.sendAnswer(dataEnv)
         }
       }
     },
