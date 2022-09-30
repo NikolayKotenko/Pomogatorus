@@ -22,7 +22,7 @@
         <!--          </div>-->
         <!--          <span class='article_info_wrapper__info__left__block__value category'> Подбор </span>-->
         <!--        </div>-->
-        <div v-if='article_data._all_tags.length' class='article_info_wrapper__info__left__block'>
+        <div v-if='article_data._all_public_tags.length' class='article_info_wrapper__info__left__block'>
           <div class='article_info_wrapper__info__left__block__title'>
             <v-icon class='article_info_wrapper__info__left__block__title__icon' size='22'>
               mdi-tag-multiple-outline
@@ -30,8 +30,8 @@
             <span> Теги: </span>
           </div>
           <div class='article_info_wrapper__info__left__block__value tags'>
-            <a v-for='(tag, index) in article_data._all_tags' :key='index' :href="'/podborki/' + tag.code">
-              {{ tag.name.trim() + (index === article_data._all_tags.length - 1 ? '' : ',') }}
+            <a v-for='(tag, index) in article_data._all_public_tags' :key='index' :href="'/podborki/' + tag.code">
+              {{ tag.name.trim() + (index === article_data._all_public_tags.length - 1 ? '' : ',') }}
             </a>
           </div>
         </div>
