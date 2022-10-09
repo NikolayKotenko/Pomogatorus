@@ -1,6 +1,6 @@
 <template>
     <div>
-      <div class="tag-template" v-if="main_tag">
+      <div class="tag-template" v-if="main_tag.description">
         <v-card class="mt-5 mb-5 pa-5" style="word-break: break-word" v-html="main_tag.description"></v-card>
       </div>
       <div class="auth-template mt-5">
