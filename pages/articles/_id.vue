@@ -17,10 +17,10 @@
         <h1 class='article-template__header__title mainTitleFont'>
           {{ article.name }}
         </h1>
-        <ArticleInfo :article_data='article' />
+        <ArticleInfo :article_data='article' @setView='setView' />
       </div>
 
-      <div class='article-template__content mainContentFont' v-html='refactored_content'></div>
+      <div v-if='!renderArticle' class='article-template__content mainContentFont' v-html='refactored_content'></div>
     </template>
 
     <div v-if='$store.state.ArticleModule.refactoring_content || !article' class='hidden-mask'></div>
@@ -35,7 +35,6 @@ import Vue from 'vue'
 import ImageLayout from '../../components/frontLayouts/ImageLayout'
 import Question from '../../components/frontLayouts/Question'
 import LoginAuth from '../../components/frontLayouts/LoginAuth'
-import Request from '@/services/request'
 import Author from '../../components/Article/Author'
 
 import ArticleInfo from '../../components/Article/ArticleInfo'
@@ -64,7 +63,9 @@ export default {
     },
     data_of_components: [],
     coordYNav: null,
-    heightNav: 70
+    heightNav: 70,
+
+    renderArticle: false
   }),
   head() {
     return {
@@ -116,8 +117,6 @@ export default {
         datePublished: this.article.created_at
       }
     ]
-  },
-  created() {
   },
   mounted() {
     this.$store.commit('change_breadcrumbs', [
@@ -194,6 +193,7 @@ export default {
     }
   },
   methods: {
+    // SCROLL EVENT
     scrollWindow() {
       setTimeout(() => {
         if (this.$refs.nav) {
@@ -204,6 +204,41 @@ export default {
         }
       }, 1000)
     },
+
+    // CHANGE VIEW OF ARTICLE
+    setView(value) {
+      if (value === 'normal') {
+        this.renderNormal()
+      } else {
+        this.renderFlat()
+      }
+    },
+    renderNormal() {
+      this.renderArticle = true
+      this.$nextTick(() => {
+        this.renderArticle = false
+
+        this.$store.commit('change_refactoring_content', true)
+        this.initializeContent().then(() => {
+          setTimeout(() => {
+            this.changeIndexQuestion()
+            this.$store.commit('change_refactoring_content', false)
+          })
+        })
+      })
+    },
+    renderFlat() {
+      let components = Array.from(document.getElementsByClassName('article_component'))
+
+      let contentElement = document.getElementsByClassName('article-template__content')[0]
+      contentElement.innerHTML = ''
+
+      components.forEach(elem => {
+        contentElement.appendChild(elem)
+      })
+    },
+
+    // RENDER ARTICLE
     changeIndexQuestion() {
       let questions = [...document.getElementsByClassName('question_wrapper')]
 
@@ -340,14 +375,6 @@ export default {
 
       this.data = data
       this.instance = instance
-    },
-
-    callGovnaSobachki() {
-      Request.get('https://api.agregatorus.com/dictionary/cities')
-    },
-    async requestTest() {
-      const war = await this.$store.dispatch('refreshTokens')
-      console.log('war', war)
     }
   },
   beforeDestroy() {
@@ -355,6 +382,8 @@ export default {
     this.$store.state.ArticleModule.countLayout = 0
     this.$store.state.ArticleModule.count_of_questions = 0
     this.$store.state.ArticleModule.components_after_request = []
+
+    this.$store.commit('set_answers', [])
   },
   destroyed() {
     if (process.client) {

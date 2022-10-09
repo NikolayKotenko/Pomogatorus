@@ -22,7 +22,7 @@
         <!--          </div>-->
         <!--          <span class='article_info_wrapper__info__left__block__value category'> Подбор </span>-->
         <!--        </div>-->
-        <div v-if='article_data._all_tags.length' class='article_info_wrapper__info__left__block'>
+        <div v-if='tagsLength' class='article_info_wrapper__info__left__block'>
           <div class='article_info_wrapper__info__left__block__title'>
             <v-icon class='article_info_wrapper__info__left__block__title__icon' size='22'>
               mdi-tag-multiple-outline
@@ -44,7 +44,7 @@
         <!--        </div>-->
       </div>
       <div class='article_info_wrapper__info__right'>
-        <v-btn-toggle v-model='articleView' color='deep-purple accent-3' dense>
+        <v-btn-toggle v-model='articleView' color='deep-purple accent-3' dense @change='setView'>
           <v-tooltip bottom>
             <template v-slot:activator='{ on, attrs }'>
               <v-btn
@@ -73,10 +73,10 @@
         </v-btn-toggle>
       </div>
     </div>
-    <v-img class="mt-5"
-           max-width="500"
+    <v-img :src='$store.getters.getImageByEClientFilesObj(article_data.e_client_files)'
+           class='mt-5'
            contain
-           :src="$store.getters.getImageByEClientFilesObj(article_data.e_client_files)"
+           max-width='500'
     ></v-img>
     <div v-if='article_data.preview' class='article_info_wrapper__anons'>
       <span>
@@ -93,7 +93,18 @@ export default {
   props: ['article_data'],
   data: () => ({
     articleView: 'normal'
-  })
+  }),
+  computed: {
+    tagsLength() {
+      if (!this.article_data._all_tags) return false
+      return !!this.article_data._all_tags.length
+    }
+  },
+  methods: {
+    setView() {
+      this.$emit('setView', this.articleView)
+    }
+  }
 }
 </script>
 
