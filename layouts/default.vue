@@ -10,7 +10,6 @@
     <div
       v-for='(item, index) in listModal'
       :key='index'
-      style='height: 100vh'
     >
       <Right :data='item' :index='index' />
     </div>
@@ -158,7 +157,7 @@ body {
   width: 1140px;
   margin: 5px auto 0 auto;
   background: #ffffff;
-  padding: 10px 15px !important;
+  padding: 20px 15px !important;
   border-radius: 5px;
   height: 100%;
 }

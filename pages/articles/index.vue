@@ -1,6 +1,5 @@
 <template>
   <div class='list_container'>
-    <!--  TODO: как-то починить grid, потому что вылазит за пределы родителя   -->
     <Article v-for='(article, index) in $store.state.ArticleModule.list_articles' :key='index' :article='article' />
   </div>
 </template>
@@ -12,7 +11,10 @@ export default {
   name: 'index.vue',
   components: { Article },
   data: () => ({}),
-  meta: {},
+  head: {
+    title: 'Статьи',
+    meta: []
+  },
   async fetch() {
     await this.$store.dispatch('req_list_articles')
   },

@@ -23,7 +23,10 @@ export default {
   name: 'index.vue',
   components: {},
   data: () => ({}),
-  meta: {},
+  head: {
+    title: 'Подборки',
+    meta: []
+  },
   created() {
     // if (process.server) {
     //   console.log('server')

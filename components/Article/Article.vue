@@ -2,10 +2,14 @@
   <v-card class='article_card' @click='redirectToDetail(article.id)'>
     <div class='list_elem_wrapper'>
       <div class='list_elem_wrapper__img_container'>
-        <img
+        <v-img
           alt=''
           class='list_elem_wrapper__img_container__img'
-          src='https://cdn.dribbble.com/users/41613/screenshots/3848663/chronicle_prev.jpg?compress=1&resize=400x300'
+          max-width="300"
+          width="300"
+          height="100%"
+          cover
+          :src="$store.getters.getImageByEClientFilesObj(article.e_client_files)"
         />
       </div>
       <div class='list_elem_wrapper__preview_content'>
