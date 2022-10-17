@@ -25,15 +25,18 @@
   }
 }
 
-.article_card{
+.article_card {
   //width: 400px;
   //height: 400px;
-  .list_elem_wrapper{
+  font-family: 'Exo 2', sans-serif;
+
+  .list_elem_wrapper {
     display: grid;
     height: 100%;
     //grid-template-rows: 300px auto;
   }
 }
+
 .list_container {
   //display: grid;
   //grid-template-columns: repeat(3, 1fr);
@@ -75,7 +78,7 @@
     &__short_info {
       justify-content: flex-start;
       height: 100%;
-      padding: 10px;
+      padding: 10px 14px;
 
       &__title {
         font-size: 1.2em;
@@ -98,7 +101,7 @@
         overflow: hidden;
         color: #7a7a7a;
         font-weight: 500;
-        font-size: 0.95em !important;
+        font-size: 1em !important;
       }
     }
   }

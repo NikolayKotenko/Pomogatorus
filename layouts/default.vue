@@ -1,6 +1,7 @@
 <template>
   <v-app class='app'>
     <Header />
+    <BurgerMenu v-if='!$device.isDesktop' />
     <SubHeader v-if='$device.isDesktop' />
     <v-main id='main_content' class='main'>
       <Nuxt />
@@ -27,10 +28,11 @@ import ObjectDetail from '../components/UserObjects/ObjectDetail'
 import Right from '../components/CascadModels/Right'
 
 import { mapState } from 'vuex'
+import BurgerMenu from '../components/BurgerMenu'
 
 export default {
   name: 'DefaultLayout',
-  components: { Right, SubHeader, Header, ListObjects, ObjectDetail },
+  components: { BurgerMenu, Right, SubHeader, Header, ListObjects, ObjectDetail },
   async fetch() {
     const options = {
       method: 'GET',
@@ -136,12 +138,11 @@ export default {
 </script>
 
 <style lang='scss'>
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 @import 'assets/styles/style';
 
 body {
   background: #f3f3f3 !important;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Exo 2', sans-serif;
 }
 
 .app {
@@ -159,6 +160,5 @@ body {
   background: #ffffff;
   padding: 20px 15px !important;
   border-radius: 5px;
-  height: 100%;
 }
 </style>

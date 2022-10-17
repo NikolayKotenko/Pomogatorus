@@ -1,74 +1,54 @@
 <template>
-  <div>
-    <v-app-bar id='navbar' app class='header' dark elevate-on-scroll>
-      <v-app-bar-nav-icon v-if="isMobile" @click="drawer = true"></v-app-bar-nav-icon>
-      <v-toolbar-title v-if="isMobile" class="wtf">
-        <router-link style="color: unset; text-decoration: unset" :to="getCurrentRoute.path">{{ getCurrentRoute.title }}</router-link>
-      </v-toolbar-title>
+  <v-app-bar id='navbar' app class='header' dark elevate-on-scroll>
+    <v-app-bar-nav-icon v-if='isMobile' @click='showDrawer'></v-app-bar-nav-icon>
+    <v-toolbar-title v-if='isMobile' class='wtf'>
+      <router-link :to='getCurrentRoute.path' style='color: unset; text-decoration: unset'>{{ getCurrentRoute.title
+        }}
+      </router-link>
+    </v-toolbar-title>
 
-      <!-- Desktop -->
-      <template v-if="!isMobile">
-        <v-toolbar-items class='header_center'>
-          <v-btn v-for='item in menuItems' :key='item.title' :to='item.path' class='text-capitalize link_btn' text>
-            <v-icon dark left>{{ item.icon }}</v-icon>
-            {{ item.title }}
-          </v-btn>
-        </v-toolbar-items>
-      </template>
-
-      <!-- Домик всегда по правую сторону -->
-      <v-toolbar-items class='header_right'>
-        <v-btn class='text-capitalize link_btn' text @click='openModals'>
-          <v-icon :large='isMobile'>mdi-home-account</v-icon>
-          <span v-if='!isMobile'>Кабинет</span>
+    <!-- Desktop -->
+    <template v-if='!isMobile'>
+      <v-toolbar-items class='header_center'>
+        <v-btn v-for='item in menuItems' :key='item.title' :to='item.path' class='text-capitalize link_btn' text>
+          <v-icon :color='getCurrentRoute.title === item.title ? "#fafad2" : "white"' dark left>
+            {{ item.icon }}
+          </v-icon>
+          <span :class='{activeElement: getCurrentRoute.title === item.title}'>{{ item.title }}</span>
         </v-btn>
       </v-toolbar-items>
-    </v-app-bar>
+    </template>
 
-    <!-- Мобилка (гамбургер) -->
-    <v-navigation-drawer
-      v-if="isMobile"
-      v-model="drawer"
-      absolute
-      temporary
-    >
-      <v-list style="margin-top: 50px;">
-        <v-list-item-group class='header_center'>
-          <v-list-item v-for='item in menuItems' :key='item.title' :to='item.path' class='text-capitalize link_btn' text>
-            <v-list-item-icon dark left><v-icon>{{ item.icon }}</v-icon></v-list-item-icon>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
-    </v-navigation-drawer>
-
-
-  </div>
+    <!-- Личный кабинет всегда по правую сторону -->
+    <v-toolbar-items class='header_right'>
+      <v-tooltip bottom>
+        <template v-slot:activator='{ on, attrs }'>
+          <v-btn
+            :color='listModal[0].isOpen ? "#fafad2" : "white"'
+            class='text-capitalize link_btn'
+            text v-bind='attrs'
+            @click='openModals'
+            v-on='on'
+          >
+            <v-icon large>mdi-key</v-icon>
+          </v-btn>
+        </template>
+        <span>Личный кабинет</span>
+      </v-tooltip>
+    </v-toolbar-items>
+  </v-app-bar>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import menuItems from '../models/menuItems'
 
 export default {
   name: 'Header',
   data() {
     return {
-      drawer: false,
-      menuItems: [
-        {
-          title: 'Статьи',
-          path: '/articles',
-          icon: 'mdi-message-text'
-        },
-        {
-          title: 'Подборки',
-          path: '/podborki',
-          icon: 'mdi-bullseye-arrow'
-        }
-      ],
-      debounceTimeout: null,
-      openLeftNavigationDrawer: false,
-      openRightNavigationDrawer: false
+      menuItems,
+      debounceTimeout: null
     }
   },
   mounted() {
@@ -78,7 +58,8 @@ export default {
   },
   computed: {
     ...mapState({
-      listModal: state => state.listModal
+      listModal: state => state.listModal,
+      drawer: state => state.drawer
     }),
 
     isMobile() {
@@ -91,9 +72,12 @@ export default {
     }
   },
   methods: {
+    showDrawer() {
+      this.$store.commit('set_drawer', !this.drawer)
+    },
     openModals() {
       // TODO: Продумать логику открывания модалки независимо от index'a
-      this.listModal[0].isOpen = true
+      this.listModal[0].isOpen = !this.listModal[0].isOpen
     },
     setHeader(value) {
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
@@ -131,7 +115,7 @@ export default {
   width: 100%;
   position: sticky;
   top: 0;
-  z-index: 399;
+  z-index: 999;
   transition: all 0.4s ease-in-out;
 
   ::v-deep .v-toolbar__content {
@@ -168,5 +152,9 @@ export default {
   line-height: 1.5;
   letter-spacing: 1px;
   font-weight: 400;
+}
+
+.activeElement {
+  color: lightgoldenrodyellow;
 }
 </style>

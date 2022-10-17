@@ -77,7 +77,7 @@ export default {
       return this.$device.isMobile
     },
     computedLayout() {
-      return `z-index: ${400 * (this.index + 1)}`
+      return `z-index: ${400 * (this.index + 1)}; top: ${this.isMobile ? '56px' : '64px'}`
     }
   },
   methods: {

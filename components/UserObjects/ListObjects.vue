@@ -1,10 +1,10 @@
 <template>
   <div class='modal_wrapper'>
     <div class='card_title d-flex justify-space-between align-center mb-4'>
-      <v-icon large @click='closeDetail'>mdi-close</v-icon>
       <h3>
         Выберите объект для сохранения
       </h3>
+      <v-icon large @click='closeDetail'>mdi-close</v-icon>
     </div>
     <div class='card_object flex-grow-1 flex-shrink-1 pa-5'>
       <div v-if='showObjects' class='card_object_container'>

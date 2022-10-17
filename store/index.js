@@ -15,6 +15,9 @@ const createStore = () => {
       agent_utm: null,
       changedCookie: false,
 
+      /* HEADER */
+      drawer: false,
+
       /* Objects */
       showCabinet: false,
       isAnotherOpen: false,
@@ -57,6 +60,9 @@ const createStore = () => {
       },
     },
     mutations: {
+      set_drawer(state, payload) {
+        state.drawer = payload
+      },
       change_breadcrumbs(state, arr) {
         state.breadcrumbs = []
         state.breadcrumbs = arr
