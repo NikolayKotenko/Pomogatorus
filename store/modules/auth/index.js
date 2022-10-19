@@ -8,7 +8,9 @@ export default {
   mutations: {
     //  AUTH
     set_user_data(state, result) {
-      state.userData = []
+      if (! result) return false;
+
+      state.userData = {}
       state.userData = result
       // if (!result.access_token)
       //   return false
@@ -53,6 +55,9 @@ export default {
     },
   },
   getters: {
+    getNameUser(state){
+      return Object.keys(state.userData).length ? state.userData.user_data.first_name : '';
+    },
     stateAuth(state) {
       return state.userData && Object.keys(state.userData).length !== 0
     },
