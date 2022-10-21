@@ -1,32 +1,35 @@
 <template>
-  <div class='article-template'>
-    <template v-if='article'>
-      <div
-        :class='[
-          { showArticleHeader: isShowTitle },
-          {
-            subHeader: $store.state.show_header && isShowTitle && $device.isDesktop,
-          },
-          { subHeaderMobile: $device.isMobile },
-        ]'
-        class='article-template__subHeader'
-      >
-        <h2 class='mainTitleFont'>{{ article.name }}</h2>
-      </div>
-      <div ref='nav' class='article-template__header'>
-        <h1 class='article-template__header__title mainTitleFont'>
-          {{ article.name }}
-        </h1>
-        <ArticleInfo :article_data='article' />
-      </div>
+  <div>
+    <div class='article-template'>
+      <template v-if='article'>
+        <div
+          :class='[
+            { showArticleHeader: isShowTitle },
+            {
+              subHeader: $store.state.show_header && isShowTitle && $device.isDesktop,
+            },
+            { subHeaderMobile: $device.isMobile },
+          ]'
+          class='article-template__subHeader'
+        >
+          <h2 class='mainTitleFont'>{{ article.name }}</h2>
+        </div>
+        <div ref='nav' class='article-template__header'>
+          <h1 class='article-template__header__title mainTitleFont'>
+            {{ article.name }}
+          </h1>
+          <ArticleInfo :article_data='article' />
+        </div>
 
-      <div class='article-template__content mainContentFont' v-html='refactored_content'></div>
-    </template>
+        <div class='article-template__content mainContentFont' v-html='refactored_content'></div>
+      </template>
 
-    <div v-if='$store.state.ArticleModule.refactoring_content || !article' class='hidden-mask'></div>
-    <v-overlay :value='$store.state.ArticleModule.refactoring_content'>
-      <v-progress-circular :size='50' color='primary' indeterminate style='margin-top: 20px'></v-progress-circular>
-    </v-overlay>
+      <div v-if='$store.state.ArticleModule.refactoring_content || !article' class='hidden-mask'></div>
+      <v-overlay :value='$store.state.ArticleModule.refactoring_content'>
+        <v-progress-circular :size='50' color='primary' indeterminate style='margin-top: 20px'></v-progress-circular>
+      </v-overlay>
+    </div>
+    <footer-summary></footer-summary>
   </div>
 </template>
 
@@ -37,6 +40,7 @@ import Question from '../../components/frontLayouts/Question'
 import LoginAuth from '../../components/frontLayouts/LoginAuth'
 import Request from '@/services/request'
 import Author from '../../components/Article/Author'
+import FooterSummary from '../../components/FooterSummary'
 
 import ArticleInfo from '../../components/Article/ArticleInfo'
 
@@ -44,7 +48,7 @@ const vuetify_class = require('vuetify')
 
 export default {
   name: '_id.vue',
-  components: { ArticleInfo, Author },
+  components: { ArticleInfo, Author, FooterSummary },
   async asyncData({ $axios, store, params }) {
     const options = {
       method: 'GET',

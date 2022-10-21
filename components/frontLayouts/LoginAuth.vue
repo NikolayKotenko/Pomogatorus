@@ -23,7 +23,7 @@
               name="email"
               ref="email_user"
               v-model="email_user"
-              label="Введите почту"
+              placeholder="Введите почту"
               :rules="emailRules"
               single-line
               required
@@ -35,7 +35,7 @@
               maxlength="4"
               :type="passStateEye ? 'text' : 'password'"
               name="password"
-              label="Введите код доступа"
+              placeholder="Введите код доступа"
               hint="4 символа"
               counter
               required
@@ -88,7 +88,7 @@
               type="email"
               name="email"
               v-model="email_user"
-              label="Введите почту"
+              placeholder="Введите почту"
               :rules="emailRules"
               single-line
               required
@@ -98,7 +98,7 @@
               type="text"
               name="name"
               v-model="name"
-              label="Как к вам обращаться ?"
+              placeholder="Как к вам обращаться ?"
               single-line
             ></v-text-field>
             <v-btn
