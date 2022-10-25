@@ -1,5 +1,6 @@
 <template>
-  <div :id='`component_wrapper-${index_component}`' class='question_wrapper question_hover' contenteditable='false'>
+  <div :id='`component_wrapper-${index_component}`' class='question_wrapper question_hover article_component'
+       contenteditable='false'>
     <template v-if='Object.keys(question_data).length'>
       <div class='question_wrapper__content'>
         <div class='question_wrapper__title'>
@@ -500,6 +501,22 @@ export default {
           console.log(error)
           this.status_name = 'error'
         })
+        .finally(() => {
+          if (this.$store.state.ArticleModule.answers.map(elem => elem.id).includes(this.question_data.id)) {
+            this.$store.commit('set_files_answer', {
+              id: this.question_data.id,
+              files: this.files
+            })
+          } else {
+            const files = structuredClone(this.files)
+            this.$store.commit('add_answers', {
+              id: this.question_data.id,
+              answer: this.answer,
+              detailed_response: this.detailed_response,
+              files: files
+            })
+          }
+        })
     },
     async requestFunc(element) {
       return Answers.sendFile({
@@ -535,7 +552,6 @@ export default {
             this.value_type_answer.forEach((elem) => {
               this.data_env.data[elem.dataEnv.data.data.column] = JSON.stringify(this.detailed_response)
             })
-            console.log(this.data_env)
           }
         } else if (typeof this.answer === 'string') {
           if (this.value_type_answer && this.value_type_answer.length) {
@@ -635,6 +651,15 @@ export default {
             console.log(e)
           }
         }
+
+        // AFTER WE CREATE WE SAVE OUR ANSWER TO STORE
+        const files = structuredClone(this.files)
+        this.$store.commit('add_answers', {
+          id: this.question_data.id,
+          answer: this.answer,
+          detailed_response: this.detailed_response,
+          files: files
+        })
       })
     },
 
@@ -716,6 +741,15 @@ export default {
         this.getValue_type_answer()
         this.getHeightOfControls()
         this.getWidthOfControls()
+
+        if (this.$store.state.ArticleModule.answers.length) {
+          let current = this.$store.state.ArticleModule.answers.find(elem => elem.id === this.question_data.id)
+          if (current) {
+            this.files = current.files
+            this.answer = current.answer
+            this.detailed_response = current.detailed_response
+          }
+        }
       }
     },
     getValue_type_answer() {

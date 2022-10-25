@@ -7,8 +7,29 @@ export default {
     count_of_questions: 0,
     intialized_app: false,
     refactoring_content: true,
+
+    answers: [],
   },
   mutations: {
+    set_answers(state, payload) {
+      state.answers = payload
+    },
+    add_answers(state, payload) {
+      let index = state.answers.findIndex((elem) => elem.id === payload.id)
+
+      if (index !== -1) {
+        state.answers.splice(index, 1, payload)
+      } else {
+        state.answers.push(payload)
+      }
+    },
+    set_files_answer(state, payload) {
+      let current = state.answers.find((elem) => elem.id === payload.id)
+      if (current) {
+        current.files = payload.files
+      }
+    },
+
     change_refactoring_content(state, value) {
       state.refactoring_content = value
     },

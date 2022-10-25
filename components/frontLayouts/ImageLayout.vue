@@ -1,11 +1,10 @@
 <template>
-  <div class="image_wrapper" contenteditable="false" :id="`component_wrapper-${index_component}`">
-    <img class="inserted_image" :src="srcPath" :alt="altName" :title="titleName" />
+  <div :id='`component_wrapper-${index_component}`' class='article_component image_wrapper' contenteditable='false'>
+    <img :alt='altName' :src='srcPath' :title='titleName' class='inserted_image' />
   </div>
 </template>
 
 <script>
-import ArticleModule from '../../store/modules/article'
 
 export default {
   name: 'ImageLayout',
@@ -15,7 +14,7 @@ export default {
     x: 0,
     y: 0,
     index_component: null,
-    data_image: null,
+    data_image: null
   }),
   mounted() {
     this.getData()
@@ -29,7 +28,7 @@ export default {
     },
     titleName() {
       return this.data_image?.title
-    },
+    }
   },
   methods: {
     getData() {
@@ -43,7 +42,7 @@ export default {
       elem.remove()
       this.$store.dispatch('deleteComponent', this.index_component)
     },
-    onResize: function (x, y, width, height) {
+    onResize: function(x, y, width, height) {
       this.x = x
       this.y = y
       this.width = width
@@ -68,12 +67,12 @@ export default {
           this.controls_height = 0
         }
       })
-    },
-  },
+    }
+  }
 }
 </script>
 
-<style scoped lang="scss">
+<style lang='scss' scoped>
 .image_wrapper {
   //min-height: 150px;
   //min-width: 50px;
@@ -85,6 +84,7 @@ export default {
   justify-content: center;
   align-items: center;
 }
+
 .inserted_image {
   width: 100%;
   height: 100%;
