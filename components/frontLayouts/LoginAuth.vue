@@ -127,8 +127,8 @@
       </v-alert>
     </v-container>
   </div>
-  <v-alert v-else dismissible type='success'>
-    <span>Здравствуйте {{ $store.state.AuthModule.userData.first_name }}</span>
+  <v-alert v-else dismissible type="success">
+    <span>Здравствуйте {{ $store.getters.getNameUser }}</span>
   </v-alert>
 </template>
 
@@ -174,7 +174,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['stateAuth'])
+    ...mapGetters(['stateAuth']),
+    ...mapGetters(['getNameUser']),
   },
   watch: {
     '$store.state.changedCookie': {

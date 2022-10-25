@@ -1,5 +1,6 @@
 import Request from '@/services/request'
 import _clone from '../../../helpers/deepClone'
+import Vue from 'vue'
 
 export default {
   state: {
@@ -9,6 +10,9 @@ export default {
   mutations: {
     //  AUTH
     set_user_data(state, result) {
+      state.userData = {}
+      if (! result) return false;
+
       state.userData = {}
       state.userData = result
     },
@@ -61,6 +65,9 @@ export default {
     },
   },
   getters: {
+    getNameUser(state){
+      return Object.keys(state.userData).length ? state.userData.user_data.first_name : '';
+    },
     stateAuth(state) {
       return state.userData && Object.keys(state.userData).length !== 0
     },

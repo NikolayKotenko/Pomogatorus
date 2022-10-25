@@ -23,6 +23,8 @@
           />
         </div>
       </div>
+
+      <footer-summary></footer-summary>
     </div>
 </template>
 
