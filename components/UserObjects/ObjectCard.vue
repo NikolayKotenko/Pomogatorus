@@ -1,7 +1,7 @@
 <template>
   <div class='card_object_container__wrapper'>
     <div class='card_object_container__wrapper__header' @click='openDetailCard'>
-      <span>Объект описан:</span>
+      <span>{{ object_data.address }}</span>
       <span>{{ object_data.created_at }}</span>
     </div>
     <div class='card_object_container__wrapper__info' @click='openDetailCard'>
@@ -57,9 +57,9 @@ export default {
       this.$store.commit('set_currentObject', this.object_data)
     },
     openDetailCard() {
-      this.$store.state.modalCurrentObject = this.object_data
-      // TODO: Продумать логику открывания модалки независимо от index'a
-      this.$store.state.listModal[1].isOpen = true
+      this.$emit('openDetail', this.object_data)
+      // this.$store.state.modalCurrentObject = this.object_data
+      // this.$store.state.listModal[1].isOpen = true
     },
     async closeDetail() {
       this.showDetailObj = false

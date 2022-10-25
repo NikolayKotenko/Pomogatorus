@@ -15,7 +15,7 @@ export default {
 
       commit('setIsUpdating', true)
 
-      await Request.post(`${this.state.BASE_URL}/users/set-user-data/${userId}`, { ...data })
+      await Request.put(`${this.state.BASE_URL}/users/set-user-data/${userId}`, { ...data })
         .then((response) => {
           commit('set_default_user_data', response.data, { root: true })
         })
