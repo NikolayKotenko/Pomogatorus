@@ -1,6 +1,5 @@
 import Request from '@/services/request'
 import _clone from '../../../helpers/deepClone'
-import Vue from 'vue'
 
 export default {
   state: {
@@ -11,7 +10,7 @@ export default {
     //  AUTH
     set_user_data(state, result) {
       state.userData = {}
-      if (! result) return false;
+      if (!result) return false
 
       state.userData = {}
       state.userData = result
@@ -25,22 +24,22 @@ export default {
     // AUTH
     async refreshTokens({ commit }) {
       const tokensData = await Request.post(window.location.origin + '/api/auth/refresh')
-      commit('set_user_data', _clone(tokensData.data.user_data, 'replace'))
-      commit('set_default_user_data', _clone(tokensData.data.user_data, 'replace'))
+      commit('set_user_data', _clone(tokensData.data?.user_data, 'replace'))
+      commit('set_default_user_data', _clone(tokensData.data?.user_data, 'replace'))
       commit('change_changedCookie', true, { root: true })
       return tokensData
     },
     async loginByToken({ commit }) {
       const tokensData = await Request.post(window.location.origin + '/api/auth/validate-auth')
-      commit('set_user_data', _clone(tokensData.data.user_data, 'replace'))
-      commit('set_default_user_data', _clone(tokensData.data.user_data, 'replace'))
+      commit('set_user_data', _clone(tokensData.data?.user_data, 'replace'))
+      commit('set_default_user_data', _clone(tokensData.data?.user_data, 'replace'))
       commit('change_changedCookie', true, { root: true })
       return tokensData
     },
     async loginUser({ commit }, objData) {
       const tokensData = await Request.post(window.location.origin + '/api/auth/login', objData)
-      commit('set_user_data', _clone(tokensData.data.user_data, 'replace'))
-      commit('set_default_user_data', _clone(tokensData.data.user_data, 'replace'))
+      commit('set_user_data', _clone(tokensData.data?.user_data, 'replace'))
+      commit('set_default_user_data', _clone(tokensData.data?.user_data, 'replace'))
       commit('change_changedCookie', true, { root: true })
       return tokensData
     },
@@ -65,9 +64,6 @@ export default {
     },
   },
   getters: {
-    getNameUser(state){
-      return Object.keys(state.userData).length ? state.userData.user_data.first_name : '';
-    },
     stateAuth(state) {
       return state.userData && Object.keys(state.userData).length !== 0
     },
