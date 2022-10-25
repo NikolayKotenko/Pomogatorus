@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import AuthModule from './modules/auth'
 import ArticleModule from './modules/article'
 import PopularSelectionsModule from './modules/popular-selections'
+import UserSettings from './modules/userSettings'
 
 import Request from '../services/request'
 
@@ -30,14 +31,19 @@ const createStore = () => {
       /* MODALS */
       listModal: [
         {
-          name: 'ListObjects',
+          name: 'UserInfo',
           isOpen: false,
           index: 1,
         },
         {
-          name: 'ObjectDetail',
+          name: 'ListObjects',
           isOpen: false,
           index: 2,
+        },
+        {
+          name: 'ObjectDetail',
+          isOpen: false,
+          index: 3,
         },
       ],
       modalCurrentObject: {},
@@ -110,7 +116,7 @@ const createStore = () => {
         state.loading_objects = true
 
         let { data } = await Request.get(state.BASE_URL + '/entity/objects', {
-          'filter[id_user]': this.state.AuthModule.userData.user_data.id,
+          'filter[id_user]': this.state.AuthModule.userData.id,
         })
         commit('change_listObjects', data)
       },
@@ -122,6 +128,7 @@ const createStore = () => {
       AuthModule,
       ArticleModule,
       PopularSelectionsModule,
+      UserSettings,
     },
   })
 }

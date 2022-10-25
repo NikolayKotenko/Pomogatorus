@@ -26,6 +26,7 @@ import { mapGetters, mapState } from 'vuex'
 
 import ListObjects from '../UserObjects/ListObjects'
 import ObjectDetail from '../UserObjects/ObjectDetail'
+import UserInfo from '../User/UserInfo'
 
 export default {
   name: 'Right',
@@ -67,9 +68,13 @@ export default {
     ...mapGetters(['isSomeOpen']),
 
     currentComponent() {
+      if (this.data.name === 'UserInfo') {
+        return UserInfo
+      }
       if (this.data.name === 'ObjectDetail') {
         return ObjectDetail
-      } else if (this.data.name === 'ListObjects') {
+      }
+      if (this.data.name === 'ListObjects') {
         return ListObjects
       }
     },
@@ -77,7 +82,7 @@ export default {
       return this.$device.isMobile
     },
     computedLayout() {
-      return `z-index: ${400 * (this.index + 1)}; top: ${this.isMobile ? '56px' : '64px'}`
+      return `z-index: ${400 * (this.index + 1)}; padding-top: ${this.isMobile ? '56px' : '64px'}`
     }
   },
   methods: {

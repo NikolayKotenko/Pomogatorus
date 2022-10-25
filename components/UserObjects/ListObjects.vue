@@ -9,7 +9,7 @@
     <div class='card_object flex-grow-1 flex-shrink-1 pa-5'>
       <div v-if='showObjects' class='card_object_container'>
         <ObjectCard
-          v-for='(object, index) in $store.state.AuthModule.userData.user_data.objects'
+          v-for='(object, index) in $store.state.AuthModule.userData.objects'
           :key='index'
           :object_data='object'
         />
@@ -87,7 +87,7 @@ export default {
 
       await this.$store.dispatch('loginByToken')
 
-      if (this.$store.state.AuthModule.userData.user_data.objects.length < 1) {
+      if (this.$store.state.AuthModule.userData.objects.length < 1) {
         this.$store.commit('set_currentObject', data)
       }
 

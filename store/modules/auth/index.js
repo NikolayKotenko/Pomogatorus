@@ -1,40 +1,42 @@
 import Request from '@/services/request'
-import Vue from 'vue'
+import _clone from '../../../helpers/deepClone'
 
 export default {
   state: {
     userData: {},
+    defaultUserData: {},
   },
   mutations: {
     //  AUTH
     set_user_data(state, result) {
-      state.userData = []
+      state.userData = {}
       state.userData = result
-      // if (!result.access_token)
-      //   return false
-      //
-      // const {token, defined_ttl_minutes} = result.access_token;
-      //
-      // this.$cookiz.set("accessToken", token, {maxAge: defined_ttl_minutes});
+    },
+    set_default_user_data(state, payload) {
+      state.defaultUserData = {}
+      state.defaultUserData = payload
     },
   },
   actions: {
     // AUTH
     async refreshTokens({ commit }) {
       const tokensData = await Request.post(window.location.origin + '/api/auth/refresh')
-      commit('set_user_data', tokensData.data)
+      commit('set_user_data', _clone(tokensData.data.user_data, 'replace'))
+      commit('set_default_user_data', _clone(tokensData.data.user_data, 'replace'))
       commit('change_changedCookie', true, { root: true })
       return tokensData
     },
     async loginByToken({ commit }) {
       const tokensData = await Request.post(window.location.origin + '/api/auth/validate-auth')
-      commit('set_user_data', tokensData.data)
+      commit('set_user_data', _clone(tokensData.data.user_data, 'replace'))
+      commit('set_default_user_data', _clone(tokensData.data.user_data, 'replace'))
       commit('change_changedCookie', true, { root: true })
       return tokensData
     },
     async loginUser({ commit }, objData) {
       const tokensData = await Request.post(window.location.origin + '/api/auth/login', objData)
-      commit('set_user_data', tokensData.data)
+      commit('set_user_data', _clone(tokensData.data.user_data, 'replace'))
+      commit('set_default_user_data', _clone(tokensData.data.user_data, 'replace'))
       commit('change_changedCookie', true, { root: true })
       return tokensData
     },
@@ -50,6 +52,12 @@ export default {
     async createUserFromEmailAndPass(_, objData) {
       //Делаем запрос на создание пользователя, если такой есть то будет 409 конфликт ошибка ну и бог с ней
       return await Request.post(this.state.BASE_URL + '/users/create-from-full-credentials', objData)
+    },
+    async logout({ commit }) {
+      await Request.post(this.state.BASE_URL + '/auth/logout').then((response) => {
+        commit('set_user_data', {})
+        commit('set_default_user_data', {})
+      })
     },
   },
   getters: {
