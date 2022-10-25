@@ -2,7 +2,7 @@
   <div
     v-if='stateAuthBlock'
     :id='`component_wrapper-${index_component}`'
-    class='auth_container article_component'
+    class='auth_container'
     contenteditable='false'
   >
     <v-container>
@@ -128,7 +128,7 @@
     </v-container>
   </div>
   <v-alert v-else dismissible type='success'>
-    <span>Здравствуйте {{ $store.state.AuthModule.userData.user_data.first_name }}</span>
+    <span>Здравствуйте {{ $store.state.AuthModule.userData.first_name }}</span>
   </v-alert>
 </template>
 

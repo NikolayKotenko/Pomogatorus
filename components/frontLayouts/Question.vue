@@ -607,7 +607,7 @@ export default {
               {
                 id_type_answer: this.question_data.id_type_answer,
                 id_question: this.question_data.id,
-                id_user: this.$store.state.AuthModule.userData.user_data.id,
+                id_user: this.$store.state.AuthModule.userData.id,
                 code_agent: this.agentCode,
                 id_article: this.$route.params.id,
                 value_answer: JSON.stringify(this.answer),
@@ -632,7 +632,7 @@ export default {
             const result = await Answers.create({
               id_type_answer: this.question_data.id_type_answer,
               id_question: this.question_data.id,
-              id_user: this.$store.state.AuthModule.userData.user_data.id,
+              id_user: this.$store.state.AuthModule.userData.id,
               code_agent: this.agentCode,
               id_article: this.$route.params.id,
               value_answer: JSON.stringify(this.answer),
@@ -673,7 +673,7 @@ export default {
         })
       } else {
         if (!this.$store.state.currentObject || !Object.keys(this.$store.state.currentObject).length) {
-          if (this.$store.state.AuthModule.userData.user_data.objects.length < 1) {
+          if (this.$store.state.AuthModule.userData.objects.length < 1) {
             this.silentCreateObject()
             this.check_status = true
             this.sendAnswer(dataEnv)

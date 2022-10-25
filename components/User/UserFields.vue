@@ -1,0 +1,142 @@
+<template>
+  <v-form v-model='isFormValid'>
+    <v-row>
+      <v-col>
+        <v-text-field
+          v-model='form.first_name'
+          label='Имя'
+          placeholder='Введите имя'
+          @change='setData'
+        ></v-text-field>
+      </v-col>
+      <v-col>
+        <v-text-field
+          v-model='form.middle_name'
+          label='Фамилия'
+          placeholder='Введите фамилию'
+          @change='setData'
+        ></v-text-field>
+      </v-col>
+      <v-col>
+        <v-text-field
+          v-model='form.last_name'
+          label='Отчество'
+          placeholder='Введите отчество'
+          @change='setData'
+        ></v-text-field>
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col>
+        <v-text-field
+          v-model='form.email'
+          :rules='emailRules'
+          label='email'
+          placeholder='Введите email'
+          @change='setData'
+        ></v-text-field>
+      </v-col>
+      <v-col>
+        <v-text-field
+          v-model='form.telephone'
+          v-mask="'+7 (###) ###-##-##'"
+          label='Телефон'
+          placeholder='Введите телефон'
+          @change='setData'
+        ></v-text-field>
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col>
+        <v-radio-group v-model='form.type'>
+          <v-radio
+            v-for='(type, index) in types'
+            :key='index'
+            :label='type.text'
+            :value='type.value'
+            @change='setData'
+          ></v-radio>
+        </v-radio-group>
+      </v-col>
+    </v-row>
+  </v-form>
+</template>
+
+<script>
+import { mapState } from 'vuex'
+
+export default {
+  name: 'UserFields',
+  data: () => ({
+    isFormValid: false,
+    form: {
+      first_name: '',
+      middle_name: '',
+      last_name: '',
+      email: '',
+      telephone: '',
+      type: ''
+    },
+    types: [
+      {
+        text: 'Собственник дома',
+        value: 'Owner'
+      },
+      {
+        text: 'Профессионально занимаюсь монтажом инженерных систем',
+        value: 'Profi'
+      },
+      {
+        text: 'Занимаюсь продажей инженерного оборудования',
+        value: 'Seller'
+      }
+    ],
+    emailRules: [
+      v => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Введите корректный email'
+    ]
+  }),
+  mounted() {
+    this.getUserInfo()
+  },
+  watch: {
+    'isChanged': {
+      handler(v) {
+        this.$emit('isChanged', v)
+      }
+    }
+  },
+  computed: {
+    ...mapState({
+      userData: state => state.AuthModule.userData,
+      defaultUserData: state => state.AuthModule.defaultUserData
+    }),
+
+    allValid() {
+      return !!this.emailRules
+    },
+    isChanged() {
+      let result = []
+
+      for (let key in this.form) {
+        result.push(this.form[key] === this.defaultUserData[key])
+      }
+
+      return result.includes(false)
+    }
+  },
+  methods: {
+    getUserInfo() {
+      if (this.userData && Object.keys(this.userData).length) {
+        for (let key in this.form) {
+          this.form[key] = this.userData[key]
+        }
+      }
+    },
+    setData() {
+      this.$emit('newData', { data: this.form, isValid: this.isFormValid })
+    }
+  }
+}
+</script>

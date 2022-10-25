@@ -1,17 +1,12 @@
 <template>
   <div class='modal_wrapper'>
-    <div class='card_title d-flex justify-space-between align-center mb-4'>
-      <h3>
-        Выберите объект для сохранения
-      </h3>
-      <v-icon large @click='closeDetail'>mdi-close</v-icon>
-    </div>
     <div class='card_object flex-grow-1 flex-shrink-1 pa-5'>
       <div v-if='showObjects' class='card_object_container'>
         <ObjectCard
-          v-for='(object, index) in $store.state.AuthModule.userData.user_data.objects'
+          v-for='(object, index) in $store.state.AuthModule.userData.objects'
           :key='index'
           :object_data='object'
+          @openDetail='openDetail'
         />
       </div>
       <LoginAuth v-else />
@@ -40,6 +35,7 @@
               </v-text-field>
               <v-btn
                 :disabled='!newObjAddress'
+                :loading='loadingObjects'
                 class='card_object_new__card__inputs__btn'
                 color='green lighten-1'
                 @click='createNewObject'
@@ -51,24 +47,49 @@
         </div>
       </div>
     </div>
+
+    <v-dialog
+      v-model='showDetail'
+      width='500'
+    >
+      <v-card>
+        <v-card-title>
+          {{ detailData.address }}
+        </v-card-title>
+
+        <ObjectDetail
+          :object_data='detailData'
+          @closeDetail='closeDetailObj'
+        />
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 import ObjectCard from './ObjectCard'
 import LoginAuth from '../frontLayouts/LoginAuth'
 
 import Request from '../../services/request'
+import ObjectDetail from './ObjectDetail'
 
 export default {
   name: 'ListObjects',
-  components: { LoginAuth, ObjectCard },
+  components: { ObjectDetail, LoginAuth, ObjectCard },
   data: () => ({
-    newObjAddress: ''
+    newObjAddress: '',
+    showDetail: false,
+    detailData: {}
   }),
   mounted() {
   },
   computed: {
+    ...mapState({
+      loadingObjects: state => state.loading_objects
+    }),
+
     isMobile() {
       return this.$device.isMobile
     },
@@ -87,16 +108,25 @@ export default {
 
       await this.$store.dispatch('loginByToken')
 
-      if (this.$store.state.AuthModule.userData.user_data.objects.length < 1) {
+      if (this.$store.state.AuthModule.userData.objects.length < 1) {
         this.$store.commit('set_currentObject', data)
       }
 
       this.$store.commit('change_listObjects', [data])
 
+      this.newObjAddress = ''
+
       this.$store.commit('change_loaderObjects', false)
+    },
+    closeDetailObj() {
+      this.showDetail = false
     },
     closeDetail() {
       this.$emit('closeDetail')
+    },
+    openDetail(data) {
+      this.detailData = data
+      this.showDetail = true
     }
   }
 }
@@ -119,6 +149,14 @@ export default {
   .modal_wrapper {
     //padding: 10px !important;
   }
+}
+
+::v-deep .v-dialog {
+  max-height: 80%;
+}
+
+.modal_wrapper {
+  padding-bottom: 0;
 }
 
 .card_title {
