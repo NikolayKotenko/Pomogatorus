@@ -39,11 +39,12 @@
           <v-text-field
             v-model='answer'
             :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
+            autofocus
             dense
             hide-details
             placeholder='Введите ответ'
             solo
-            @change='changeAnswer()'
+            @input='textAnswer'
           >
           </v-text-field>
         </template>
@@ -59,7 +60,7 @@
             row-height='25'
             rows='3'
             solo
-            @change='changeAnswer()'
+            @input='textAnswer'
           >
           </v-textarea>
         </template>
@@ -340,6 +341,7 @@ export default {
     controls_width: 0,
     value_type_answer: [],
     debounceTimeout: null,
+    saveTextDebounce: null,
 
     check_status: false,
     status_name: 'sending',
@@ -404,27 +406,31 @@ export default {
       },
       deep: true
     },
-    '$store.state.listModal': {
+    'open_close_cabinet': {
       handler(v) {
-        if (!v[0].isOpen && v[0].name === 'ListObjects') {
-          if (this.$store.state.idQuestionWhenModal === this.question_data.id) {
-            if (this.$store.state.currentObject && Object.keys(this.$store.state.currentObject).length) {
-              this.changeAnswer()
-            } else {
-              this.$nextTick(() => {
-                this.answer = null
-                this.detailed_response = ''
-              })
-            }
-            this.$store.commit('set_idQuestionWhenModal', null)
+        if (!v) {
+          this.$nextTick(() => {
+            this.answer = null
+            this.detailed_response = ''
+          })
+          this.$store.commit('set_idQuestionWhenModal', null)
+        }
+      }
+    },
+    '$store.state.currentObject': {
+      handler() {
+        if (this.$store.state.idQuestionWhenModal === this.question_data.id) {
+          if (this.$store.state.currentObject && Object.keys(this.$store.state.currentObject).length) {
+            this.changeAnswer()
           }
+          this.$store.commit('set_idQuestionWhenModal', null)
         }
       },
       deep: true
     }
   },
   computed: {
-    ...mapGetters(['stateAuth']),
+    ...mapGetters(['stateAuth', 'open_close_cabinet']),
     status_question() {
       let auth_block
       let index = this.$store.state.ArticleModule.components_after_request.findIndex((i) => {
@@ -527,6 +533,12 @@ export default {
     },
 
     /* ANSWER LOGIC */
+    textAnswer() {
+      if (this.saveTextDebounce) clearTimeout(this.saveTextDebounce)
+      this.saveTextDebounce = setTimeout(() => {
+        this.changeAnswer()
+      }, 600)
+    },
     setDataEnv(dataEnv) {
       if (dataEnv) {
         this.data_env = {

@@ -18,7 +18,7 @@
           <h1 class='article-template__header__title mainTitleFont'>
             {{ article.name }}
           </h1>
-          <ArticleInfo :article_data='article' />
+          <ArticleInfo :article_data='article' @setView='setView' />
         </div>
 
         <div v-if='!renderArticle' class='article-template__content mainContentFont' v-html='refactored_content'></div>

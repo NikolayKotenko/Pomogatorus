@@ -81,6 +81,8 @@ export default {
     },
     setData(value) {
       this.data = value.data
+      this.data.email_state = this.userData.email_state
+      this.data.telephone_state = this.userData.telephone_state
       this.isValid = value.isValid
     },
     saveUser() {

@@ -50,15 +50,17 @@
 
     <v-row>
       <v-col>
-        <v-radio-group v-model='form.type'>
-          <v-radio
-            v-for='(type, index) in types'
-            :key='index'
-            :label='type.text'
-            :value='type.value'
-            @change='setData'
-          ></v-radio>
-        </v-radio-group>
+        <v-checkbox
+          v-for='(type, index) in types'
+          :key='index'
+          v-model.number='form[type.key]'
+          :false-value='0'
+          :label='type.text'
+          :true-value='1'
+          dense
+          hide-details
+          @change='setData'
+        ></v-checkbox>
       </v-col>
     </v-row>
   </v-form>
@@ -77,20 +79,22 @@ export default {
       last_name: '',
       email: '',
       telephone: '',
-      type: ''
+      home_owner: '',
+      installation_engineering_systems: '',
+      selling_engineering_equipment: ''
     },
     types: [
       {
         text: 'Собственник дома',
-        value: 'Owner'
+        key: 'home_owner'
       },
       {
         text: 'Профессионально занимаюсь монтажом инженерных систем',
-        value: 'Profi'
+        key: 'installation_engineering_systems'
       },
       {
         text: 'Занимаюсь продажей инженерного оборудования',
-        value: 'Seller'
+        key: 'selling_engineering_equipment'
       }
     ],
     emailRules: [
@@ -113,14 +117,11 @@ export default {
       defaultUserData: state => state.AuthModule.defaultUserData
     }),
 
-    allValid() {
-      return !!this.emailRules
-    },
     isChanged() {
       let result = []
 
       for (let key in this.form) {
-        result.push(this.form[key] === this.defaultUserData[key])
+        result.push(this.form[key] == this.defaultUserData[key])
       }
 
       return result.includes(false)

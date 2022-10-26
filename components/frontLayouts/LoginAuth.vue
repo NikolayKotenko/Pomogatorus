@@ -127,7 +127,7 @@
       </v-alert>
     </v-container>
   </div>
-  <v-alert v-else dismissible type="success">
+  <v-alert v-else dismissible type='success'>
     <span>Здравствуйте {{ $store.getters.getNameUser }}</span>
   </v-alert>
 </template>
@@ -175,9 +175,14 @@ export default {
   },
   computed: {
     ...mapGetters(['stateAuth']),
-    ...mapGetters(['getNameUser']),
+    ...mapGetters(['getNameUser'])
   },
   watch: {
+    '$store.getters.stateAuth': {
+      handler() {
+        this.hasCookie()
+      }
+    },
     '$store.state.changedCookie': {
       handler() {
         this.hasCookie()
@@ -186,8 +191,10 @@ export default {
   },
   methods: {
     hasCookie() {
-      if (Request.getAccessTokenInCookies()) {
+      if (Request.getAccessTokenInCookies() && this.$store.getters.stateAuth) {
         this.stateAuthBlock = false
+      } else {
+        this.stateAuthBlock = true
       }
     },
     alertCall(response) {

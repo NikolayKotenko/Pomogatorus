@@ -5,6 +5,7 @@ export default {
   state: {
     userData: {},
     defaultUserData: {},
+    isLogout: false,
   },
   mutations: {
     //  AUTH
@@ -13,7 +14,7 @@ export default {
       if (!result) return false
 
       if (result.objects && Object.keys(result.objects).length) {
-        result.objects = Object.values(result.objects);
+        result.objects = Object.values(result.objects)
       }
       state.userData = {}
       state.userData = result
@@ -21,6 +22,9 @@ export default {
     set_default_user_data(state, payload) {
       state.defaultUserData = {}
       state.defaultUserData = payload
+    },
+    set_isLogout(state, payload) {
+      state.isLogout = payload
     },
   },
   actions: {
@@ -63,10 +67,15 @@ export default {
       await Request.post(window.location.origin + '/api/auth/logout').then((response) => {
         commit('set_user_data', {})
         commit('set_default_user_data', {})
+        commit('set_isLogout', true)
+        commit('change_changedCookie', true, { root: true })
       })
     },
   },
   getters: {
+    getNameUser(state) {
+      return Object.keys(state.userData).length ? state.userData.first_name : ''
+    },
     stateAuth(state) {
       return state.userData && Object.keys(state.userData).length !== 0
     },

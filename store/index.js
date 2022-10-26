@@ -10,7 +10,8 @@ import Request from '../services/request'
 const createStore = () => {
   return new Vuex.Store({
     state: {
-      BASE_URL: process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8000' : 'https://api.agregatorus.com',
+      BASE_URL:
+        process.env.NODE_ENV === 'development' ? 'https://api-test.agregatorus.com' : 'https://api.agregatorus.com',
       show_header: false,
       breadcrumbs: [],
       agent_utm: null,
@@ -88,7 +89,7 @@ const createStore = () => {
 
       /* Objects */
       change_showCabinet(state, value) {
-        state.listModal[0].isOpen = value
+        state.showCabinet = value
       },
       change_showDetailObj(state, value) {
         state.showDetailObj = value
@@ -120,11 +121,11 @@ const createStore = () => {
         })
         commit('change_listObjects', data)
       },
-      async createNewObject({state, commit, dispatch}, newObjAddress) {
+      async createNewObject({ state, commit, dispatch }, newObjAddress) {
         commit('change_loaderObjects', true)
 
         let { data } = await Request.post(state.BASE_URL + '/entity/objects', {
-          address: newObjAddress
+          address: newObjAddress,
         })
 
         await dispatch('loginByToken')
