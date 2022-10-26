@@ -12,6 +12,9 @@ export default {
       state.userData = {}
       if (!result) return false
 
+      if (Object.keys(result.objects).length) {
+        result.objects = Object.values(result.objects);
+      }
       state.userData = {}
       state.userData = result
     },
@@ -57,7 +60,7 @@ export default {
       return await Request.post(this.state.BASE_URL + '/users/create-from-full-credentials', objData)
     },
     async logout({ commit }) {
-      await Request.post(this.state.BASE_URL + '/auth/logout').then((response) => {
+      await Request.post(window.location.origin + '/api/auth/logout').then((response) => {
         commit('set_user_data', {})
         commit('set_default_user_data', {})
       })

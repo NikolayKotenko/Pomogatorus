@@ -17,7 +17,7 @@ app.use(cookieParser())
 
 // LOGIN
 app.post('/auth/login', function (request, response) {
-  console.log('request.body', request.body)
+  // console.log('request.body', request.body)
 
   if (!request.body) return response.status(400).send({ message: 'Пустой request.body', codeResponse: 400 })
 
@@ -99,7 +99,7 @@ app.post('/auth/refresh', function (request, response) {
 })
 // GET DATA
 app.post('/auth/validate-auth', function (request, response) {
-  console.log('request.cookies', request.cookies?.accessToken)
+  // console.log('auth/validate-auth request.cookies', request.cookies)
 
   if (!request.cookies?.refreshToken || !request.cookies?.accessToken)
     return response.status(400).send({
@@ -118,11 +118,39 @@ app.post('/auth/validate-auth', function (request, response) {
   axios
     .post(getUrl(request, response) + '/auth/validate-auth', false, config)
     .then((res) => {
-      console.log('res.headers', res.headers)
+      console.log('res', res)
       response.send(res.data)
     })
     .catch((err) => {
-      console.log(err)
+      console.log('err', err)
+      console.log('err.message', err.message)
+      // response.sendStatus(400);
+      response.send(err)
+    })
+})
+// LOGOUT
+app.post('/auth/logout', function (request, response) {
+  // console.log('auth/logout request.cookies', request.cookies?.accessToken)
+
+  const config = {
+    headers: {
+      Cookie: request.headers.cookie,
+      Authorization: `Bearer ${request.cookies?.accessToken}`,
+    },
+    withCredentials: true,
+  }
+
+  axios
+    .post(getUrl(request, response) + '/auth/logout', false, config)
+    .then((res) => {
+      response.clearCookie('refreshToken')
+      response.clearCookie('accessToken')
+      response.send(res.data)
+    })
+    .catch((err) => {
+      console.log('auth/logout')
+      console.log('err', err)
+      console.log('err.message', err.message)
       // response.sendStatus(400);
       response.send(err)
     })

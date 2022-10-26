@@ -10,8 +10,8 @@
     <v-container class="wrapper_footer">
       <span>Ваш объект заполнен на - 15 %</span>
       <v-select
-      v-if="$store.state.AuthModule.userData.user_data.objects.length"
-      :items="$store.state.AuthModule.userData.user_data.objects"
+      v-if="$store.state.AuthModule.userData.objects.length"
+      :items="$store.state.AuthModule.userData.objects"
       v-model="$store.state.currentObject"
       :menu-props='{
             closeOnContentClick: true,
