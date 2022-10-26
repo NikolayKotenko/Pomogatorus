@@ -12,7 +12,7 @@ export default {
       state.userData = {}
       if (!result) return false
 
-      if (Object.keys(result.objects).length) {
+      if (result.objects && Object.keys(result.objects).length) {
         result.objects = Object.values(result.objects);
       }
       state.userData = {}

@@ -120,6 +120,23 @@ const createStore = () => {
         })
         commit('change_listObjects', data)
       },
+      async createNewObject({state, commit, dispatch}, newObjAddress) {
+        commit('change_loaderObjects', true)
+
+        let { data } = await Request.post(state.BASE_URL + '/entity/objects', {
+          address: newObjAddress
+        })
+
+        await dispatch('loginByToken')
+
+        if (state.AuthModule.userData.objects.length < 1) {
+          commit('set_currentObject', data)
+        }
+
+        commit('change_listObjects', [data])
+
+        commit('change_loaderObjects', false)
+      },
       // nuxtServerInit({dispatch}) {
       //   dispatch('req_list_articles')
       // },
