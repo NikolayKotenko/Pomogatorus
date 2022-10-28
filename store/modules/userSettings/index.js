@@ -18,7 +18,7 @@ export default {
 
       await Request.put(`${this.state.BASE_URL}/users/update-user-data/${userId}`, { ...data })
         .then((response) => {
-          // commit('set_user_data', response.data, { root: true })
+          commit('set_user_data', response.data, { root: true })
           commit('set_default_user_data', _clone(response.data, 'replace'), { root: true })
         })
         .finally(() => {
