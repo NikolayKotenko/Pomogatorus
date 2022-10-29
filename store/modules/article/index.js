@@ -57,9 +57,10 @@ export default {
   actions: {
     async req_list_articles({ commit }) {
       try {
+        const query = 'filter[activity]=true'
         const options = {
           method: 'GET',
-          url: `${this.state.BASE_URL}/entity/articles`,
+          url: `${this.state.BASE_URL}/entity/articles?`+query,
         }
 
         const list = await this.$axios(options)
