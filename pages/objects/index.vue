@@ -7,7 +7,7 @@ import ListObjects from '../../components/UserObjects/ListObjects'
 
 export default {
   name: 'index',
-  components: { ListObjects }
+  components: { ListObjects },
 }
 </script>
 

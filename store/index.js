@@ -14,6 +14,15 @@ const createStore = () => {
         process.env.NODE_ENV === 'development' ? 'https://api-test.agregatorus.com' : 'https://api.agregatorus.com',
       show_header: false,
       breadcrumbs: [],
+      defaultBreadcrumbs: [
+        {
+          text: 'Главная',
+          disabled: false,
+          link: true,
+          exact: true,
+          to: '/',
+        },
+      ],
       agent_utm: null,
       changedCookie: false,
 
@@ -65,14 +74,52 @@ const createStore = () => {
       isSomeOpen(state) {
         return state.listModal.map((elem) => elem.isOpen).includes(true)
       },
+      menuItems(state){
+        return [
+          {
+            title: 'Статьи',
+            path: '/articles',
+            icon: 'mdi-message-text',
+            visible: true,
+          },
+          {
+            title: 'Подборки',
+            path: '/podborki',
+            icon: 'mdi-bullseye-arrow',
+            visible: true,
+          },
+          {
+            title: 'Объекты',
+            path: '/objects',
+            icon: 'mdi-home',
+            visible: true,
+          },
+          {
+            title: 'Агенты',
+            path: '/agents',
+            icon: 'mdi-account-group',
+            visible: Object.keys(state.AuthModule.userData).length ? state.AuthModule.userData.is_agent : false
+          },
+        ]
+      },
     },
     mutations: {
       set_drawer(state, payload) {
         state.drawer = payload
       },
       change_breadcrumbs(state, arr) {
+        // Очищаем
         state.breadcrumbs = []
-        state.breadcrumbs = arr
+        // Пишем дефолтные крошки (Главная)
+        state.breadcrumbs.push(...state.defaultBreadcrumbs);
+        // Если массив который пришел не определен то закончим
+        if (arr === undefined || ! arr.length)
+          return false;
+
+        // Пушим массив с доп крошками
+        state.breadcrumbs.push(...arr);
+        // Дизейблим последнюю запись крошек
+        state.breadcrumbs[state.breadcrumbs.length - 1].disabled = true;
       },
       change_show_header(state, value) {
         state.show_header = value

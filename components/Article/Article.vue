@@ -1,5 +1,5 @@
 <template>
-  <v-card class='article_card' @click='redirectToDetail(article.id)'>
+  <v-card class='article_card' :href="$route.path + '/' + article.id">
     <div class='list_elem_wrapper'>
       <div class='list_elem_wrapper__img_container'>
         <v-img
@@ -52,11 +52,7 @@ export default {
       }
     }
   },
-  methods: {
-    redirectToDetail(id) {
-      this.$router.push('/articles/' + id)
-    }
-  }
+  methods: {}
 }
 </script>
 

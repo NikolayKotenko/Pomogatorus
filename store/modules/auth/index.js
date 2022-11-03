@@ -73,6 +73,9 @@ export default {
     },
   },
   getters: {
+    userIsAgent(state) {
+      return Object.keys(state.userData).length ? state.userData.is_agent : false;
+    },
     getNameUser(state) {
       return Object.keys(state.userData).length ? state.userData.first_name : ''
     },

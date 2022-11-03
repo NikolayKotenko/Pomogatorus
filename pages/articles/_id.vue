@@ -123,35 +123,8 @@ export default {
     ]
   },
   mounted() {
-    this.$store.commit('change_breadcrumbs', [
-      {
-        text: 'Главная',
-        disabled: false,
-        link: true,
-        exact: true,
-        nuxt: true,
-        replace: true,
-        to: '/'
-      },
-      {
-        text: 'Статьи',
-        disabled: false,
-        link: true,
-        exact: true,
-        nuxt: true,
-        replace: true,
-        to: '/articles'
-      },
-      {
-        text: `${this.article.name}`,
-        disabled: true,
-        link: true,
-        exact: true,
-        nuxt: true,
-        replace: true,
-        to: ''
-      }
-    ])
+    this.$route.meta.title = this.article?.name;
+
     if (process.client) {
       window.addEventListener('scroll', this.scrollWindow)
     }

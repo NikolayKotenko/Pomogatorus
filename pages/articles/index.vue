@@ -21,22 +21,6 @@ export default {
   created() {
   },
   mounted() {
-    this.$store.commit('change_breadcrumbs', [
-      {
-        text: 'Главная',
-        disabled: false,
-        link: true,
-        exact: true,
-        to: '/'
-      },
-      {
-        text: 'Статьи',
-        disabled: true,
-        link: true,
-        exact: true,
-        to: '/articles'
-      }
-    ])
   },
   methods: {}
 }

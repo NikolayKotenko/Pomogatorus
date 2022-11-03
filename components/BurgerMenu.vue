@@ -8,8 +8,13 @@
   >
     <v-list style='margin-top: 50px;'>
       <v-list-item-group class='header_center'>
-        <v-list-item v-for='item in menuItems' :key='item.title' :to='item.path' class='text-capitalize link_btn'
-                     text>
+        <v-list-item v-for='item in $store.getters.menuItems'
+                     v-if="item.visible"
+                     :key='item.title'
+                     :href='item.path'
+                     class='text-capitalize link_btn'
+                     text
+        >
           <v-list-item-icon dark left>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-icon>
@@ -21,12 +26,9 @@
 </template>
 
 <script>
-import menuItems from '../models/menuItems'
-
 export default {
   name: 'BurgerMenu',
   data: () => ({
-    menuItems
   }),
   computed: {
     drawer: {

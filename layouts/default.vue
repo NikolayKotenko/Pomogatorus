@@ -2,11 +2,10 @@
   <v-app class='app'>
     <Header />
     <BurgerMenu v-if='!$device.isDesktop' />
-    <SubHeader v-if='$device.isDesktop' />
+    <SubHeader v-if='$device.isDesktop && loadComponent'/>
     <v-main id='main_content' class='main'>
       <Nuxt />
     </v-main>
-
     <!-- КАСКАДНЫЕ МОДАЛКИ -->
     <div
       v-for='(item, index) in listModal'
@@ -52,6 +51,7 @@ export default {
   },
   data() {
     return {
+      loadComponent: false,
       breadcrumbs: [
         {
           url: 'https://pomogatorus.ru',
@@ -99,6 +99,7 @@ export default {
   },
   mounted() {
     this.fuckinMiddleware()
+    this.setLoadComponent()
   },
   computed: {
     ...mapState({
@@ -111,6 +112,9 @@ export default {
     }
   },
   methods: {
+    setLoadComponent(){
+      this.loadComponent = true;
+    },
     async fuckinMiddleware() {
       if (this.$route.query.userEmail) {
         await this.$store.dispatch('loginUser', {
@@ -133,7 +137,7 @@ export default {
 
       this.$store.commit('change_refactoring_content', false)
     }
-  }
+  },
 }
 </script>
 

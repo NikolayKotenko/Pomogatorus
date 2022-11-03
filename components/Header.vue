@@ -1,16 +1,21 @@
 <template>
   <v-app-bar id='navbar' app class='header' dark elevate-on-scroll>
     <v-app-bar-nav-icon v-if='isMobile' @click='showDrawer'></v-app-bar-nav-icon>
-    <v-toolbar-title v-if='isMobile' class='wtf'>
-      <router-link :to='getCurrentRoute.path' style='color: unset; text-decoration: unset'>{{ getCurrentRoute.title
-        }}
+    <v-toolbar-title v-if='isMobile'>
+      <router-link :to='getCurrentRoute.path' style='color: unset; text-decoration: unset'>{{ getCurrentRoute.title}}
       </router-link>
     </v-toolbar-title>
 
     <!-- Desktop -->
     <template v-if='!isMobile'>
       <v-toolbar-items class='header_center'>
-        <v-btn v-for='item in menuItems' :key='item.title' :to='item.path' class='text-capitalize link_btn' text>
+        <v-btn v-for='item in $store.getters.menuItems'
+               v-if="item.visible"
+               :key='item.title'
+               :href='item.path'
+               class='text-capitalize link_btn'
+               text
+        >
           <v-icon :color='getCurrentRoute.title === item.title ? "#fafad2" : "white"' dark left>
             {{ item.icon }}
           </v-icon>
@@ -41,13 +46,11 @@
 
 <script>
 import { mapState } from 'vuex'
-import menuItems from '../models/menuItems'
 
 export default {
   name: 'Header',
   data() {
     return {
-      menuItems,
       debounceTimeout: null
     }
   },
@@ -66,7 +69,7 @@ export default {
       return this.$device.isMobile
     },
     getCurrentRoute() {
-      return this.menuItems.find((elem) => {
+      return this.$store.getters.menuItems.find((elem) => {
         return this.$route.path.match(elem.path)
       })
     }

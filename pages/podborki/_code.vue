@@ -92,38 +92,9 @@ export default {
   },
   created() {},
   async mounted() {
+    this.$route.meta.title = this.main_tag?.name;
     await this.$store.dispatch('getArticlesInfo', this.$route.params.code);
     await this.$store.dispatch('getQuestionsInfo', this.$route.params.code);
-
-    this.$store.commit('change_breadcrumbs', [
-      {
-        text: 'Главная',
-        disabled: false,
-        link: true,
-        exact: true,
-        nuxt: true,
-        replace: true,
-        to: '/',
-      },
-      {
-        text: 'Подборки',
-        disabled: false,
-        link: true,
-        exact: true,
-        nuxt: true,
-        replace: true,
-        to: '/podborki',
-      },
-      {
-        text: `${this.main_tag?.name}`,
-        disabled: true,
-        link: true,
-        exact: true,
-        nuxt: true,
-        replace: true,
-        to: '',
-      },
-    ])
   },
   watch: {},
   computed: {},

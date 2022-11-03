@@ -38,22 +38,6 @@ export default {
   },
   mounted() {
     this.$store.dispatch('getListSelections')
-    this.$store.commit('change_breadcrumbs', [
-      {
-        text: 'Главная',
-        disabled: false,
-        link: true,
-        exact: true,
-        to: '/',
-      },
-      {
-        text: 'Подборки',
-        disabled: true,
-        link: true,
-        exact: true,
-        to: '/podborki',
-      },
-    ])
   },
   methods: {
   },

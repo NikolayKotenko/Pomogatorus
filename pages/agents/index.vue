@@ -1,6 +1,6 @@
 <template>
   <div>
-
+    Агенты
   </div>
 </template>
 
