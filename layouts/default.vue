@@ -164,5 +164,6 @@ body {
   background: #ffffff;
   padding: 20px 15px !important;
   border-radius: 5px;
+  margin-bottom: 65px;
 }
 </style>
