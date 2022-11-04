@@ -16,7 +16,7 @@
 # start the app
 #CMD [ "npm", "run", "start" ]
 
-FROM node:16.13.1
+FROM node:16.14.2
 ENV APP_ROOT /pomogatorus.ru
 
 # ENV NODE_ENV production

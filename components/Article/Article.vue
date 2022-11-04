@@ -1,5 +1,5 @@
 <template>
-  <v-card class='article_card' :href="$route.path + '/' + article.id">
+  <v-card class='article_card' :href="'/articles/' + article.id">
     <div class='list_elem_wrapper'>
       <div class='list_elem_wrapper__img_container'>
         <v-img
