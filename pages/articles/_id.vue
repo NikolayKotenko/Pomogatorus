@@ -123,7 +123,7 @@ export default {
     ]
   },
   mounted() {
-    this.$route.meta.title = this.article?.name;
+    this.$route.meta.title = this.article?.name
 
     if (process.client) {
       window.addEventListener('scroll', this.scrollWindow)
@@ -435,7 +435,7 @@ export default {
 .showArticleHeader {
   opacity: 1;
   top: 0;
-  z-index: 399;
+  z-index: 203;
 }
 
 .subHeader {

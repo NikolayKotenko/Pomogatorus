@@ -2,7 +2,7 @@
   <v-app-bar id='navbar' app class='header' dark elevate-on-scroll>
     <v-app-bar-nav-icon v-if='isMobile' @click='showDrawer'></v-app-bar-nav-icon>
     <v-toolbar-title v-if='isMobile'>
-      <router-link :to='getCurrentRoute.path' style='color: unset; text-decoration: unset'>{{ getCurrentRoute.title}}
+      <router-link :to='getCurrentRoute.path' style='color: unset; text-decoration: unset'>{{ getCurrentRoute.title }}
       </router-link>
     </v-toolbar-title>
 
@@ -10,7 +10,7 @@
     <template v-if='!isMobile'>
       <v-toolbar-items class='header_center'>
         <v-btn v-for='item in $store.getters.menuItems'
-               v-if="item.visible"
+               v-if='item.visible'
                :key='item.title'
                :href='item.path'
                class='text-capitalize link_btn'
@@ -35,7 +35,7 @@
             @click='openModals'
             v-on='on'
           >
-            <v-icon large>mdi-key</v-icon>
+            <v-icon>mdi-key-variant</v-icon>
           </v-btn>
         </template>
         <span>Личный кабинет</span>
@@ -69,6 +69,12 @@ export default {
       return this.$device.isMobile
     },
     getCurrentRoute() {
+      if (this.listModal[0].isOpen) {
+        return {
+          path: '',
+          title: 'Личный кабинет'
+        }
+      }
       return this.$store.getters.menuItems.find((elem) => {
         return this.$route.path.match(elem.path)
       })
@@ -155,9 +161,5 @@ export default {
   line-height: 1.5;
   letter-spacing: 1px;
   font-weight: 400;
-}
-
-.activeElement {
-  color: lightgoldenrodyellow;
 }
 </style>

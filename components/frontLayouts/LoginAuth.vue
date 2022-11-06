@@ -206,6 +206,10 @@ export default {
           ? 'success'
           : 'warning'
       this.loading = false
+
+      if (this.alert.type === 'success') {
+        this.$emit('closeModal')
+      }
     },
 
     async localLoginUser(index_component) {

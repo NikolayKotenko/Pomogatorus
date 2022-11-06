@@ -251,7 +251,7 @@
           class='py-2'
           dense
           hide-details
-          placeholder='Место для развернутого ответа'
+          placeholder='Развернутый ответ'
           solo
           @change='changeAnswer()'
         ></v-text-field>
@@ -259,10 +259,17 @@
 
       <div v-if='question_data.state_attachment_response' class='py-3 file_input'>
         <template v-if='(answer || detailed_response) && !disableBtn'>
-          <v-btn :loading='isSelecting' :outlined='!!files.length' color='primary' dark rounded
-                 @click='handleFileImport'>
-            <v-icon>mdi-upload</v-icon>
-            {{ !!files.length ? 'Добавить еще' : 'Загрузить файл' }}
+          <v-btn
+            :loading='isSelecting'
+            class='dashedButton'
+            color='primary'
+            dark
+            outlined
+            rounded
+            @click='handleFileImport'
+          >
+            <v-icon>mdi-paperclip</v-icon>
+            {{ !!files.length ? 'Добавить еще' : 'Добавить файл' }}
           </v-btn>
           <input ref='uploader' class='d-none' type='file' @change='onFileChanged' />
           <v-btn
@@ -272,17 +279,23 @@
             color='green lighten-1'
             rounded
             @click='uploadToServer'
-          >Загрузить файлы
-          </v-btn
           >
+            Загрузить файл
+          </v-btn>
         </template>
         <template v-else>
           <v-tooltip bottom>
             <template v-slot:activator='{ on, attrs }'>
               <div v-bind='attrs' v-on='on'>
-                <v-btn :loading='isSelecting' disabled rounded>
-                  <v-icon>mdi-upload</v-icon>
-                  Загрузить файл
+                <v-btn
+                  :loading='isSelecting'
+                  class='dashedButton'
+                  disabled
+                  outlined
+                  rounded
+                >
+                  <v-icon>mdi-paperclip</v-icon>
+                  Добавить файл
                 </v-btn>
               </div>
             </template>
@@ -304,13 +317,17 @@
       </div>
 
       <transition name='list'>
-        <div v-if="status_question.type !== 'sending' && check_status" class='question_wrapper__content__alert'>
+        <div v-if="status_question.type !== 'sending' && status_question.type !== 'warning' && check_status"
+             class='question_wrapper__content__alert'>
           <v-alert :icon='status_question.icon' :type='status_question.type'>
             <span v-html='status_question.text'></span>
           </v-alert>
         </div>
       </transition>
     </template>
+
+    <!--  MODALS  -->
+    <AuthModal ref='authModal' />
   </div>
 </template>
 
@@ -320,9 +337,11 @@ import { mapGetters } from 'vuex'
 import Request from '../../services/request'
 import Answers from '../../services/answers/answers'
 import CompareArrays from '../../utils/compareArrays'
+import AuthModal from '../Modals/AuthModal'
 
 export default {
   name: 'Question',
+  components: { AuthModal },
   props: {
     propsData: {
       type: Object,
@@ -683,6 +702,7 @@ export default {
           /* Fix default scroll by hash on page */
           this.createAnchorToAuth()
         })
+        this.$refs.authModal.openModal()
       } else {
         if (!this.$store.state.currentObject || !Object.keys(this.$store.state.currentObject).length) {
           if (this.$store.state.AuthModule.userData.objects.length < 1) {
@@ -937,5 +957,9 @@ export default {
   ::v-deep input {
     color: lightcoral;
   }
+}
+
+.dashedButton {
+  border-style: dashed !important;
 }
 </style>

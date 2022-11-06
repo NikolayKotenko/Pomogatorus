@@ -1,52 +1,106 @@
 <template>
   <v-form v-model='isFormValid'>
-    <v-row>
-      <v-col>
-        <v-text-field
-          v-model='form.first_name'
-          label='Имя'
-          placeholder='Введите имя'
-          @change='setData'
-        ></v-text-field>
-      </v-col>
-      <v-col>
-        <v-text-field
-          v-model='form.middle_name'
-          label='Фамилия'
-          placeholder='Введите фамилию'
-          @change='setData'
-        ></v-text-field>
-      </v-col>
-      <v-col>
-        <v-text-field
-          v-model='form.last_name'
-          label='Отчество'
-          placeholder='Введите отчество'
-          @change='setData'
-        ></v-text-field>
-      </v-col>
-    </v-row>
 
-    <v-row>
-      <v-col>
-        <v-text-field
-          v-model='form.email'
-          :rules='emailRules'
-          label='email'
-          placeholder='Введите email'
-          @change='setData'
-        ></v-text-field>
-      </v-col>
-      <v-col>
-        <v-text-field
-          v-model='form.telephone'
-          v-mask="'+7 (###) ###-##-##'"
-          label='Телефон'
-          placeholder='Введите телефон'
-          @change='setData'
-        ></v-text-field>
-      </v-col>
-    </v-row>
+    <!--  MOBILE  -->
+    <template v-if='isMobile'>
+      <v-text-field
+        v-model='form.first_name'
+        class='mb-4'
+        dense
+        hide-details
+        placeholder='Введите имя'
+        @change='setData'
+      ></v-text-field>
+
+      <v-text-field
+        v-model='form.middle_name'
+        class='mb-4'
+        dense
+        hide-details
+        placeholder='Введите фамилию'
+        @change='setData'
+      ></v-text-field>
+
+      <v-text-field
+        v-model='form.last_name'
+        class='mb-4'
+        dense
+        hide-details
+        placeholder='Введите отчество'
+        @change='setData'
+      ></v-text-field>
+
+      <v-text-field
+        v-model='form.email'
+        :rules='emailRules'
+        class='mb-4'
+        dense
+        hide-details
+        placeholder='Введите email'
+        @change='setData'
+      ></v-text-field>
+
+      <v-text-field
+        v-model='form.telephone'
+        v-mask="'+7 (###) ###-##-##'"
+        class='mb-4'
+        dense
+        hide-details
+        placeholder='Введите телефон'
+        @change='setData'
+      ></v-text-field>
+    </template>
+
+    <!--  DESKTOP  -->
+    <template v-else>
+      <v-row>
+        <v-col>
+          <v-text-field
+            v-model='form.first_name'
+            label='Имя'
+            placeholder='Введите имя'
+            @change='setData'
+          ></v-text-field>
+        </v-col>
+        <v-col>
+          <v-text-field
+            v-model='form.middle_name'
+            label='Фамилия'
+            placeholder='Введите фамилию'
+            @change='setData'
+          ></v-text-field>
+        </v-col>
+        <v-col>
+          <v-text-field
+            v-model='form.last_name'
+            label='Отчество'
+            placeholder='Введите отчество'
+            @change='setData'
+          ></v-text-field>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col>
+          <v-text-field
+            v-model='form.email'
+            :rules='emailRules'
+            label='email'
+            placeholder='Введите email'
+            @change='setData'
+          ></v-text-field>
+        </v-col>
+        <v-col>
+          <v-text-field
+            v-model='form.telephone'
+            v-mask="'+7 (###) ###-##-##'"
+            label='Телефон'
+            placeholder='Введите телефон'
+            @change='setData'
+          ></v-text-field>
+        </v-col>
+      </v-row>
+    </template>
 
     <v-row>
       <v-col>
@@ -117,6 +171,9 @@ export default {
       defaultUserData: state => state.AuthModule.defaultUserData
     }),
 
+    isMobile() {
+      return !!this.$device.isMobile
+    },
     isChanged() {
       let result = []
 

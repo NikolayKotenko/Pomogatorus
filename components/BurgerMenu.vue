@@ -6,19 +6,20 @@
     app
     temporary
   >
-    <v-list style='margin-top: 50px;'>
+    <v-list style='margin-top: 48px;'>
       <v-list-item-group class='header_center'>
         <v-list-item v-for='item in $store.getters.menuItems'
-                     v-if="item.visible"
+                     v-if='item.visible'
                      :key='item.title'
+                     :class='{activeItem: getCurrentRoute(item.path)}'
                      :href='item.path'
-                     class='text-capitalize link_btn'
+                     class='text-capitalize link_btn menuItem'
                      text
         >
-          <v-list-item-icon dark left>
-            <v-icon>{{ item.icon }}</v-icon>
+          <v-list-item-icon class='menuIcon' dark left>
+            <v-icon :color='getCurrentRoute(item.path) ? "#fafad2" : ""'>{{ item.icon }}</v-icon>
           </v-list-item-icon>
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
+          <v-list-item-title :class='{activeElement: getCurrentRoute(item.path)}'>{{ item.title }}</v-list-item-title>
         </v-list-item>
       </v-list-item-group>
     </v-list>
@@ -28,8 +29,7 @@
 <script>
 export default {
   name: 'BurgerMenu',
-  data: () => ({
-  }),
+  data: () => ({}),
   computed: {
     drawer: {
       get() {
@@ -39,7 +39,27 @@ export default {
         this.$store.commit('set_drawer', v)
       }
     }
+  },
+  methods: {
+    getCurrentRoute(path) {
+      return this.$route.path === path
+    }
   }
 }
 </script>
+
+<style lang='scss' scoped>
+.menuItem {
+  padding: 0 10px !important;
+}
+
+.menuIcon {
+  margin-right: 44px !important;
+}
+
+.v-navigation-drawer {
+  z-index: 404 !important;
+  position: fixed;
+}
+</style>
 
