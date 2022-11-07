@@ -77,7 +77,7 @@
               <template slot='label'>
                 <div style='display: flex; column-gap: 20px; align-items: flex-start'>
                   <span class='answerList' v-html='item.answer' @click.stop></span>
-                  <div v-if='item.commentary' class='helper_wrapper' @click.stop>
+                  <div v-if='item.commentary' class='helper_wrapper' @click.stop='stopEvent'>
                     <v-tooltip bottom>
                       <template v-slot:activator='{ on, attrs }'>
                         <img
@@ -112,7 +112,7 @@
             <template slot='label'>
               <div style='display: flex; column-gap: 20px'>
                 <span class='answerList' v-html='item.answer' @click.stop></span>
-                <div v-if='item.commentary' class='helper_wrapper' @click.stop>
+                <div v-if='item.commentary' class='helper_wrapper' @click.stop='stopEvent'>
                   <v-tooltip bottom>
                     <template v-slot:activator='{ on, attrs }'>
                       <img
@@ -159,7 +159,7 @@
                     <v-row align='center' no-gutters>
                       <span class='answerList' v-html='item.answer' @click.stop></span>
                       <v-spacer></v-spacer>
-                      <div v-if='item.commentary' class='helper_wrapper' @click.stop>
+                      <div v-if='item.commentary' class='helper_wrapper' @click.stop='stopEvent'>
                         <v-tooltip bottom>
                           <template v-slot:activator='{ on, attrs }'>
                             <img
@@ -478,6 +478,9 @@ export default {
           } else this.agentCode = null
         } else this.agentCode = null
       } else this.agentCode = null
+    },
+    stopEvent(event) {
+      event.preventDefault()
     },
 
     /* FILES UPLOAD */
