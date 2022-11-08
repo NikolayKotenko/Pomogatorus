@@ -575,17 +575,19 @@ export default {
       } else {
         if (!this.answer && this.detailed_response) {
           if (this.value_type_answer && this.value_type_answer.length) {
-            this.data_env = {
-              model: this.value_type_answer[0].dataEnv.data.model,
-              controller: this.value_type_answer[0].dataEnv.data.controller,
-              name: this.value_type_answer[0].dataEnv.data.name,
-              data: {
-                id: this.$store.state.currentObject.id
+            if (this.value_type_answer[0]?.dataEnv) {
+              this.data_env = {
+                model: this.value_type_answer[0].dataEnv.data.model,
+                controller: this.value_type_answer[0].dataEnv.data.controller,
+                name: this.value_type_answer[0].dataEnv.data.name,
+                data: {
+                  id: this.$store.state.currentObject.id
+                }
               }
+              this.value_type_answer.forEach((elem) => {
+                this.data_env.data[elem.dataEnv.data.data.column] = JSON.stringify(this.detailed_response)
+              })
             }
-            this.value_type_answer.forEach((elem) => {
-              this.data_env.data[elem.dataEnv.data.data.column] = JSON.stringify(this.detailed_response)
-            })
           }
         } else if (typeof this.answer === 'string') {
           if (this.value_type_answer && this.value_type_answer.length) {
