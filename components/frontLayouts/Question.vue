@@ -269,7 +269,7 @@
             @click='handleFileImport'
           >
             <v-icon>mdi-paperclip</v-icon>
-            {{ !!files.length ? 'Добавить еще' : 'Добавить файл' }}
+            {{ !!files.length ? 'Добавить еще' : 'Вложить файл' }}
           </v-btn>
           <input ref='uploader' class='d-none' type='file' @change='onFileChanged' />
           <v-btn
@@ -943,7 +943,8 @@ export default {
 }
 
 .file_input {
-  display: flex;
+  display: grid;
+  grid-row-gap: 10px;
   column-gap: 10px;
 }
 
@@ -966,5 +967,8 @@ export default {
 
 .dashedButton {
   border-style: dashed !important;
+  width: 100%;
+  text-transform: uppercase;
+  display: grid;
 }
 </style>

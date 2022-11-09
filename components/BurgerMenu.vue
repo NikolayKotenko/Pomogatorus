@@ -55,6 +55,9 @@ export default {
 
 .menuIcon {
   margin-right: 44px !important;
+  margin-bottom: unset;
+  margin-top: unset;
+  align-self: center;
 }
 
 .v-navigation-drawer {
