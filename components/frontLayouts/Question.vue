@@ -36,33 +36,22 @@
       <!-- QUESTION -->
       <div class='question_wrapper__content__question'>
         <template v-if="question_data.id_type_answer == '1'">
-          <v-text-field
-            v-model='answer'
-            :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
-            autofocus
-            dense
-            hide-details
-            placeholder='Введите ответ'
-            solo
-            @input='textAnswer'
-          >
-          </v-text-field>
+          <InputStyled
+            :data='answer'
+            :is-disabled='!!detailed_response || (check_status && status_question.type === "sending")'
+            :placeholder='"Введите ответ"'
+            is-solo
+            @update-input='textAnswer'
+          />
         </template>
         <template v-else-if="question_data.id_type_answer == '2'">
-          <v-textarea
-            v-model='answer'
-            :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
-            auto-grow
-            clearable
-            dense
-            hide-details
-            placeholder='Введите ответ'
-            row-height='25'
-            rows='3'
-            solo
-            @input='textAnswer'
-          >
-          </v-textarea>
+          <TextAreaStyled
+            :data='answer'
+            :is-disabled='!!detailed_response || (check_status && status_question.type === "sending")'
+            :placeholder='"Введите ответ"'
+            is-solo
+            @update-input='textAnswer'
+          />
         </template>
         <template v-else-if="question_data.id_type_answer == '3'">
           <v-radio-group v-model='answer' dense hide-details>
@@ -190,7 +179,7 @@
             :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
             dense
             hide-details
-            placeholder='Введите ответ'
+            label='Введите ответ'
             solo
             type='number'
             @change='changeAnswer()'
@@ -245,16 +234,14 @@
         </template>
 
         <!-- DETAILED RESPONSE -->
-        <v-text-field
+        <InputStyled
           v-if='question_data.state_detailed_response'
-          v-model='detailed_response'
+          :data='detailed_response'
+          :placeholder='"Развернутый ответ"'
           class='py-2'
-          dense
-          hide-details
-          placeholder='Развернутый ответ'
-          solo
-          @change='changeAnswer()'
-        ></v-text-field>
+          is-solo
+          @update-input='changeDetailedResponse'
+        />
       </div>
 
       <div v-if='question_data.state_attachment_response' class='py-3 file_input'>
@@ -338,10 +325,12 @@ import Request from '../../services/request'
 import Answers from '../../services/answers/answers'
 import CompareArrays from '../../utils/compareArrays'
 import AuthModal from '../Modals/AuthModal'
+import InputStyled from '../Common/InputStyled'
+import TextAreaStyled from '../Common/TextAreaStyled'
 
 export default {
   name: 'Question',
-  components: { AuthModal },
+  components: { TextAreaStyled, InputStyled, AuthModal },
   props: {
     propsData: {
       type: Object,
@@ -555,7 +544,10 @@ export default {
     },
 
     /* ANSWER LOGIC */
-    textAnswer() {
+    textAnswer(value) {
+      if (value) {
+        this.answer = value
+      }
       if (this.saveTextDebounce) clearTimeout(this.saveTextDebounce)
       this.saveTextDebounce = setTimeout(() => {
         this.changeAnswer()
@@ -699,6 +691,10 @@ export default {
       })
     },
 
+    changeDetailedResponse(value) {
+      this.detailed_response = value
+      this.changeAnswer()
+    },
     changeAnswer(dataEnv) {
       this.check_status = true
       if (!this.stateAuth) {

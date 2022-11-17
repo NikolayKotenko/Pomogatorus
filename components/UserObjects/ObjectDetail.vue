@@ -12,10 +12,11 @@
           <template v-if='param.canEdit'>
             <v-text-field
               v-model='refactored_object_data[param.key]'
-              :label='param.value'
-              :placeholder='`Введите ${param.value}`'
+              :placeholder='inputPlaceholder(param)'
               dense
               hide-details
+              @focus='isFocused = param.key'
+              @focusout='isFocused = null'
             >
             </v-text-field>
           </template>
@@ -34,9 +35,11 @@
 
 <script>
 import Request from '../../services/request'
+import InputStyled from '../Common/InputStyled'
 
 export default {
   name: 'ObjectDetail',
+  components: { InputStyled },
   props: ['object_data'],
   data: () => ({
     paramsDetail: [
@@ -152,6 +155,7 @@ export default {
       }
     ],
     isUpdating: false,
+    isFocused: null
   }),
   mounted() {
   },
@@ -176,6 +180,13 @@ export default {
     }
   },
   methods: {
+    inputPlaceholder(item) {
+      if (this.isFocused === item.key) {
+        return ''
+      }
+      return `Введите ${item.value}`
+    },
+
     isJson(str) {
       try {
         JSON.parse(str)
