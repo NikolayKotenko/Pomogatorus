@@ -60,6 +60,8 @@
     align-items: center;
     position: relative;
     max-height: 335px;
+    background: rgb(229, 243, 254);
+    background: linear-gradient(180deg, rgba(229, 243, 254, 1) 0%, rgba(196, 222, 230, 1) 100%);
 
     &__img {
       width: 100%;
