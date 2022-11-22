@@ -61,7 +61,7 @@ export default {
     return {
       tooltip_state: false,
       sharing: {
-        url: 'https://pomogatorus.ru/'+this.$route.fullPath,
+        url: 'https://pomogatorus.ru'+this.$route.fullPath,
         title: (this.$route.meta.title) ? this.$route.meta.title : '',
         description: 'This week, I’d like to introduce you to "Vite", which means "Fast". It’s a brand new development setup created by Evan You.',
         quote: 'The hot reload is so fast it\'s near instant. - Evan You',
@@ -108,7 +108,7 @@ export default {
   grid-row-gap: 5px;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: end;
+  justify-content: flex-end; //TODO (1:194) end value has mixed support, consider using flex-end instead
   position: relative;
   //grid-column-gap: 10px;
   &__button-state{
