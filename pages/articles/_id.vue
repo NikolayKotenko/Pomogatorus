@@ -12,11 +12,15 @@
           ]'
           class='article-template__subHeader'
         >
-          <h2 class='mainTitleFont'>{{ article.name }}</h2>
+          <h2 class='mainTitleFont'>
+            <div>{{ article.name }}</div>
+            <social-share></social-share>
+          </h2>
         </div>
         <div ref='nav' class='article-template__header'>
           <h1 class='article-template__header__title mainTitleFont'>
-            {{ article.name }}
+            <div>{{ article.name }}</div>
+            <social-share></social-share>
           </h1>
           <ArticleInfo :article_data='article' @setView='setView' />
         </div>
@@ -42,12 +46,13 @@ import Author from '../../components/Article/Author'
 import FooterSummary from '../../components/FooterSummary'
 
 import ArticleInfo from '../../components/Article/ArticleInfo'
+import SocialShare from "~/components/Article/SocialShare";
 
 const vuetify_class = require('vuetify')
 
 export default {
   name: '_id.vue',
-  components: { ArticleInfo, Author, FooterSummary },
+  components: { ArticleInfo, Author, FooterSummary, SocialShare },
   async asyncData({ $axios, store, params }) {
     const options = {
       method: 'GET',
@@ -413,6 +418,11 @@ export default {
     font-size: 1.5rem !important;
   }
 
+  .mainTitleFont{
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+  }
   &__header {
     &__title {
       margin: 10px 0 10px 0;
