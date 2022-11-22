@@ -1,5 +1,4 @@
 import Request from '@/services/request'
-import Vue from 'vue'
 
 export default {
   state: {
@@ -11,19 +10,19 @@ export default {
     loadingState: false,
   },
   mutations: {
-    setMainTag(state, result){
+    setMainTag(state, result) {
       state.main_tag = {}
       state.main_tag = result
 
       state.loadingState = false
     },
-    setArticle(state, result){
+    setArticle(state, result) {
       state.article = []
       state.article = result
 
       state.loadingState = false
     },
-    setQuestions(state, result){
+    setQuestions(state, result) {
       state.questions = []
       state.questions = result
 
@@ -53,11 +52,7 @@ export default {
       this.state.loadingState = true
 
       try {
-        const options = {
-          method: 'GET',
-          url: `${this.state.BASE_URL}/entity/popular-selections/`+code,
-        }
-        const response = await this.$axios(options)
+        const response = await Request.get(`${this.state.BASE_URL}/entity/popular-selections/` + code)
         commit('setPopularSelections', response.data.data)
       } catch (error) {
         console.log(error.response.data.message)
@@ -67,28 +62,24 @@ export default {
       this.state.loadingState = true
 
       try {
-        const options = {
-          method: 'GET',
-          url: `${this.state.BASE_URL}/dictionary/tags-by-code/`+code,
-        }
-        const response = await this.$axios(options)
+        const response = await Request.get(`${this.state.BASE_URL}/dictionary/tags-by-code/` + code)
         commit('setMainTag', response.data.data)
       } catch (error) {
         console.log(error.response.data.message)
       }
     },
-    async getArticlesInfo({commit}, code){
-      const query = '?filter[tag][]='+code
-      const response = await Request.get(this.state.BASE_URL + '/entity/articles'+query)
-      commit('setArticle', response.data);
-      return response;
+    async getArticlesInfo({ commit }, code) {
+      const query = '?filter[tag][]=' + code
+      const response = await Request.get(this.state.BASE_URL + '/entity/articles' + query)
+      commit('setArticle', response.data)
+      return response
     },
-    async getQuestionsInfo({commit}, code){
-      const query = '?filter[tag][]='+code
-      const response = await Request.get(this.state.BASE_URL + '/entity/questions'+query)
-      commit('setQuestions', response.data);
-      return response;
-    }
+    async getQuestionsInfo({ commit }, code) {
+      const query = '?filter[tag][]=' + code
+      const response = await Request.get(this.state.BASE_URL + '/entity/questions' + query)
+      commit('setQuestions', response.data)
+      return response
+    },
   },
   getters: {},
 }

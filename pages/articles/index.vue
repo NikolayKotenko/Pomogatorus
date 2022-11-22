@@ -1,11 +1,12 @@
 <template>
-  <div class='list_container'>
-    <Article v-for='(article, index) in $store.state.ArticleModule.list_articles' :key='index' :article='article' />
+  <div v-if='articles' class='list_container'>
+    <Article v-for='(article, index) in articles' :key='index' :article='article' />
   </div>
 </template>
 
 <script>
 import Article from '../../components/Article/Article'
+import Request from '../../services/request'
 
 export default {
   name: 'index.vue',
@@ -15,8 +16,15 @@ export default {
     title: 'Статьи',
     meta: []
   },
-  async fetch() {
-    await this.$store.dispatch('req_list_articles')
+  async asyncData({ store, params }) {
+    try {
+      const query = 'filter[activity]=true'
+      const result = await Request.get(`${store.state.BASE_URL}/entity/articles?${query}`, '', true)
+      const articles = result.data
+      return { articles }
+    } catch (error) {
+      console.log(error)
+    }
   },
   created() {
   },

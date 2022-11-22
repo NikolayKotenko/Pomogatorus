@@ -1,3 +1,5 @@
+import Request from '../../../services/request'
+
 export default {
   state: {
     list_articles: [],
@@ -58,13 +60,10 @@ export default {
     async req_list_articles({ commit }) {
       try {
         const query = 'filter[activity]=true'
-        const options = {
-          method: 'GET',
-          url: `${this.state.BASE_URL}/entity/articles?`+query,
-        }
-
-        const list = await this.$axios(options)
-        commit('change_list_articles', list.data.data)
+        const { data } = await Request.get(`${this.state.BASE_URL}/entity/articles?${query}`)
+        return data
+        // console.log(list)
+        // commit('change_list_articles', list.data)
       } catch (error) {
         console.log(error.response.data.message)
       }
@@ -113,14 +112,9 @@ export default {
       return new Promise((resolve, reject) => {
         const { index, component } = params
 
-        this.$axios
-          .get(`${this.state.BASE_URL}/entity/${component.name}/${component.id}`, {
-            headers: {
-              Authorization: '666777',
-            },
-          })
+        Request.get(`${this.state.BASE_URL}/entity/${component.name}/${component.id}`)
           .then((response) => {
-            const data = response.data.data
+            const data = response.data
             console.log('uploaded COMPONENT')
             commit('changeSelectedComponent', {
               data,

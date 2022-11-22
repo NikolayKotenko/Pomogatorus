@@ -8,7 +8,7 @@ import Logging from '@/services/logging'
  * https://stackoverflow.com/questions/47571543/access-store-outside-of-component-vuejs
  */
 export default class Request {
-  static async request(url, params, method, formData) {
+  static async request(url, params, method, formData, noToken) {
     let options = {}
 
     if (formData) {
@@ -18,7 +18,7 @@ export default class Request {
         cache: 'default', // *default, no-cache, reload, force-cache, only-if-cached
         credentials: 'include', // include, *same-origin, omit
         headers: {
-          Authorization: 'Bearer ' + this.getAccessTokenInCookies(),
+          Authorization: 'Bearer ' + (noToken ? '' : this.getAccessTokenInCookies()),
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
         // redirect: 'follow', // manual, *follow, error
@@ -31,7 +31,7 @@ export default class Request {
         cache: 'default', // *default, no-cache, reload, force-cache, only-if-cached
         credentials: 'include', // include, *same-origin, omit
         headers: {
-          Authorization: 'Bearer ' + this.getAccessTokenInCookies(),
+          Authorization: 'Bearer ' + (noToken ? '' : this.getAccessTokenInCookies()),
           'Content-Type': 'application/json',
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
@@ -70,14 +70,17 @@ export default class Request {
         console.error('Error:', error)
       })
   }
-  static async get(url, params = null) {
-    return this.request(url, params, 'GET')
+
+  static async get(url, params = null, noToken) {
+    return this.request(url, params, 'GET', '', noToken)
   }
-  static async post(url, params, formData) {
-    return this.request(url, params, 'POST', formData)
+
+  static async post(url, params, formData, noToken) {
+    return this.request(url, params, 'POST', formData, noToken)
   }
-  static async put(url, params = null) {
-    return this.request(url, params, 'PUT')
+
+  static async put(url, params = null, noToken) {
+    return this.request(url, params, 'PUT', '', noToken)
   }
 
   static bodyFormData(paramBody) {

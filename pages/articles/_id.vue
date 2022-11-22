@@ -43,22 +43,20 @@ import FooterSummary from '../../components/FooterSummary'
 
 import ArticleInfo from '../../components/Article/ArticleInfo'
 
+import Request from '../../services/request'
+
 const vuetify_class = require('vuetify')
 
 export default {
   name: '_id.vue',
   components: { ArticleInfo, Author, FooterSummary },
-  async asyncData({ $axios, store, params }) {
-    const options = {
-      method: 'GET',
-      url: `${store.state.BASE_URL}/entity/articles/${params.id}`
-    }
+  async asyncData({ store, params }) {
     try {
-      const article_request = await $axios(options)
-      const article = article_request.data.data
+      const article_request = await Request.get(`${store.state.BASE_URL}/entity/articles/${params.id}`, '', true)
+      const article = article_request.data
       return { article }
     } catch (error) {
-      console.log(error.response.data.message)
+      console.log(error)
     }
   },
   data: () => ({
@@ -234,10 +232,13 @@ export default {
               return elem.data.index == id
             })
 
-          const key_data = `index_${component[0].data.component.name}`
-          component[0].instance.$data[key_data] = counter
 
-          counter++
+          if (component.length) {
+            const key_data = `index_${component[0].data.component.name}`
+            component[0].instance.$data[key_data] = counter
+
+            counter++
+          }
         })
       })
     },
