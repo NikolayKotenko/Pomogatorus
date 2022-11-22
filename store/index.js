@@ -63,10 +63,10 @@ const createStore = () => {
         const templateImage =
           'https://cdn.dribbble.com/users/41613/screenshots/3848663/chronicle_prev.jpg?compress=1&resize=400x300'
 
-        if (!eClientFilesObj) return templateImage
+        if (!eClientFilesObj) return ''
 
         const firstElem = eClientFilesObj.find((e) => typeof e !== 'undefined')
-        return firstElem ? state.BASE_URL + firstElem.full_path : templateImage
+        return firstElem ? state.BASE_URL + firstElem.full_path : ''
       },
       open_close_cabinet(state) {
         return state.showCabinet
@@ -74,7 +74,7 @@ const createStore = () => {
       isSomeOpen(state) {
         return state.listModal.map((elem) => elem.isOpen).includes(true)
       },
-      menuItems(state){
+      menuItems(state) {
         return [
           {
             title: 'Статьи',
@@ -98,7 +98,7 @@ const createStore = () => {
             title: 'Агенты',
             path: '/agents',
             icon: 'mdi-account-group',
-            visible: Object.keys(state.AuthModule.userData).length ? state.AuthModule.userData.is_agent : false
+            visible: Object.keys(state.AuthModule.userData).length ? state.AuthModule.userData.is_agent : false,
           },
         ]
       },
@@ -111,15 +111,14 @@ const createStore = () => {
         // Очищаем
         state.breadcrumbs = []
         // Пишем дефолтные крошки (Главная)
-        state.breadcrumbs.push(...state.defaultBreadcrumbs);
+        state.breadcrumbs.push(...state.defaultBreadcrumbs)
         // Если массив который пришел не определен то закончим
-        if (arr === undefined || ! arr.length)
-          return false;
+        if (arr === undefined || !arr.length) return false
 
         // Пушим массив с доп крошками
-        state.breadcrumbs.push(...arr);
+        state.breadcrumbs.push(...arr)
         // Дизейблим последнюю запись крошек
-        state.breadcrumbs[state.breadcrumbs.length - 1].disabled = true;
+        state.breadcrumbs[state.breadcrumbs.length - 1].disabled = true
       },
       change_show_header(state, value) {
         state.show_header = value

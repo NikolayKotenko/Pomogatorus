@@ -26,9 +26,8 @@
                 class='card_object_new__card__inputs__input'
                 dense
                 hide-details
-                label='Адрес объекта'
+                label='Введите адрес объекта'
                 no-resize
-                placeholder='Введите адрес объекта'
                 row-height='1'
                 solo
               >

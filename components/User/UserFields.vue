@@ -8,7 +8,8 @@
         class='mb-4'
         dense
         hide-details
-        placeholder='Введите имя'
+        label='Введите имя'
+        solo
         @change='setData'
       ></v-text-field>
 
@@ -17,7 +18,8 @@
         class='mb-4'
         dense
         hide-details
-        placeholder='Введите фамилию'
+        label='Введите фамилию'
+        solo
         @change='setData'
       ></v-text-field>
 
@@ -26,7 +28,8 @@
         class='mb-4'
         dense
         hide-details
-        placeholder='Введите отчество'
+        label='Введите отчество'
+        solo
         @change='setData'
       ></v-text-field>
 
@@ -36,7 +39,8 @@
         class='mb-4'
         dense
         hide-details
-        placeholder='Введите email'
+        label='Введите email'
+        solo
         @change='setData'
       ></v-text-field>
 
@@ -46,7 +50,8 @@
         class='mb-4'
         dense
         hide-details
-        placeholder='Введите телефон'
+        label='Введите телефон'
+        solo
         @change='setData'
       ></v-text-field>
     </template>
@@ -57,24 +62,24 @@
         <v-col>
           <v-text-field
             v-model='form.first_name'
-            label='Имя'
-            placeholder='Введите имя'
+            label='Введите имя'
+            solo
             @change='setData'
           ></v-text-field>
         </v-col>
         <v-col>
           <v-text-field
             v-model='form.middle_name'
-            label='Фамилия'
-            placeholder='Введите фамилию'
+            label='Введите фамилию'
+            solo
             @change='setData'
           ></v-text-field>
         </v-col>
         <v-col>
           <v-text-field
             v-model='form.last_name'
-            label='Отчество'
-            placeholder='Введите отчество'
+            label='Введите отчество'
+            solo
             @change='setData'
           ></v-text-field>
         </v-col>
@@ -85,8 +90,8 @@
           <v-text-field
             v-model='form.email'
             :rules='emailRules'
-            label='email'
-            placeholder='Введите email'
+            label='Введите email'
+            solo
             @change='setData'
           ></v-text-field>
         </v-col>
@@ -94,8 +99,8 @@
           <v-text-field
             v-model='form.telephone'
             v-mask="'+7 (###) ###-##-##'"
-            label='Телефон'
-            placeholder='Введите телефон'
+            label='Введите телефон'
+            solo
             @change='setData'
           ></v-text-field>
         </v-col>

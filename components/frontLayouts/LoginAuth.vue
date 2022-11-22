@@ -23,8 +23,8 @@
               v-model='email_user'
               :class="'required'"
               :rules='emailRules'
-              label='Введите почту'
               name='email'
+              placeholder='Введите почту'
               required
               single-line
               type='email'
@@ -36,9 +36,9 @@
               :type="passStateEye ? 'text' : 'password'"
               counter
               hint='4 символа'
-              label='Введите код доступа'
               maxlength='4'
               name='password'
+              placeholder='Введите код доступа'
               required
             >
               <template v-slot:append>
@@ -88,16 +88,16 @@
               v-model='email_user'
               :class="'required'"
               :rules='emailRules'
-              label='Введите почту'
               name='email'
+              placeholder='Введите почту'
               required
               single-line
               type='email'
             ></v-text-field>
             <v-text-field
               v-model='name'
-              label='Как к вам обращаться ?'
               name='name'
+              placeholder='Как к вам обращаться ?'
               single-line
               type='text'
             ></v-text-field>
