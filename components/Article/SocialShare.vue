@@ -136,7 +136,7 @@ export default {
 
     i{
       text-align: center;
-      font-size: 0.8em;
+      font-size: 0.9em;
     }
 
     a[class^="share-network-"] {
