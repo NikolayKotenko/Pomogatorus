@@ -38,6 +38,7 @@ export default {
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
     ['cookie-universal-nuxt', { alias: 'cookiz' }],
+    'vue-social-sharing/nuxt'
   ],
   serverMiddleware: ['~/api/index.js'],
 
