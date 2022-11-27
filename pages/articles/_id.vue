@@ -245,12 +245,23 @@ export default {
     initializeContent() {
       return new Promise((resolve) => {
         if (JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components))).length) {
+          const questions_data = this.article.questions
+
           const arr_of_components = JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components)))
           const promises = []
 
           arr_of_components.forEach((elem) => {
             if (elem.component.name === 'questions') {
-              promises.push(this.$store.dispatch('getComponentsById', elem))
+              let question = questions_data.filter(question => {
+                return question.id == elem.component.id
+              })[0]
+              if (question) {
+                this.$store.commit('changeSelectedComponent', {
+                  data: question,
+                  index: elem.index,
+                  component: elem.component
+                })
+              }
             } else if (elem.component.name === 'image') {
               promises.push(this.$store.dispatch('imageFromServer', elem))
             } else if (elem.component.name === 'auth') {
