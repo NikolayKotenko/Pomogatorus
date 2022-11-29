@@ -18,8 +18,10 @@ export default {
   },
   async asyncData({ store, params }) {
     try {
-      const query = 'filter[activity]=true'
-      const result = await Request.get(`${store.state.BASE_URL}/entity/articles?${query}`, '', true)
+      const query = {
+        'filter[activity]': true
+      }
+      const result = await Request.get(`${store.state.BASE_URL}/entity/articles`, query, true)
       const articles = result.data
       return { articles }
     } catch (error) {

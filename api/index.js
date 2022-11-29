@@ -5,6 +5,8 @@ const axios = require('axios')
 app.use(express.json())
 const PORT = 3000
 
+global.atob = require('atob')
+
 cookieParser = require('cookie-parser')
 app.use(cookieParser())
 
@@ -46,12 +48,11 @@ app.post('/auth/login', function (request, response) {
         expires: new Date(timeConverter(jwtAccessTokenObj?.exp)),
       })
       // axios.defaults.headers.common['Authorization'] = 'Bearer ' + accessToken // for all requests
-      response.send(res.data)
+      response.send(res?.data)
     })
     .catch((err) => {
-      console.log(err.response.data)
       // response.sendStatus(400);
-      response.send(err.response.data)
+      response.send(err)
     })
 })
 // REFRESH
@@ -194,14 +195,25 @@ function parseJwt(token) {
 
   var base64Url = token.split('.')[1]
   var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
-  var jsonPayload = decodeURIComponent(
-    atob(base64)
+  var jsonPayload
+  try {
+    jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map(function (c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+        })
+        .join('')
+    )
+  } catch (err) {
+    jsonPayload = Buffer.from(base64, 'base64')
+      .toString()
       .split('')
       .map(function (c) {
         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
       })
       .join('')
-  )
+  }
 
   return JSON.parse(jsonPayload)
 }
