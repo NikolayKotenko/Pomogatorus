@@ -1,12 +1,13 @@
 <template>
-  <div>
-    Агенты
-  </div>
+  <UpcomingAlert />
 </template>
 
 <script>
+import UpcomingAlert from '../../components/Upcoming/UpcomingAlert'
+
 export default {
-  name: 'index'
+  name: 'index',
+  components: { UpcomingAlert }
 }
 </script>
 

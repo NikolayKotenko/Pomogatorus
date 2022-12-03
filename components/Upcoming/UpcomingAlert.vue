@@ -16,12 +16,16 @@ export default {
 
 <style lang='scss' scoped>
 .v-alert {
-  min-height: 150px !important;
+  min-height: 100px !important;
   display: flex !important;
   align-items: center !important;
 }
 
-.v-alert__content {
-  font-size: 1.3rem !important;
+::v-deep .v-icon {
+  font-size: 48px !important;
+}
+
+::v-deep .v-alert__content {
+  font-size: 1.5rem !important;
 }
 </style>
