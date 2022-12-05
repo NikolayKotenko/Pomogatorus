@@ -49,6 +49,35 @@
             </v-list-item>
           </template>
         </v-select>
+        <div class="wrapper_document"
+             :title="($store.getters.stateObjectSelected)
+                  ? 'Техническое задание по инженерным системам'
+                  : 'Выберите ваш объект для формирования документа'"
+        >
+          <v-icon large color="red"
+                  :disabled="!$store.getters.stateObjectSelected"
+                  @click="downloadPDF()"
+          >
+            mdi-file-pdf-box
+          </v-icon>
+          <client-only>
+            <vue-html2pdf
+              ref="html2Pdf"
+              :show-layout="false"
+              :enable-download="true"
+              :pdf-quality="2"
+              :manual-pagination="true"
+              pdf-content-width="100%"
+              :html-to-pdf-options="$store.getters.htmlToPdfOptions('keke')"
+            >
+              <section slot="pdf-content">
+                <!-- content -->
+                <pdf-content></pdf-content>
+                <!-- /content -->
+              </section>
+            </vue-html2pdf>
+          </client-only>
+        </div>
       </div>
       <div v-else class='wrapper_add_object'>
         <v-text-field
@@ -96,6 +125,9 @@ export default {
     }
   },
   methods: {
+    downloadPDF() {
+      this.$refs.html2Pdf.generatePdf()
+    },
     resetValues() {
       setTimeout(() => {
         if (_deepEqual(this.defaultObject, this.$store.state.currentObject)) {
@@ -136,7 +168,7 @@ export default {
   .wrapper_objects_list {
     display: grid;
     align-items: center;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: auto 1fr auto;
     grid-column-gap: 1em;
   }
 

@@ -102,6 +102,29 @@ const createStore = () => {
           },
         ]
       },
+      htmlToPdfOptions: (state) => (filename) => {
+        return{
+          margin: 0,
+          filename: filename+`.pdf`,
+          image: {
+            type: 'jpeg',
+            quality: 0.98
+          },
+          enableLinks: false,
+          html2canvas: {
+            scale: 1,
+            useCORS: true
+          },
+          jsPDF: {
+            unit: 'in',
+            format: 'a4',
+            orientation: 'portrait'
+          }
+        }
+      },
+      stateObjectSelected(state){
+        return Boolean(Object.keys(state.currentObject).length);
+      }
     },
     mutations: {
       set_drawer(state, payload) {
