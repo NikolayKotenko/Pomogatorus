@@ -1,5 +1,5 @@
 <template>
-  <div :id='`component_wrapper-${index_component}`' class='article_component image_wrapper' contenteditable='false'>
+  <div :id='`component_wrapper-${index_component}`' class='image_wrapper' contenteditable='false'>
     <img :alt='altName' :src='srcPath' :title='titleName' class='main_img inserted_image' />
   </div>
 </template>

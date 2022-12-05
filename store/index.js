@@ -65,7 +65,7 @@ const createStore = () => {
 
         if (!eClientFilesObj) return ''
 
-        const firstElem = eClientFilesObj.find((e) => typeof e !== 'undefined')
+        const firstElem = eClientFilesObj.find((e) => e.preview_image === 1)
         return firstElem ? state.BASE_URL + firstElem.full_path : ''
       },
       open_close_cabinet(state) {
