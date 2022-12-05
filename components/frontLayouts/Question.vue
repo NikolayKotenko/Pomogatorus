@@ -128,13 +128,14 @@
             closeOnContentClick: true,
             bottom: true,
             offsetY: true,
-          }'
+            }'
             clearable
             dense
             hide-details
             item-text='answer'
+            item-value='answer'
             placeholder='Введите ответ'
-            return-object
+
             solo
             @change='changeAnswer()'
           >
