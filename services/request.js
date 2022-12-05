@@ -50,8 +50,7 @@ export default class Request {
       }
     } else {
       if (formData) {
-        console.log('test')
-        console.log(Request.bodyFormData(params))
+        // console.log(Request.bodyFormData(params))
         options.body = Request.bodyFormData(params) // for formData e.g Files to server
       } else {
         options.body = JSON.stringify(params) // body data type must match "Content-Type" header
@@ -87,7 +86,7 @@ export default class Request {
     let bodyFormData = new FormData()
 
     for (const [key, value] of Object.entries(paramBody)) {
-      console.log(`${key}: ${value}`)
+      // console.log(`${key}: ${value}`)
       bodyFormData.append(key, value)
     }
     return bodyFormData

@@ -49,7 +49,7 @@ export default {
       const main_tag = request.data
       return { main_tag }
     } catch (error) {
-      console.log(error.response.data.message)
+      console.warn(error.response.data.message)
     }
   },
   data: () => ({

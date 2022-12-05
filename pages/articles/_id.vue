@@ -46,7 +46,7 @@ import Author from '../../components/Article/Author'
 import FooterSummary from '../../components/FooterSummary'
 
 import ArticleInfo from '../../components/Article/ArticleInfo'
-import SocialShare from "~/components/Article/SocialShare";
+import SocialShare from '~/components/Article/SocialShare'
 
 import Request from '../../services/request'
 
@@ -61,7 +61,7 @@ export default {
       const article = article_request.data
       return { article }
     } catch (error) {
-      console.log(error)
+      console.warn(error)
     }
   },
   data: () => ({
@@ -430,11 +430,12 @@ export default {
     font-size: 1.5rem !important;
   }
 
-  .mainTitleFont{
+  .mainTitleFont {
     display: grid;
     grid-template-columns: 1fr auto;
     align-items: baseline;
   }
+
   &__header {
     &__title {
       margin: 10px 0 10px 0;

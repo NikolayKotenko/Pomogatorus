@@ -55,7 +55,7 @@ export default {
         const response = await Request.get(`${this.state.BASE_URL}/entity/popular-selections/` + code)
         commit('setPopularSelections', response.data.data)
       } catch (error) {
-        console.log(error.response.data.message)
+        console.warn(error.response.data.message)
       }
     },
     async getMainTagInfo({ commit }, code) {
@@ -65,7 +65,7 @@ export default {
         const response = await Request.get(`${this.state.BASE_URL}/dictionary/tags-by-code/` + code)
         commit('setMainTag', response.data.data)
       } catch (error) {
-        console.log(error.response.data.message)
+        console.warn(error.response.data.message)
       }
     },
     async getArticlesInfo({ commit }, code) {

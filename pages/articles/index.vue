@@ -25,7 +25,7 @@ export default {
       const articles = result.data
       return { articles }
     } catch (error) {
-      console.log(error)
+      console.warn(error)
     }
   },
   created() {

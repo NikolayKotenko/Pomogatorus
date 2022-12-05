@@ -101,11 +101,9 @@ export default {
         window.onscroll = function() {
           let currentScrollPos = window.pageYOffset
           if (prevScrollpos > currentScrollPos) {
-            // console.log('pokazuvay')
             document.getElementById('navbar').style.top = '0'
             _this.setHeader(true)
           } else {
-            // console.log('pryachy')
             document.getElementById('navbar').style.top = '-70px'
             _this.setHeader(false)
           }
