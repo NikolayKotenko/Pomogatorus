@@ -72,7 +72,7 @@ app.post('/auth/refresh', function (request, response) {
   axios
     .post(getUrl(request, response) + '/auth/refresh', false, config)
     .then((res) => {
-      console.log('res.headers', res.headers)
+      // console.log('res.headers', res.headers)
 
       // Set refresh token
       const refreshCookieObj = parseCookies(res.headers['set-cookie'][0])
@@ -93,7 +93,7 @@ app.post('/auth/refresh', function (request, response) {
       response.send(res.data)
     })
     .catch((err) => {
-      console.log('err.response', err.response)
+      console.warn('err.response', err.response)
       // response.sendStatus(400);
       response.send(err.response.data)
     })
@@ -119,12 +119,12 @@ app.post('/auth/validate-auth', function (request, response) {
   axios
     .post(getUrl(request, response) + '/auth/validate-auth', false, config)
     .then((res) => {
-      console.log('res', res)
+      // console.log('res', res)
       response.send(res.data)
     })
     .catch((err) => {
-      console.log('err', err)
-      console.log('err.message', err.message)
+      console.warn('err', err)
+      console.warn('err.message', err.message)
       // response.sendStatus(400);
       response.send(err)
     })
@@ -149,9 +149,9 @@ app.post('/auth/logout', function (request, response) {
       response.send(res.data)
     })
     .catch((err) => {
-      console.log('auth/logout')
-      console.log('err', err)
-      console.log('err.message', err.message)
+      console.warn('auth/logout')
+      console.warn('err', err)
+      console.warn('err.message', err.message)
       // response.sendStatus(400);
       response.send(err)
     })

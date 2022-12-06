@@ -516,7 +516,7 @@ export default {
           }
         })
         .catch((error) => {
-          console.log(error)
+          console.warn(error)
           this.status_name = 'error'
         })
         .finally(() => {
@@ -654,7 +654,7 @@ export default {
             }
           } catch (e) {
             this.status_name = 'error'
-            console.log(e)
+            console.warn(e)
           }
         } else {
           try {
@@ -677,7 +677,7 @@ export default {
             }
           } catch (e) {
             this.status_name = 'error'
-            console.log(e)
+            console.warn(e)
           }
         }
 

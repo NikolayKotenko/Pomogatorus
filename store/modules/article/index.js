@@ -62,10 +62,8 @@ export default {
         const query = 'filter[activity]=true'
         const { data } = await Request.get(`${this.state.BASE_URL}/entity/articles?${query}`)
         return data
-        // console.log(list)
-        // commit('change_list_articles', list.data)
       } catch (error) {
-        console.log(error.response.data.message)
+        console.warn(error.response.data.message)
       }
     },
 
@@ -115,7 +113,7 @@ export default {
         Request.get(`${this.state.BASE_URL}/entity/${component.name}/${component.id}`)
           .then((response) => {
             const data = response.data
-            console.log('uploaded COMPONENT')
+            // console.log('uploaded COMPONENT')
             commit('changeSelectedComponent', {
               data,
               index,

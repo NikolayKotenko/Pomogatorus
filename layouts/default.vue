@@ -2,7 +2,7 @@
   <v-app class='app'>
     <Header />
     <BurgerMenu v-if='!$device.isDesktop' />
-    <SubHeader v-if='$device.isDesktop && loadComponent'/>
+    <SubHeader v-if='$device.isDesktop && loadComponent' />
     <v-main id='main_content' class='main'>
       <Nuxt />
     </v-main>
@@ -46,7 +46,7 @@ export default {
         }
       })
     } catch (error) {
-      console.log(error.response.data.message)
+      console.warn(error.response.data.message)
     }
   },
   data() {
@@ -112,8 +112,8 @@ export default {
     }
   },
   methods: {
-    setLoadComponent(){
-      this.loadComponent = true;
+    setLoadComponent() {
+      this.loadComponent = true
     },
     async fuckinMiddleware() {
       if (this.$route.query.userEmail) {
@@ -137,7 +137,7 @@ export default {
 
       this.$store.commit('change_refactoring_content', false)
     }
-  },
+  }
 }
 </script>
 
