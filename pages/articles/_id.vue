@@ -34,7 +34,6 @@
       </v-overlay>
     </div>
     <footer-summary></footer-summary>
-    <pdf-content></pdf-content>
   </div>
 </template>
 

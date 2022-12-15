@@ -68,7 +68,7 @@
               :pdf-quality="2"
               :manual-pagination="true"
               pdf-content-width="100%"
-              :html-to-pdf-options="$store.getters.htmlToPdfOptions('keke')"
+              :html-to-pdf-options="$store.getters['PdfDataModule/htmlToPdfOptions']('keke')"
             >
               <section slot="pdf-content">
                 <!-- content -->
@@ -107,11 +107,11 @@ export default {
   data() {
     return {
       address: '',
-      defaultObject: {}
+      defaultObject: {},
     }
   },
   computed: {
-    ...mapGetters(['open_close_cabinet'])
+    ...mapGetters(['open_close_cabinet']),
   },
   watch: {
     'open_close_cabinet': {

@@ -9,9 +9,8 @@
           ref="userImage"
         />
       </section>
-
       <section class="user-details">
-        <h4 class="user-name">Техническое задание по инженерным системам</h4>
+        <h3 class="user-name">Техническое задание по инженерным системам</h3>
         <br>
 
         <span class="detail-container">
@@ -35,79 +34,28 @@
       </section>
     </section>
 
-    <section class="requirements">
-      <v-data-table
-        :headers="headers"
-        :items="data_of_components"
-        :items-per-page="5"
-        class="elevation-1"
-        disable-sort
-      >
-        <template v-slot:item="{ item }">
-          <tr class="row_items"
-              :key="item.id"
-          >
-            <td class="updated_at_public">№</td>
-            <td class="updated_at_public">{{ item.updated_at_public }}</td>
-            <td class="updated_at_public">{{ item.updated_at_public }}</td>
-          </tr>
-        </template>
-      </v-data-table>
-    </section>
+    <div class="wrapper_requirements">
+      <h4 class="requirements-name">Требования<hr></h4>
 
-    <section class="chart-container" v-for="(val, key) in 2" :key="key">
-      <h4 class="time">November 11, 2019 1:00 PM - 2:23 PM</h4>
+      <section class="requirements" v-for="(objTag, nameTag) in $store.state.PdfDataModule.report_data">
+        <h4>{{ nameTag }}</h4>
+        <TableByTag :obj_by_tag="objTag"></TableByTag>
+      </section>
+    </div>
 
-    </section>
   </section>
 </template>
 
 <script>
+import TableByTag from './TableByTag'
+
 export default {
-  props:['data_of_components'],
+  name: 'PdfContent',
+  components: {
+    TableByTag,
+  },
   data() {
     return {
-      headers: [
-        {
-          text: '№',
-          align: 'start',
-          value: 'name',
-        },
-        { text: 'Вопрос', value: 'calories' },
-        { text: 'Ответ', value: 'fat' },
-      ],
-      series: [
-        {
-          name: "Level",
-          data: [
-            { y: 1, x: "11/11/2019 13:00:00" },
-            { y: 1, x: "11/11/2019 13:01:00" },
-            { y: 2, x: "11/11/2019 13:02:00" },
-            { y: 4, x: "11/11/2019 13:03:00" },
-            { y: 5, x: "11/11/2019 14:04:00" },
-          ],
-        },
-        {
-          name: "Experience",
-          data: [
-            { y: 5, x: "11/11/2019 13:00:00" },
-            { y: 5, x: "11/11/2019 13:01:00" },
-            { y: 10, x: "11/11/2019 13:02:00" },
-            { y: 12, x: "11/11/2019 13:03:00" },
-            { y: 20, x: "11/11/2019 14:04:00" },
-          ],
-        },
-        {
-          name: "Gold",
-          data: [
-            { y: 10, x: "11/11/2019 13:00:00" },
-            { y: 10, x: "11/11/2019 13:01:00" },
-            { y: 20, x: "11/11/2019 13:02:00" },
-            { y: 30, x: "11/11/2019 13:03:00" },
-            { y: 50, x: "11/11/2019 14:04:00" },
-          ],
-        },
-      ],
       chartOptions: {
         dataLabels: {
           enabled: false,
@@ -178,6 +126,8 @@ export default {
     };
   },
   mounted() {
+    this.$store.dispatch('PdfDataModule/getBodyData', {ids_tags: [1,2]})
+
     this.$nextTick(() => {
       setTimeout(() => {
         this.$emit("domRendered");
@@ -191,6 +141,7 @@ export default {
 .pdf-content {
   width: 100%;
   background: #fff;
+  padding: 56px;
   .report-info {
     display: flex;
     padding: 20px;
@@ -233,9 +184,15 @@ export default {
         }
       }
     }
+  }
+  .wrapper_requirements{
+    display: grid;
+    grid-row-gap: 2em;
+
     .requirements{
       display: flex;
       flex-direction: column;
+      grid-row-gap: 10px;
     }
   }
   .chart-container {

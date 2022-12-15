@@ -1,6 +1,7 @@
 import Vuex from 'vuex'
 
 import AuthModule from './modules/auth'
+import PdfDataModule from './modules/pdf-data'
 import ArticleModule from './modules/article'
 import PopularSelectionsModule from './modules/popular-selections'
 import UserSettings from './modules/userSettings'
@@ -102,26 +103,6 @@ const createStore = () => {
           },
         ]
       },
-      htmlToPdfOptions: (state) => (filename) => {
-        return{
-          margin: 0,
-          filename: filename+`.pdf`,
-          image: {
-            type: 'jpeg',
-            quality: 0.98
-          },
-          enableLinks: false,
-          html2canvas: {
-            scale: 1,
-            useCORS: true
-          },
-          jsPDF: {
-            unit: 'in',
-            format: 'a4',
-            orientation: 'portrait'
-          }
-        }
-      },
       stateObjectSelected(state){
         return Boolean(Object.keys(state.currentObject).length);
       }
@@ -216,6 +197,7 @@ const createStore = () => {
       ArticleModule,
       PopularSelectionsModule,
       UserSettings,
+      PdfDataModule
     },
   })
 }
