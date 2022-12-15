@@ -9,18 +9,18 @@
     <!-- Desktop -->
     <template v-if='!isMobile'>
       <v-toolbar-items class='header_center'>
-        <v-btn v-for='item in $store.getters.menuItems'
-               v-if='item.visible'
-               :key='item.title'
-               :href='item.path'
-               class='text-capitalize link_btn'
-               text
-        >
-          <v-icon :color='getCurrentRoute.title === item.title ? "#fafad2" : "white"' dark left>
-            {{ item.icon }}
-          </v-icon>
-          <span :class='{activeElement: getCurrentRoute.title === item.title}'>{{ item.title }}</span>
-        </v-btn>
+        <upcoming-title v-for='item in $store.getters.menuItems' v-if='item.visible' :key='item.title'>
+          <v-btn
+            :href='item.path'
+            class='text-capitalize link_btn'
+            text
+          >
+            <v-icon :color='getCurrentRoute.title === item.title ? "#fafad2" : "white"' dark left>
+              {{ item.icon }}
+            </v-icon>
+            <span :class='{activeElement: getCurrentRoute.title === item.title}'>{{ item.title }}</span>
+          </v-btn>
+        </upcoming-title>
       </v-toolbar-items>
     </template>
 
@@ -46,9 +46,11 @@
 
 <script>
 import { mapState } from 'vuex'
+import UpcomingTitle from './Upcoming/UpcomingTitle'
 
 export default {
   name: 'Header',
+  components: { UpcomingTitle },
   data() {
     return {
       debounceTimeout: null
@@ -136,6 +138,7 @@ export default {
 
 .header_center {
   flex: 1;
+  align-items: center;
 }
 
 .header_right {
