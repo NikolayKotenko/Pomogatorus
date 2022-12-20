@@ -51,6 +51,8 @@ import TableByTag from './TableByTag'
 
 export default {
   name: 'PdfContent',
+  props: {
+  },
   components: {
     TableByTag,
   },
@@ -126,8 +128,6 @@ export default {
     };
   },
   mounted() {
-    this.$store.dispatch('PdfDataModule/getBodyData', {ids_tags: [1,2]})
-
     this.$nextTick(() => {
       setTimeout(() => {
         this.$emit("domRendered");

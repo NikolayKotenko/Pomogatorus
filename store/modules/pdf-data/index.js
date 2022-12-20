@@ -14,20 +14,19 @@ export default {
   },
   actions: {
     async getBodyData({commit, state}, {ids_tags}){
-      if (state.debounceTimeout) clearTimeout(state.debounceTimeout)
-      state.debounceTimeout = setTimeout(async () => {
 
-        let filter_id_tag = '';
-        if (ids_tags){
-          ids_tags.forEach((id_tag) => { filter_id_tag += '&filter[id_tag][]='+id_tag })
-        }
-        let query = '?filter[id_user]='+this.state.AuthModule.userData.id;
-        query += filter_id_tag;
+      let filter_id_tag = '';
+      if (ids_tags){
+        ids_tags.forEach((id_tag) => { filter_id_tag += '&filter[id_tag][]='+id_tag })
+      }
+      let query = '?filter[id_user]='+this.state.AuthModule.userData.id;
+      query += filter_id_tag;
 
-        let {data} = await Request.get(this.state.BASE_URL + '/entity/pdf-user-report'+query)
-        console.log('data', data)
-        commit('set_report_data', data)
-      }, 1000)
+      const response = await Request.get(this.state.BASE_URL + '/entity/pdf-user-report'+query)
+      console.log('response', response)
+      commit('set_report_data', response.data)
+
+      return response;
     }
   },
   getters: {

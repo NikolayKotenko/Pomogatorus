@@ -58,6 +58,7 @@ const createStore = () => {
         },
       ],
       modalCurrentObject: {},
+      list_tags: [],
     },
     getters: {
       getImageByEClientFilesObj: (state) => (eClientFilesObj) => {
@@ -161,6 +162,10 @@ const createStore = () => {
       set_listModal(state, payload) {
         state.listModal = payload
       },
+      set_list_tags(state, payload){
+        state.list_tags = []
+        state.list_tags = payload
+      }
     },
     actions: {
       async getListObjects({ state, commit }) {
@@ -191,6 +196,12 @@ const createStore = () => {
       // nuxtServerInit({dispatch}) {
       //   dispatch('req_list_articles')
       // },
+      async getListTags({ commit }) {
+        const query = 'filter[public_field_filter]=true'
+        const response = await Request.get(this.state.BASE_URL + '/dictionary/tags?' + query)
+        commit('set_list_tags', response.data)
+        return response
+      },
     },
     modules: {
       AuthModule,

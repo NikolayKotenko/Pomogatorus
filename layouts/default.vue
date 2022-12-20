@@ -4,7 +4,8 @@
     <BurgerMenu v-if='!$device.isDesktop' />
     <SubHeader v-if='$device.isDesktop && loadComponent' />
     <v-main id='main_content' class='main'>
-      <Nuxt />
+      <Nuxt class="main__left_column"/>
+      <CurrentObjects class="main__right_column"></CurrentObjects>
     </v-main>
     <!-- КАСКАДНЫЕ МОДАЛКИ -->
     <div
@@ -25,13 +26,22 @@ import SubHeader from '../components/SubHeader'
 import ListObjects from '../components/UserObjects/ListObjects'
 import ObjectDetail from '../components/UserObjects/ObjectDetail'
 import Right from '../components/CascadModels/Right'
+import CurrentObjects from '../components/Widgets/CurrentObjects'
 
 import { mapState } from 'vuex'
 import BurgerMenu from '../components/BurgerMenu'
 
 export default {
   name: 'DefaultLayout',
-  components: { BurgerMenu, Right, SubHeader, Header, ListObjects, ObjectDetail },
+  components: {
+    BurgerMenu,
+    Right,
+    SubHeader,
+    Header,
+    ListObjects,
+    ObjectDetail,
+    CurrentObjects
+  },
   async fetch() {
     const options = {
       method: 'GET',
@@ -161,9 +171,17 @@ body {
 .main {
   width: 1140px;
   margin: 5px auto 0 auto;
-  background: #ffffff;
-  padding: 20px 15px !important;
   border-radius: 5px;
   margin-bottom: 65px;
+  padding: unset!important;
+  &__left_column, &__right_column{
+    padding: 20px!important;
+    background: #ffffff;
+  }
+}
+.v-main__wrap{
+  display: grid;
+  grid-template-columns: 75% auto;
+  grid-column-gap: 25px;
 }
 </style>
