@@ -5,7 +5,7 @@
     <SubHeader v-if='$device.isDesktop && loadComponent' />
     <v-main id='main_content' class='main'>
       <Nuxt class="main__left_column"/>
-      <CurrentObjects class="main__right_column"></CurrentObjects>
+      <CurrentObjects class="main__right_column" v-if="! $route.path.match('search')"></CurrentObjects>
     </v-main>
     <!-- КАСКАДНЫЕ МОДАЛКИ -->
     <div
@@ -160,7 +160,7 @@ body {
 }
 
 .app {
-  background: #f3f3f3 !important;
+  background: #ffffff !important;
 }
 
 ::v-deep .v-btn {
@@ -174,14 +174,13 @@ body {
   border-radius: 5px;
   margin-bottom: 65px;
   padding: unset!important;
-  &__left_column, &__right_column{
+  &__right_column{
     padding: 20px!important;
     background: #ffffff;
   }
 }
 .v-main__wrap{
   display: grid;
-  grid-template-columns: 75% auto;
-  grid-column-gap: 25px;
+  grid-template-columns: auto auto;
 }
 </style>
