@@ -46,7 +46,7 @@ export default {
     },
     htmlToPdfOptions: (state) => (filename) => {
       return{
-        margin: 0,
+        margin: [10, 20, 10, 20], //top, left, buttom, right
         filename: filename+`.pdf`,
         image: {
           type: 'jpeg',
@@ -58,7 +58,7 @@ export default {
           useCORS: true
         },
         jsPDF: {
-          unit: 'in',
+          unit: 'mm',
           format: 'a4',
           orientation: 'portrait'
         }

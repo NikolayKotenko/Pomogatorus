@@ -102,6 +102,12 @@ const createStore = () => {
             icon: 'mdi-account-group',
             visible: Object.keys(state.AuthModule.userData).length ? state.AuthModule.userData.is_agent : false,
           },
+          {
+            title: 'Тесты',
+            path: '/tests',
+            icon: 'mdi-home',
+            visible: false,
+          },
         ]
       },
       stateObjectSelected(state){

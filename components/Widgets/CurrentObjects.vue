@@ -35,6 +35,7 @@
         <v-checkbox
              v-if="$store.state.list_tags.length"
              v-for="(tag, key) in $store.state.list_tags"
+             :key="key"
              class="current_object__wrapper_info__hide_block__checkbox"
              v-model="selected_ids_tags"
              :label="tag.name"

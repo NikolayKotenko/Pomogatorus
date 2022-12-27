@@ -8,11 +8,14 @@
     </section>
 
     <section class="table__tbody" v-for="(objQuestion, nameQuestion) in obj_by_tag">
-      <section class="table__tbody__tr__td first_child">{{ 1 }}</section>
+      <section class="table__tbody__tr__td first_child">{{ inc(nameQuestion) }}</section>
       <section class="table__tbody__tr__td">{{ objQuestion.e_questions__name }}</section>
       <section class="table__tbody__tr__td">
         <p>{{ objQuestion.answers__value_answer }}</p>
-        <p v-if="objQuestion.answers__detailed_response">{{ objQuestion.answers__detailed_response }}</p>
+        <p v-if="objQuestion.answers__detailed_response"
+        class="detailed_response">
+          {{ objQuestion.answers__detailed_response }}
+        </p>
       </section>
     </section>
 
@@ -22,7 +25,22 @@
 <script>
 export default {
   name: "TableByTag",
-  props: ['obj_by_tag']
+  data() {
+    return {
+      number: 1
+    };
+  },
+  props: ['obj_by_tag'],
+  methods:{
+    inc(name){
+      let resN = 0;
+      Object.keys(this.obj_by_tag).forEach((elem, key) => {
+        if (elem === name)
+          resN = key + 1
+      })
+      return resN
+    }
+  }
 }
 </script>
 
@@ -53,5 +71,8 @@ text-align: center;
 .table__thead__tr__td, .table__tbody__tr__td {
   border: 1px solid black;
   padding: 8px;
+}
+.detailed_response{
+  font-size: 10px;
 }
 </style>
