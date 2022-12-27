@@ -26,40 +26,44 @@
 }
 
 .article_card {
+  @extend %blockGavna !optional;
   //width: 400px;
   //height: 400px;
-  font-family: 'Exo 2', sans-serif;
+  font-family: 'Roboto', sans-serif;
 
   .list_elem_wrapper {
     display: grid;
     height: 100%;
+    max-height: 543px;
     //grid-template-rows: 300px auto;
   }
 }
 
+
 .list_container {
-  //display: grid;
-  //grid-template-columns: repeat(3, 1fr);
-  column-gap: 2em;
-  row-gap: 2em;
-  //display: flex;
-  //flex-wrap: wrap;
   display: grid;
-  //grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 1.5em;
+  row-gap: 1.5em;
+
+
 }
 
 .list_elem_wrapper {
   display: flex;
   flex-direction: column;
+  padding: 25px;
 
   &__img_container {
-    height: 300px;
+    height: 325px;
+    width: auto;
     display: flex;
     align-content: center;
     justify-content: center;
     align-items: center;
     position: relative;
-    max-height: 335px;
+    max-height: 325px;
+    max-width: 510px;
     background: rgb(229, 243, 254);
     background: linear-gradient(180deg, rgba(229, 243, 254, 1) 0%, rgba(196, 222, 230, 1) 100%);
 
@@ -80,18 +84,31 @@
     &__short_info {
       justify-content: flex-start;
       height: 100%;
-      padding: 10px 14px;
+      padding-top: 10px;
 
-      &__title {
-        font-size: 1.2em;
-        line-height: 28px;
-        background: linear-gradient(0deg, slateblue, slateblue) no-repeat right bottom / 0 var(--bg-h);
-        transition: background-size 350ms;
-        --bg-h: 2px;
+      &__title_info{
+        display: flex;
+        justify-content: space-between;
+        padding-bottom: 10px;
 
-        &:where(:hover, :focus-visible) {
-          background-size: 100% var(--bg-h);
-          background-position-x: left;
+        &__title {
+          font-size: 1.2em;
+          line-height: 28px;
+          background: linear-gradient(0deg, slateblue, slateblue) no-repeat right bottom / 0 var(--bg-h);
+          transition: background-size 350ms;
+          --bg-h: 2px;
+
+          &:where(:hover, :focus-visible) {
+            background-size: 100% var(--bg-h);
+            background-position-x: left;
+          }
+        }
+
+        &__time {
+          font-size: 1em;
+          color: #777777;
+          font-weight: normal;
+
         }
       }
 
@@ -150,7 +167,7 @@
   transition: all 0.4s ease-in-out !important;
 
   &:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
     box-shadow: 0px 5px 20px 7px rgba(34, 60, 80, 0.2) !important;
   }
 }

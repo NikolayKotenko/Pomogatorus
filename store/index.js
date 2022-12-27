@@ -97,6 +97,12 @@ const createStore = () => {
             visible: true,
           },
           {
+            title: 'Поиск',
+            path: '/search',
+            icon: 'mdi-search',
+            visible: true,
+          },
+          {
             title: 'Агенты',
             path: '/agents',
             icon: 'mdi-account-group',

@@ -129,11 +129,13 @@ export default {
 
 <style lang="scss" scoped>
 .current_object{
+  min-width: 260px;
   //max-height: 500px;
   display: flex;
   flex-direction: column;
   align-self: baseline;
   grid-row-gap: 1em;
+  margin-left: 25px;
   &__image{
     width: 209px;
     height: 134px;

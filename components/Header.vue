@@ -15,9 +15,6 @@
             class='text-capitalize link_btn'
             text
           >
-            <v-icon :color='getCurrentRoute.title === item.title ? "#fafad2" : "white"' dark left>
-              {{ item.icon }}
-            </v-icon>
             <span :class='{activeElement: getCurrentRoute.title === item.title}'>{{ item.title }}</span>
           </v-btn>
         </upcoming-title>
@@ -118,6 +115,14 @@ export default {
 </script>
 
 <style lang='scss' scoped>
+.v-btn:not(.v-btn--round).v-size--default {
+  padding: 0 !important;
+}
+
+.theme--dark.v-app-bar.v-toolbar.v-sheet{
+  background: #37392E;
+}
+
 .header {
   display: flex;
   flex: unset !important;
@@ -131,7 +136,7 @@ export default {
     width: 100%;
     max-width: 1140px;
     margin: 0 auto;
-    padding: 4px 10px;
+    padding: 4px 0;
     column-gap: 10px;
   }
 }
@@ -139,6 +144,7 @@ export default {
 .header_center {
   flex: 1;
   align-items: center;
+  grid-column-gap: 2em;
 }
 
 .header_right {

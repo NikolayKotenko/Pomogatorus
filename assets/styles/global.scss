@@ -22,3 +22,10 @@ input:focus::placeholder {
 .upcoming-title {
   color: lightgoldenrodyellow !important;
 }
+
+$main-color: red;
+
+%blockGavna{
+  display: grid;
+  grid-row-gap: 10px;
+}
