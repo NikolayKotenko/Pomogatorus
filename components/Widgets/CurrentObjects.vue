@@ -45,6 +45,8 @@
            ></v-checkbox>
         <div>
           <v-btn @click="downloadPDF()"
+                 block
+                 class="mt-5"
                  :title="($store.getters.stateObjectSelected)
                     ? 'Техническое задание по инженерным системам'
                     : 'Выберите ваш объект для формирования документа'"
