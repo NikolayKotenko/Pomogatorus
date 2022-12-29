@@ -29,6 +29,11 @@
             {{ preview }}
           </h4>
         </div>
+        <v-btn class="list_elem_wrapper__preview_content__btn" >
+          Читать полностью
+          <v-icon class="list_elem_wrapper__preview_content__btn__arrow">mdi-chevron-right</v-icon>
+        </v-btn>
+
       </div>
     </div>
   </v-card>

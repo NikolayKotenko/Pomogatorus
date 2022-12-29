@@ -117,7 +117,9 @@ export default {
 <style lang='scss' scoped>
 .v-btn:not(.v-btn--round).v-size--default {
   padding: 0 !important;
+  min-width: 0px;
 }
+
 
 .theme--dark.v-app-bar.v-toolbar.v-sheet{
   background: #37392E;
@@ -153,12 +155,12 @@ export default {
 }
 
 .link_btn {
+  font-weight: lighter;
   @media only screen and (min-width: 400px) {
     font-size: 1.25rem !important;
   }
   line-height: 1.5;
   letter-spacing: 1px;
-  font-weight: 400;
 }
 
 .header_title {
@@ -167,6 +169,6 @@ export default {
   }
   line-height: 1.5;
   letter-spacing: 1px;
-  font-weight: 400;
+  font-weight: lighter !important;
 }
 </style>
