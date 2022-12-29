@@ -155,12 +155,12 @@ export default {
 }
 
 .link_btn {
+  font-weight: lighter;
   @media only screen and (min-width: 400px) {
     font-size: 1.25rem !important;
   }
   line-height: 1.5;
   letter-spacing: 1px;
-  font-weight: 400;
 }
 
 .header_title {
