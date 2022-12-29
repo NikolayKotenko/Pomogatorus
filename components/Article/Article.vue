@@ -2,7 +2,7 @@
   <v-card class='article_card' :href="'/articles/' + article.id">
     <div class='list_elem_wrapper'>
       <div class="list_elem_wrapper__preview_content__short_info__title_info">
-        <h2 class='list_elem_wrapper__preview_content__short_info__title_info__title'>
+        <h2 class='list_elem_wrapper__previewтз_content__short_info__title_info__title'>
           {{ article.name }}
         </h2>
         <h4 class="list_elem_wrapper__preview_content__short_info__title_info__time">
