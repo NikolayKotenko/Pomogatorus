@@ -7,8 +7,9 @@
       :item_text="'address'"
       :item_value="'id'"
       @update-input="callback"
+      title="Выберите объект"
     />
-    <v-img class="current_object__image">
+    <v-img class="current_object__image" title="Фотография объекта">
       <v-icon class="current_object__image__icon" x-large>mdi-map-marker-outline</v-icon>
     </v-img>
     <section class="current_object__wrapper_info">
@@ -24,7 +25,7 @@
       <span class="current_object__wrapper_info__value">13 из 22</span>
     </section>
     <section class="current_object__wrapper_info">
-      <span class="current_object__wrapper_info__text">Техническое задание:</span>
+      <span class="current_object__wrapper_info__text">ТЗ объекта {{ $store.state.currentObject.name }}</span>
       <span class="current_object__wrapper_info__value">7 из 130</span>
       <div class="current_object__wrapper_info__icon_wrapper">
         <v-icon @click="state_tech_task_block = !state_tech_task_block">
