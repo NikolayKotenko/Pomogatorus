@@ -94,24 +94,27 @@ export default class Request {
 
   static parseCookies = () => {
     const list = {}
-    if (!document.cookie) return list
 
-    document.cookie.split(`;`).forEach(function (cookie) {
-      let [name, ...rest] = cookie.split(`=`)
-      name = name?.trim()
-      if (!name) return
-      const value = rest.join(`=`).trim()
-      if (!value) return
-      list[name] = decodeURIComponent(value)
-    })
+    if (process.client) {
+      if (!document.cookie) return list
+
+      document.cookie.split(`;`).forEach(function(cookie) {
+        let [name, ...rest] = cookie.split(`=`)
+        name = name?.trim()
+        if (!name) return
+        const value = rest.join(`=`).trim()
+        if (!value) return
+        list[name] = decodeURIComponent(value)
+      })
+    }
 
     return list
   }
   static getAccessTokenInCookies = () => {
-    if (process.env.NODE_ENV === 'development') return '666777'
+    // if (process.env.NODE_ENV === 'development') return '666777'
 
     // console.log('this.parseCookies()', this.parseCookies())
     const checkExist = this.parseCookies()
-    return checkExist.hasOwnProperty('accessToken') ? checkExist?.accessToken : null
+    return checkExist.hasOwnProperty('accessToken') ? checkExist.accessToken : null
   }
 }

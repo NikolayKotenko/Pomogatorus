@@ -1,6 +1,6 @@
 <template>
   <div>
-    <object-detail :object_data="object"></object-detail>
+    <object-detail v-if="object" :object_data="object"></object-detail>
     <footer-summary></footer-summary>
   </div>
 </template>
@@ -14,51 +14,31 @@ import ObjectDetail from "~/components/UserObjects/ObjectDetail";
 export default {
   name: '_id.vue',
   components: { ObjectDetail, FooterSummary, SocialShare },
-  async asyncData({ store, params }) {
-    try {
-      const request = await Request.get(`${store.state.BASE_URL}/entity/objects/${params.id}`)
-      const object = request.data
-      return { object }
-    } catch (error) {
-      console.warn(error)
-    }
-  },
   data: () => ({
+    object: {}
   }),
   head() {
     return {
-      title: `${this.object.address}`,
-      meta: [
-        { charset: 'utf-8' },
-        {
-          name: 'viewport',
-          content: 'width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1'
-        },
-        {
-          hid: 'keywords',
-          name: 'keywords',
-        },
-        {
-          hid: 'description',
-          name: 'description',
-        },
-        {
-          hid: 'theme-color',
-          name: 'theme-color',
-          content: 'blue'
-        }
-      ]
     }
   },
-  mounted() {
+  async mounted() {
+    await this.getObject()
     this.$route.meta.title = this.object.address
-
   },
   watch: {
   },
   computed: {
   },
   methods: {
+    async getObject() {
+      try {
+        const request = await Request.get(`${this.$store.state.BASE_URL}/entity/objects/${this.$route.params.id}`)
+        this.object = request.data
+        return request.data
+      } catch (error) {
+        console.warn(error)
+      }
+    },
   },
   destroyed() {
   }
