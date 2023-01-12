@@ -19,12 +19,6 @@
   }
 }
 
-@media only screen and (max-width: 924px) {
-  .list_container {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
-}
-
 .article_card {
   @extend %blockGavna !optional;
   //width: 400px;
@@ -46,8 +40,7 @@
 
 .list_container {
   display: grid;
-
-  grid-template-columns: repeat(2, 1fr);
+  //grid-template-columns: repeat(2, 1fr);
   column-gap: 1.5em;
   row-gap: 1.5em;
 

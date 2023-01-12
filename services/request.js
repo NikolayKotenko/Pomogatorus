@@ -8,7 +8,7 @@ import Logging from '@/services/logging'
  * https://stackoverflow.com/questions/47571543/access-store-outside-of-component-vuejs
  */
 export default class Request {
-  static async request(url, params, method, formData, noToken) {
+  static async request(url, params, method, formData) {
     let options = {}
 
     if (formData) {
@@ -18,7 +18,7 @@ export default class Request {
         cache: 'default', // *default, no-cache, reload, force-cache, only-if-cached
         credentials: 'include', // include, *same-origin, omit
         headers: {
-          Authorization: 'Bearer ' + (noToken ? '' : this.getAccessTokenInCookies()),
+          Authorization: 'Bearer ' + this.getAccessTokenInCookies(),
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
         // redirect: 'follow', // manual, *follow, error
@@ -31,7 +31,7 @@ export default class Request {
         cache: 'default', // *default, no-cache, reload, force-cache, only-if-cached
         credentials: 'include', // include, *same-origin, omit
         headers: {
-          Authorization: 'Bearer ' + (noToken ? '' : this.getAccessTokenInCookies()),
+          Authorization: 'Bearer ' + this.getAccessTokenInCookies(),
           'Content-Type': 'application/json',
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
@@ -70,16 +70,16 @@ export default class Request {
       })
   }
 
-  static async get(url, params = null, noToken) {
-    return this.request(url, params, 'GET', '', noToken)
+  static async get(url, params = null) {
+    return this.request(url, params, 'GET', '')
   }
 
-  static async post(url, params, formData, noToken) {
-    return this.request(url, params, 'POST', formData, noToken)
+  static async post(url, params, formData) {
+    return this.request(url, params, 'POST', formData)
   }
 
-  static async put(url, params = null, noToken) {
-    return this.request(url, params, 'PUT', '', noToken)
+  static async put(url, params = null) {
+    return this.request(url, params, 'PUT', '')
   }
 
   static bodyFormData(paramBody) {
@@ -108,6 +108,8 @@ export default class Request {
     return list
   }
   static getAccessTokenInCookies = () => {
+    if (process.env.NODE_ENV === 'development') return '666777'
+
     // console.log('this.parseCookies()', this.parseCookies())
     const checkExist = this.parseCookies()
     return checkExist.hasOwnProperty('accessToken') ? checkExist?.accessToken : null

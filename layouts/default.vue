@@ -5,7 +5,7 @@
     <SubHeader v-if='$device.isDesktop && loadComponent' />
     <v-main id='main_content' class='main'>
       <Nuxt class="main__left_column"/>
-      <CurrentObjects class="main__right_column" v-if="! $route.path.match('search')"></CurrentObjects>
+      <CurrentObjects class="main__right_column" v-if="! listExcludedRightColumn"></CurrentObjects>
     </v-main>
     <!-- КАСКАДНЫЕ МОДАЛКИ -->
     <div
@@ -119,6 +119,15 @@ export default {
     computedBreadcrumbs() {
       if (!this.articles_breadcrumbs || !this.articles_breadcrumbs.length) return this.breadcrumbs
       return this.articles_breadcrumbs.concat(this.breadcrumbs)
+    },
+    listExcludedRightColumn(){
+      const arrPathExcluded = [
+        'search',
+        'object',
+      ];
+      return arrPathExcluded.some((path) => {
+        return this.$route.path.match(path)
+      });
     }
   },
   methods: {
@@ -181,6 +190,6 @@ body {
 }
 .v-main__wrap{
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: 1fr auto;
 }
 </style>
