@@ -1,7 +1,30 @@
 <template>
-  <div v-if='articles' class='list_container'>
-    <Article v-for='(article, index) in articles' :key='index' :article='article' />
+
+  <div>
+    <div>
+      <v-autocomplete class="search">
+        outlined
+        dense
+        hide-details
+        placeholder="Выберите агента"
+        :loading="$store.state.loadingAgents"
+        :disabled="$store.state.loadingAgents"
+        hide-no-data
+        label="Помощник назначения агента"
+        :items="$store.state.listAgents"
+        item-text="last_name"
+        item-value="id"
+        return-object
+        clearable
+        v-model="agent"
+      </v-autocomplete>
+      <v-chip-group class="tags"
+    </div>
+    <div v-if='articles' class='list_container'>
+      <Article v-for='(article, index) in articles' :key='index' :article='article' />
+    </div>
   </div>
+
 </template>
 
 <script>
