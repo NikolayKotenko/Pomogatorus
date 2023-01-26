@@ -2,30 +2,41 @@ import Request from '@/services/request'
 
 
 export default {
+  namespaced: true,
   state: {
-
+    listArticles: [],
+    loading: false,
+    debounceTimeout: null,
   },
   mutations: {
-
-    set_default_user_data(state, payload) {
-      state.defaultUserData = {}
-      state.defaultUserData = payload
+    changeStateLoading(state, boolean){
+      state.loading = boolean;
+    },
+    setListArticles(state, payload) {
+      state.listArticles = [];
+      state.listArticles = payload
     },
   },
   actions: {
+    async getArticlesBySymbols({ commit }, symbols) {
+      if (! symbols) return false;
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
 
-    async getArticlesBySymbols({ commit }) {
-      const tokensData = await Request.post(window.location.origin + '/api/auth/validate-auth')
-      commit('set_user_data', _clone(tokensData.data?.user_data, 'replace'))
-      commit('set_default_user_data', _clone(tokensData.data?.user_data, 'replace'))
-      commit('change_changedCookie', true, { root: true })
-      return tokensData
+      this.debounceTimeout = setTimeout(async () => {
+        commit('changeStateLoading', true);
+
+        const queryFilter = '?filter[name]=' + symbols;
+        const response = await Request.get(
+          this.state.BASE_URL + '/entity/articles' + queryFilter
+        );
+        commit('setListArticles', response.data)
+        commit('changeStateLoading', false);
+
+        console.log('getArticlesBySymbols - ', response)
+        return response;
+
+      }, 1000)
     },
   },
-  getters: {
-    userIsAgent(state) {
-      return Object.keys(state.userData).length ? state.userData.is_agent : false;
-    },
-
-  },
+  getters: {},
 }
