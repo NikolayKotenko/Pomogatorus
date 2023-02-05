@@ -1,6 +1,6 @@
 <template>
   <div>
-    <object-detail v-if="object" :object_data="object"></object-detail>
+    <ObjectGlobal v-if="object" :object_data="object"></ObjectGlobal>
     <footer-summary></footer-summary>
   </div>
 </template>
@@ -10,10 +10,11 @@ import Request from '../../services/request'
 import FooterSummary from "~/components/FooterSummary";
 import SocialShare from "~/components/Article/SocialShare";
 import ObjectDetail from "~/components/UserObjects/ObjectDetail";
+import ObjectGlobal from "../../components/UserObjects/ObjectGlobal";
 
 export default {
   name: '_id.vue',
-  components: { ObjectDetail, FooterSummary, SocialShare },
+  components: {ObjectGlobal, ObjectDetail, FooterSummary, SocialShare },
   data: () => ({
     object: {}
   }),
