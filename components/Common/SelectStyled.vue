@@ -1,24 +1,24 @@
 <template>
   <v-select
-    v-model="currentData"
-    :items='items'
-    :item-text='item_text'
-    :item-value='item_value'
+    v-model='currentData'
     :autofocus='isAutofocus'
     :disabled='isDisabled'
+    :item-text='itemText'
+    :item-value='itemValue'
+    :items='items'
     :loading='isLoading'
-    :placeholder='computedPlaceholder'
-    :solo='isSolo'
-    dense
-    hide-details
-    @focus='isFocused = true'
-    @focusout='isFocused = false'
     :menu-props='{
             closeOnContentClick: true,
             bottom: true,
             offsetY: true,
           }'
+    :placeholder='computedPlaceholder'
+    :solo='isSolo'
+    dense
+    hide-details
     return-object
+    @focus='isFocused = true'
+    @focusout='isFocused = false'
   >
   </v-select>
 </template>
@@ -37,13 +37,14 @@ export default {
     },
     data: {
       type: Object,
-      default: () => {}
+      default: () => {
+      }
     },
-    item_text: {
+    itemText: {
       type: String,
       default: ''
     },
-    item_value: {
+    itemValue: {
       type: String,
       default: ''
     },

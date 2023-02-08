@@ -1,35 +1,32 @@
 <template>
   <div>
-    <ObjectGlobal v-if="object" :object_data="object"></ObjectGlobal>
+    <ObjectGlobal v-if='object' :object-data='object'></ObjectGlobal>
     <footer-summary></footer-summary>
   </div>
 </template>
 
 <script>
 import Request from '../../services/request'
-import FooterSummary from "~/components/FooterSummary";
-import SocialShare from "~/components/Article/SocialShare";
-import ObjectDetail from "~/components/UserObjects/ObjectDetail";
-import ObjectGlobal from "../../components/UserObjects/ObjectGlobal";
+import FooterSummary from '~/components/FooterSummary'
+import SocialShare from '~/components/Article/SocialShare'
+import ObjectDetail from '~/components/UserObjects/ObjectDetail'
+import ObjectGlobal from '../../components/UserObjects/ObjectGlobal'
 
 export default {
   name: '_id.vue',
-  components: {ObjectGlobal, ObjectDetail, FooterSummary, SocialShare },
+  components: { ObjectGlobal, ObjectDetail, FooterSummary, SocialShare },
   data: () => ({
     object: {}
   }),
   head() {
-    return {
-    }
+    return {}
   },
   async mounted() {
     await this.getObject()
     this.$route.meta.title = this.object.address
   },
-  watch: {
-  },
-  computed: {
-  },
+  watch: {},
+  computed: {},
   methods: {
     async getObject() {
       try {
@@ -39,7 +36,7 @@ export default {
       } catch (error) {
         console.warn(error)
       }
-    },
+    }
   },
   destroyed() {
   }

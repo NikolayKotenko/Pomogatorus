@@ -56,10 +56,13 @@
           {{ detailData.address }}
         </v-card-title>
 
-        <ObjectDetail
-          :object_data='detailData'
-          @closeDetail='closeDetailObj'
+        <ObjectGlobal
+          :object-data='detailData'
         />
+        <!--        <ObjectDetail-->
+        <!--          :object_data='detailData'-->
+        <!--          @closeDetail='closeDetailObj'-->
+        <!--        />-->
       </v-card>
     </v-dialog>
   </div>
@@ -73,10 +76,11 @@ import LoginAuth from '../frontLayouts/LoginAuth'
 
 import Request from '../../services/request'
 import ObjectDetail from './ObjectDetail'
+import ObjectGlobal from './ObjectGlobal'
 
 export default {
   name: 'ListObjects',
-  components: { ObjectDetail, LoginAuth, ObjectCard },
+  components: { ObjectGlobal, ObjectDetail, LoginAuth, ObjectCard },
   data: () => ({
     newObjAddress: '',
     showDetail: false,
