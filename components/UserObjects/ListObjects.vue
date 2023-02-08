@@ -48,8 +48,9 @@
     </div>
 
     <v-dialog
+      content-class="dialogStyled"
       v-model='showDetail'
-      width='500'
+      width='1080'
     >
       <v-card>
         <v-card-title>

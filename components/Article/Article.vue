@@ -29,6 +29,20 @@
             {{ preview }}
           </h4>
         </div>
+        <div class="list_elem_wrapper__preview_content__buttons">
+          <v-btn class="list_elem_wrapper__preview_content__buttons__show_more" >
+            Читать полностью
+            <v-icon class="list_elem_wrapper__preview_content__buttons__show_more__arrow">mdi-chevron-right</v-icon>
+          </v-btn>
+          <div class="list_elem_wrapper__preview_content__buttons__social_btns">
+            <v-icon class="list_elem_wrapper__preview_content__buttons__social_btns__btn">mdi-eye</v-icon>
+            <span>212</span>
+            <v-icon class="list_elem_wrapper__preview_content__buttons__social_btns__btn">mdi-cards-heart</v-icon>
+            <span>94</span>
+          </div>
+        </div>
+
+
       </div>
     </div>
   </v-card>

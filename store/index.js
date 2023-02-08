@@ -5,6 +5,7 @@ import PdfDataModule from './modules/pdf-data'
 import ArticleModule from './modules/article'
 import PopularSelectionsModule from './modules/popular-selections'
 import UserSettings from './modules/userSettings'
+import SearchModule from './modules/search'
 
 import Request from '../services/request'
 
@@ -220,7 +221,8 @@ const createStore = () => {
       ArticleModule,
       PopularSelectionsModule,
       UserSettings,
-      PdfDataModule
+      PdfDataModule,
+      SearchModule
     },
   })
 }
