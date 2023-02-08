@@ -66,6 +66,11 @@ export default {
         canEdit: true
       },
       {
+        key: 'name',
+        value: 'Псевдоним',
+        canEdit: true
+      },
+      {
         key: 'notes',
         value: 'Заметки',
         canEdit: true
@@ -158,6 +163,11 @@ export default {
       {
         key: 'total_area',
         value: 'Общая площадь',
+        canEdit: true
+      },
+      {
+        key: 'links_to_party_services',
+        value: 'Ссылки на сторонние сервисы',
         canEdit: true
       },
       {

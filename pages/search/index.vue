@@ -69,9 +69,9 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-
-.search {
-
+@media only screen and (min-width: 924px) {
+  .list_container {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
 }
-
 </style>
