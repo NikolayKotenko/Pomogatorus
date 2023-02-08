@@ -39,8 +39,6 @@
             <span>212</span>
             <v-icon class="list_elem_wrapper__preview_content__buttons__social_btns__btn">mdi-cards-heart</v-icon>
             <span>94</span>
-            <v-icon class="list_elem_wrapper__preview_content__buttons__social_btns__btn">mdi-home</v-icon>
-            <span>14</span>
           </div>
         </div>
 

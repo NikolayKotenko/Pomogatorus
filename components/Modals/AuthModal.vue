@@ -1,7 +1,7 @@
 <template>
   <v-dialog
     v-model='showModal'
-    width='500'
+    width='1080'
   >
     <v-card>
       <v-card-title class='d-flex justify-end'>

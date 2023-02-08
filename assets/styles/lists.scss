@@ -215,7 +215,6 @@ $orangeButton: #F79256;
       font-weight: 400;
       letter-spacing: 0 !important;
 
-
       &__arrow {
         font-size: 18px !important;
       }
@@ -229,6 +228,11 @@ $orangeButton: #F79256;
       &__btn {
         padding-left: 0.9em;
       }
+
+      &:active {
+        background: #FFFFFF !important;
+      }
+
     }
 
 
