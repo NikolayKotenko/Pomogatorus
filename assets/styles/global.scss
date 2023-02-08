@@ -3,8 +3,8 @@ input:focus::placeholder {
 }
 
 .v-dialog {
-  max-width: 600px !important;
-  border-radius: 15px;
+  max-width: 1080px !important;
+  border-radius: 5px;
 }
 
 .main_img {
@@ -29,3 +29,5 @@ $main-color: red;
   display: grid;
   grid-row-gap: 10px;
 }
+
+

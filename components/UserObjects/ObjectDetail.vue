@@ -27,8 +27,24 @@
       </div>
     </div>
     <div class='detail_obj_footer'>
-      <v-btn color='red lighten-1' text @click='closeDetail'> Закрыть</v-btn>
-      <v-btn :loading='isUpdating' color='green lighten-1' outlined @click='saveData'> Сохранить</v-btn>
+      <ButtonStyled
+        local-class="style_save"
+        local-text="Сохранить изменения"
+        @click-button="saveData"
+      >
+      </ButtonStyled>
+      <ButtonStyled
+        local-class="style_download"
+        local-text="Скачать PDF"
+        @click-button=""
+      >
+      </ButtonStyled>
+      <ButtonStyled
+        local-class="style_close"
+        local-text="Закрыть"
+        @click-button='closeDetail'
+      >
+      </ButtonStyled>
     </div>
   </div>
 </template>
@@ -36,10 +52,11 @@
 <script>
 import Request from '../../services/request'
 import InputStyled from '../Common/InputStyled'
+import ButtonStyled from "../Common/ButtonStyled.vue";
 
 export default {
   name: 'ObjectDetail',
-  components: { InputStyled },
+  components: { InputStyled, ButtonStyled },
   props: ['object_data'],
   data: () => ({
     paramsDetail: [
@@ -257,7 +274,7 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 1080px) {
   .detail_object_wrapper {
     row-gap: 25px !important;
     justify-content: center !important;
@@ -305,12 +322,15 @@ export default {
   bottom: 0;
   background: #ffffff;
   width: 100%;
-  margin-bottom: 10px;
-  padding: 10px;
+  padding: 1em 0 2em 0;
+
 }
 
 ::v-deep .v-input__control {
   min-height: 30px !important;
   font-size: 14px !important;
 }
+
+
+
 </style>
