@@ -1,25 +1,18 @@
 <template>
   <div>
     <div class="wrapper_search">
-      <v-autocomplete class="search"
-        outlined
-        dense
-        hide-details
-        placeholder="Выберите агента"
-        :loading="$store.state.SearchModule.loading"
-        :disabled="$store.state.SearchModule.loading"
-        hide-no-data
-        label="Помощник назначения агента"
-        :items="$store.state.SearchModule.listArticles"
-        item-text="name"
-        item-value="id"
-        return-object
-        clearable
-        v-model="selectedArticle"
-        :search-input.sync="searchString"
-        @update:search-input="localGetListArticles"
+      <SearchStyled
+        :is-placeholder="'Поиск тегов, статей'"
+        :is-loading="$store.state.SearchModule.loading"
+        :is-disabled="$store.state.SearchModule.loading"
+        :is-items="$store.state.SearchModule.listArticles"
+        :is-item-text="'name'"
+        :is-item-value="'id'"
+        :is-selected="selectedArticle"
+        :is-search-input-sync="searchString"
+        @update-search-input="localGetListArticles"
       >
-      </v-autocomplete>
+      </SearchStyled>
       <v-chip-group class="tags"></v-chip-group>
     </div>
     <div v-if='articles' class='list_container'>
@@ -32,10 +25,11 @@
 <script>
 import Article from '../../components/Article/Article'
 import Request from '../../services/request'
+import SearchStyled from "../../components/Common/SearchStyled.vue";
 
 export default {
   name: 'index.vue',
-  components: { Article },
+  components: { Article , SearchStyled},
   data: () => ({
     selectedArticle: null,
     searchString: '',
@@ -70,8 +64,8 @@ export default {
 
 <style lang='scss' scoped>
 
-.search {
-
+.wrapper_search {
+  margin: 0;
 }
 
 </style>
