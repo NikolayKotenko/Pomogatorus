@@ -15,9 +15,10 @@
         :item-value="isItemValue"
         :return-object="isReturnObject"
         :clearable="isClearable"
-        v-model="isSelected"
-        :search-input.sync="isSearchInputSync"
-        @update:search-input="$emit('update-search-input')"
+        :search-input.sync="localSearchInputSync"
+        v-model="localSelected"
+        @update:search-input="$emit('update-search-input', localSearchInputSync)"
+        @change="$emit('change-search', localSelected)"
       >
         <template v-slot:append>
           <v-icon
@@ -32,6 +33,10 @@
 
 export default {
   name: 'SearchStyled',
+  data: () => ({
+    localSearchInputSync: '',
+    localSelected: null
+  }),
   props: {
     isClass: {
       type: String,
@@ -85,15 +90,8 @@ export default {
       type: Boolean,
       default: true
     },
-    isSelected: {
-      type: Object,
-      default: () => {}
-    },
-    isSearchInputSync: {
-      type: String,
-      default: ''
-    },
-  }
+  },
+  computed: {}
 }
 </script>
 

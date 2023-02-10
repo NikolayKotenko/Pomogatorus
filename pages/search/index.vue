@@ -8,9 +8,8 @@
         :is-items="$store.state.SearchModule.listArticles"
         :is-item-text="'name'"
         :is-item-value="'id'"
-        :is-selected="selectedArticle"
-        :is-search-input-sync="searchString"
         @update-search-input="localGetListArticles"
+        @change-search="setSelected"
       >
       </SearchStyled>
       <v-chip-group class="tags"></v-chip-group>
@@ -32,7 +31,6 @@ export default {
   components: { Article , SearchStyled},
   data: () => ({
     selectedArticle: null,
-    searchString: '',
   }),
   head: {
     title: 'Поиск',
@@ -55,8 +53,11 @@ export default {
   },
   created() {},
   methods: {
-    async localGetListArticles(){
-      await this.$store.dispatch('SearchModule/getArticlesBySymbols', this.searchString)
+    setSelected(selectedObj){
+      this.selectedArticle = selectedObj;
+    },
+    async localGetListArticles(searchString){
+      await this.$store.dispatch('SearchModule/getArticlesBySymbols', searchString)
     }
   }
 }
