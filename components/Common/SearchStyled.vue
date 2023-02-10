@@ -1,6 +1,7 @@
 <template>
   <div>
       <v-autocomplete
+        class="styleSearch"
         :class="isClass"
         :outlined="isOutlined"
         :dense="isDense"
@@ -18,6 +19,11 @@
         :search-input.sync="isSearchInputSync"
         @update:search-input="$emit('update-search-input')"
       >
+        <template v-slot:append>
+          <v-icon
+
+          >mdi-magnify</v-icon>
+        </template>
       </v-autocomplete>
   </div>
 </template>
@@ -92,7 +98,15 @@ export default {
 </script>
 
 <style lang='scss' scoped>
+</style>
 
-
-
+<style lang="scss">
+.styleSearch {
+  font-size: 2.5em !important;
+  .v-select__slot {
+    input {
+      margin: 0 !important;
+    }
+  }
+}
 </style>
