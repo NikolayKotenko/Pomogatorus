@@ -48,22 +48,14 @@
     </div>
 
     <v-dialog
-      content-class="dialogStyled"
       v-model='showDetail'
+      content-class='dialogStyled'
       width='1080'
     >
       <v-card>
-        <v-card-title>
-          {{ detailData.address }}
-        </v-card-title>
-
         <ObjectGlobal
           :object-data='detailData'
         />
-        <!--        <ObjectDetail-->
-        <!--          :object_data='detailData'-->
-        <!--          @closeDetail='closeDetailObj'-->
-        <!--        />-->
       </v-card>
     </v-dialog>
   </div>

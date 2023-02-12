@@ -6,19 +6,23 @@
           <span>Объект:</span>
         </div>
 
-        <SelectStyled
-          v-model='$store.state.currentObject'
-          :item-text="'address'"
-          :item-value="'id'"
-          :items='$store.state.AuthModule.userData.objects'
-          :placeholder="'Выберите объект'"
-          title='Выберите объект'
-          @update-input='callback'
-        />
+        <div class='object-wrapper-top__selector__select'>
+          <SelectObjectStyled
+            :custom-style='true'
+            :data='objectData'
+            :is-solo='true'
+            :item-text="'address'"
+            :item-value="'id'"
+            :items='$store.state.AuthModule.userData.objects'
+            :placeholder="'Выберите объект'"
+            title='Выберите объект'
+            @update-input='callback'
+          />
+        </div>
       </div>
 
       <div class='object-wrapper-top__map'>
-
+        <SelectGeo :data='objectData' />
       </div>
     </div>
 
@@ -63,11 +67,12 @@
 
 <script>
 import TabsCustom from '../Common/TabsCustom'
-import SelectStyled from '../Common/SelectStyled'
+import SelectObjectStyled from '../Common/SelectObjectStyled'
+import SelectGeo from '../Common/SelectGeo'
 
 export default {
   name: 'ObjectGlobal',
-  components: { SelectStyled, TabsCustom },
+  components: { SelectGeo, SelectObjectStyled, TabsCustom },
   props: {
     objectData: {
       type: Object,
@@ -86,7 +91,7 @@ export default {
 .object-wrapper {
   display: flex;
   flex-direction: column;
-  padding: 15px;
+  padding: 40px;
 
   &-top {
     display: flex;
@@ -94,13 +99,15 @@ export default {
 
     &__selector {
       display: flex;
-      column-gap: 2rem;
+      column-gap: 1rem;
       align-items: center;
       position: relative;
 
       &__title {
-        //position: absolute;
-        //left: 0;
+      }
+
+      &__select {
+        max-width: 220px;
       }
     }
 
