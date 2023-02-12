@@ -1,29 +1,26 @@
 <template>
   <div>
     <div class="wrapper_search">
-      <v-autocomplete class="search"
-        outlined
-        dense
-        hide-details
-        placeholder="Выберите агента"
-        :loading="$store.state.SearchModule.loading"
-        :disabled="$store.state.SearchModule.loading"
-        hide-no-data
-        label="Помощник назначения агента"
-        :items="$store.state.SearchModule.listArticles"
-        item-text="name"
-        item-value="id"
-        return-object
-        clearable
-        v-model="selectedArticle"
-        :search-input.sync="searchString"
-        @update:search-input="localGetListArticles"
+      <SearchStyled
+        :is-placeholder="'Поиск тегов, статей'"
+        :is-loading="$store.state.SearchModule.loading"
+        :is-disabled="$store.state.SearchModule.loading"
+        :is-items="$store.state.SearchModule.listArticles"
+        :is-item-text="'name'"
+        :is-item-value="'id'"
+        :is-hide-selected="true"
+        @update-search-input="localGetListArticles"
+        @change-search="setSelected"
+        @click-clear="$store.dispatch('SearchModule/getListBasedArticles')"
       >
-      </v-autocomplete>
-      <v-chip-group class="tags"></v-chip-group>
+      </SearchStyled>
+      <ChipStyled
+        local-text="Котельная"
+      >
+      </ChipStyled>
     </div>
-    <div v-if='articles' class='list_container'>
-      <Article v-for='(article, index) in articles' :key='index' :article='article' />
+    <div v-if='$store.state.SearchModule.listArticles.length' class='list_container'>
+      <Article v-for='(article, index) in $store.state.SearchModule.listArticles' :key='index' :article='article' />
     </div>
   </div>
 
@@ -31,47 +28,42 @@
 
 <script>
 import Article from '../../components/Article/Article'
-import Request from '../../services/request'
+import SearchStyled from "../../components/Common/SearchStyled.vue";
+import ChipStyled from "../../components/Common/ChipStyled.vue";
 
 export default {
   name: 'index.vue',
-  components: { Article },
+  components: {ChipStyled, Article , SearchStyled,},
   data: () => ({
     selectedArticle: null,
-    searchString: '',
   }),
   head: {
     title: 'Поиск',
     meta: []
   },
-  async asyncData({ store, params }) {
-    try {
-      const query = {
-        'filter[activity]': true
-      }
-      const result = await Request.get(`${store.state.BASE_URL}/entity/articles`, query, true)
-      const articles = result.data
-      return { articles }
-    } catch (error) {
-      console.warn(error)
-    }
-  },
-  mounted() {
 
+  async mounted() {
+    await this.$store.dispatch('SearchModule/getListBasedArticles')
   },
+
   created() {},
   methods: {
-    async localGetListArticles(){
-      await this.$store.dispatch('SearchModule/getArticlesBySymbols', this.searchString)
+    setSelected(selectedObj){
+      this.selectedArticle = selectedObj;
+    },
+    async localGetListArticles(searchString){
+      await this.$store.dispatch('SearchModule/getArticlesBySymbols', searchString)
     }
   }
 }
 </script>
 
 <style lang='scss' scoped>
-@media only screen and (min-width: 924px) {
-  .list_container {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
+
+.wrapper_search {
+  margin: 0 !important;
+  padding: 0 !important;
 }
+
+
 </style>

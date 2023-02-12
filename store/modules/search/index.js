@@ -37,6 +37,18 @@ export default {
 
       }, 1000)
     },
+    async getListBasedArticles({ commit }){
+      commit('changeStateLoading', true);
+
+      const queryFilter = '?filter[activity]=true';
+      const response = await Request.get(
+        this.state.BASE_URL + '/entity/articles' + queryFilter
+      );
+      commit('setListArticles', response.data)
+      commit('changeStateLoading', false);
+
+      return response;
+    }
   },
   getters: {},
 }

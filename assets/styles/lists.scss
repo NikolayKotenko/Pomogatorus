@@ -198,7 +198,7 @@ $orangeButton: #F79256;
 .list_elem_wrapper__preview_content__buttons {
   display: flex;
   justify-content: space-between;
-  align-items: end;
+  align-items: flex-end;
 
     &__show_more {
       align-items: center;
@@ -222,7 +222,7 @@ $orangeButton: #F79256;
 
     &__social_btns {
       font-size: 0.9em;
-      align-items: end;
+      align-items: flex-end;
       color: #857885;
 
       &__btn {
