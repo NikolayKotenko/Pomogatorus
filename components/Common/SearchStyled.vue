@@ -6,6 +6,7 @@
         :outlined="isOutlined"
         :dense="isDense"
         :hide-details="isHideDetails"
+        :hide-selected="isHideSelected"
         :placeholder="isPlaceholder"
         :loading="isLoading"
         :disabled="isDisabled"
@@ -15,15 +16,14 @@
         :item-value="isItemValue"
         :return-object="isReturnObject"
         :clearable="isClearable"
+        @click:clear="$emit('click-clear')"
         :search-input.sync="localSearchInputSync"
         v-model="localSelected"
         @update:search-input="$emit('update-search-input', localSearchInputSync)"
         @change="$emit('change-search', localSelected)"
       >
         <template v-slot:append>
-          <v-icon
-
-          >mdi-magnify</v-icon>
+          <v-icon class="selectIcon"></v-icon>
         </template>
       </v-autocomplete>
   </div>
@@ -70,6 +70,10 @@ export default {
       type: Boolean,
       default: false
     },
+    isHideSelected: {
+     type: Boolean,
+     default: false
+    },
     isItems: {
       type: Array,
       default: () => []
@@ -99,12 +103,35 @@ export default {
 </style>
 
 <style lang="scss">
+
+.v-menu__content { display:none !important; }
+
 .styleSearch {
-  font-size: 2.5em !important;
+  font-size: 1.8em !important;
+  border-radius: 5px;
+  min-width: 1144px;
+  max-height: 60px;
   .v-select__slot {
+    color: #37392E !important;
+
     input {
-      margin: 0 !important;
+      margin: 10px 0!important;
+      padding: 15px 0;
+
+
     }
   }
+
+  .selectIcon {
+    color: #857885 !important;
+    font-size: 1.2em !important;
+    cursor: pointer;
+    margin-top: 5px;
+
+  }
+.mdi-close {
+  font-size: 1.2em;
+  margin-top: 20px;
+}
 }
 </style>

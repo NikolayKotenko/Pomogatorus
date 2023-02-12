@@ -8,14 +8,19 @@
         :is-items="$store.state.SearchModule.listArticles"
         :is-item-text="'name'"
         :is-item-value="'id'"
+        :is-hide-selected="true"
         @update-search-input="localGetListArticles"
         @change-search="setSelected"
+        @click-clear="$store.dispatch('SearchModule/getListBasedArticles')"
       >
       </SearchStyled>
-      <v-chip-group class="tags"></v-chip-group>
+      <ChipStyled
+        local-text="Котельная"
+      >
+      </ChipStyled>
     </div>
-    <div v-if='articles' class='list_container'>
-      <Article v-for='(article, index) in articles' :key='index' :article='article' />
+    <div v-if='$store.state.SearchModule.listArticles.length' class='list_container'>
+      <Article v-for='(article, index) in $store.state.SearchModule.listArticles' :key='index' :article='article' />
     </div>
   </div>
 
@@ -23,12 +28,12 @@
 
 <script>
 import Article from '../../components/Article/Article'
-import Request from '../../services/request'
 import SearchStyled from "../../components/Common/SearchStyled.vue";
+import ChipStyled from "../../components/Common/ChipStyled.vue";
 
 export default {
   name: 'index.vue',
-  components: { Article , SearchStyled},
+  components: {ChipStyled, Article , SearchStyled,},
   data: () => ({
     selectedArticle: null,
   }),
@@ -36,21 +41,11 @@ export default {
     title: 'Поиск',
     meta: []
   },
-  async asyncData({ store, params }) {
-    try {
-      const query = {
-        'filter[activity]': true
-      }
-      const result = await Request.get(`${store.state.BASE_URL}/entity/articles`, query, true)
-      const articles = result.data
-      return { articles }
-    } catch (error) {
-      console.warn(error)
-    }
-  },
-  mounted() {
 
+  async mounted() {
+    await this.$store.dispatch('SearchModule/getListBasedArticles')
   },
+
   created() {},
   methods: {
     setSelected(selectedObj){
