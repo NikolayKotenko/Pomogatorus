@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container>
     <div class="wrapper_search">
       <SearchStyled
         :is-placeholder="'Поиск тегов, статей'"
@@ -22,7 +22,7 @@
     <div v-if='$store.state.SearchModule.listArticles.length' class='list_container'>
       <Article v-for='(article, index) in $store.state.SearchModule.listArticles' :key='index' :article='article' />
     </div>
-  </div>
+  </v-container>
 
 </template>
 

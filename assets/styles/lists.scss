@@ -1,9 +1,13 @@
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 1268px) {
+  .main__left_column {
+    max-width: 900px;
+  }
   .list_container {
     display: flex !important;
-    flex-direction: column !important;
+    flex-wrap: wrap !important;
     row-gap: 35px !important;
     font-size: 14px !important;
+    width: fit-content;
   }
   .list_elem_wrapper {
     &__preview_content {
@@ -40,11 +44,9 @@
 
 .list_container {
   display: grid;
-  //grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   column-gap: 1.5em;
   row-gap: 1.5em;
-
-
 }
 
 .list_elem_wrapper {

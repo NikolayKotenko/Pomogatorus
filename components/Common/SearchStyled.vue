@@ -109,7 +109,7 @@ export default {
 .styleSearch {
   font-size: 1.8em !important;
   border-radius: 5px;
-  min-width: 1144px;
+  //min-width: 1144px;
   max-height: 60px;
   .v-select__slot {
     color: #37392E !important;
