@@ -1,13 +1,17 @@
 <template>
   <v-text-field
     v-model='currentData'
+    :append-icon='appendIcon'
     :autofocus='isAutofocus'
     :disabled='isDisabled'
     :loading='isLoading'
     :placeholder='computedPlaceholder'
+    :prepend-inner-icon='prependIconInner'
+    :readonly='isReadonly'
     :solo='isSolo'
     dense
     hide-details
+    @click='onClick'
     @focus='isFocused = true'
     @focusout='isFocused = false'
   >
@@ -41,6 +45,18 @@ export default {
     isAutofocus: {
       type: Boolean,
       default: false
+    },
+    isReadonly: {
+      type: Boolean,
+      default: false
+    },
+    appendIcon: {
+      type: String,
+      default: ''
+    },
+    prependIconInner: {
+      type: String,
+      default: ''
     }
   },
   data: () => ({
@@ -67,6 +83,11 @@ export default {
         }
         this.$emit('update-input', value)
       }
+    }
+  },
+  methods: {
+    onClick() {
+      this.$emit('on-click')
     }
   }
 }

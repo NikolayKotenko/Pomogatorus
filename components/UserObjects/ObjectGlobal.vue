@@ -95,7 +95,8 @@ export default {
 
   &-top {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
+    column-gap: 10rem;
 
     &__selector {
       display: flex;
@@ -112,7 +113,7 @@ export default {
     }
 
     &__map {
-
+      width: 100%;
     }
   }
 
