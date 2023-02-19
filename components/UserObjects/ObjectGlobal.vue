@@ -9,7 +9,7 @@
         <div class='object-wrapper-top__selector__select'>
           <SelectObjectStyled
             :custom-style='true'
-            :data='objectData'
+            :data='object'
             :is-solo='true'
             :item-text="'address'"
             :item-value="'id'"
@@ -22,7 +22,7 @@
       </div>
 
       <div class='object-wrapper-top__map'>
-        <SelectGeo :data='objectData' />
+        <SelectGeo :data='object' @set-new-address='setAddressMap' />
       </div>
     </div>
 
@@ -38,7 +38,7 @@
 
     <div class='object-wrapper-tabs'>
       <TabsCustom
-        :data-object='objectData'
+        :data-object='object'
         :tab-content='[]'
         :tabs='[]'
       />
@@ -79,9 +79,21 @@ export default {
       required: true
     }
   },
+  data: () => ({
+    object: {}
+  }),
+  mounted() {
+    this.getObjectFromProp()
+  },
   methods: {
+    getObjectFromProp() {
+      this.object = this.objectData
+    },
     callback(value) {
       console.log(value)
+    },
+    setAddressMap(data) {
+      this.object.address = data.address
     }
   }
 }
@@ -94,8 +106,8 @@ export default {
   padding: 40px;
 
   &-top {
-    display: flex;
-    justify-content: flex-start;
+    display: grid;
+    grid-template-columns: 30% 1fr;
     column-gap: 10rem;
 
     &__selector {

@@ -62,7 +62,7 @@ export default {
   props: {
     placeholder: {
       type: String,
-      default: ''
+      default: 'Выберите объект'
     },
     isSolo: {
       type: Boolean,
@@ -119,19 +119,19 @@ export default {
     },
     currentData: {
       get() {
-        return this.internalData
+        return this.data
       },
       set(value) {
-        this.internalData = value
+        // this.internalData = value
         this.$emit('update-input', value)
       }
     }
   },
   methods: {
     getData() {
-      if (this.data) {
-        this.internalData = this.data
-      }
+      // if (this.data) {
+      //   this.internalData = this.data
+      // }
     },
     stopInput(e) {
       this.$nextTick(() => {
