@@ -90,7 +90,7 @@ export default {
       return !!Object.keys(this.object).length
     },
     computedText() {
-      return this.object?.name ? 'name' : 'address'
+      return !!this.object?.name ? 'name' : 'address'
     }
   },
   methods: {
@@ -146,12 +146,12 @@ export default {
 
     &__img {
       width: 400px;
-      height: 300px;
+      height: 260px;
     }
 
     &__docs {
       width: 400px;
-      height: 300px;
+      height: 260px;
     }
   }
 
