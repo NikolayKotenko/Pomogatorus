@@ -48,18 +48,13 @@
     </div>
 
     <v-dialog
-      content-class="dialogStyled"
       v-model='showDetail'
+      content-class='dialogStyled'
       width='1080'
     >
       <v-card>
-        <v-card-title>
-          {{ detailData.address }}
-        </v-card-title>
-
-        <ObjectDetail
-          :object_data='detailData'
-          @closeDetail='closeDetailObj'
+        <ObjectGlobal
+          :object-data='detailData'
         />
       </v-card>
     </v-dialog>
@@ -74,10 +69,11 @@ import LoginAuth from '../frontLayouts/LoginAuth'
 
 import Request from '../../services/request'
 import ObjectDetail from './ObjectDetail'
+import ObjectGlobal from './ObjectGlobal'
 
 export default {
   name: 'ListObjects',
-  components: { ObjectDetail, LoginAuth, ObjectCard },
+  components: { ObjectGlobal, ObjectDetail, LoginAuth, ObjectCard },
   data: () => ({
     newObjAddress: '',
     showDetail: false,

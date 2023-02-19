@@ -12,7 +12,7 @@ input:focus::placeholder {
 }
 
 .v-menu__content {
-  border-radius: 15px !important;
+  border-radius: 5px !important;
 }
 
 .universal_interface {
@@ -25,7 +25,7 @@ input:focus::placeholder {
 
 $main-color: red;
 
-%blockGavna{
+%blockGavna {
   display: grid;
   grid-row-gap: 10px;
 }

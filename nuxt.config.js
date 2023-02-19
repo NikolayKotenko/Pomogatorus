@@ -1,5 +1,8 @@
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
+  publicRuntimeConfig: {
+    myPublicVariable: process.env.VUE_APP_YA_KEY,
+  },
   head: {
     // titleTemplate: '%s - pomogatorus-service',
     title: 'Помогаторус',
@@ -23,7 +26,8 @@ export default {
     '~/plugins/jsonld',
     '~/plugins/v-mask.js',
     '~/plugins/vuelidate.js',
-    { src: '@/plugins/vue-html2pdf', mode: 'client' }
+    { src: '~/plugins/ymapPlugin.js', mode: 'client' },
+    { src: '@/plugins/vue-html2pdf', mode: 'client' },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -43,7 +47,7 @@ export default {
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
     ['cookie-universal-nuxt', { alias: 'cookiz' }],
-    'vue-social-sharing/nuxt'
+    'vue-social-sharing/nuxt',
   ],
   serverMiddleware: ['~/api/index.js'],
 
