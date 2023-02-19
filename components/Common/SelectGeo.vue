@@ -31,22 +31,23 @@
               <ymap-marker
                 :balloon-template='balloonTemplate'
                 :coords='coords'
-                hint-content='some hint'
+                hint-content='Выбранный адрес'
                 marker-id='123'
                 marker-type='placemark'
               />
             </yandex-map>
           </template>
         </v-card-text>
-        <v-card-actions class='d-flex justify-center'>
-          <v-btn
-            color='primary'
-            text
-            @click='closeModal'
-          >
-            Закрыть
-          </v-btn>
-        </v-card-actions>
+        <!--  TODO: Нужна ли кнопка снизу?      -->
+        <!--        <v-card-actions class='d-flex justify-center'>-->
+        <!--          <v-btn-->
+        <!--            color='primary'-->
+        <!--            text-->
+        <!--            @click='closeModal'-->
+        <!--          >-->
+        <!--            Закрыть-->
+        <!--          </v-btn>-->
+        <!--        </v-card-actions>-->
       </v-card>
     </v-dialog>
   </div>
@@ -64,14 +65,19 @@ export default {
     data: {
       type: Object,
       required: true
+    },
+    outerCoords: {
+      type: Array,
+      default: () => ([55.753215, 37.622504])
     }
   },
   data() {
     return {
       isOpenMap: false,
+      drawMap: true,
 
       map: {},
-      coords: [55.753215, 37.622504],
+      coords: [],
       zoom: 10,
       controls: ['zoomControl', 'geolocationControl'],
       behaviors: ['drag', 'scrollZoom'],
@@ -86,12 +92,16 @@ export default {
           float: 'right'
         }
       },
-      drawMap: true,
-      field: null,
-      MyGeoObjectCollection: [],
       suggestInstance: null,
 
       address: ''
+    }
+  },
+  mounted() {
+    this.coords = this.outerCoords
+
+    if (this.data?.address) {
+      this.address = this.data.address
     }
   },
   computed: {
@@ -126,8 +136,6 @@ export default {
     onMapInit(map) {
       this.map = map
       this.searchControl()
-
-      console.log('initiated')
     },
 
     setAddress() {
@@ -147,8 +155,16 @@ export default {
         this.coords.push(resCoords[0])
         this.map.setCenter(this.coords, 18, { duration: 300 })
 
+        /* Если после клика менять значение в инпуте, то наш suggest-list не свернется */
+        // const searchInput = document.querySelector('#map_search')
+        // if (searchInput) {
+        //   searchInput.value = query
+        // }
+
         const suggestList = document.querySelector('#suggest-view')
-        suggestList.classList.add('hide-suggest')
+        if (suggestList) {
+          suggestList.classList.add('hide-suggest')
+        }
       })
     },
     async getGeoCodeByCoords() {
@@ -197,6 +213,11 @@ export default {
           })
 
           self.suggestInstance.events.add('select', this.searchCallback)
+
+          /* Если при инициализации в объекте уже записан адрес, то отрисуем его в инпуте */
+          if (self.address) {
+            input.value = self.address
+          }
         },
         clear: function() {
           const icon = document.querySelector('#map_icon')
@@ -213,6 +234,7 @@ export default {
 
           let input = document.getElementById('map_search')
           ctrl.search(input.value).then(function(value) {
+            // For debug
             // console.log(value.geoObjects.get(0).geometry.getCoordinates())
 
             self.coords = value.geoObjects.get(0).geometry.getCoordinates()
@@ -266,126 +288,4 @@ export default {
 </script>
 
 <style lang='scss'>
-.geo-select-wrap {
-  max-width: 300px;
-}
-
-.map-container {
-  width: 100%;
-  height: 100%;
-
-  .ymap-container {
-    width: 100%;
-    height: 600px;
-  }
-}
-
-.title-address {
-  font-family: 'Roboto', sans-serif;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 14px;
-  color: #37392E;
-}
-
-.name-address {
-  font-family: 'Roboto', sans-serif;
-  font-style: normal;
-  font-weight: 700;
-  font-size: 14px;
-  color: #37392E;
-  margin-bottom: 10px;
-}
-
-.button-address {
-  background: #F79256;
-  border: 1px solid #F79256;
-  border-radius: 5px;
-  padding: 6px;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-width: 130px;
-  color: white;
-}
-
-#form {
-  min-width: 325px;
-  height: 25px;
-  position: absolute;
-  box-shadow: 0 4px 4px rgb(0 0 0 / 25%);
-  border-radius: 5px;
-  padding: 10px 15px;
-  background: white;
-  display: flex;
-  align-items: center;
-
-  .map_wrapper {
-    display: flex;
-    align-items: center;
-    width: 100%;
-
-    #map_search {
-      width: 100%;
-      flex: 1;
-
-      &:focus {
-        outline: none;
-      }
-    }
-
-    #map_icon {
-      width: 24px;
-      height: 24px;
-      margin-left: 10px;
-    }
-  }
-}
-
-.suggest-view {
-  display: flex;
-  flex-direction: column;
-  background: #FFFFFF;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 5px;
-  margin-top: 20px;
-  position: absolute;
-  left: -15px;
-  list-style-type: none;
-  min-width: 355px;
-  padding-left: unset !important;
-}
-
-.suggest-item {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-  padding: 10px 15px;
-  font-size: 16px;
-  color: #37392E;
-  cursor: pointer;
-  word-break: normal;
-  white-space: normal;
-  line-height: 1.2rem;
-
-  &:hover {
-    background: darken(#FFFFFF, 10%);
-  }
-}
-
-.hide-suggest {
-  display: none;
-}
-
-// Если изменится версия yMap, то как тогда убирать дефолтную ширину?
-.ymaps-2-1-79-searchbox__normal-layout {
-  width: unset !important;
-}
-
-// Какая-то хрень сбоку мешается
-.ymaps-2-1-79-islets_serp-popup {
-  display: none !important;
-}
 </style>

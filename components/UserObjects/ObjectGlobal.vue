@@ -11,7 +11,7 @@
             :custom-style='true'
             :data='object'
             :is-solo='true'
-            :item-text="'address'"
+            :item-text='computedText'
             :item-value="'id'"
             :items='$store.state.AuthModule.userData.objects'
             :placeholder="'Выберите объект'"
@@ -22,7 +22,7 @@
       </div>
 
       <div class='object-wrapper-top__map'>
-        <SelectGeo :data='object' @set-new-address='setAddressMap' />
+        <SelectGeo v-if='notEmptyObject' :data='object' @set-new-address='setAddressMap' />
       </div>
     </div>
 
@@ -85,6 +85,14 @@ export default {
   mounted() {
     this.getObjectFromProp()
   },
+  computed: {
+    notEmptyObject() {
+      return !!Object.keys(this.object).length
+    },
+    computedText() {
+      return this.object?.name ? 'name' : 'address'
+    }
+  },
   methods: {
     getObjectFromProp() {
       this.object = this.objectData
@@ -94,6 +102,8 @@ export default {
     },
     setAddressMap(data) {
       this.object.address = data.address
+      this.object.lat = data.coords[0]
+      this.object.long = data.coords[1]
     }
   }
 }
