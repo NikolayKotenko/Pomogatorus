@@ -1,7 +1,7 @@
 <template>
  <div class="vertical_menu">
    <div class="vertical_menu__element">
-     <v-tooltip>
+     <v-tooltip left>
        <template v-slot:activator='{ on, attrs }'>
          <v-btn
            :href='$store.getters.menuItems[0].path'
@@ -14,7 +14,7 @@
              v-if="$store.getters.menuItems[0].visible"
              large
            >
-             {{$store.getters.menuItems[0].icon}}
+             mdi-magnify
            </v-icon>
          </v-btn>
        </template>
@@ -22,7 +22,7 @@
      </v-tooltip>
    </div>
    <div class="vertical_menu__element">
-     <v-tooltip>
+     <v-tooltip left>
        <template v-slot:activator='{ on, attrs }'>
          <v-btn
            :href='$store.getters.menuItems[2].path'
@@ -44,7 +44,7 @@
      </v-tooltip>
    </div>
    <div class="vertical_menu__element">
-     <v-tooltip>
+     <v-tooltip left>
        <template v-slot:activator='{ on, attrs }'>
          <v-btn
            :href='$store.getters.menuItems[3].path'
@@ -67,28 +67,15 @@
    </div>
    <v-divider class="vertical_menu__divider"></v-divider>
    <div class="vertical_menu__element">
-     <v-tooltip>
-       <template v-slot:activator='{ on, attrs }'>
-         <v-icon
-           class="vertical_menu__element__icon"
-           v-bind='attrs'
-           v-on='on'
-           large
-         >
-           mdi-magnify
-         </v-icon>
-       </template>
-       <span>{{ $store.getters.menuItems[0].title }}</span>
-     </v-tooltip>
-   </div>
-   <div class="vertical_menu__element">
-     <v-tooltip>
+     <v-tooltip left>
        <template v-slot:activator='{ on, attrs }' >
          <v-icon
            class="vertical_menu__element__icon"
            v-bind='attrs'
            v-on='on'
            large
+           @click="$store.state.listModal[0].isOpen = !$store.state.listModal[0].isOpen"
+
          >
            mdi-account-outline
          </v-icon>
@@ -101,7 +88,12 @@
 
 <script>
 export default {
-  name: "VerticalMenu"
+  name: "VerticalMenu",
+  data() {
+    return {
+      show: true
+    }
+  }
 }
 </script>
 
@@ -121,7 +113,7 @@ export default {
       cursor: pointer;
 
         &__icon {
-          color: #37392E !important;
+          color: #857885 !important;
 
           &:hover {
             color: #95D7AE !important;

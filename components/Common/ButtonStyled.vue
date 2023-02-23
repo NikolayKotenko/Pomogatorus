@@ -52,8 +52,8 @@ export default {
 
 }
 
-.style_save {
-  background: #FFFFFF !important;
+.style_button {
+  background-color: #ffffff !important;
   color: #000000;
   border: 1px solid rgba(149, 215, 174, 1);
 
@@ -63,15 +63,12 @@ export default {
   }
 }
 
-.style_download {
-  margin-right: 30%;
-  margin-left: 5%;
-}
 
 .style_close {
   background: #FFFFFF !important;
   color: #000000;
   border: 1px solid rgba(247, 146, 86, 1);
+  margin-left: auto;
 
   &:hover {
     background: #F79256 !important;

@@ -9,6 +9,9 @@
           {{article.updated_at}}
         </h4>
       </div>
+      <div class="list_elem_wrapper__tag_container">
+        <a v-for="(tag, key) in article._all_tags" :href="'/podborki/'+tag.code">#{{tag.name}}</a>
+      </div>
       <div class='list_elem_wrapper__img_container'>
         <v-img
           alt=''
@@ -32,6 +35,7 @@
         <div class="list_elem_wrapper__preview_content__buttons">
           <ButtonStyled
             local-text="Читать полностью"
+            local-class="style_button"
           >
           </ButtonStyled>
           <div class="list_elem_wrapper__preview_content__buttons__social_btns">
