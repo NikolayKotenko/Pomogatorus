@@ -31,13 +31,21 @@
 
   .list_elem_wrapper {
     display: grid;
-    height: 543px;
+    height: 535px;
     width: 560px;
     max-height: 543px;
     max-width: 560px;
     align-content: baseline;
     grid-row-gap: 10px;
+    opacity: 60%;
+    transition: opacity 0.4s;
     //grid-template-rows: 300px auto;
+
+      &:hover {
+        opacity: 100%;
+        transition: opacity 0.4s;
+      }
+
   }
 }
 
@@ -204,18 +212,23 @@ $orangeButton: #F79256;
 
     &__show_more {
       align-items: center;
-
       padding: 0 1em !important;
       width: 14em;
       max-width: 200px;
       height: 2.7em !important;
       justify-content: space-between;
-      background: $orangeButton !important;
-      color: #FFFFFF !important;
+      color: #000000 !important;
       text-transform: inherit;
       font-size: 1em !important;
       font-weight: 400;
       letter-spacing: 0 !important;
+      border: 0.5px solid #95D7AE ;
+      transition: 0.4s;
+
+        &:hover {
+          background: #95D7AE !important;
+          transition: 0.4s;
+        }
 
       &__arrow {
         font-size: 18px !important;

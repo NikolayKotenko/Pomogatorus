@@ -30,10 +30,10 @@
           </h4>
         </div>
         <div class="list_elem_wrapper__preview_content__buttons">
-          <v-btn class="list_elem_wrapper__preview_content__buttons__show_more" >
-            Читать полностью
-            <v-icon class="list_elem_wrapper__preview_content__buttons__show_more__arrow">mdi-chevron-right</v-icon>
-          </v-btn>
+          <ButtonStyled
+            local-text="Читать полностью"
+          >
+          </ButtonStyled>
           <div class="list_elem_wrapper__preview_content__buttons__social_btns">
             <v-icon class="list_elem_wrapper__preview_content__buttons__social_btns__btn">mdi-eye</v-icon>
             <span>212</span>
@@ -50,10 +50,11 @@
 
 <script>
 import Author from './Author'
+import ButtonStyled from "../Common/ButtonStyled.vue";
 
 export default {
   name: 'Article',
-  components: { Author },
+  components: {ButtonStyled, Author },
   props: ['article'],
   data: () => ({
     previewAuthor: true

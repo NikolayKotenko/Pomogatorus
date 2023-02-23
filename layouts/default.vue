@@ -4,6 +4,7 @@
     <BurgerMenu v-if='!$device.isDesktop' />
     <SubHeader v-if='$device.isDesktop && loadComponent' />
     <v-main id='main_content' class='main'>
+      <VerticalMenu class="fixed_left_menu"></VerticalMenu>
       <Nuxt class="main__left_column"/>
       <CurrentObjects class="main__right_column" v-if="! listExcludedRightColumn"></CurrentObjects>
     </v-main>
@@ -30,10 +31,12 @@ import CurrentObjects from '../components/Widgets/CurrentObjects'
 
 import { mapState } from 'vuex'
 import BurgerMenu from '../components/BurgerMenu'
+import VerticalMenu from "../components/VerticalMenu.vue";
 
 export default {
   name: 'DefaultLayout',
   components: {
+    VerticalMenu,
     BurgerMenu,
     Right,
     SubHeader,

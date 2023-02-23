@@ -332,6 +332,7 @@ export default {
   bottom: 0;
   background: #ffffff;
   width: 100%;
+  margin: 0 10px;
   padding: 1em 0 2em 0;
 
 }
