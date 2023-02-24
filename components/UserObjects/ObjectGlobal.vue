@@ -156,7 +156,7 @@ export default {
   }
 
   &-tabs {
-
+    min-height: 300px;
   }
 
   &-footer {

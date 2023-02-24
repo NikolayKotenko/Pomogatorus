@@ -1,31 +1,31 @@
 <template>
   <div>
-      <v-autocomplete
-        class="styleSearch"
-        :class="isClass"
-        :outlined="isOutlined"
-        :dense="isDense"
-        :hide-details="isHideDetails"
-        :hide-selected="isHideSelected"
-        :placeholder="isPlaceholder"
-        :loading="isLoading"
-        :disabled="isDisabled"
-        :hide-no-data="isHideNoData"
-        :items="isItems"
-        :item-text="isItemText"
-        :item-value="isItemValue"
-        :return-object="isReturnObject"
-        :clearable="isClearable"
-        @click:clear="$emit('click-clear')"
-        :search-input.sync="localSearchInputSync"
-        v-model="localSelected"
-        @update:search-input="$emit('update-search-input', localSearchInputSync)"
-        @change="$emit('change-search', localSelected)"
-      >
-        <template v-slot:append>
-          <v-icon class="selectIcon"></v-icon>
-        </template>
-      </v-autocomplete>
+    <v-autocomplete
+      v-model='localSelected'
+      :class='isClass'
+      :clearable='isClearable'
+      :dense='isDense'
+      :disabled='isDisabled'
+      :hide-details='isHideDetails'
+      :hide-no-data='isHideNoData'
+      :hide-selected='isHideSelected'
+      :item-text='isItemText'
+      :item-value='isItemValue'
+      :items='isItems'
+      :loading='isLoading'
+      :outlined='isOutlined'
+      :placeholder='isPlaceholder'
+      :return-object='isReturnObject'
+      :search-input.sync='localSearchInputSync'
+      class='styleSearch'
+      @change="$emit('change-search', localSelected)"
+      @click:clear="$emit('click-clear')"
+      @update:search-input="$emit('update-search-input', localSearchInputSync)"
+    >
+      <template v-slot:append>
+        <v-icon class='selectIcon'></v-icon>
+      </template>
+    </v-autocomplete>
   </div>
 </template>
 
@@ -71,8 +71,8 @@ export default {
       default: false
     },
     isHideSelected: {
-     type: Boolean,
-     default: false
+      type: Boolean,
+      default: false
     },
     isItems: {
       type: Array,
@@ -93,29 +93,30 @@ export default {
     isClearable: {
       type: Boolean,
       default: true
-    },
+    }
   },
   computed: {}
 }
 </script>
 
-<style lang='scss' scoped>
-</style>
+<style lang='scss'>
 
-<style lang="scss">
-
-.v-menu__content { display:none !important; }
+// TODO: Зачем это нужно было?
+//.v-menu__content {
+//  display: none !important;
+//}
 
 .styleSearch {
   font-size: 1.8em !important;
   border-radius: 5px;
   //min-width: 1144px;
   max-height: 60px;
+
   .v-select__slot {
     color: #37392E !important;
 
     input {
-      margin: 10px 0!important;
+      margin: 10px 0 !important;
       padding: 15px 0;
 
 
@@ -129,9 +130,10 @@ export default {
     margin-top: 5px;
 
   }
-.mdi-close {
-  font-size: 1.2em;
-  margin-top: 20px;
-}
+
+  .mdi-close {
+    font-size: 1.2em;
+    margin-top: 20px;
+  }
 }
 </style>

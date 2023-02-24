@@ -9,8 +9,9 @@
       <v-tabs-slider :color='customColor'></v-tabs-slider>
 
       <v-tab
-        v-for='(item, index) in testTab'
+        v-for='(item, index) in tabs'
         :key='index'
+        @change='changeTab(item.code)'
       >
         {{ item.name }}
       </v-tab>
@@ -18,28 +19,40 @@
 
     <v-tabs-items v-model='current'>
       <v-tab-item
-        v-for='(item, indexTab) in testTab'
+        v-for='(item, indexTab) in tabs'
         :key='indexTab'
       >
         <v-card flat>
           <div class='tab-items-wrapper'>
-            <div v-for='(tabItem, index) in testTabItem[indexTab]' :key='index'
-                 :class='{"active-tab-item": tabItem.active}'
-                 class='tab-content'>
-              <div class='tab-content__count'>
-                <span>{{ calcCount(indexTab, index) }}</span>
+            <template v-if='isLoadingData'>
+              <v-progress-circular
+                :size='50'
+                color='primary'
+                indeterminate
+                style='margin: 20px auto 40px auto'
+              ></v-progress-circular>
+            </template>
+
+            <template v-else>
+              <div v-for='(tabItem, index) in tabData' :key='index'
+                   :class='{"active-tab-item": tabItem.active || getObjectProperty(tabItem.code)}'
+                   class='tab-content'>
+                <div class='tab-content__count'>
+                  <span>{{ calcCount(indexTab, index) }}</span>
+                </div>
+                <div class='tab-content__input'>
+                  <CustomField
+                    :data='getObjectProperty(tabItem.code)'
+                    :label='tabItem.name'
+                    :type='getInputType(tabItem)'
+                    @update-input='changeAnswer'
+                    @uploaded-file='changeFileData'
+                    @focus-in='focusIn(indexTab, index)'
+                    @focus-out='focusOut(indexTab, index)'
+                  />
+                </div>
               </div>
-              <div class='tab-content__input'>
-                <CustomField
-                  :data='tabItem.answer'
-                  :label='tabItem.placeholder'
-                  type='input'
-                  @update-input='changeAnswer'
-                  @focus-in='focusIn(indexTab, index)'
-                  @focus-out='focusOut(indexTab, index)'
-                />
-              </div>
-            </div>
+            </template>
           </div>
         </v-card>
       </v-tab-item>
@@ -51,18 +64,12 @@
 import InputStyled from './InputStyled'
 import CustomField from './CustomField'
 
+import { mapActions, mapState } from 'vuex'
+
 export default {
   name: 'TabsCustom',
   components: { CustomField, InputStyled },
   props: {
-    tabs: {
-      type: Array,
-      required: true
-    },
-    tabContent: {
-      type: Array,
-      required: true
-    },
     dataObject: {
       type: Object,
       required: true
@@ -71,146 +78,39 @@ export default {
   data: () => ({
     current: 0,
     customColor: '#95D7AE',
-    innerTabContent: [],
-    answer: '',
-    activeItems: [],
-
-    testTab: [
-      {
-        name: 'Test 1'
-      },
-      {
-        name: 'Test 2'
-      },
-      {
-        name: 'Test 3'
-      },
-      {
-        name: 'Test 4'
-      },
-      {
-        name: 'Test 5'
-      },
-      {
-        name: 'Test 6'
-      },
-      {
-        name: 'Test 7'
-      },
-      {
-        name: 'Test 8'
-      }
-    ],
-    testTabItem: [
-      [
-        {
-          countAnswer: 1,
-          answer: '',
-          placeholder: 'Введите значение',
-          active: false
-        },
-        {
-          countAnswer: 2,
-          answer: '',
-          placeholder: 'Введите значение',
-          active: false
-        },
-        {
-          countAnswer: 3,
-          answer: '',
-          placeholder: 'Введите значение',
-          active: false
-        },
-        {
-          countAnswer: 4,
-          answer: '',
-          placeholder: 'Введите значение',
-          active: false
-        },
-        {
-          countAnswer: 5,
-          answer: '',
-          placeholder: 'Введите значение',
-          active: false
-        },
-        {
-          countAnswer: 6,
-          answer: '',
-          placeholder: 'Введите значение',
-          active: false
-        },
-        {
-          countAnswer: 7,
-          answer: '',
-          placeholder: 'Введите значение',
-          active: false
-        },
-        {
-          countAnswer: 8,
-          answer: '',
-          placeholder: 'Введите значение',
-          active: false
-        }
-      ],
-      [
-        {
-          countAnswer: 1,
-          answer: '',
-          placeholder: 'Введите значение',
-          active: false
-        },
-        {
-          countAnswer: 2,
-          answer: '',
-          placeholder: 'Введите значение',
-          active: false
-        },
-        {
-          countAnswer: 3,
-          answer: '',
-          placeholder: 'Введите значение',
-          active: false
-        },
-        {
-          countAnswer: 4,
-          answer: '',
-          placeholder: 'Введите значение',
-          active: false
-        },
-        {
-          countAnswer: 5,
-          answer: '',
-          placeholder: 'Введите значение',
-          active: false
-        },
-        {
-          countAnswer: 6,
-          answer: '',
-          placeholder: 'Введите значение',
-          active: false
-        },
-        {
-          countAnswer: 7,
-          answer: '',
-          placeholder: 'Введите значение',
-          active: false
-        },
-        {
-          countAnswer: 8,
-          answer: '',
-          placeholder: 'Введите значение',
-          active: false
-        }
-      ]
-    ],
-    test: ''
+    answer: ''
   }),
   mounted() {
-    this.innerTabContent = this.tabContent
+    this.getTabData()
+  },
+  computed: {
+    ...mapState('Tabs', ['tabs', 'isLoading', 'tabData', 'isLoadingData'])
   },
   methods: {
+    ...mapActions('Tabs', ['getTabs', 'getTabInfo', 'getInputTypes']),
+
+    async getTabData() {
+      await this.getTabs()
+      await this.getInputTypes()
+      if (this.tabs && this.tabs.length) {
+        await this.changeTab(this.tabs[0].code)
+      }
+    },
+    changeTab(code) {
+      this.getTabInfo(code)
+    },
+    getObjectProperty(key) {
+      return this.dataObject[key] ? this.dataObject[key] : null
+    },
+    getInputType(input) {
+      return input?.d_property_objects?.code ? input.d_property_objects.code : 'stroka'
+    },
+
     changeAnswer(value) {
       this.answer = value
+    },
+    changeFileData(data) {
+
     },
     calcCount(indexTab, indexItem) {
       return `${indexTab + 1}.${indexItem + 1}`
