@@ -26,6 +26,7 @@
               :zoom='zoom'
               @balloonopen='bindListener'
               @click='onClickMap'
+              @touch='onClickMap'
               @map-was-initialized='onMapInit'
             >
               <ymap-marker
@@ -191,6 +192,7 @@ export default {
           const items = document.getElementsByClassName('suggest-item')
           for (let i = 0; i < items.length; i++) {
             items[i].addEventListener('click', this.searchCallback)
+            items[i].addEventListener('touchstart', this.searchCallback)
           }
         },
         searchCb: function(e) {
@@ -206,6 +208,7 @@ export default {
 
           const searchElem = document.querySelector('#form')
           searchElem.addEventListener('click', self.showSuggest)
+          searchElem.addEventListener('touchstart', self.showSuggest)
           searchElem.addEventListener('submit', this.searchCallback)
           let input = document.getElementById('map_search')
           self.suggestInstance = new ymaps.SuggestView(input, {
@@ -270,6 +273,7 @@ export default {
       const button = document.getElementById('btn')
       if (button) {
         button.addEventListener('click', this.setAddress)
+        button.addEventListener('touch', this.setAddress)
       }
     },
     showSuggest() {

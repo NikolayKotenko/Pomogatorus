@@ -6,6 +6,7 @@ import ArticleModule from './modules/article'
 import PopularSelectionsModule from './modules/popular-selections'
 import UserSettings from './modules/userSettings'
 import SearchModule from './modules/search'
+import Tabs from './modules/tabs'
 
 import Request from '../services/request'
 
@@ -118,9 +119,9 @@ const createStore = () => {
 
         ]
       },
-      stateObjectSelected(state){
-        return Boolean(Object.keys(state.currentObject).length);
-      }
+      stateObjectSelected(state) {
+        return Boolean(Object.keys(state.currentObject).length)
+      },
     },
     mutations: {
       set_drawer(state, payload) {
@@ -176,10 +177,10 @@ const createStore = () => {
       set_listModal(state, payload) {
         state.listModal = payload
       },
-      set_list_tags(state, payload){
+      set_list_tags(state, payload) {
         state.list_tags = []
         state.list_tags = payload
-      }
+      },
     },
     actions: {
       async getListObjects({ state, commit }) {
@@ -223,7 +224,8 @@ const createStore = () => {
       PopularSelectionsModule,
       UserSettings,
       PdfDataModule,
-      SearchModule
+      SearchModule,
+      Tabs,
     },
   })
 }

@@ -107,9 +107,6 @@ export default {
     isFocused: false,
     blockSearch: ''
   }),
-  mounted() {
-    this.getData()
-  },
   computed: {
     computedPlaceholder() {
       if (this.isFocused) {
@@ -122,17 +119,11 @@ export default {
         return this.data
       },
       set(value) {
-        // this.internalData = value
         this.$emit('update-input', value)
       }
     }
   },
   methods: {
-    getData() {
-      // if (this.data) {
-      //   this.internalData = this.data
-      // }
-    },
     stopInput(e) {
       this.$nextTick(() => {
         if (this.currentData) {
@@ -154,6 +145,8 @@ export default {
 
 <style lang='scss'>
 .selector-custom {
+  //min-width: 255px;
+
   .v-select__selections {
     overflow: hidden;
 
@@ -175,10 +168,11 @@ export default {
 }
 
 .scrolling-item {
-  animation: my-animation 15s linear infinite;
+  animation: my-animation 10s linear infinite;
 }
 
 .selected-item {
   white-space: nowrap;
+  cursor: pointer;
 }
 </style>

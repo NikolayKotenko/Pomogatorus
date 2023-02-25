@@ -4,6 +4,7 @@
     :append-icon='appendIcon'
     :autofocus='isAutofocus'
     :disabled='isDisabled'
+    :flat='isFlat'
     :loading='isLoading'
     :placeholder='computedPlaceholder'
     :prepend-inner-icon='prependIconInner'
@@ -57,6 +58,10 @@ export default {
     prependIconInner: {
       type: String,
       default: ''
+    },
+    isFlat: {
+      type: Boolean,
+      default: false
     }
   },
   data: () => ({
