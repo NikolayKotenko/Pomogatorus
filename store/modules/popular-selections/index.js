@@ -1,6 +1,7 @@
 import Request from '@/services/request'
 
 export default {
+  namespaced: true,
   state: {
     list_selections: [],
     popular_selections: {},

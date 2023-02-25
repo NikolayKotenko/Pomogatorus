@@ -177,10 +177,11 @@ export default {
 
     &__hide_block {
       display: grid;
-      grid-row-gap: 5px;
+      //grid-row-gap: 5px;
 
       &__checkbox {
         margin: unset;
+        padding: unset;
 
         label {
           height: 100% !important;

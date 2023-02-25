@@ -28,13 +28,13 @@
     </div>
     <div class='detail_obj_footer'>
       <ButtonStyled
-        local-class="style_save"
+        local-class="style_button"
         local-text="Сохранить изменения"
         @click-button="saveData"
       >
       </ButtonStyled>
       <ButtonStyled
-        local-class="style_download"
+        local-class="style_button"
         local-text="Скачать PDF"
         @click-button=""
       >
@@ -327,12 +327,13 @@ export default {
 
 .detail_obj_footer {
   display: flex;
-  justify-content: space-between;
   position: sticky;
   bottom: 0;
   background: #ffffff;
   width: 100%;
+  margin: 0 10px;
   padding: 1em 0 2em 0;
+  grid-column-gap: 2em;
 
 }
 

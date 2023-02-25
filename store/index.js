@@ -81,10 +81,16 @@ const createStore = () => {
       menuItems(state) {
         return [
           {
+            title: 'Главная',
+            path: '/',
+            icon: 'mdi-home-variant-outline',
+            visible: true,
+          },
+          {
             title: 'Статьи',
             path: '/articles',
             icon: 'mdi-message-text',
-            visible: true,
+            visible: false,
           },
           {
             title: 'Подборки',
@@ -95,13 +101,7 @@ const createStore = () => {
           {
             title: 'Объекты',
             path: '/objects',
-            icon: 'mdi-home',
-            visible: true,
-          },
-          {
-            title: 'Поиск',
-            path: '/search',
-            icon: 'mdi-search',
+            icon: 'mdi-home-city-outline',
             visible: true,
           },
           {
@@ -116,6 +116,7 @@ const createStore = () => {
             icon: 'mdi-home',
             visible: false,
           },
+
         ]
       },
       stateObjectSelected(state) {
