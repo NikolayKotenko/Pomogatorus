@@ -21,7 +21,8 @@
       v-model="currentData"
       @update:search-input="$emit('update-search-input', localSearchInputSync)"
       @change="$emit('change-search', localSelected)"
-    >
+      :menu-props="{value: false}"
+      >
       <template v-slot:append>
         <v-icon class="selectIcon"></v-icon>
       </template>
@@ -113,7 +114,7 @@ export default {
       set(value) {
         this.localSelected = value
       }
-    }
+    },
   },
   watch:{
     internalData: function(newVal, oldVal) {
@@ -129,8 +130,6 @@ export default {
 </style>
 
 <style lang="scss">
-
-.v-menu__content { display:none !important; }
 
 .v-input__slot {
   min-height: 60px !important;

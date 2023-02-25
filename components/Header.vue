@@ -1,43 +1,45 @@
 <template>
   <v-app-bar id='navbar' app class='header' dark elevate-on-scroll>
-    <v-app-bar-nav-icon v-if='isMobile' @click='showDrawer'></v-app-bar-nav-icon>
-    <v-toolbar-title v-if='isMobile'>
-      <router-link :to='getCurrentRoute.path' style='color: unset; text-decoration: unset'>{{ getCurrentRoute.title }}
-      </router-link>
-    </v-toolbar-title>
+    <v-container class="d-flex" style="align-items: center">
+      <v-app-bar-nav-icon v-if='isMobile' @click='showDrawer'></v-app-bar-nav-icon>
+      <v-toolbar-title v-if='isMobile'>
+        <router-link :to='getCurrentRoute.path' style='color: unset; text-decoration: unset'>{{ getCurrentRoute.title }}
+        </router-link>
+      </v-toolbar-title>
 
-    <!-- Desktop -->
-    <template v-if='!isMobile'>
-      <v-toolbar-items class='header_center'>
-        <upcoming-title v-for='item in $store.getters.menuItems' v-if='item.visible' :key='item.title'>
-          <v-btn
-            :href='item.path'
-            class='text-capitalize link_btn'
-            text
-          >
-            <span :class='{activeElement: getCurrentRoute.title === item.title}'>{{ item.title }}</span>
-          </v-btn>
-        </upcoming-title>
+      <!-- Desktop -->
+      <template v-if='!isMobile'>
+        <v-toolbar-items class='header_center'>
+          <upcoming-title v-for='item in $store.getters.menuItems' v-if='item.visible' :key='item.title'>
+            <v-btn
+              :href='item.path'
+              class='text-capitalize link_btn'
+              text
+            >
+              <span :class='{activeElement: getCurrentRoute.title === item.title}'>{{ item.title }}</span>
+            </v-btn>
+          </upcoming-title>
+        </v-toolbar-items>
+      </template>
+
+      <!-- Личный кабинет всегда по правую сторону -->
+      <v-toolbar-items class='header_right'>
+        <v-tooltip bottom>
+          <template v-slot:activator='{ on, attrs }'>
+            <v-btn
+              :color='listModal[0].isOpen ? "#fafad2" : "white"'
+              class='text-capitalize link_btn'
+              text v-bind='attrs'
+              @click='openModals'
+              v-on='on'
+            >
+              <v-icon>mdi-key-variant</v-icon>
+            </v-btn>
+          </template>
+          <span>Личный кабинет</span>
+        </v-tooltip>
       </v-toolbar-items>
-    </template>
-
-    <!-- Личный кабинет всегда по правую сторону -->
-    <v-toolbar-items class='header_right'>
-      <v-tooltip bottom>
-        <template v-slot:activator='{ on, attrs }'>
-          <v-btn
-            :color='listModal[0].isOpen ? "#fafad2" : "white"'
-            class='text-capitalize link_btn'
-            text v-bind='attrs'
-            @click='openModals'
-            v-on='on'
-          >
-            <v-icon>mdi-key-variant</v-icon>
-          </v-btn>
-        </template>
-        <span>Личный кабинет</span>
-      </v-tooltip>
-    </v-toolbar-items>
+    </v-container>
   </v-app-bar>
 </template>
 

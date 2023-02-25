@@ -1,6 +1,18 @@
 .main__left_column {
-  @media only screen and (max-width: 668px) {
-    max-width: 500px;
+  @media only screen and (min-width: 0px) and (max-width: 368px){
+    max-width: 300px;
+  }
+  @media only screen and (min-width: 368px) and (max-width: 468px){
+    max-width: 368px;
+  }
+  @media only screen and (min-width: 468px) {
+    max-width: 468px;
+  }
+  @media only screen and (min-width: 568px) {
+    max-width: 568px;
+  }
+  @media only screen and (min-width: 668px) {
+    max-width: 668px;
   }
   @media only screen and (min-width: 668px) {
     max-width: 668px;
@@ -143,8 +155,8 @@
           background: linear-gradient(0deg, slateblue, slateblue) no-repeat right bottom / 0 var(--bg-h);
           transition: background-size 350ms;
           --bg-h: 2px;
-          width: 18em;
-          white-space: nowrap;
+          //width: 18em;
+          //white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
 

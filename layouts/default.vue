@@ -182,21 +182,21 @@ body {
 
 .main {
   width: $max-width;
-  max-width: $max-width;
+  //max-width: $max-width;
   margin: 5px auto 0 auto;
   border-radius: 5px;
   margin-bottom: 65px;
   padding: unset!important;
   &__left_column{
     width: auto;
-    margin-left: unset !important;
+    //margin-left: unset !important;
   }
   &__right_column{
     @media only screen and (max-width: 1000px) {
       display: none !important;
     }
     padding: 20px!important;
-    padding-top: unset!important;
+    padding-top: 10px!important;
     background: #ffffff;
   }
 }
