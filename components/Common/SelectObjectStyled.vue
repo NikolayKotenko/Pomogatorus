@@ -145,7 +145,7 @@ export default {
 
 <style lang='scss'>
 .selector-custom {
-  min-width: 255px;
+  //min-width: 255px;
 
   .v-select__selections {
     overflow: hidden;

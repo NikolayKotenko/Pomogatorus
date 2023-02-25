@@ -78,7 +78,17 @@ export default {
   data: () => ({
     current: 0,
     customColor: '#95D7AE',
-    answer: ''
+    answer: '',
+    tabDataTest: [
+      {
+        name: 'Приложите файл',
+        code: 'total_area',
+        d_property_objects: {
+          code: 'fail'
+        },
+        active: false
+      }
+    ]
   }),
   mounted() {
     this.getTabData()
@@ -116,10 +126,10 @@ export default {
       return `${indexTab + 1}.${indexItem + 1}`
     },
     focusIn(indexTab, indexItem) {
-      this.testTabItem[indexTab][indexItem].active = true
+      // this.tabDataTest[indexTab][indexItem].active = true
     },
     focusOut(indexTab, indexItem) {
-      this.testTabItem[indexTab][indexItem].active = false
+      // this.tabDataTest[indexTab][indexItem].active = false
     }
   }
 }

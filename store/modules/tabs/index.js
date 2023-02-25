@@ -20,7 +20,7 @@ export default {
       state.isLoadingData = payload
     },
     setTabData(state, payload) {
-      let result
+      let result = []
 
       if (payload && payload.length) {
         payload.forEach((item) => {
@@ -50,8 +50,7 @@ export default {
       commit('setLoadingData', true)
 
       const { data } = await Request.get(
-        this.state.BASE_URL +
-          `/dictionary/object-properties?filter%5Bcodes_properties%5D%5B%5D=${payload}&sort%5Bsort%5D=asc`
+        this.state.BASE_URL + `/dictionary/object-properties?filter%5Bcodes_tags%5D%5B%5D=${payload}&sort%5Bsort%5D=asc`
       )
       commit('setTabData', data)
 
