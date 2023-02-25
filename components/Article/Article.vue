@@ -9,6 +9,9 @@
           {{article.updated_at}}
         </h4>
       </div>
+      <div class="list_elem_wrapper__tag_container">
+        <a v-for="(tag, key) in article._all_tags" :href="'/podborki/'+tag.code">#{{tag.name}}</a>
+      </div>
       <div class='list_elem_wrapper__img_container'>
         <v-img
           alt=''
@@ -30,10 +33,11 @@
           </h4>
         </div>
         <div class="list_elem_wrapper__preview_content__buttons">
-          <v-btn class="list_elem_wrapper__preview_content__buttons__show_more" >
-            Читать полностью
-            <v-icon class="list_elem_wrapper__preview_content__buttons__show_more__arrow">mdi-chevron-right</v-icon>
-          </v-btn>
+          <ButtonStyled
+            local-text="Читать полностью"
+            local-class="style_button"
+          >
+          </ButtonStyled>
           <div class="list_elem_wrapper__preview_content__buttons__social_btns">
             <v-icon class="list_elem_wrapper__preview_content__buttons__social_btns__btn">mdi-eye</v-icon>
             <span>212</span>
@@ -50,10 +54,11 @@
 
 <script>
 import Author from './Author'
+import ButtonStyled from "../Common/ButtonStyled.vue";
 
 export default {
   name: 'Article',
-  components: { Author },
+  components: {ButtonStyled, Author },
   props: ['article'],
   data: () => ({
     previewAuthor: true
