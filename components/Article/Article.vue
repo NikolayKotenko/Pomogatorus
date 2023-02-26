@@ -17,6 +17,7 @@
           alt=''
           class='list_elem_wrapper__img_container__img'
           height="100%"
+          max-width="300"
           cover
           :src="$store.getters.getImageByEClientFilesObj(article.e_client_files)"
         />
