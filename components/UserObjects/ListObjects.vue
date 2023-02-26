@@ -1,68 +1,86 @@
 <template>
   <div class='modal_wrapper'>
-    <div class='card_object flex-grow-1 flex-shrink-1 pa-5'>
-      <div v-if='showObjects' class='card_object_container'>
-        <ObjectCard
-          v-for='(object, index) in $store.state.AuthModule.userData.objects'
-          :key='index'
-          :object_data='object'
-          @openDetail='openDetail'
-        />
+    <template v-if='isLoadingObjects'>
+      <v-progress-circular
+        :size='50'
+        color='primary'
+        indeterminate
+        style='margin: 20px auto 40px auto'
+      ></v-progress-circular>
+    </template>
+
+    <template v-else>
+      <div v-if='showObjects' class='card_object flex-grow-1 flex-shrink-1 pa-5'>
+        <div v-if='listObjects' class='card_object_container'>
+          <ObjectCard
+            v-for='(object, index) in listObjects'
+            :key='index'
+            :object_data='object'
+            @openDetail='openDetail'
+          />
+        </div>
+
+        <!-- TODO: Что показывать когда объектов еще нет??? -->
+        <div v-else>
+          Создайте объект!
+        </div>
       </div>
       <LoginAuth v-else />
-    </div>
-    <div class='modal_footer pa-5'>
-      <div v-if='showObjects' class='modal_footer__new'>
-        <v-divider />
-        <div class='card_object_new'>
-          <div class='card_object_new__card'>
-            <div class='card_object_new__card__plus'>
-              <v-icon :size="!isMobile ? '88' : '36'"> mdi-plus-circle-outline</v-icon>
-            </div>
-            <div class='card_object_new__card__inputs'>
-              <v-text-field
-                v-model='newObjAddress'
-                auto-grow
-                class='card_object_new__card__inputs__input'
-                dense
-                hide-details
-                label='Введите адрес объекта'
-                no-resize
-                row-height='1'
-                solo
-              >
-              </v-text-field>
-              <v-btn
-                :disabled='!newObjAddress'
-                :loading='loadingObjects'
-                class='card_object_new__card__inputs__btn'
-                color='green lighten-1'
-                @click='createNewObject'
-              >
-                Добавить
-              </v-btn>
+
+      <div class='modal_footer pa-5'>
+        <div v-if='showObjects' class='modal_footer__new'>
+          <v-divider />
+          <div class='card_object_new'>
+            <div class='card_object_new__card'>
+              <div class='card_object_new__card__plus'>
+                <v-icon :size="!isMobile ? '88' : '36'"> mdi-plus-circle-outline</v-icon>
+              </div>
+              <div class='card_object_new__card__inputs'>
+                <v-text-field
+                  v-model='newObjAddress'
+                  auto-grow
+                  class='card_object_new__card__inputs__input'
+                  dense
+                  hide-details
+                  label='Введите адрес объекта'
+                  no-resize
+                  row-height='1'
+                  solo
+                >
+                </v-text-field>
+                <v-btn
+                  :disabled='!newObjAddress'
+                  :loading='loadingObjects'
+                  class='card_object_new__card__inputs__btn'
+                  color='green lighten-1'
+                  @click='createNewObject'
+                >
+                  Добавить
+                </v-btn>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <v-dialog
-      v-model='showDetail'
-      content-class='dialogStyled'
-      width='1080'
-    >
-      <v-card>
+      <v-dialog
+        v-if='showDetail'
+        v-model='showDetail'
+        content-class='dialogStyled'
+        scrollable
+        width='1080'
+      >
         <ObjectGlobal
           :object-data='detailData'
+          @close-modal='closeDetailObj'
         />
-      </v-card>
-    </v-dialog>
+      </v-dialog>
+    </template>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 
 import ObjectCard from './ObjectCard'
 import LoginAuth from '../frontLayouts/LoginAuth'
@@ -79,12 +97,21 @@ export default {
     showDetail: false,
     detailData: {}
   }),
-  mounted() {
+  watch: {
+    'getUserId': {
+      handler(oldV, newV) {
+        if (oldV !== newV) {
+          this.getListObjects()
+        }
+      }
+    }
   },
   computed: {
     ...mapState({
       loadingObjects: state => state.loading_objects
     }),
+    ...mapState('Objects', ['listObjects', 'isLoadingObjects']),
+    ...mapGetters(['getUserId']),
 
     isMobile() {
       return this.$device.isMobile
@@ -93,8 +120,13 @@ export default {
       return this.$store.state.AuthModule.userData && Object.keys(this.$store.state.AuthModule.userData).length
     }
   },
-  watch: {},
   methods: {
+    ...mapActions('Objects', ['getUserObjects']),
+
+    getListObjects() {
+      this.getUserObjects(this.getUserId)
+    },
+
     async createNewObject() {
       this.$store.commit('change_loaderObjects', true)
 
@@ -128,7 +160,7 @@ export default {
 }
 </script>
 
-<style lang='scss' scoped>
+<style lang='scss'>
 @import 'assets/styles/userObjects';
 
 @media only screen and (max-width: 600px) {
@@ -147,9 +179,9 @@ export default {
   }
 }
 
-::v-deep .v-dialog {
-  max-height: 80%;
-}
+//::v-deep .v-dialog {
+//  max-height: 80%;
+//}
 
 .modal_wrapper {
   padding-bottom: 0;
@@ -220,5 +252,10 @@ export default {
     flex-direction: column;
     row-gap: 20px;
   }
+}
+
+.dialogStyled {
+  max-height: 92% !important;
+  margin: 60px 0 0 0;
 }
 </style>

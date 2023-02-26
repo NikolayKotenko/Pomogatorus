@@ -1,31 +1,31 @@
 <template>
-    <v-combobox
-      class="styleSearch"
-      :class="isClass"
-      :outlined="isOutlined"
-      :dense="isDense"
-      :hide-details="isHideDetails"
-      :hide-selected="isHideSelected"
-      :placeholder="isPlaceholder"
-      :loading="isLoading"
-      :disabled="isDisabled"
-      :hide-no-data="isHideNoData"
-      :items="isItems"
-      :chips="isChips"
-      :item-text="isItemText"
-      :item-value="isItemValue"
-      :return-object="isReturnObject"
-      :clearable="isClearable"
-      @click:clear="$emit('click-clear')"
-      :search-input.sync="localSearchInputSync"
-      v-model="currentData"
-      @update:search-input="$emit('update-search-input', localSearchInputSync)"
-      @change="$emit('change-search', localSelected)"
-    >
-      <template v-slot:append>
-        <v-icon class="selectIcon"></v-icon>
-      </template>
-    </v-combobox>
+  <v-combobox
+    v-model='currentData'
+    :chips='isChips'
+    :class='isClass'
+    :clearable='isClearable'
+    :dense='isDense'
+    :disabled='isDisabled'
+    :hide-details='isHideDetails'
+    :hide-no-data='isHideNoData'
+    :hide-selected='isHideSelected'
+    :item-text='isItemText'
+    :item-value='isItemValue'
+    :items='isItems'
+    :loading='isLoading'
+    :outlined='isOutlined'
+    :placeholder='isPlaceholder'
+    :return-object='isReturnObject'
+    :search-input.sync='localSearchInputSync'
+    class='styleSearch'
+    @change="$emit('change-search', localSelected)"
+    @click:clear="$emit('click-clear')"
+    @update:search-input="$emit('update-search-input', localSearchInputSync)"
+  >
+    <template v-slot:append>
+      <v-icon class='selectIcon'></v-icon>
+    </template>
+  </v-combobox>
 </template>
 
 <script>
@@ -70,8 +70,8 @@ export default {
       default: false
     },
     isHideSelected: {
-     type: Boolean,
-     default: false
+      type: Boolean,
+      default: false
     },
     isItems: {
       type: Array,
@@ -100,7 +100,7 @@ export default {
     internalData: {
       type: [String, Number],
       default: null
-    },
+    }
   },
   computed: {
     currentData: {
@@ -115,12 +115,12 @@ export default {
       }
     }
   },
-  watch:{
+  watch: {
     internalData: function(newVal, oldVal) {
-      if (! newVal) return false;
+      if (!newVal) return false
 
       this.$emit('update-search-input', newVal)
-    },
+    }
   }
 }
 </script>
@@ -128,18 +128,20 @@ export default {
 <style lang='scss' scoped>
 </style>
 
-<style lang="scss">
+<style lang='scss'>
 
-.v-menu__content { display:none !important; }
+// TODO: Эти стили изменяют вообще все инпуты в приложении, надо выносить под какой-то класс
+//.v-menu__content { display:none !important; }
 
-.v-input__slot {
-  min-height: 60px !important;
-}
+//.v-input__slot {
+//  min-height: 60px !important;
+//}
 
 .styleSearch {
-  &.primary--text{
+  &.primary--text {
     color: #95D7AE !important;
   }
+
   font-size: 1.8em !important;
   border-radius: 5px;
   //min-width: 1144px;
@@ -150,7 +152,7 @@ export default {
     color: #37392E !important;
 
     input {
-      margin: 10px 0!important;
+      margin: 10px 0 !important;
       padding: 15px 0;
 
 
@@ -164,11 +166,12 @@ export default {
     margin-top: 5px;
 
   }
-.mdi-close {
-  font-size: 1em;
-  margin-top: 20px;
-  align-content: center;
-  color: #F79256 !important;
-}
+
+  .mdi-close {
+    font-size: 1em;
+    margin-top: 20px;
+    align-content: center;
+    color: #F79256 !important;
+  }
 }
 </style>

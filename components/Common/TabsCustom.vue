@@ -38,19 +38,19 @@
                    :class='{"active-tab-item": tabItem.active || getObjectProperty(tabItem.code)}'
                    class='tab-content'>
                 <div class='tab-content__count'>
-                  <span>{{ calcCount(indexTab, index) }}</span>
+                  <span v-if='item.code !== "all"'>{{ calcCount(indexTab, index) }}</span>
+                  <span v-else>{{ calcCountNormal(index) }}</span>
                 </div>
-                <div class='tab-content__input'>
-                  <CustomField
-                    :data='getObjectProperty(tabItem.code)'
-                    :label='tabItem.name'
-                    :type='getInputType(tabItem)'
-                    @update-input='changeAnswer'
-                    @uploaded-file='changeFileData'
-                    @focus-in='focusIn(indexTab, index)'
-                    @focus-out='focusOut(indexTab, index)'
-                  />
-                </div>
+                <CustomField
+                  :data='getObjectProperty(tabItem.code)'
+                  :items='getItems(tabItem)'
+                  :label='tabItem.name'
+                  :type='getInputType(tabItem)'
+                  @update-field='changeAnswer($event, tabItem.code)'
+                  @uploaded-file='changeFileData($event, tabItem.code)'
+                  @focus-in='focusIn(tabItem)'
+                  @focus-out='focusOut(tabItem)'
+                />
               </div>
             </template>
           </div>
@@ -77,18 +77,7 @@ export default {
   },
   data: () => ({
     current: 0,
-    customColor: '#95D7AE',
-    answer: '',
-    tabDataTest: [
-      {
-        name: 'Приложите файл',
-        code: 'total_area',
-        d_property_objects: {
-          code: 'fail'
-        },
-        active: false
-      }
-    ]
+    customColor: '#95D7AE'
   }),
   mounted() {
     this.getTabData()
@@ -103,11 +92,12 @@ export default {
       await this.getTabs()
       await this.getInputTypes()
       if (this.tabs && this.tabs.length) {
-        await this.changeTab(this.tabs[0].code)
+        await this.changeTab('all')
       }
     },
     changeTab(code) {
       this.getTabInfo(code)
+      this.$emit('change-tab')
     },
     getObjectProperty(key) {
       return this.dataObject[key] ? this.dataObject[key] : null
@@ -115,65 +105,27 @@ export default {
     getInputType(input) {
       return input?.d_property_objects?.code ? input.d_property_objects.code : 'stroka'
     },
-
-    changeAnswer(value) {
-      this.answer = value
+    getItems(input) {
+      return input?.d_dictionaries?.d_dictionary_attributes && input?.d_dictionaries?.d_dictionary_attributes.length ? input?.d_dictionaries?.d_dictionary_attributes : []
     },
-    changeFileData(data) {
 
+    changeAnswer(value, code) {
+      this.$emit('update-prop', { key: code, value })
+    },
+    changeFileData(data, code) {
     },
     calcCount(indexTab, indexItem) {
-      return `${indexTab + 1}.${indexItem + 1}`
+      return `${indexTab}.${indexItem + 1}`
     },
-    focusIn(indexTab, indexItem) {
-      // this.tabDataTest[indexTab][indexItem].active = true
+    calcCountNormal(index) {
+      return index + 1
     },
-    focusOut(indexTab, indexItem) {
-      // this.tabDataTest[indexTab][indexItem].active = false
+    focusIn(item) {
+      item.active = true
+    },
+    focusOut(item) {
+      item.active = false
     }
   }
 }
 </script>
-
-<style lang='scss'>
-
-.object-tabs {
-  .v-tab {
-    border-bottom: 4px solid #D9D9D9;
-  }
-}
-
-.tab-items-wrapper {
-  display: flex;
-  flex-direction: column;
-  row-gap: 2rem;
-  margin-top: 1.2rem;
-}
-
-.tab-content {
-  display: flex;
-  padding: 0 10px 10px 20px;
-  background: #B3B3B3;
-  box-shadow: 0 2px 4px rgb(0 0 0 / 25%);
-  border-radius: 5px;
-  align-items: center;
-  column-gap: 20px;
-  transition: background-color 0.4s ease-in-out;
-
-  &__count {
-    font-weight: 700;
-    font-size: 24px;
-    line-height: 28px;
-    color: #FFFFFF;
-  }
-
-  &__input {
-    flex: 1;
-    width: 100%;
-  }
-}
-
-.active-tab-item {
-  background: #95D7AE;
-}
-</style>

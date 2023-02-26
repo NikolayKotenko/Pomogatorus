@@ -1,5 +1,5 @@
 <template>
-  <div class='object-wrapper'>
+  <v-card class='object-wrapper'>
     <div class='object-wrapper-top'>
       <div class='object-wrapper-top__selector'>
         <div class='object-wrapper-top__selector__title'>
@@ -13,7 +13,7 @@
             :is-solo='true'
             :item-text='computedText'
             :item-value="'id'"
-            :items='$store.state.AuthModule.userData.objects'
+            :items='listObjects'
             :placeholder="'Выберите объект'"
             title='Выберите объект'
             @update-input='callback'
@@ -22,57 +22,76 @@
       </div>
 
       <div class='object-wrapper-top__map'>
-        <SelectGeo v-if='notEmptyObject' :data='object' @set-new-address='setAddressMap' />
+        <SelectGeo v-if='notEmptyObject' :data='object' :outerCoords='getCoords' @set-new-address='setAddressMap' />
       </div>
     </div>
 
-    <div class='object-wrapper-documents'>
-      <div class='object-wrapper-documents__img'>
+    <v-card-text ref='scrollParent' class='object-wrapper-main' style='height: 1200px;'>
+      <div ref='docContent' class='object-wrapper-documents'>
+        <div class='object-wrapper-documents__img-container'>
+          <span>Фото объекта</span>
+          <div class='object-wrapper-documents__img-container__img'>
+            <img alt='' src='@/assets/images/typeobject.png'>
+          </div>
+        </div>
 
+        <div class='object-wrapper-documents__docs'>
+          <div class='object-wrapper-documents__docs__dropzone'></div>
+        </div>
       </div>
 
-      <div class='object-wrapper-documents__docs'>
+      <div class='object-wrapper-tabs'>
+        <TabsCustom
+          ref='tabContent'
+          :data-object='object'
+          @update-prop='setField'
+          @change-tab='changeTab'
+        />
 
+        <div :class='{"show-more": showMore}' class='more-arrow'>
+          <img alt='more' src='@/assets/svg/chevron-more.svg' @click='scrollBot'>
+        </div>
       </div>
-    </div>
-
-    <div class='object-wrapper-tabs'>
-      <TabsCustom
-        :data-object='object'
-        :tab-content='[]'
-        :tabs='[]'
-      />
-    </div>
+    </v-card-text>
 
     <div class='object-wrapper-footer'>
       <div class='object-wrapper-footer__left'>
-        <v-btn>
-          Сохранить изменения
-        </v-btn>
+        <ButtonStyled
+          :isLoading='isLoading'
+          local-class='style_button'
+          local-text='Сохранить изменения'
+          @click-button='onSave'
+        />
 
-        <v-btn>
-           <span>
+        <ButtonStyled
+          :custom-slot='true'
+          @click-button='closeModal'
+        >
+          <span>
              Скачать PDF
            </span>
-          <v-icon>mdi-download</v-icon>
-        </v-btn>
+        </ButtonStyled>
       </div>
 
-      <v-btn>
-        Отмена
-      </v-btn>
+      <ButtonStyled
+        local-class='style_close'
+        local-text='Отмена'
+        @click-button='closeModal'
+      />
     </div>
-  </div>
+  </v-card>
 </template>
 
 <script>
 import TabsCustom from '../Common/TabsCustom'
 import SelectObjectStyled from '../Common/SelectObjectStyled'
 import SelectGeo from '../Common/SelectGeo'
+import { mapActions, mapState } from 'vuex'
+import ButtonStyled from '../Common/ButtonStyled'
 
 export default {
   name: 'ObjectGlobal',
-  components: { SelectGeo, SelectObjectStyled, TabsCustom },
+  components: { ButtonStyled, SelectGeo, SelectObjectStyled, TabsCustom },
   props: {
     objectData: {
       type: Object,
@@ -80,95 +99,91 @@ export default {
     }
   },
   data: () => ({
-    object: {}
+    object: {},
+    updateProperties: {},
+
+    minHeightInput: 76,
+    scrollHeight: null,
+    maxScroll: null
   }),
   mounted() {
     this.getObjectFromProp()
+
+    if (process.client && this.$refs.scrollParent) {
+      const tabContent = this.$refs.scrollParent
+      tabContent.addEventListener('scroll', this.scrollWindow)
+      this.scrollWindow()
+    }
   },
   computed: {
+    ...mapState('Objects', ['isLoading', 'listObjects']),
+
     notEmptyObject() {
       return !!Object.keys(this.object).length
     },
     computedText() {
       return !!this.object?.name ? 'name' : 'address'
+    },
+    getCoords() {
+      return this.object?.long && this.object?.lat ? [this.object.lat, this.object.long] : [55.753215, 37.622504]
+    },
+    showMore() {
+      return ((this.parentHeight + this.scrollHeight + this.minHeightInput) <= this.maxScroll)
     }
   },
   methods: {
+    ...mapActions('Objects', ['saveObjData']),
+
+    scrollBot() {
+      this.$refs.scrollParent.scrollTo({
+        top: this.scrollHeight + this.minHeightInput + 20,
+        left: 0,
+        behavior: 'smooth'
+      })
+    },
+    scrollWindow() {
+      setTimeout(() => {
+        if (this.$refs.scrollParent) {
+          this.maxScroll = this.$refs.scrollParent.scrollHeight
+          this.scrollHeight = this.$refs.scrollParent.scrollTop
+          this.parentHeight = this.$refs.scrollParent.offsetHeight
+        }
+      }, 400)
+    },
+    changeTab() {
+      this.scrollWindow()
+    },
+    async onSave() {
+      await this.saveObjData({ id: this.object.id, keys: this.updateProperties })
+      this.closeModal()
+    },
+    closeModal() {
+      this.$emit('close-modal')
+    },
+    setField(data) {
+      this.object[data.key] = data.value
+      this.updateProperties[data.key] = data.value
+    },
     getObjectFromProp() {
       this.object = this.objectData
     },
     callback(value) {
-      console.log(value)
+      this.object = value
     },
     setAddressMap(data) {
       this.object.address = data.address
       this.object.lat = data.coords[0]
       this.object.long = data.coords[1]
+
+      this.updateProperties.address = data.address
+      this.updateProperties.lat = data.coords[0]
+      this.updateProperties.long = data.coords[1]
+    }
+  },
+  destroyed() {
+    if (process.client) {
+      window.removeEventListener('scroll', this.scrollWindow)
     }
   }
 }
 </script>
-
-<style lang='scss' scoped>
-.object-wrapper {
-  display: flex;
-  flex-direction: column;
-  padding: 40px;
-
-  &-top {
-    display: grid;
-    grid-template-columns: 30% 1fr;
-    column-gap: 10rem;
-
-    &__selector {
-      display: flex;
-      column-gap: 1rem;
-      align-items: center;
-      position: relative;
-
-      &__title {
-      }
-
-      &__select {
-        max-width: 220px;
-      }
-    }
-
-    &__map {
-      width: 100%;
-    }
-  }
-
-  &-documents {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    &__img {
-      width: 400px;
-      height: 260px;
-    }
-
-    &__docs {
-      width: 400px;
-      height: 260px;
-    }
-  }
-
-  &-tabs {
-    min-height: 300px;
-  }
-
-  &-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    &__left {
-      display: flex;
-      column-gap: 3rem;
-      align-items: center;
-    }
-  }
-}
-</style>
