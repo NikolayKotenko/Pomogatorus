@@ -1,4 +1,5 @@
 import Request from '@/services/request'
+import constructFilterQuery from '@/utils/constructFilterQuery'
 
 export default {
   namespaced: true,
@@ -14,7 +15,17 @@ export default {
       state.isLoading = payload
     },
     setTabs(state, payload) {
-      state.tabs = payload
+      let result = []
+
+      if (payload && payload.length) {
+        result = payload
+        result.unshift({
+          name: 'Всё',
+          code: 'all',
+        })
+      }
+
+      state.tabs = result
     },
     setLoadingData(state, payload) {
       state.isLoadingData = payload
@@ -27,8 +38,6 @@ export default {
           let tabData = Object.assign(item, { active: false })
           result.push(tabData)
         })
-      } else {
-        result = []
       }
 
       state.tabData = result
@@ -46,12 +55,24 @@ export default {
 
       commit('setLoading', false)
     },
-    async getTabInfo({ commit }, payload) {
+    async getTabInfo({ commit, state }, payload) {
       commit('setLoadingData', true)
 
-      const { data } = await Request.get(
-        this.state.BASE_URL + `/dictionary/object-properties?filter%5Bcodes_tags%5D%5B%5D=${payload}&sort%5Bsort%5D=asc`
-      )
+      let queryData = []
+
+      if (payload === 'all') {
+        queryData = state.tabs
+          .map((tab) => {
+            return { codes_tags: tab.code }
+          })
+          .filter((elem) => elem.codes_tags !== 'all')
+      } else {
+        queryData = { codes_tags: payload }
+      }
+
+      let query = constructFilterQuery(queryData, true)
+
+      const { data } = await Request.get(this.state.BASE_URL + `/dictionary/object-properties${query}&sort[sort]=asc`)
       commit('setTabData', data)
 
       commit('setLoadingData', false)

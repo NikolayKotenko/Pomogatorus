@@ -69,7 +69,7 @@ export default {
     },
     outerCoords: {
       type: Array,
-      default: () => ([55.753215, 37.622504])
+      required: true
     }
   },
   data() {
@@ -103,6 +103,13 @@ export default {
 
     if (this.data?.address) {
       this.address = this.data.address
+    }
+  },
+  watch: {
+    'outerCoords': {
+      handler(v) {
+        this.coords = v
+      }
     }
   },
   computed: {
@@ -290,6 +297,3 @@ export default {
   }
 }
 </script>
-
-<style lang='scss'>
-</style>

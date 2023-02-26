@@ -71,8 +71,8 @@ export default {
       default: false
     },
     isHideSelected: {
-     type: Boolean,
-     default: false
+      type: Boolean,
+      default: false
     },
     isItems: {
       type: Array,
@@ -101,7 +101,7 @@ export default {
     internalData: {
       type: [String, Number],
       default: null
-    },
+    }
   },
   computed: {
     currentData: {
@@ -116,12 +116,12 @@ export default {
       }
     },
   },
-  watch:{
+  watch: {
     internalData: function(newVal, oldVal) {
-      if (! newVal) return false;
+      if (!newVal) return false
 
       this.$emit('update-search-input', newVal)
-    },
+    }
   }
 }
 </script>
@@ -129,16 +129,20 @@ export default {
 <style lang='scss' scoped>
 </style>
 
-<style lang="scss">
+<style lang='scss'>
 
-.v-input__slot {
-  min-height: 60px !important;
-}
+// TODO: Эти стили изменяют вообще все инпуты в приложении, надо выносить под какой-то класс
+//.v-menu__content { display:none !important; }
+
+//.v-input__slot {
+//  min-height: 60px !important;
+//}
 
 .styleSearch {
-  &.primary--text{
+  &.primary--text {
     color: #95D7AE !important;
   }
+
   font-size: 1.8em !important;
   border-radius: 5px;
   //min-width: 1144px;
@@ -149,7 +153,7 @@ export default {
     color: #37392E !important;
 
     input {
-      margin: 10px 0!important;
+      margin: 10px 0 !important;
       padding: 15px 0;
 
 
@@ -163,11 +167,12 @@ export default {
     margin-top: 5px;
 
   }
-.mdi-close {
-  font-size: 1em;
-  margin-top: 20px;
-  align-content: center;
-  color: #F79256 !important;
-}
+
+  .mdi-close {
+    font-size: 1em;
+    margin-top: 20px;
+    align-content: center;
+    color: #F79256 !important;
+  }
 }
 </style>

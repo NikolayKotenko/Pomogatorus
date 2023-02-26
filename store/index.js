@@ -7,6 +7,7 @@ import PopularSelectionsModule from './modules/popular-selections'
 import UserSettings from './modules/userSettings'
 import SearchModule from './modules/search'
 import Tabs from './modules/tabs'
+import Objects from './modules/objects'
 
 import Request from '../services/request'
 
@@ -116,7 +117,6 @@ const createStore = () => {
             icon: 'mdi-home',
             visible: false,
           },
-
         ]
       },
       stateObjectSelected(state) {
@@ -226,6 +226,7 @@ const createStore = () => {
       PdfDataModule,
       SearchModule,
       Tabs,
+      Objects,
     },
   })
 }

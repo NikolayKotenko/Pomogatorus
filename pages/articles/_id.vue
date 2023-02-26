@@ -177,9 +177,7 @@ export default {
     scrollWindow() {
       setTimeout(() => {
         if (this.$refs.nav) {
-          //@ts-ignore
           this.coordYNav = this.$refs.nav.getBoundingClientRect().y
-          //@ts-ignore
           this.heightNav = this.$refs.nav.getBoundingClientRect().height
         }
       }, 1000)

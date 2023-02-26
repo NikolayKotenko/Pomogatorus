@@ -1,17 +1,27 @@
 <template>
   <v-btn
     :class='localClass'
-    class="btnStyled"
+    :loading='isLoading'
+    class='btnStyled'
     @click="$emit('click-button')"
   >
-    {{localText}}
+    <template v-if='customSlot'>
+      <slot></slot>
+    </template>
+    <template v-else>
+      {{ localText }}
+    </template>
   </v-btn>
 </template>
 
 <script>
 export default {
-  name: "ButtonStyled",
+  name: 'ButtonStyled',
   props: {
+    isLoading: {
+      type: Boolean,
+      default: false
+    },
     localClass: {
       type: String,
       default: ''
@@ -24,11 +34,15 @@ export default {
       type: String,
       default: ''
     },
+    customSlot: {
+      type: Boolean,
+      default: false
+    }
   }
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 
 .btnStyled {
   height: 3.2em !important;
@@ -41,14 +55,14 @@ export default {
   //font-style: normal !important;
   font-size: 1em;
   border-radius: 5px;
-  border: 1px solid #95D7AE;
+  border: 1px solid #857885;
   box-shadow: rgba(0, 0, 0, 0.25);
   transition: 0.4s;
 
-    &:hover {
-      background: #95D7AE;
-      transition: 0.4s;
-    }
+  &:hover {
+    background: darken(#ffffff, 5%);
+    transition: 0.4s;
+  }
 
 }
 
