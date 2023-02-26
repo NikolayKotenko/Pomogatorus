@@ -32,7 +32,6 @@ export default {
       try {
         const request = await Request.get(`${this.$store.state.BASE_URL}/entity/objects/${this.$route.params.id}`)
         this.object = request.data
-        return request.data
       } catch (error) {
         console.warn(error)
       }

@@ -86,7 +86,7 @@
 import TabsCustom from '../Common/TabsCustom'
 import SelectObjectStyled from '../Common/SelectObjectStyled'
 import SelectGeo from '../Common/SelectGeo'
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import ButtonStyled from '../Common/ButtonStyled'
 
 export default {
@@ -115,8 +115,23 @@ export default {
       this.scrollWindow()
     }
   },
+  watch: {
+    'objectData': {
+      handler(v) {
+        this.object = v
+      }
+    },
+    'getUserId': {
+      handler(oldV, newV) {
+        if (oldV !== newV && !this.listObjects.length) {
+          this.getUserObjects(this.getUserId)
+        }
+      }
+    }
+  },
   computed: {
     ...mapState('Objects', ['isLoading', 'listObjects']),
+    ...mapGetters(['getUserId']),
 
     notEmptyObject() {
       return !!Object.keys(this.object).length
@@ -132,7 +147,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('Objects', ['saveObjData']),
+    ...mapActions('Objects', ['saveObjData', 'getUserObjects']),
 
     scrollBot() {
       this.$refs.scrollParent.scrollTo({
