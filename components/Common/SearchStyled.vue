@@ -1,31 +1,32 @@
 <template>
-  <v-combobox
-    v-model='currentData'
-    :chips='isChips'
-    :class='isClass'
-    :clearable='isClearable'
-    :dense='isDense'
-    :disabled='isDisabled'
-    :hide-details='isHideDetails'
-    :hide-no-data='isHideNoData'
-    :hide-selected='isHideSelected'
-    :item-text='isItemText'
-    :item-value='isItemValue'
-    :items='isItems'
-    :loading='isLoading'
-    :outlined='isOutlined'
-    :placeholder='isPlaceholder'
-    :return-object='isReturnObject'
-    :search-input.sync='localSearchInputSync'
-    class='styleSearch'
-    @change="$emit('change-search', localSelected)"
-    @click:clear="$emit('click-clear')"
-    @update:search-input="$emit('update-search-input', localSearchInputSync)"
-  >
-    <template v-slot:append>
-      <v-icon class='selectIcon'></v-icon>
-    </template>
-  </v-combobox>
+    <v-combobox
+      class="styleSearch"
+      :class="isClass"
+      :outlined="isOutlined"
+      :dense="isDense"
+      :hide-details="isHideDetails"
+      :hide-selected="isHideSelected"
+      :placeholder="isPlaceholder"
+      :loading="isLoading"
+      :disabled="isDisabled"
+      :hide-no-data="isHideNoData"
+      :items="isItems"
+      :chips="isChips"
+      :item-text="isItemText"
+      :item-value="isItemValue"
+      :return-object="isReturnObject"
+      :clearable="isClearable"
+      @click:clear="$emit('click-clear')"
+      :search-input.sync="localSearchInputSync"
+      v-model="currentData"
+      @update:search-input="$emit('update-search-input', localSearchInputSync)"
+      @change="$emit('change-search', localSelected)"
+      :menu-props="{value: false}"
+      >
+      <template v-slot:append>
+        <v-icon class="selectIcon"></v-icon>
+      </template>
+    </v-combobox>
 </template>
 
 <script>
@@ -113,7 +114,7 @@ export default {
       set(value) {
         this.localSelected = value
       }
-    }
+    },
   },
   watch: {
     internalData: function(newVal, oldVal) {

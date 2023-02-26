@@ -16,8 +16,6 @@
         <v-img
           alt=''
           class='list_elem_wrapper__img_container__img'
-          max-width="300"
-          width="300"
           height="100%"
           cover
           :src="$store.getters.getImageByEClientFilesObj(article.e_client_files)"

@@ -172,7 +172,7 @@ export default {
     }
 
     &__icon_wrapper {
-      display: grid;
+      text-align: center;
     }
 
     &__hide_block {
