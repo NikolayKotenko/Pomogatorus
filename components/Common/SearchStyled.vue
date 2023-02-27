@@ -21,11 +21,10 @@
       v-model="currentData"
       @update:search-input="$emit('update-search-input', localSearchInputSync)"
       @change="$emit('change-search', localSelected)"
-      :menu-props="{value: false}"
       >
-      <template v-slot:append>
-        <v-icon class="selectIcon"></v-icon>
-      </template>
+<!--      <template v-slot:append>-->
+<!--        <v-icon class="selectIcon"></v-icon>-->
+<!--      </template>-->
     </v-combobox>
 </template>
 
@@ -115,6 +114,12 @@ export default {
         this.localSelected = value
       }
     },
+    computedMenu(){
+      if (! this.localSearchInputSync) return false;
+      if (this.localSelected) return false;
+
+      return (this.localSearchInputSync.length > 2);
+    }
   },
   watch: {
     internalData: function(newVal, oldVal) {
@@ -149,6 +154,16 @@ export default {
   min-height: 60px !important;
   max-height: 60px;
 
+  .v-select__selections{
+    height: 60px;
+  }
+  .v-input__append-inner{
+    height: 60px;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+  }
   .v-select__slot {
     color: #37392E !important;
 

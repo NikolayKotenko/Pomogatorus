@@ -1,5 +1,5 @@
 <template>
-    <div class="subheader">
+    <div class="subheader custom_grid_system">
         <v-breadcrumbs :items="$store.state.breadcrumbs">
           <template v-slot:item="{ item }">
             <v-breadcrumbs-item
@@ -75,6 +75,9 @@ class ConstructBreadcrumbs
   max-width: 1160px;
   margin: 0 auto;
   width: 100%;
+  .v-breadcrumbs{
+    padding-left: 15px;
+  }
 }
 </style>
 

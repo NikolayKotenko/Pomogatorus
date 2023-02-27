@@ -38,10 +38,14 @@
           >
           </ButtonStyled>
           <div class="list_elem_wrapper__preview_content__buttons__social_btns">
-            <v-icon class="list_elem_wrapper__preview_content__buttons__social_btns__btn">mdi-eye</v-icon>
-            <span>212</span>
-            <v-icon class="list_elem_wrapper__preview_content__buttons__social_btns__btn">mdi-cards-heart</v-icon>
-            <span>94</span>
+            <div class="list_elem_wrapper__preview_content__buttons__social_btns__wrapper">
+              <v-icon class="list_elem_wrapper__preview_content__buttons__social_btns__wrapper__btn">mdi-eye</v-icon>
+              <span>212</span>
+            </div>
+            <div class="list_elem_wrapper__preview_content__buttons__social_btns__wrapper">
+              <v-icon class="list_elem_wrapper__preview_content__buttons__social_btns__wrapper__btn">mdi-cards-heart</v-icon>
+              <span>94</span>
+            </div>
           </div>
         </div>
 

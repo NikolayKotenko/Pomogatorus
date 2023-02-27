@@ -1,36 +1,24 @@
-.main__left_column {
+.custom_grid_system {
   @media only screen and (min-width: 0px) and (max-width: 368px){
-    max-width: 300px;
+    max-width: 300px!important;
   }
   @media only screen and (min-width: 368px) and (max-width: 468px){
-    max-width: 368px;
+    max-width: 368px!important;
   }
   @media only screen and (min-width: 468px) {
-    max-width: 468px;
+    max-width: 468px!important;
   }
-  @media only screen and (min-width: 568px) {
-    max-width: 568px;
-  }
-  @media only screen and (min-width: 668px) {
-    max-width: 668px;
-  }
-  @media only screen and (min-width: 668px) {
-    max-width: 668px;
+  @media only screen and (min-width: 576px) {
+    max-width: 540px!important;
   }
   @media only screen and (min-width: 768px) {
-    max-width: 768px;
+    max-width: 720px!important;
   }
-  @media only screen and (min-width: 868px) {
-    max-width: 868px;
+  @media only screen and (min-width: 992px) {
+    max-width: 960px!important;
   }
-  @media only screen and (min-width: 968px) {
-    max-width: 968px;
-  }
-  @media only screen and (min-width: 1068px) {
-    max-width: 1068px;
-  }
-  @media only screen and (min-width: 1168px) {
-    max-width: 1168px;
+  @media only screen and (min-width: 1200px) {
+    max-width: 1140px!important;
   }
 }
 @media only screen and (max-width: 1268px) {
@@ -95,7 +83,7 @@
 
 
   &__tag_container{
-    height: 1.2em;
+    height: 25px;
     font-size: 1em;
     color: #777777 !important;
     white-space: nowrap;
@@ -159,7 +147,7 @@
           //white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
-
+          height: 60px;
 
 
           //&:where(:hover, :focus-visible) {
@@ -172,7 +160,12 @@
           font-size: 1em;
           color: #777777;
           font-weight: normal;
-
+          @media only screen and (min-width: 0px) and (max-width: 468px){
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-size: 0.9em;
+          }
         }
       }
 
@@ -284,9 +277,14 @@ $orangeButton: #F79256;
       font-size: 0.9em;
       align-items: flex-end;
       color: #857885;
+      display: inline-flex;
+      flex-wrap: wrap;
 
-      &__btn {
-        padding-left: 0.9em;
+      &__wrapper {
+
+        &__btn {
+          padding-left: 0.9em;
+        }
       }
 
       &:active {

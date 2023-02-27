@@ -5,7 +5,7 @@
     <SubHeader v-if='$device.isDesktop && loadComponent' />
     <v-main id='main_content' class='main'>
       <VerticalMenu class="fixed_left_menu"></VerticalMenu>
-      <Nuxt class="main__left_column"/>
+      <Nuxt class="custom_grid_system main__left_column"/>
       <CurrentObjects class="main__right_column" v-if="! listExcludedRightColumn"></CurrentObjects>
     </v-main>
     <!-- КАСКАДНЫЕ МОДАЛКИ -->
@@ -189,10 +189,12 @@ body {
   padding: unset!important;
   &__left_column{
     width: auto;
+    display: grid;
+    grid-row-gap: 2em;
     //margin-left: unset !important;
   }
   &__right_column{
-    @media only screen and (max-width: 1000px) {
+    @media only screen and (max-width: 1200px) {
       display: none !important;
     }
     padding: 20px!important;

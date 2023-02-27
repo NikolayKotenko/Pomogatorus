@@ -1,6 +1,6 @@
 <template>
   <v-app-bar id='navbar' app class='header' dark elevate-on-scroll>
-    <v-container class="d-flex" style="align-items: center">
+    <v-container class="d-flex custom_grid_system" style="align-items: center">
       <v-app-bar-nav-icon v-if='isMobile' @click='showDrawer'></v-app-bar-nav-icon>
       <v-toolbar-title v-if='isMobile'>
         <router-link :to='getCurrentRoute.path' style='color: unset; text-decoration: unset'>{{ getCurrentRoute.title }}
@@ -135,6 +135,9 @@ export default {
   top: 0;
   z-index: 999;
   transition: all 0.4s ease-in-out;
+  .v-breadcrumbs{
+    padding-left: 15px;
+  }
 
   ::v-deep .v-toolbar__content {
     width: 100%;

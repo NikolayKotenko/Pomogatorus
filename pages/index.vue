@@ -16,11 +16,11 @@
         @click-clear="$store.dispatch('SearchModule/getListBasedArticles'); selectedChips = ''"
       >
       </SearchStyled>
-      <ChipsStyled
-        :list-chips="$store.state.PopularSelectionsModule.list_selections.map((elem) => elem.name)"
-        @click-chip="setChip"
-      >
-      </ChipsStyled>
+<!--      <ChipsStyled-->
+<!--        :list-chips="$store.state.PopularSelectionsModule.list_selections.map((elem) => elem.name)"-->
+<!--        @click-chip="setChip"-->
+<!--      >-->
+<!--      </ChipsStyled>-->
     </div>
     <div v-if='$store.state.SearchModule.listArticles.length' class='list_container'>
       <Article v-for='(article, index) in $store.state.SearchModule.listArticles' :key='index' :article='article' />
