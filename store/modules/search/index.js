@@ -5,6 +5,7 @@ export default {
   namespaced: true,
   state: {
     listArticles: [],
+    listVariables: [],
     loading: false,
     debounceTimeout: null,
   },
@@ -16,6 +17,9 @@ export default {
       state.listArticles = [];
       state.listArticles = payload
     },
+    changeListVariables(state, array) {
+      state.listVariables = array;
+    },
   },
   actions: {
     async getArticlesBySymbols({ commit }, symbols) {
@@ -25,9 +29,17 @@ export default {
       this.debounceTimeout = setTimeout(async () => {
         commit('changeStateLoading', true);
 
-        const queryFilter = '?filter[name]=' + symbols;
+        const result = await Request.get(
+          `${this.state.BASE_URL}/entity/articles/search/{q}?q=${symbols}`
+        );
+        commit("changeListVariables", result.data);
+
+        let query = '?';
+        result.data.forEach((elem) => query += (elem.query +'&'));
+        console.log('query', query)
+
         const response = await Request.get(
-          this.state.BASE_URL + '/entity/articles' + queryFilter
+          this.state.BASE_URL + '/entity/articles' + query
         );
         commit('setListArticles', response.data)
         commit('changeStateLoading', false);

@@ -117,4 +117,15 @@ export default class Request {
     const checkExist = this.parseCookies()
     return checkExist.hasOwnProperty('accessToken') ? checkExist.accessToken : null
   }
+
+  static ConstructFilterQuery(arrNameParam = []) {
+    let result = "";
+    for (let [key, value] of Object.entries(arrNameParam)) {
+      result += "filter[" + key + "]=" + value + "&";
+    }
+    result = result.slice(0, -1);
+
+    // console.log("res", result);
+    return "?" + result;
+  }
 }
