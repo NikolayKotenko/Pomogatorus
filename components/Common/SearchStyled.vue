@@ -15,15 +15,16 @@
       :item-text="isItemText"
       :item-value="isItemValue"
       :return-object="isReturnObject"
-      :clearable="isClearable"
+      :clearable="(localSearchInputSync || localSelected) ? isClearable : false"
       @click:clear="$emit('click-clear')"
       :search-input.sync="localSearchInputSync"
       v-model="currentData"
       @update:search-input="$emit('update-search-input', localSearchInputSync)"
       @change="$emit('change-search', localSelected)"
+      :menu-props="(computedSearchInputState && compareSearchStringAndExistEntry) ? {} : {value: false}"
       >
 <!--      <template v-slot:append>-->
-<!--        <v-icon class="selectIcon"></v-icon>-->
+<!--        <v-icon class="selectIcon">mdi-select</v-icon>-->
 <!--      </template>-->
     </v-combobox>
 </template>
@@ -91,7 +92,7 @@ export default {
     },
     isClearable: {
       type: Boolean,
-      default: true
+      default: false
     },
     isChips: {
       type: Boolean,
@@ -114,11 +115,15 @@ export default {
         this.localSelected = value
       }
     },
-    computedMenu(){
+    computedSearchInputState(){
       if (! this.localSearchInputSync) return false;
-      if (this.localSelected) return false;
 
       return (this.localSearchInputSync.length > 2);
+    },
+    compareSearchStringAndExistEntry(){
+      if (! this.localSelected) return true;
+
+      return this.localSelected[this.isItemText] !== this.localSearchInputSync
     }
   },
   watch: {
@@ -127,6 +132,8 @@ export default {
 
       this.$emit('update-search-input', newVal)
     }
+  },
+  methods:{
   }
 }
 </script>
@@ -151,18 +158,22 @@ export default {
   font-size: 1.8em !important;
   border-radius: 5px;
   //min-width: 1144px;
-  min-height: 60px !important;
-  max-height: 60px;
 
+  .v-input__slot{
+    height: 60px;
+  }
   .v-select__selections{
     height: 60px;
   }
   .v-input__append-inner{
-    height: 60px;
-    display: flex;
-    align-items: center;
-    padding: 0;
-    margin: 0;
+    .v-input__icon--append{
+      margin-top: 8px;
+    }
+    //height: 60px;
+    //display: flex;
+    //align-items: center;
+    //padding: 0;
+    //margin: 0;
   }
   .v-select__slot {
     color: #37392E !important;

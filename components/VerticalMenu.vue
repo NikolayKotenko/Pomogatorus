@@ -144,7 +144,7 @@ export default {
 }
 
 
-@media only screen and (max-width: 1500px) {
+@media only screen and (max-width: 1600px) {
   .vertical_menu{
     display: none;
   }

@@ -2,7 +2,7 @@
   <v-app class='app'>
     <Header />
     <BurgerMenu v-if='!$device.isDesktop' />
-    <SubHeader v-if='$device.isDesktop && loadComponent' />
+    <div style="min-height: 57px;"><SubHeader v-if='$device.isDesktop && loadComponent'/></div>
     <v-main id='main_content' class='main'>
       <VerticalMenu class="fixed_left_menu"></VerticalMenu>
       <Nuxt class="custom_grid_system main__left_column"/>
@@ -188,9 +188,7 @@ body {
   margin-bottom: 65px;
   padding: unset!important;
   &__left_column{
-    width: auto;
-    display: grid;
-    grid-row-gap: 2em;
+    width: 100%;
     //margin-left: unset !important;
   }
   &__right_column{
@@ -200,6 +198,9 @@ body {
     padding: 20px!important;
     padding-top: 10px!important;
     background: #ffffff;
+    position: absolute;
+    right: -275px;
+    margin: unset;
   }
 }
 .v-main__wrap{

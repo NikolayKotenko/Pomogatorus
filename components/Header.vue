@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar id='navbar' app class='header' dark elevate-on-scroll>
+  <v-app-bar id='navbar' app class='header' :class="{isMobile: isMobile}" dark elevate-on-scroll>
     <v-container class="d-flex custom_grid_system" style="align-items: center">
       <v-app-bar-nav-icon v-if='isMobile' @click='showDrawer'></v-app-bar-nav-icon>
       <v-toolbar-title v-if='isMobile'>
@@ -135,6 +135,10 @@ export default {
   top: 0;
   z-index: 999;
   transition: all 0.4s ease-in-out;
+  height: 64px!important;
+  &.isMobile{
+    height: 56px!important;
+  }
   .v-breadcrumbs{
     padding-left: 15px;
   }

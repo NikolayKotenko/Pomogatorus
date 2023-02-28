@@ -91,8 +91,8 @@ export default {
   },
   async mounted() {
     this.$route.meta.title = this.main_tag?.name
-    await this.$store.dispatch('getArticlesInfo', this.$route.params.code)
-    await this.$store.dispatch('getQuestionsInfo', this.$route.params.code)
+    await this.$store.dispatch('PopularSelectionsModule/getArticlesInfo', this.$route.params.code)
+    await this.$store.dispatch('PopularSelectionsModule/getQuestionsInfo', this.$route.params.code)
   },
   watch: {},
   computed: {},

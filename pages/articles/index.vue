@@ -1,7 +1,10 @@
 <template>
-  <div v-if='articles' class='list_container'>
-    <Article v-for='(article, index) in articles' :key='index' :article='article' />
-  </div>
+  <v-container class='list_container'>
+    <!-- TODO ругается без клиент онли шо пздц ПАМАГИТЕ   -->
+    <client-only v-if='articles'>
+      <Article v-for='(article, index) in articles' :key='index' :article='article' />
+    </client-only>
+  </v-container>
 </template>
 
 <script>

@@ -28,10 +28,13 @@ export default  {
   computed: {},
   methods: {
     setSubHeaders(){
-      const menuItem = this.$store.getters.menuItems.find((elem) =>  this.$route.path.match(elem.path));
-      if (! menuItem) return false;
+      const menuItem = this.$store.getters.menuItems.find((elem) =>  {
+        if (elem.path !== '/') {
+          return this.$route.path.match(elem.path)
+        }
+      });
 
-      const mainPath = new ConstructBreadcrumbs(menuItem.title, menuItem.path);
+      const mainPath = new ConstructBreadcrumbs(menuItem?.title, menuItem?.path);
       const secondPath = () => {
         if (Object.keys(this.$route.params).length)
           return new ConstructBreadcrumbs(this.$route.meta.title)
