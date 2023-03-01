@@ -36,7 +36,7 @@ export default {
 
         let query = '?';
         result.data.forEach((elem) => query += (elem.query +'&'));
-        console.log('query', query)
+        // console.log('query', query)
 
         const response = await Request.get(
           this.state.BASE_URL + '/entity/articles' + query
@@ -44,7 +44,7 @@ export default {
         commit('setListArticles', response.data)
         commit('changeStateLoading', false);
 
-        console.log('getArticlesBySymbols - ', response)
+        // console.log('getArticlesBySymbols - ', response)
         return response;
 
       }, 1000)

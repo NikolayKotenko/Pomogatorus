@@ -26,6 +26,14 @@
 <!--      <template v-slot:append>-->
 <!--        <v-icon class="selectIcon">mdi-select</v-icon>-->
 <!--      </template>-->
+      <template v-slot:item="data" v-if="isCustomTemplateSelections">
+        <v-list-item-content @click="watchDataRedirect(data.item)">
+          <v-list-item-title v-html="data.item.text"></v-list-item-title>
+          <v-list-item-subtitle
+            v-html="data.item.category"
+          ></v-list-item-subtitle>
+        </v-list-item-content>
+      </template>
     </v-combobox>
 </template>
 
@@ -101,6 +109,10 @@ export default {
     internalData: {
       type: [String, Number],
       default: null
+    },
+    isCustomTemplateSelections:{
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -134,6 +146,9 @@ export default {
     }
   },
   methods:{
+    watchDataRedirect(data){
+      this.$emit('redirect', data)
+    }
   }
 }
 </script>

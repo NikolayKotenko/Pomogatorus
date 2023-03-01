@@ -10,10 +10,12 @@
         :is-item-text="'text'"
         :is-item-value="'text'"
         :is-hide-selected="false"
+        :is-custom-template-selections="true"
         :internal-data="selectedChips"
         @update-search-input="localGetListArticles"
         @change-search="setSelected"
         @click-clear="$store.dispatch('SearchModule/getListBasedArticles'); selectedChips = ''"
+        @redirect="redirectData"
       >
       </SearchStyled>
 <!--      <ChipsStyled-->
@@ -60,7 +62,6 @@ export default {
   },
   methods: {
     setSelected(selectedObj){
-      console.log('setSelected', selectedObj)
       this.selectedArticle = selectedObj;
     },
     async localGetListArticles(searchString){
@@ -68,6 +69,14 @@ export default {
     },
     setChip(chip) {
       this.selectedChips = chip
+    },
+    redirectData(data){
+      if (data.category === 'Тэги'){
+        this.$router.push({path: "/podborki/"+data.data.code});
+      }
+      if (data.category === 'Статьи'){
+        this.$router.push({path: "/articles/"+data.data.id});
+      }
     }
   }
 }
