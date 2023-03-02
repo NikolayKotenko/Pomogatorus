@@ -4,21 +4,21 @@
      <v-tooltip left>
        <template v-slot:activator='{ on, attrs }'>
          <v-btn
-           :href='$store.getters.menuItems[0].path'
+           :href='$store.getters.menuItems[1].path'
            text
            class="vertical_menu__element__btn"
          >
            <v-icon
              class="vertical_menu__element__icon"
              v-bind='attrs' v-on='on'
-             v-if="$store.getters.menuItems[0].visible"
+             v-if="$store.getters.menuItems[1].visible"
              large
            >
-             mdi-magnify
+             {{$store.getters.menuItems[1].icon}}
            </v-icon>
          </v-btn>
        </template>
-       <span class="vertical_menu__element__title">{{ $store.getters.menuItems[0].title }}</span>
+       <span class="vertical_menu__element__title">{{ $store.getters.menuItems[1].title }}</span>
      </v-tooltip>
    </div>
    <div class="vertical_menu__element">

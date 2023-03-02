@@ -112,7 +112,10 @@ export default {
   },
   mounted() {
     this.fuckinMiddleware()
-    this.setLoadComponent()
+    window.onNuxtReady((app) => {
+      // console.log('Nuxt ready!')
+      this.loadComponent = true
+    })
   },
   computed: {
     ...mapState({
@@ -134,9 +137,6 @@ export default {
     }
   },
   methods: {
-    setLoadComponent() {
-      this.loadComponent = true
-    },
     async fuckinMiddleware() {
       if (this.$route.query.userEmail) {
         await this.$store.dispatch('loginUser', {

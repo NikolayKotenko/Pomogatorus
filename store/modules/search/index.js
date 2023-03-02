@@ -34,12 +34,8 @@ export default {
         );
         commit("changeListVariables", result.data);
 
-        let query = '?';
-        result.data.forEach((elem) => query += (elem.query +'&'));
-        // console.log('query', query)
-
         const response = await Request.get(
-          this.state.BASE_URL + '/entity/articles' + query
+          this.state.BASE_URL + '/entity/articles?filter[name_or_tags]='+symbols
         );
         commit('setListArticles', response.data)
         commit('changeStateLoading', false);

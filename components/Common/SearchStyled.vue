@@ -7,8 +7,8 @@
       :hide-details="isHideDetails"
       :hide-selected="isHideSelected"
       :placeholder="isPlaceholder"
-      :loading="isLoading"
-      :disabled="isDisabled"
+      :loading="false"
+      :disabled="false"
       :hide-no-data="isHideNoData"
       :items="isItems"
       :chips="isChips"
@@ -28,19 +28,24 @@
 <!--      </template>-->
       <template v-slot:item="data" v-if="isCustomTemplateSelections">
         <v-list-item-content @click="watchDataRedirect(data.item)">
-          <v-list-item-title v-html="data.item.text"></v-list-item-title>
-          <v-list-item-subtitle
-            v-html="data.item.category"
-          ></v-list-item-subtitle>
+
+          <v-list-item-title v-if="data.item.category === 'Тэги'">
+            <hash-tag-styled :text="getTitleString(data.item.text)"></hash-tag-styled>
+          </v-list-item-title>
+          <v-list-item-title v-else>
+            <span v-html="getTitleString(data.item.text)"></span>
+          </v-list-item-title>
+
         </v-list-item-content>
       </template>
     </v-combobox>
 </template>
 
 <script>
-
+import HashTagStyled from "~/components/Common/HashTagStyled";
 export default {
   name: 'SearchStyled',
+  components: { HashTagStyled },
   data: () => ({
     localSearchInputSync: '',
     localSelected: null
@@ -65,14 +70,6 @@ export default {
     isPlaceholder: {
       type: String,
       default: ''
-    },
-    isLoading: {
-      type: Boolean,
-      default: false
-    },
-    isDisabled: {
-      type: Boolean,
-      default: false
     },
     isHideNoData: {
       type: Boolean,
@@ -136,7 +133,7 @@ export default {
       if (! this.localSelected) return true;
 
       return this.localSelected[this.isItemText] !== this.localSearchInputSync
-    }
+    },
   },
   watch: {
     internalData: function(newVal, oldVal) {
@@ -148,7 +145,27 @@ export default {
   methods:{
     watchDataRedirect(data){
       this.$emit('redirect', data)
-    }
+    },
+    getTitleString(text){
+      const { start, middle, end } = this.getMaskedCharacters(text)
+      return `${start}${this.genHighlight(middle)}${end}`
+    },
+
+    //Вспомогательные функции
+    getMaskedCharacters(text){
+      const searchInput = (this.localSearchInputSync || '').toString().toLocaleLowerCase()
+      const index = text.toLocaleLowerCase().indexOf(searchInput)
+
+      if (index < 0) return { start: text, middle: '', end: '' }
+
+      const start = text.slice(0, index)
+      const middle = text.slice(index, index + searchInput.length)
+      const end = text.slice(index + searchInput.length)
+      return { start, middle, end }
+    },
+    genHighlight (text) {
+      return `<span class="v-list-item__mask">${text}</span>`
+    },
   }
 }
 </script>

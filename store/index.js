@@ -85,13 +85,13 @@ const createStore = () => {
             title: 'Главная',
             path: '/',
             icon: 'mdi-home-variant-outline',
-            visible: true,
+            visible: false,
           },
           {
             title: 'Статьи',
             path: '/articles',
             icon: 'mdi-message-text',
-            visible: false,
+            visible: true,
           },
           {
             title: 'Подборки',
