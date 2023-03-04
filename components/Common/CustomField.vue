@@ -149,6 +149,7 @@
 </template>
 
 <script>
+import Request from '../../services/request'
 import Dropzone from 'nuxt-dropzone'
 import 'nuxt-dropzone/dropzone.css'
 import { mapState } from 'vuex'
@@ -195,7 +196,7 @@ export default {
       default: false
     },
     data: {
-      type: String,
+      type: [String,Array],
       default: ''
     },
     isDisabled: {
@@ -275,12 +276,13 @@ export default {
       internalData: '',
       isFocused: false,
       options: {
-        url: 'http://httpbin.org/anything',
-        // url: this.$store.state.BASE_URL + '/entity/files',
+        // url: 'http://httpbin.org/anything',
+        url: this.$store.state.BASE_URL + '/entity/files',
         destroyDropzone: false,
         duplicateCheck: true,
         headers: {
-          Authorization: getCookie('accessToken')
+          // Authorization: getCookie('accessToken')
+          Authorization: Request.getAccessTokenInCookies()
         }
       },
       dzData: [],
@@ -333,9 +335,13 @@ export default {
     },
     sendingData(file, xhr, formData) {
       formData.append('uuid', file.upload.uuid)
+
+      //TODO вручную вписанные идшники объекта и свойства "наличие подвала" basement_area
+      formData.append('id_object', 45)
+      formData.append('id_object_property', 48)
     },
     successData(file, response) {
-      // console.log(response)
+      console.log('successData', response)
       const formatObj = Object.assign({}, response)
       this.dzData.push(formatObj)
       this.dropzone_uploaded.push(formatObj)

@@ -111,7 +111,7 @@ export default class Request {
     return list
   }
   static getAccessTokenInCookies = () => {
-    // if (process.env.NODE_ENV === 'development') return '666777'
+    if (process.env.NODE_ENV === 'development') return '666777'
 
     // console.log('this.parseCookies()', this.parseCookies())
     const checkExist = this.parseCookies()
