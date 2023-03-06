@@ -81,8 +81,7 @@
           >
             <template v-slot:selection='data'>
               <div class='uploaded-image' v-bind='data.attrs'>
-                <!-- data.item.src -->
-                <img alt='' src='@/assets/images/typeobject.png'>
+                <img :alt='data.item.alt_image' :src='$store.state.BASE_URL + data.item.full_path'>
               </div>
             </template>
           </v-autocomplete>
@@ -154,21 +153,6 @@ import Dropzone from 'nuxt-dropzone'
 import 'nuxt-dropzone/dropzone.css'
 import { mapState } from 'vuex'
 
-function getCookie(name) {
-  if (document) {
-    var nameEQ = name + '='
-    var ca = document.cookie.split(';')
-    for (var i = 0; i < ca.length; i++) {
-      var c = ca[i]
-      while (c.charAt(0) == ' ') c = c.substring(1, c.length)
-      if (c.indexOf(nameEQ) == 0) {
-        return decodeURIComponent(c.substring(nameEQ.length, c.length))
-      }
-    }
-    return null
-  }
-}
-
 export default {
   components: {
     Dropzone
@@ -196,7 +180,7 @@ export default {
       default: false
     },
     data: {
-      type: [String,Array],
+      type: [String, Array, Number],
       default: ''
     },
     isDisabled: {
@@ -269,6 +253,14 @@ export default {
     },
     indexArray: {
       type: Number
+    },
+    idObject: {
+      type: [Number, String],
+      required: true
+    },
+    idProperty: {
+      type: [Number, String],
+      required: true
     }
   },
   data() {
@@ -276,18 +268,19 @@ export default {
       internalData: '',
       isFocused: false,
       options: {
-        // url: 'http://httpbin.org/anything',
         url: this.$store.state.BASE_URL + '/entity/files',
         destroyDropzone: false,
         duplicateCheck: true,
         headers: {
-          // Authorization: getCookie('accessToken')
           Authorization: Request.getAccessTokenInCookies()
         }
       },
       dzData: [],
       dropzone_uploaded: []
     }
+  },
+  mounted() {
+    this.checkDropZoneFiles()
   },
   computed: {
     ...mapState('Tabs', ['inputTypes']),
@@ -328,6 +321,21 @@ export default {
     },
 
     /* DROPZONE */
+    checkDropZoneFiles() {
+      if (this.type === 'fail' && Array.isArray(this.data) && this.data.length) {
+        this.getDropzoneData()
+      }
+    },
+    getDropzoneData() {
+      this.$nextTick(() => {
+        this.dropzone_uploaded = this.data
+        this.dzData = this.data
+
+        this.dropzone_uploaded.forEach(file => {
+          this.$refs.dropzone.manuallyAddFile(file, this.$store.state.BASE_URL + file.full_path)
+        })
+      })
+    },
     forceDropzone() {
       if (!this.isDropzoneNotEmpty) {
         this.$refs.dropzoneTemplate.click()
@@ -336,17 +344,16 @@ export default {
     sendingData(file, xhr, formData) {
       formData.append('uuid', file.upload.uuid)
 
-      //TODO вручную вписанные идшники объекта и свойства "наличие подвала" basement_area
-      formData.append('id_object', 45)
-      formData.append('id_object_property', 48)
+      formData.append('id_object', parseInt(this.idObject))
+      formData.append('id_object_property', parseInt(this.idProperty))
     },
     successData(file, response) {
       console.log('successData', response)
-      const formatObj = Object.assign({}, response)
+      const formatObj = Object.assign({}, response.data)
       this.dzData.push(formatObj)
       this.dropzone_uploaded.push(formatObj)
 
-      this.$emit('uploaded-file', formatObj)
+      this.$emit('uploaded-file', formatObj.full_path)
     }
   }
 }

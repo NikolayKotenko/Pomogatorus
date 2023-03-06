@@ -24,7 +24,7 @@
       >
         <v-card flat>
           <div class='tab-items-wrapper'>
-            <template v-if='isLoadingData'>
+            <template v-if='isLoadingData || !dataObject || !Object.keys(dataObject).length'>
               <v-progress-circular
                 :size='50'
                 color='primary'
@@ -43,6 +43,8 @@
                 </div>
                 <CustomField
                   :data='getObjectProperty(tabItem.code)'
+                  :id-object='dataObject.id'
+                  :id-property='tabItem.id'
                   :items='getItems(tabItem)'
                   :label='tabItem.name'
                   :type='getInputType(tabItem)'
@@ -112,7 +114,8 @@ export default {
     changeAnswer(value, code) {
       this.$emit('update-prop', { key: code, value })
     },
-    changeFileData(data, code) {
+    changeFileData(value, code) {
+      this.$emit('update-prop', { key: code, value })
     },
     calcCount(indexTab, indexItem) {
       return `${indexTab}.${indexItem + 1}`
