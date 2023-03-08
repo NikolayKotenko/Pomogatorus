@@ -81,6 +81,9 @@ export default {
       const { data } = await Request.get(this.state.BASE_URL + `/dictionary/property-object`)
       commit('setInputTypes', data)
     },
+    async removeFile({ commit }, payload) {
+      await Request.delete(this.state.BASE_URL + `/entity/files/${payload}`)
+    },
   },
   getters: {},
 }

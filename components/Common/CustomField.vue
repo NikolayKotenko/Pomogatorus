@@ -82,6 +82,24 @@
             <template v-slot:selection='data'>
               <div class='uploaded-image' v-bind='data.attrs'>
                 <img :alt='data.item.alt_image' :src='$store.state.BASE_URL + data.item.full_path'>
+                <div class='uploaded-image__remove'>
+                  <v-icon color='#000000' @click='onRemoveFile(data.item.id)'>mdi-trash-can</v-icon>
+                </div>
+
+                <v-overlay
+                  :absolute='true'
+                  :value='getLoadingImg(data.item.id)'
+                  :z-index='2'
+                >
+                  <v-progress-circular
+                    v-if='getLoadingImg(data.item.id)'
+                    :indeterminate='true'
+                    :size='30'
+                    color='#95D7AE'
+                    style='margin: auto'
+                    width='4'
+                  ></v-progress-circular>
+                </v-overlay>
               </div>
             </template>
           </v-autocomplete>
@@ -151,7 +169,7 @@
 import Request from '../../services/request'
 import Dropzone from 'nuxt-dropzone'
 import 'nuxt-dropzone/dropzone.css'
-import { mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 
 export default {
   components: {
@@ -276,7 +294,8 @@ export default {
         }
       },
       dzData: [],
-      dropzone_uploaded: []
+      dropzone_uploaded: [],
+      loadedImages: []
     }
   },
   mounted() {
@@ -308,6 +327,8 @@ export default {
     }
   },
   methods: {
+    ...mapActions('Tabs', ['removeFile']),
+
     onClick() {
       this.$emit('on-click')
     },
@@ -343,7 +364,6 @@ export default {
     },
     sendingData(file, xhr, formData) {
       formData.append('uuid', file.upload.uuid)
-
       formData.append('id_object', parseInt(this.idObject))
       formData.append('id_object_property', parseInt(this.idProperty))
     },
@@ -351,9 +371,29 @@ export default {
       console.log('successData', response)
       const formatObj = Object.assign({}, response.data)
       this.dzData.push(formatObj)
-      this.dropzone_uploaded.push(formatObj)
+      // this.dropzone_uploaded.push(formatObj)
 
       this.$emit('uploaded-file', formatObj.full_path)
+    },
+    async onRemoveFile(id) {
+      this.loadedImages.push(id)
+
+      await this.removeFile(id)
+        .then(() => {
+          let index = this.dropzone_uploaded.findIndex(elem => elem.id === id)
+          if (index !== -1) {
+            this.dropzone_uploaded.splice(index, 1)
+          }
+        })
+        .finally(() => {
+          let index = this.dropzone_uploaded.findIndex(elem => elem.id === id)
+          if (index !== -1) {
+            this.loadedImages.splice(index, 1)
+          }
+        })
+    },
+    getLoadingImg(id) {
+      return this.loadedImages.includes(id)
     }
   }
 }

@@ -134,7 +134,7 @@ export default {
         address: this.newObjAddress
       })
 
-      await this.$store.dispatch('loginByToken')
+      await this.getUserObjects(this.getUserId)
 
       if (this.$store.state.AuthModule.userData.objects.length < 1) {
         this.$store.commit('set_currentObject', data)
