@@ -36,7 +36,7 @@
         </div>
 
         <div class='object-wrapper-documents__docs'>
-          <div class='object-wrapper-documents__docs__dropzone'></div>
+          <ListFilesStyled :id-object="objectData.id"></ListFilesStyled>
         </div>
       </div>
 
@@ -88,10 +88,11 @@ import SelectObjectStyled from '../Common/SelectObjectStyled'
 import SelectGeo from '../Common/SelectGeo'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import ButtonStyled from '../Common/ButtonStyled'
+import ListFilesStyled from "~/components/Common/ListFilesStyled";
 
 export default {
   name: 'ObjectGlobal',
-  components: { ButtonStyled, SelectGeo, SelectObjectStyled, TabsCustom },
+  components: { ListFilesStyled, ButtonStyled, SelectGeo, SelectObjectStyled, TabsCustom },
   props: {
     objectData: {
       type: Object,

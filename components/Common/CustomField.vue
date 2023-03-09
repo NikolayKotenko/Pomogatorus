@@ -108,7 +108,7 @@
             ref='dropzone'
             :destroyDropzone='true'
             :include-styling='false'
-            :options='options'
+            :options='$store.getters.optionsDropzone'
             :useCustomSlot='true'
             @vdropzone-success='successData'
             @vdropzone-sending='sendingData'
@@ -285,14 +285,6 @@ export default {
     return {
       internalData: '',
       isFocused: false,
-      options: {
-        url: this.$store.state.BASE_URL + '/entity/files',
-        destroyDropzone: false,
-        duplicateCheck: true,
-        headers: {
-          Authorization: 'Bearer ' + Request.getAccessTokenInCookies(),
-        }
-      },
       dzData: [],
       dropzone_uploaded: [],
       loadedImages: []
