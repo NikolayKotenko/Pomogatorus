@@ -290,7 +290,7 @@ export default {
         destroyDropzone: false,
         duplicateCheck: true,
         headers: {
-          Authorization: Request.getAccessTokenInCookies()
+          Authorization: 'Bearer ' + Request.getAccessTokenInCookies(),
         }
       },
       dzData: [],
