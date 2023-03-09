@@ -115,7 +115,9 @@ export default {
         return []
       }
 
-      return this.tabData.filter(tab => tab.d_property_objects.code === 'fail')
+      return this.tabData.filter(tab => {
+           return (tab.d_property_objects) ? (tab.d_property_objects.code === 'fail') : null;
+      })
     },
     getFilesFromObject() {
       if (!this.data || !Object.keys(this.data).length) {
@@ -163,13 +165,21 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-$max-height-image: 120px;
+$max-height-image: 100%;
+$max-width-image: 220px;
 
-.custom-fields .dropzone-files .uploaded-image {
-  max-height: $max-height-image;
+.custom-fields .dropzone-files{
+  height: 100%;
+  margin: unset;
 
-  img {
+  .uploaded-image {
     max-height: $max-height-image;
+    max-width: $max-width-image;
+
+    img {
+      max-height: $max-height-image;
+      max-width: $max-width-image;
+    }
   }
 }
 </style>
