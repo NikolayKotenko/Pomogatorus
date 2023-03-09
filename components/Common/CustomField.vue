@@ -363,9 +363,6 @@ export default {
         this.dropzone_uploaded = this.data.map(file => {
           return _clone(file)
         })
-        // this.dropzone_uploaded = JSON.parse(JSON.stringify(this.data))
-
-        // this.dzData = JSON.parse(JSON.stringify(this.data))
         this.dzData = this.data.map(file => {
           return _clone(file)
         })
