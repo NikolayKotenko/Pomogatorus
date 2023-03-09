@@ -35,7 +35,7 @@
 
             <template v-else>
               <div v-for='(tabItem, index) in tabData' :key='index'
-                   :class='{"active-tab-item": tabItem.active || getObjectProperty(tabItem.code)}'
+                   :class='{"active-tab-item": tabItem.active || isNotEmpty(tabItem.code)}'
                    class='tab-content'>
                 <div class='tab-content__count'>
                   <span v-if='item.code !== "all"'>{{ calcCount(indexTab, index) }}</span>
@@ -43,6 +43,7 @@
                 </div>
                 <CustomField
                   :data='getObjectProperty(tabItem.code)'
+                  :deleted-file='deletedFile'
                   :id-object='dataObject.id'
                   :id-property='tabItem.id'
                   :items='getItems(tabItem)'
@@ -50,6 +51,7 @@
                   :type='getInputType(tabItem)'
                   @update-field='changeAnswer($event, tabItem.code)'
                   @uploaded-file='changeFileData($event, tabItem.code)'
+                  @remove-file='removeFile($event, tabItem.code)'
                   @focus-in='focusIn(tabItem)'
                   @focus-out='focusOut(tabItem)'
                 />
@@ -75,6 +77,10 @@ export default {
     dataObject: {
       type: Object,
       required: true
+    },
+    deletedFile: {
+      type: [Number, String],
+      default: 0
     }
   },
   data: () => ({
@@ -101,6 +107,9 @@ export default {
       this.getTabInfo(code)
       this.$emit('change-tab')
     },
+    isNotEmpty(key) {
+      return this.dataObject[key] ? Array.isArray(this.dataObject[key]) ? !!this.dataObject[key].length : this.dataObject[key] : null
+    },
     getObjectProperty(key) {
       return this.dataObject[key] ? this.dataObject[key] : null
     },
@@ -115,7 +124,10 @@ export default {
       this.$emit('update-prop', { key: code, value })
     },
     changeFileData(value, code) {
-      this.$emit('update-prop', { key: code, value })
+      this.$emit('update-file', { key: code, value })
+    },
+    removeFile(value, code) {
+      this.$emit('remove-file', { key: code, value })
     },
     calcCount(indexTab, indexItem) {
       return `${indexTab}.${indexItem + 1}`

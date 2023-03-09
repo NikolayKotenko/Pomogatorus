@@ -36,7 +36,8 @@
         </div>
 
         <div class='object-wrapper-documents__docs'>
-          <ListFilesStyled :id-object="objectData.id"></ListFilesStyled>
+          <ListFilesStyled :data='object' :id-object='objectData.id'
+                           @remove-from-global='removeFromGlobal'></ListFilesStyled>
         </div>
       </div>
 
@@ -44,8 +45,11 @@
         <TabsCustom
           ref='tabContent'
           :data-object='object'
+          :deleted-file='deletedFile'
           @update-prop='setField'
+          @update-file='setFileField'
           @change-tab='changeTab'
+          @remove-file='removeFile'
         />
 
         <div :class='{"show-more": showMore}' class='more-arrow'>
@@ -88,7 +92,7 @@ import SelectObjectStyled from '../Common/SelectObjectStyled'
 import SelectGeo from '../Common/SelectGeo'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import ButtonStyled from '../Common/ButtonStyled'
-import ListFilesStyled from "~/components/Common/ListFilesStyled";
+import ListFilesStyled from '~/components/Common/ListFilesStyled'
 
 export default {
   name: 'ObjectGlobal',
@@ -102,6 +106,7 @@ export default {
   data: () => ({
     object: {},
     updateProperties: {},
+    deletedFile: 0,
 
     minHeightInput: 76,
     scrollHeight: null,
@@ -179,6 +184,25 @@ export default {
     setField(data) {
       this.object[data.key] = data.value
       this.updateProperties[data.key] = data.value
+    },
+    setFileField(data) {
+      if (!this.object[data.key]) {
+        this.object[data.key] = []
+      }
+      this.object[data.key].push(data.value)
+      this.updateProperties[data.key] = data.value
+    },
+    removeFile(data) {
+      let index = this.object[data.key].findIndex(file => file.id === data.value)
+
+      if (index !== -1) {
+        this.object[data.key].splice(index, 1)
+      }
+    },
+    removeFromGlobal(data) {
+      this.removeFile(data)
+
+      this.deletedFile = data.value
     },
     getObjectFromProp() {
       this.object = this.objectData

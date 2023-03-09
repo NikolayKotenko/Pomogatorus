@@ -2,12 +2,12 @@
   <v-container class='object-wrapper-documents__docs__dropzone custom-fields'>
     <div :class='{"dropzone-column": isDropzoneNotEmpty}' class='dropzone-files'>
       <v-autocomplete
-        v-model='dropzone_uploaded'
+        v-model='getFilesFromObject'
         :append-icon='appendIcon'
         :autofocus='isAutofocus'
         :disabled='isDropzoneNotEmpty'
         :flat='isFlat'
-        :items='dzData'
+        :items='getFilesFromObject'
         :label='label'
         :loading='isLoading'
         :placeholder='placeholder'
@@ -17,9 +17,6 @@
         hide-details
         multiple
         readonly
-        @click='forceDropzone'
-        @focus='focusStart'
-        @focusout='focusEnd'
       >
         <template v-slot:selection='data'>
           <div class='uploaded-image' v-bind='data.attrs'>
@@ -45,24 +42,6 @@
           </div>
         </template>
       </v-autocomplete>
-<!--      <dropzone-->
-<!--        id='dropzone_list_files'-->
-<!--        ref='dropzone_list_files'-->
-<!--        :destroyDropzone='true'-->
-<!--        :include-styling='false'-->
-<!--        :options='$store.getters.optionsDropzone'-->
-<!--        :useCustomSlot='true'-->
-<!--        @vdropzone-success='successData'-->
-<!--        @vdropzone-sending='sendingData'-->
-<!--      >-->
-<!--        <div ref='dropzoneTemplate' class='dropzone-custom-content'>-->
-<!--          <div v-if='isDropzoneNotEmpty' class='separator'></div>-->
-<!--          <div class='dropzone-label'>-->
-<!--            <v-icon color='#B3B3B3' large>mdi-cloud-upload</v-icon>-->
-<!--            <span>Список файлов</span>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </dropzone>-->
     </div>
   </v-container>
 </template>
@@ -70,18 +49,23 @@
 <script>
 import Dropzone from 'nuxt-dropzone'
 import 'nuxt-dropzone/dropzone.css'
-import { mapActions } from "vuex";
+import { mapActions, mapState } from 'vuex'
 
 export default {
-  name: "ListFilesStyled",
+  name: 'ListFilesStyled',
   components: {
     Dropzone
   },
-  props:{
+  props: {
     idObject: {
       type: [Number, String],
       required: true
     },
+    data: {
+      type: Object,
+      required: true
+    },
+
     appendIcon: {
       type: String,
       default: ''
@@ -113,63 +97,59 @@ export default {
     isSolo: {
       type: Boolean,
       default: false
-    },
+    }
   },
   data() {
     return {
       dropzone_uploaded: [],
       dzData: [],
-      loadedImages: []
+      loadedImages: [],
+      fileCodes: {}
     }
   },
-  computed:{
-    isDropzoneNotEmpty() {
-      return !!this.dropzone_uploaded.length
+  computed: {
+    ...mapState('Tabs', ['tabData']),
+
+    getFilesTabs() {
+      if (!this.tabData || !this.tabData.length) {
+        return []
+      }
+
+      return this.tabData.filter(tab => tab.d_property_objects.code === 'fail')
     },
+    getFilesFromObject() {
+      if (!this.data || !Object.keys(this.data).length) {
+        return []
+      }
+
+      let result = []
+      this.getFilesTabs.forEach(tab => {
+        if (this.data[tab.code] && Object.keys(this.data[tab.code]).length) {
+          this.data[tab.code].forEach(file => {
+            result.push(file)
+            this.fileCodes[file.id] = tab.code
+          })
+        }
+      })
+      return result
+    },
+    isDropzoneNotEmpty() {
+      return !!this.getFilesFromObject.length
+    }
   },
-  async mounted() {
-    const response = await this.$store.dispatch('getFilesByFilter', {
-      'id_object': parseInt(this.idObject),
-    })
-    this.dzData = response.data;
-    this.dropzone_uploaded = response.data;
-    console.log('response', response)
-  },
-  methods:{
+  methods: {
     ...mapActions('Tabs', ['removeFile']),
 
-    sendingData(file, xhr, formData) {
-      formData.append('uuid', file.upload.uuid)
-      formData.append('id_object', parseInt(this.idObject))
-    },
-    successData(file, response) {
-      console.log('successData', response)
-      const formatObj = Object.assign({}, response.data)
-      this.dzData.push(formatObj)
-      // this.dropzone_uploaded.push(formatObj)
-
-      this.$emit('uploaded-file', formatObj.full_path)
-    },
-    focusStart() {
-      this.isFocused = true
-      this.$emit('focus-in')
-    },
-    focusEnd() {
-      this.isFocused = false
-      this.$emit('focus-out')
-    },
     async onRemoveFile(id) {
       this.loadedImages.push(id)
 
       await this.removeFile(id)
         .then(() => {
-          let index = this.dropzone_uploaded.findIndex(elem => elem.id === id)
-          if (index !== -1) {
-            this.dropzone_uploaded.splice(index, 1)
-          }
+          let code = this.fileCodes[id]
+          this.$emit('remove-from-global', { key: code, value: id })
         })
         .finally(() => {
-          let index = this.dropzone_uploaded.findIndex(elem => elem.id === id)
+          let index = this.loadedImages.findIndex(elem => elem === id)
           if (index !== -1) {
             this.loadedImages.splice(index, 1)
           }
@@ -177,22 +157,18 @@ export default {
     },
     getLoadingImg(id) {
       return this.loadedImages.includes(id)
-    },
-    forceDropzone() {
-      if (!this.isDropzoneNotEmpty) {
-        this.$refs.dropzoneTemplate.click()
-      }
-    },
+    }
   }
-};
+}
 </script>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 $max-height-image: 120px;
 
-.custom-fields .dropzone-files .uploaded-image{
+.custom-fields .dropzone-files .uploaded-image {
   max-height: $max-height-image;
-  img{
+
+  img {
     max-height: $max-height-image;
   }
 }

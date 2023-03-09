@@ -73,6 +73,7 @@
             :solo='isSolo'
             dense
             hide-details
+            item-value='id'
             multiple
             readonly
             @click='forceDropzone'
@@ -166,10 +167,10 @@
 </template>
 
 <script>
-import Request from '../../services/request'
 import Dropzone from 'nuxt-dropzone'
 import 'nuxt-dropzone/dropzone.css'
 import { mapActions, mapState } from 'vuex'
+import _clone from '@/helpers/deepClone'
 
 export default {
   components: {
@@ -185,6 +186,11 @@ export default {
       type: Array,
       default: () => ([])
     },
+    deletedFile: {
+      type: [Number, String],
+      default: 0
+    },
+
     placeholder: {
       type: String,
       default: ''
@@ -293,6 +299,18 @@ export default {
   mounted() {
     this.checkDropZoneFiles()
   },
+  watch: {
+    'deletedFile': {
+      handler(newV, oldV) {
+        if (newV !== oldV) {
+          let index = this.dropzone_uploaded.findIndex(elem => elem.id === newV)
+          if (index !== -1) {
+            this.dropzone_uploaded.splice(index, 1)
+          }
+        }
+      }
+    }
+  },
   computed: {
     ...mapState('Tabs', ['inputTypes']),
 
@@ -341,8 +359,16 @@ export default {
     },
     getDropzoneData() {
       this.$nextTick(() => {
-        this.dropzone_uploaded = this.data
-        this.dzData = this.data
+
+        this.dropzone_uploaded = this.data.map(file => {
+          return _clone(file)
+        })
+        // this.dropzone_uploaded = JSON.parse(JSON.stringify(this.data))
+
+        // this.dzData = JSON.parse(JSON.stringify(this.data))
+        this.dzData = this.data.map(file => {
+          return _clone(file)
+        })
 
         this.dropzone_uploaded.forEach(file => {
           this.$refs.dropzone.manuallyAddFile(file, this.$store.state.BASE_URL + file.full_path)
@@ -363,9 +389,9 @@ export default {
       console.log('successData', response)
       const formatObj = Object.assign({}, response.data)
       this.dzData.push(formatObj)
-      // this.dropzone_uploaded.push(formatObj)
+      this.dropzone_uploaded.push(formatObj)
 
-      this.$emit('uploaded-file', formatObj.full_path)
+      this.$emit('uploaded-file', formatObj)
     },
     async onRemoveFile(id) {
       this.loadedImages.push(id)
@@ -375,6 +401,7 @@ export default {
           let index = this.dropzone_uploaded.findIndex(elem => elem.id === id)
           if (index !== -1) {
             this.dropzone_uploaded.splice(index, 1)
+            this.$emit('remove-file', id)
           }
         })
         .finally(() => {
