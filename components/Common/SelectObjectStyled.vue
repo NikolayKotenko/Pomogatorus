@@ -31,12 +31,12 @@
     <template v-slot:selection='data'>
       <template v-if='currentData'>
         <span
-          :class='{"scrolling-item": data.item[itemText].length > 24}'
+          :class='{"scrolling-item": data.item[itemText] && data.item[itemText].length > 24}'
           class='selected-item'
           v-bind='data.attrs'
           @click='data.select; focusOn()'
         >
-          {{ data.item[itemText] }}
+          {{ data.item[itemText] ? data.item[itemText] : 'Не заполнено наименование или адрес' }}
         </span>
       </template>
       <template v-else>

@@ -68,7 +68,7 @@
 import InputStyled from './InputStyled'
 import CustomField from './CustomField'
 
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapMutations, mapState } from 'vuex'
 
 export default {
   name: 'TabsCustom',
@@ -95,6 +95,7 @@ export default {
   },
   methods: {
     ...mapActions('Tabs', ['getTabs', 'getTabInfo', 'getInputTypes']),
+    ...mapMutations('Tabs', ['setTabData']),
 
     async getTabData() {
       await this.getTabs()
@@ -124,7 +125,9 @@ export default {
       this.$emit('update-prop', { key: code, value })
     },
     changeFileData(value, code) {
-      this.$emit('update-file', { key: code, value })
+      this.$emit('update-file', { key: code, value: value.data, index: value.index })
+      // КОСТЫЛЬ, чтобы реактивность во vue заработала
+      this.setTabData(this.tabData)
     },
     removeFile(value, code) {
       this.$emit('remove-file', { key: code, value })

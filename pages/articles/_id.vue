@@ -33,6 +33,8 @@
         <v-progress-circular :size='50' color='primary' indeterminate style='margin-top: 20px'></v-progress-circular>
       </v-overlay>
     </div>
+
+    <!-- TODO: DEPRECATED, Теперь у нас есть боковой виджет объекта -->
     <footer-summary></footer-summary>
   </div>
 </template>

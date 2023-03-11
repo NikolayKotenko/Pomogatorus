@@ -13,7 +13,7 @@
         <v-select
           ref='selectObject'
           v-model='$store.state.currentObject'
-          :items='$store.state.AuthModule.userData.objects'
+          :items='getItems'
           :menu-props='{
             closeOnContentClick: true,
             top: true,
@@ -52,6 +52,7 @@
       </div>
       <div v-else class='wrapper_add_object'>
         <v-text-field
+          ref='createNewObj'
           v-model='address'
           class='field_address'
           clearable
@@ -78,19 +79,27 @@ export default {
   data() {
     return {
       address: '',
-      defaultObject: {},
+      defaultObject: {}
     }
   },
   computed: {
     ...mapGetters(['open_close_cabinet']),
+
+    getItems() {
+      return this.$store.state.AuthModule.userData.objects
+    },
   },
   watch: {
     'open_close_cabinet': {
       handler(v) {
         if (v) {
           this.defaultObject = _clone(this.$store.state.currentObject)
-          this.$refs.selectObject.focus()
-          this.$refs.selectObject.activateMenu()
+          if (this.$refs.selectObject) {
+            this.$refs.selectObject.focus()
+            this.$refs.selectObject.activateMenu()
+          } else {
+            this.$refs.createNewObj.focus()
+          }
         }
       }
     }

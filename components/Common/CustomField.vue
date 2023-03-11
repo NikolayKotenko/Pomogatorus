@@ -410,7 +410,7 @@ export default {
       this.dzData.push(formatObj)
       this.dropzone_uploaded.push(formatObj)
 
-      this.$emit('uploaded-file', formatObj)
+      this.$emit('uploaded-file', { data: formatObj, index: this.dropzone_uploaded.length - 1 })
     },
     async onRemoveFile(id) {
       this.loadedImages.push(id)

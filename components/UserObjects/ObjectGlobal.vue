@@ -36,8 +36,10 @@
         </div>
 
         <div class='object-wrapper-documents__docs'>
-          <ListFilesStyled :data='object' :id-object='objectData.id'
-                           @remove-from-global='removeFromGlobal'></ListFilesStyled>
+          <ListFilesStyled
+            :data='object' :id-object='objectData.id'
+            @remove-from-global='removeFromGlobal'
+          ></ListFilesStyled>
         </div>
       </div>
 
@@ -93,6 +95,7 @@ import SelectGeo from '../Common/SelectGeo'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import ButtonStyled from '../Common/ButtonStyled'
 import ListFilesStyled from '~/components/Common/ListFilesStyled'
+import Vue from 'vue'
 
 export default {
   name: 'ObjectGlobal',
@@ -187,9 +190,10 @@ export default {
     },
     setFileField(data) {
       if (!this.object[data.key]) {
-        this.object[data.key] = []
+        Vue.set(this.object, data.key, [data.value])
+      } else {
+        this.object[data.key].push(data.value)
       }
-      this.object[data.key].push(data.value)
       this.updateProperties[data.key] = data.value
     },
     removeFile(data) {

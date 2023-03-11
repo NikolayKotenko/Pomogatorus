@@ -1,6 +1,6 @@
 <template>
   <v-container class='object-wrapper-documents__docs__dropzone custom-fields'>
-    <div :class='{"dropzone-column": isDropzoneNotEmpty}' class='dropzone-files'>
+    <div :class='{"dropzone-column": isDropzoneNotEmpty}' class='dropzone-files global-files'>
       <v-autocomplete
         v-model='getFilesFromObject'
         :append-icon='appendIcon'
@@ -21,7 +21,7 @@
         <template v-slot:selection='data'>
           <div class='uploaded-image' v-bind='data.attrs'>
             <viewer :options='viewOptions'>
-              <img :alt='data.item.alt_image' :src='$store.state.BASE_URL + data.item.full_path'>
+              <img :alt='data.item.alt_image' :src='$store.state.BASE_URL + data.item.full_path' class='list-files-img'>
             </viewer>
 
             <div class='uploaded-image__name'>
@@ -120,8 +120,6 @@ export default {
   },
   data() {
     return {
-      dropzone_uploaded: [],
-      dzData: [],
       loadedImages: [],
       fileCodes: {},
       viewOptions: {
