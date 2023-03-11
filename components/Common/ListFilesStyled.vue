@@ -20,7 +20,14 @@
       >
         <template v-slot:selection='data'>
           <div class='uploaded-image' v-bind='data.attrs'>
-            <img :alt='data.item.alt_image' :src='$store.state.BASE_URL + data.item.full_path'>
+            <viewer :options='viewOptions'>
+              <img :alt='data.item.alt_image' :src='$store.state.BASE_URL + data.item.full_path'>
+            </viewer>
+
+            <div class='uploaded-image__name'>
+              {{ data.item.filename }}
+            </div>
+
             <div class='uploaded-image__remove'>
               <v-icon color='#000000' @click='onRemoveFile(data.item.id)'>mdi-trash-can</v-icon>
             </div>
@@ -50,6 +57,12 @@
 import Dropzone from 'nuxt-dropzone'
 import 'nuxt-dropzone/dropzone.css'
 import { mapActions, mapState } from 'vuex'
+
+import Vue from 'vue'
+import VueViewer from 'v-viewer'
+import 'viewerjs/dist/viewer.css'
+
+Vue.use(VueViewer)
 
 export default {
   name: 'ListFilesStyled',
@@ -104,18 +117,22 @@ export default {
       dropzone_uploaded: [],
       dzData: [],
       loadedImages: [],
-      fileCodes: {}
+      fileCodes: {},
+      viewOptions: {
+        'movable': false,
+        'zoomable': true
+      }
     }
   },
   computed: {
-    ...mapState('Tabs', ['tabData']),
+    ...mapState('Tabs', ['allTabData']),
 
     getFilesTabs() {
-      if (!this.tabData || !this.tabData.length) {
+      if (!this.allTabData || !this.allTabData.length) {
         return []
       }
 
-      return this.tabData.filter(tab => tab.d_property_objects.code === 'fail')
+      return this.allTabData.filter(tab => tab.d_property_objects.code === 'fail')
     },
     getFilesFromObject() {
       if (!this.data || !Object.keys(this.data).length) {

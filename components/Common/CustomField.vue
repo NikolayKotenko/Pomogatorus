@@ -82,7 +82,14 @@
           >
             <template v-slot:selection='data'>
               <div class='uploaded-image' v-bind='data.attrs'>
-                <img :alt='data.item.alt_image' :src='$store.state.BASE_URL + data.item.full_path'>
+                <viewer :options='viewOptions'>
+                  <img :alt='data.item.alt_image' :src='$store.state.BASE_URL + data.item.full_path'>
+                </viewer>
+
+                <div class='uploaded-image__name'>
+                  {{ data.item.filename }}
+                </div>
+
                 <div class='uploaded-image__remove'>
                   <v-icon color='#000000' @click='onRemoveFile(data.item.id)'>mdi-trash-can</v-icon>
                 </div>
@@ -171,6 +178,12 @@ import Dropzone from 'nuxt-dropzone'
 import 'nuxt-dropzone/dropzone.css'
 import { mapActions, mapState } from 'vuex'
 import _clone from '@/helpers/deepClone'
+
+import Vue from 'vue'
+import VueViewer from 'v-viewer'
+import 'viewerjs/dist/viewer.css'
+
+Vue.use(VueViewer)
 
 export default {
   components: {
@@ -293,7 +306,11 @@ export default {
       isFocused: false,
       dzData: [],
       dropzone_uploaded: [],
-      loadedImages: []
+      loadedImages: [],
+      viewOptions: {
+        'movable': false,
+        'zoomable': true
+      }
     }
   },
   mounted() {
