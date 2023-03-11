@@ -61,7 +61,6 @@ import { mapActions, mapState } from 'vuex'
 import Vue from 'vue'
 import VueViewer from 'v-viewer'
 import 'viewerjs/dist/viewer.css'
-
 Vue.use(VueViewer)
 
 export default {
@@ -132,7 +131,9 @@ export default {
         return []
       }
 
-      return this.allTabData.filter(tab => tab.d_property_objects.code === 'fail')
+      return this.allTabData.filter(tab => {
+           return (tab.d_property_objects) ? (tab.d_property_objects.code === 'fail') : [];
+      })
     },
     getFilesFromObject() {
       if (!this.data || !Object.keys(this.data).length) {
@@ -180,13 +181,21 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-$max-height-image: 120px;
+$max-height-image: 100%;
+$max-width-image: 220px;
 
-.custom-fields .dropzone-files .uploaded-image {
-  max-height: $max-height-image;
+.custom-fields .dropzone-files{
+  height: 100%;
+  margin: unset;
 
-  img {
+  .uploaded-image {
     max-height: $max-height-image;
+    max-width: $max-width-image;
+
+    img {
+      max-height: $max-height-image;
+      max-width: $max-width-image;
+    }
   }
 }
 </style>
