@@ -90,9 +90,14 @@
                   {{ data.item.filename }}
                 </div>
 
-                <div class='uploaded-image__remove'>
-                  <v-icon color='#000000' @click='onRemoveFile(data.item.id)'>mdi-trash-can</v-icon>
-                </div>
+                <v-tooltip top>
+                  <template v-slot:activator='{ on, attrs }'>
+                    <div class='uploaded-image__remove' v-bind='attrs' v-on='on'>
+                      <v-icon color='#000000' @click='onRemoveFile(data.item.id)'>mdi-trash-can</v-icon>
+                    </div>
+                  </template>
+                  <span>Удалить файл</span>
+                </v-tooltip>
 
                 <v-overlay
                   :absolute='true'

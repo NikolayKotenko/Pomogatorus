@@ -28,9 +28,15 @@
               {{ data.item.filename }}
             </div>
 
-            <div class='uploaded-image__remove'>
-              <v-icon color='#000000' @click='onRemoveFile(data.item.id)'>mdi-trash-can</v-icon>
-            </div>
+            <v-tooltip top>
+              <template v-slot:activator='{ on, attrs }'>
+                <div class='uploaded-image__remove' v-bind='attrs' v-on='on'>
+                  <v-icon color='#000000' @click='onRemoveFile(data.item.id)'>mdi-trash-can</v-icon>
+                </div>
+              </template>
+              <span>Удалить файл</span>
+            </v-tooltip>
+
 
             <v-overlay
               :absolute='true'
@@ -61,6 +67,7 @@ import { mapActions, mapState } from 'vuex'
 import Vue from 'vue'
 import VueViewer from 'v-viewer'
 import 'viewerjs/dist/viewer.css'
+
 Vue.use(VueViewer)
 
 export default {
@@ -132,7 +139,7 @@ export default {
       }
 
       return this.allTabData.filter(tab => {
-           return (tab.d_property_objects) ? (tab.d_property_objects.code === 'fail') : [];
+        return (tab.d_property_objects) ? (tab.d_property_objects.code === 'fail') : []
       })
     },
     getFilesFromObject() {
@@ -184,7 +191,7 @@ export default {
 $max-height-image: 100%;
 $max-width-image: 220px;
 
-.custom-fields .dropzone-files{
+.custom-fields .dropzone-files {
   height: 100%;
   margin: unset;
 
