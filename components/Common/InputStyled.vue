@@ -23,6 +23,10 @@
 export default {
   name: 'InputStyled',
   props: {
+    fullSincProp: {
+      type: Boolean,
+      default: false
+    },
     placeholder: {
       type: String,
       default: ''
@@ -77,10 +81,14 @@ export default {
     },
     currentData: {
       get() {
-        if (this.data) {
-          return this.data
+        if (!this.fullSincProp) {
+          if (this.data) {
+            return this.data
+          }
+          return this.internalData
         }
-        return this.internalData
+
+        return this.data
       },
       set(value) {
         if (!this.data) {

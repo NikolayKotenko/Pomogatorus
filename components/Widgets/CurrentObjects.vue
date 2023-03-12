@@ -4,6 +4,7 @@
       v-model='$store.state.currentObject'
       :custom-style='true'
       :data='$store.state.currentObject'
+      :have-trigger='true'
       :is-solo='true'
       :item-text="'address'"
       :item-value="'id'"

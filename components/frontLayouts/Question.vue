@@ -38,6 +38,7 @@
         <template v-if="question_data.id_type_answer == '1'">
           <InputStyled
             :data='answer'
+            :fullSincProp='true'
             :is-disabled='(check_status && status_question.type === "sending")'
             :placeholder='"Введите ответ"'
             is-solo
@@ -47,6 +48,7 @@
         <template v-else-if="question_data.id_type_answer == '2'">
           <TextAreaStyled
             :data='answer'
+            :fullSincProp='true'
             :is-disabled='(check_status && status_question.type === "sending")'
             :placeholder='"Введите ответ"'
             is-solo
@@ -238,6 +240,7 @@
         <InputStyled
           v-if='question_data.state_detailed_response'
           :data='detailed_response'
+          :fullSincProp='true'
           :placeholder='"Развернутый ответ"'
           class='py-2'
           is-solo
@@ -419,7 +422,7 @@ export default {
       handler(v) {
         if (!v) {
           this.$nextTick(() => {
-            this.answer = null
+            this.answer = ''
             this.detailed_response = ''
           })
           this.$store.commit('set_idQuestionWhenModal', null)
@@ -546,6 +549,7 @@ export default {
 
     /* ANSWER LOGIC */
     textAnswer(value) {
+      // if (!this.open_close_cabinet) {
       if (value) {
         this.answer = value
       }
@@ -553,6 +557,7 @@ export default {
       this.saveTextDebounce = setTimeout(() => {
         this.changeAnswer()
       }, 600)
+      // }
     },
     setDataEnv(dataEnv) {
       if (dataEnv) {
@@ -620,13 +625,9 @@ export default {
 
       await this.$store.dispatch('loginByToken')
 
-      console.log('done request')
-
       this.$store.commit('set_currentObject', data)
 
       this.$store.commit('change_listObjects', [data])
-
-      console.log('set OBJECT')
 
       this.$store.commit('change_loaderObjects', false)
     },
@@ -716,14 +717,10 @@ export default {
           console.log('no selected obj')
 
           if (!Array.isArray(this.$store.state.AuthModule.userData.objects) || this.$store.state.AuthModule.userData.objects.length < 1) {
-            console.log('no objects')
-
             await this.silentCreateObject()
-            console.log('after request')
             this.check_status = true
             this.sendAnswer(dataEnv)
           } else {
-            console.log('CHE KOHO')
             this.check_status = false
             this.$store.commit('set_idQuestionWhenModal', this.question_data.id)
             this.$store.commit('change_showCabinet', true)

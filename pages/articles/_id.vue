@@ -35,28 +35,26 @@
     </div>
 
     <!-- TODO: DEPRECATED, Теперь у нас есть боковой виджет объекта -->
-    <footer-summary></footer-summary>
+    <!--    <footer-summary></footer-summary>-->
   </div>
 </template>
 
 <script>
 import Vue from 'vue'
-import ImageLayout from '../../components/frontLayouts/ImageLayout'
-import Question from '../../components/frontLayouts/Question'
-import LoginAuth from '../../components/frontLayouts/LoginAuth'
-import Author from '../../components/Article/Author'
-import FooterSummary from '../../components/FooterSummary'
-
-import ArticleInfo from '../../components/Article/ArticleInfo'
+import ImageLayout from '~/components/frontLayouts/ImageLayout'
+import Question from '~/components/frontLayouts/Question'
+import LoginAuth from '~/components/frontLayouts/LoginAuth'
+import Author from '~/components/Article/Author'
+import ArticleInfo from '~/components/Article/ArticleInfo'
 import SocialShare from '~/components/Article/SocialShare'
 
-import Request from '../../services/request'
+import Request from '~/services/request'
 
 const vuetify_class = require('vuetify')
 
 export default {
   name: '_id.vue',
-  components: { ArticleInfo, Author, FooterSummary, SocialShare },
+  components: { ArticleInfo, Author, SocialShare },
   async asyncData({ store, params }) {
     try {
       const article_request = await Request.get(`${store.state.BASE_URL}/entity/articles/${params.id}`, '', true)
