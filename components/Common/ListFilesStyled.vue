@@ -1,9 +1,9 @@
 <template>
   <v-container
-    class='list-files-styled files-dashed-border'
     :class='{"dropzone-empty": !isDropzoneNotEmpty}'
+    class='list-files-styled files-dashed-border'
   >
-    <div class='dropzone-files' v-if="isDropzoneNotEmpty">
+    <div v-if='isDropzoneNotEmpty' class='dropzone-files'>
       <v-autocomplete
         v-model='getFilesFromObject'
         :append-icon='appendIcon'
@@ -25,18 +25,21 @@
           <div class='uploaded-image' v-bind='data.attrs'>
 
             <div v-if="data.item.type === 'text/plain'">
-              <a :href="$store.state.BASE_URL + data.item.full_path" target="_blank">
-                <img style="object-fit: contain;" :src='require(`~/assets/images/txt_doc_type.png`)' />
+              <a :href='$store.state.BASE_URL + data.item.full_path' target='_blank'>
+                <img :src='require(`~/assets/images/txt_doc_type.png`)' style='object-fit: contain;' />
               </a>
             </div>
-            <div v-if="data.item.type === 'application/pdf'">
-              <a :href="$store.state.BASE_URL + data.item.full_path" target="_blank">
-                <img style="object-fit: contain;" :src='require(`~/assets/svg/pdf_icon.svg`)' />
+            <div v-else-if="data.item.type === 'application/pdf'">
+              <a :href='$store.state.BASE_URL + data.item.full_path' target='_blank'>
+                <img :src='require(`~/assets/svg/pdf_icon.svg`)' style='object-fit: contain;' />
               </a>
             </div>
-            <viewer v-if="data.item.type === 'image/png'" :options='viewOptions'>
-              <img :alt='data.item.alt_image' :src='$store.state.BASE_URL + data.item.full_path' class='list-files-img'>
-            </viewer>
+            <template v-else>
+              <viewer :options='viewOptions'>
+                <img :alt='data.item.alt_image' :src='$store.state.BASE_URL + data.item.full_path'
+                     class='list-files-img'>
+              </viewer>
+            </template>
 
             <div class='uploaded-image__name'>
               {{ data.item.filename }}
@@ -70,7 +73,7 @@
         </template>
       </v-autocomplete>
     </div>
-    <span v-else class="empty-placeholder">Здесь будут прикрепленные документы вашего объекта</span>
+    <span v-else class='empty-placeholder'>Здесь будут прикрепленные документы вашего объекта</span>
   </v-container>
 </template>
 
@@ -217,18 +220,21 @@ $width-image: 263px;
       width: 10px;
       height: 12px;
     }
+
     /* Track */
     &::-webkit-scrollbar-track {
       background: #FFFFFF;
       border: unset;
       box-shadow: unset;
     }
+
     /* Handle */
     &::-webkit-scrollbar-thumb {
       background: #BABABA;
       border-radius: 2px;
       width: 100px;
     }
+
     /* Handle on hover */
     &::-webkit-scrollbar-thumb:hover {
       background: darken(#BABABA, 5%);
@@ -294,9 +300,10 @@ $width-image: 263px;
       }
     }
 
-    .v-input{
+    .v-input {
       margin: unset;
     }
+
     .v-select__selections {
       display: inline-flex;
       flex-wrap: nowrap;
@@ -305,9 +312,10 @@ $width-image: 263px;
     }
   }
 
-  &.dropzone-empty{
+  &.dropzone-empty {
     background: rgba(217, 217, 217, 1);
-    .empty-placeholder{
+
+    .empty-placeholder {
       height: 100%;
       width: 100%;
       display: flex;

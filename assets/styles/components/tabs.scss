@@ -70,6 +70,7 @@
   position: sticky;
   overflow: hidden;
   padding: 0;
+  z-index: 4;
 
   img {
     animation: pulse 3s linear infinite;

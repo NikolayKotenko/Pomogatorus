@@ -82,9 +82,22 @@
           >
             <template v-slot:selection='data'>
               <div class='uploaded-image' v-bind='data.attrs'>
-                <viewer :options='viewOptions'>
-                  <img :alt='data.item.alt_image' :src='$store.state.BASE_URL + data.item.full_path'>
-                </viewer>
+                <div v-if="data.item.type === 'text/plain'">
+                  <a :href='$store.state.BASE_URL + data.item.full_path' target='_blank'>
+                    <img :src='require(`~/assets/images/txt_doc_type.png`)' style='object-fit: contain;' />
+                  </a>
+                </div>
+                <div v-else-if="data.item.type === 'application/pdf'">
+                  <a :href='$store.state.BASE_URL + data.item.full_path' target='_blank'>
+                    <img :src='require(`~/assets/svg/pdf_icon.svg`)' style='object-fit: contain;' />
+                  </a>
+                </div>
+                <template v-else>
+                  <viewer :options='viewOptions'>
+                    <img :alt='data.item.alt_image' :src='$store.state.BASE_URL + data.item.full_path'
+                         class='list-files-img'>
+                  </viewer>
+                </template>
 
                 <div class='uploaded-image__name'>
                   {{ data.item.filename }}
