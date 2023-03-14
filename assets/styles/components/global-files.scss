@@ -1,0 +1,133 @@
+$height-image: 186px;
+$width-image: 263px;
+
+.list-files-styled {
+  height: 246px;
+  padding-bottom: 15px;
+
+  .dropzone-files {
+    height: 100%;
+    margin: unset;
+    overflow-x: overlay;
+
+    .theme--light.v-text-field.v-input--is-disabled .v-input__slot::before {
+      border: unset !important;
+    }
+
+    .theme--light.v-text-field.v-input--is-disabled .v-input__slot::after {
+      border: unset !important;
+    }
+
+    /* width */
+    &::-webkit-scrollbar {
+      width: 10px;
+      height: 12px;
+    }
+
+    /* Track */
+    &::-webkit-scrollbar-track {
+      background: #FFFFFF;
+      border: unset;
+      box-shadow: unset;
+    }
+
+    /* Handle */
+    &::-webkit-scrollbar-thumb {
+      background: #BABABA;
+      border-radius: 2px;
+      width: 100px;
+    }
+
+    /* Handle on hover */
+    &::-webkit-scrollbar-thumb:hover {
+      background: darken(#BABABA, 5%);
+    }
+
+
+    .uploaded-image {
+      max-height: 188px;
+      position: relative;
+      cursor: pointer;
+
+      img {
+        float: left;
+        object-fit: cover;
+        height: $height-image;
+        width: $width-image;
+      }
+
+      .list-files-img {
+      }
+
+      &__remove {
+        position: absolute;
+        top: 0;
+        right: 0;
+        opacity: 0.5;
+        transition: all 0.4s ease-in-out;
+        background: white;
+        border-radius: 5px;
+        background: rgba(255, 255, 255, 0.4);
+        padding: 5px;
+
+        &:hover {
+          opacity: 1;
+          transform: scale(1.1);
+        }
+
+        .v-icon {
+          margin: 0;
+        }
+      }
+
+      &__name {
+        height: 45px;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.6);
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+        opacity: 0;
+        transform: translateY(5px);
+        transition: all 0.4s ease-in-out;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: black;
+        overflow-wrap: anywhere;
+      }
+
+      &:hover .uploaded-image__name {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .v-input {
+      margin: unset;
+    }
+
+    .v-select__selections {
+      display: inline-flex;
+      flex-wrap: nowrap;
+      grid-column-gap: 1em;
+
+    }
+  }
+
+  &.dropzone-empty {
+    background: rgba(217, 217, 217, 1);
+
+    .empty-placeholder {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      align-items: center;
+
+      font-size: 1.3em;
+      text-align: center;
+      color: #000000;
+    }
+  }
+}

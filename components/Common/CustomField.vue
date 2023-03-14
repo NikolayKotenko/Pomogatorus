@@ -140,7 +140,7 @@
             @vdropzone-sending='sendingData'
           >
             <div ref='dropzoneTemplate' class='dropzone-custom-content'>
-              <div v-if='isDropzoneNotEmpty' class='separator'></div>
+              <!--              <div v-if='isDropzoneNotEmpty' class='separator'></div>-->
               <div class='dropzone-label'>
                 <v-icon color='#B3B3B3' large>mdi-cloud-upload</v-icon>
                 <span>{{ computedLabel }}</span>
