@@ -74,6 +74,7 @@ export default {
 .podborki {
   display: grid;
   grid-row-gap: 2em;
+  align-content: baseline;
   &__wrapper_list {
     @media (min-width: 500px) {
       display: grid;
