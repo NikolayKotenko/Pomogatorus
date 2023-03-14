@@ -73,6 +73,7 @@
             :solo='isSolo'
             dense
             hide-details
+            item-value='id'
             multiple
             readonly
             @click='forceDropzone'
@@ -81,8 +82,37 @@
           >
             <template v-slot:selection='data'>
               <div class='uploaded-image' v-bind='data.attrs'>
-                <!-- data.item.src -->
-                <img alt='' src='@/assets/images/typeobject.png'>
+                <viewer :options='viewOptions'>
+                  <img :alt='data.item.alt_image' :src='$store.state.BASE_URL + data.item.full_path'>
+                </viewer>
+
+                <div class='uploaded-image__name'>
+                  {{ data.item.filename }}
+                </div>
+
+                <v-tooltip top>
+                  <template v-slot:activator='{ on, attrs }'>
+                    <div class='uploaded-image__remove' v-bind='attrs' v-on='on'>
+                      <v-icon color='#000000' @click='onRemoveFile(data.item.id)'>mdi-trash-can</v-icon>
+                    </div>
+                  </template>
+                  <span>Удалить файл</span>
+                </v-tooltip>
+
+                <v-overlay
+                  :absolute='true'
+                  :value='getLoadingImg(data.item.id)'
+                  :z-index='2'
+                >
+                  <v-progress-circular
+                    v-if='getLoadingImg(data.item.id)'
+                    :indeterminate='true'
+                    :size='30'
+                    color='#95D7AE'
+                    style='margin: auto'
+                    width='4'
+                  ></v-progress-circular>
+                </v-overlay>
               </div>
             </template>
           </v-autocomplete>
@@ -91,7 +121,7 @@
             ref='dropzone'
             :destroyDropzone='true'
             :include-styling='false'
-            :options='options'
+            :options='$store.getters.optionsDropzone'
             :useCustomSlot='true'
             @vdropzone-success='successData'
             @vdropzone-sending='sendingData'
@@ -151,22 +181,14 @@
 <script>
 import Dropzone from 'nuxt-dropzone'
 import 'nuxt-dropzone/dropzone.css'
-import { mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
+import _clone from '@/helpers/deepClone'
 
-function getCookie(name) {
-  if (document) {
-    var nameEQ = name + '='
-    var ca = document.cookie.split(';')
-    for (var i = 0; i < ca.length; i++) {
-      var c = ca[i]
-      while (c.charAt(0) == ' ') c = c.substring(1, c.length)
-      if (c.indexOf(nameEQ) == 0) {
-        return decodeURIComponent(c.substring(nameEQ.length, c.length))
-      }
-    }
-    return null
-  }
-}
+import Vue from 'vue'
+import VueViewer from 'v-viewer'
+import 'viewerjs/dist/viewer.css'
+
+Vue.use(VueViewer)
 
 export default {
   components: {
@@ -182,6 +204,11 @@ export default {
       type: Array,
       default: () => ([])
     },
+    deletedFile: {
+      type: [Number, String],
+      default: 0
+    },
+
     placeholder: {
       type: String,
       default: ''
@@ -195,7 +222,7 @@ export default {
       default: false
     },
     data: {
-      type: String,
+      type: [String, Array, Number],
       default: ''
     },
     isDisabled: {
@@ -268,23 +295,42 @@ export default {
     },
     indexArray: {
       type: Number
+    },
+    idObject: {
+      type: [Number, String],
+      required: true
+    },
+    idProperty: {
+      type: [Number, String],
+      required: true
     }
   },
   data() {
     return {
       internalData: '',
       isFocused: false,
-      options: {
-        url: 'http://httpbin.org/anything',
-        // url: this.$store.state.BASE_URL + '/entity/files',
-        destroyDropzone: false,
-        duplicateCheck: true,
-        headers: {
-          Authorization: getCookie('accessToken')
-        }
-      },
       dzData: [],
-      dropzone_uploaded: []
+      dropzone_uploaded: [],
+      loadedImages: [],
+      viewOptions: {
+        'movable': false,
+        'zoomable': true
+      }
+    }
+  },
+  mounted() {
+    this.checkDropZoneFiles()
+  },
+  watch: {
+    'deletedFile': {
+      handler(newV, oldV) {
+        if (newV !== oldV) {
+          let index = this.dropzone_uploaded.findIndex(elem => elem.id === newV)
+          if (index !== -1) {
+            this.dropzone_uploaded.splice(index, 1)
+          }
+        }
+      }
     }
   },
   computed: {
@@ -313,6 +359,8 @@ export default {
     }
   },
   methods: {
+    ...mapActions('Tabs', ['removeFile']),
+
     onClick() {
       this.$emit('on-click')
     },
@@ -326,6 +374,26 @@ export default {
     },
 
     /* DROPZONE */
+    checkDropZoneFiles() {
+      if (this.type === 'fail' && Array.isArray(this.data) && this.data.length) {
+        this.getDropzoneData()
+      }
+    },
+    getDropzoneData() {
+      this.$nextTick(() => {
+
+        this.dropzone_uploaded = this.data.map(file => {
+          return _clone(file)
+        })
+        this.dzData = this.data.map(file => {
+          return _clone(file)
+        })
+
+        this.dropzone_uploaded.forEach(file => {
+          this.$refs.dropzone.manuallyAddFile(file, this.$store.state.BASE_URL + file.full_path)
+        })
+      })
+    },
     forceDropzone() {
       if (!this.isDropzoneNotEmpty) {
         this.$refs.dropzoneTemplate.click()
@@ -333,14 +401,37 @@ export default {
     },
     sendingData(file, xhr, formData) {
       formData.append('uuid', file.upload.uuid)
+      formData.append('id_object', parseInt(this.idObject))
+      formData.append('id_object_property', parseInt(this.idProperty))
     },
     successData(file, response) {
-      // console.log(response)
-      const formatObj = Object.assign({}, response)
+      console.log('successData', response)
+      const formatObj = Object.assign({}, response.data)
       this.dzData.push(formatObj)
       this.dropzone_uploaded.push(formatObj)
 
-      this.$emit('uploaded-file', formatObj)
+      this.$emit('uploaded-file', { data: formatObj, index: this.dropzone_uploaded.length - 1 })
+    },
+    async onRemoveFile(id) {
+      this.loadedImages.push(id)
+
+      await this.removeFile(id)
+        .then(() => {
+          let index = this.dropzone_uploaded.findIndex(elem => elem.id === id)
+          if (index !== -1) {
+            this.dropzone_uploaded.splice(index, 1)
+            this.$emit('remove-file', id)
+          }
+        })
+        .finally(() => {
+          let index = this.dropzone_uploaded.findIndex(elem => elem.id === id)
+          if (index !== -1) {
+            this.loadedImages.splice(index, 1)
+          }
+        })
+    },
+    getLoadingImg(id) {
+      return this.loadedImages.includes(id)
     }
   }
 }

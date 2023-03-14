@@ -38,7 +38,8 @@
         <template v-if="question_data.id_type_answer == '1'">
           <InputStyled
             :data='answer'
-            :is-disabled='!!detailed_response || (check_status && status_question.type === "sending")'
+            :fullSincProp='true'
+            :is-disabled='(check_status && status_question.type === "sending")'
             :placeholder='"Введите ответ"'
             is-solo
             @update-input='textAnswer'
@@ -47,7 +48,8 @@
         <template v-else-if="question_data.id_type_answer == '2'">
           <TextAreaStyled
             :data='answer'
-            :is-disabled='!!detailed_response || (check_status && status_question.type === "sending")'
+            :fullSincProp='true'
+            :is-disabled='(check_status && status_question.type === "sending")'
             :placeholder='"Введите ответ"'
             is-solo
             @update-input='textAnswer'
@@ -58,7 +60,7 @@
             <v-radio
               v-for='(item, index) in value_type_answer'
               :key='index'
-              :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
+              :disabled="(check_status && status_question.type === 'sending')"
               :value='item.answer'
               @change='changeAnswer(item.dataEnv)'
               @click='getIdElem($event)'
@@ -90,7 +92,7 @@
             v-for='(item, index) in value_type_answer'
             :key='index'
             v-model='answer'
-            :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
+            :disabled="(check_status && status_question.type === 'sending')"
             :value='item.answer'
             dense
             hide-details
@@ -122,7 +124,7 @@
         <template v-else-if="question_data.id_type_answer == '5'">
           <v-select
             v-model='answer'
-            :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
+            :disabled="(check_status && status_question.type === 'sending')"
             :items='value_type_answer'
             :menu-props='{
             closeOnContentClick: true,
@@ -177,7 +179,7 @@
           <v-text-field
             v-model='answer'
             :class='{ rangeError: rangeError }'
-            :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
+            :disabled="(check_status && status_question.type === 'sending')"
             dense
             hide-details
             label='Введите ответ'
@@ -200,7 +202,7 @@
         >
           <v-range-slider
             v-model='answer'
-            :disabled="!!detailed_response || (check_status && status_question.type === 'sending')"
+            :disabled="(check_status && status_question.type === 'sending')"
             :max='max'
             :min='min'
             class='align-center'
@@ -238,6 +240,7 @@
         <InputStyled
           v-if='question_data.state_detailed_response'
           :data='detailed_response'
+          :fullSincProp='true'
           :placeholder='"Развернутый ответ"'
           class='py-2'
           is-solo
@@ -399,7 +402,7 @@ export default {
     detailed_response: {
       handler(v) {
         if (v) {
-          this.answer = null
+          // this.answer = null
         }
       }
     },
@@ -419,7 +422,7 @@ export default {
       handler(v) {
         if (!v) {
           this.$nextTick(() => {
-            this.answer = null
+            this.answer = ''
             this.detailed_response = ''
           })
           this.$store.commit('set_idQuestionWhenModal', null)
@@ -546,6 +549,7 @@ export default {
 
     /* ANSWER LOGIC */
     textAnswer(value) {
+      // if (!this.open_close_cabinet) {
       if (value) {
         this.answer = value
       }
@@ -553,6 +557,7 @@ export default {
       this.saveTextDebounce = setTimeout(() => {
         this.changeAnswer()
       }, 600)
+      // }
     },
     setDataEnv(dataEnv) {
       if (dataEnv) {
@@ -698,7 +703,7 @@ export default {
       this.detailed_response = value
       this.changeAnswer()
     },
-    changeAnswer(dataEnv) {
+    async changeAnswer(dataEnv) {
       this.check_status = true
       if (!this.stateAuth) {
         this.status_name = 'warning'
@@ -709,8 +714,10 @@ export default {
         this.$refs.authModal.openModal()
       } else {
         if (!this.$store.state.currentObject || !Object.keys(this.$store.state.currentObject).length) {
-          if (this.$store.state.AuthModule.userData.objects.length < 1) {
-            this.silentCreateObject()
+          console.log('no selected obj')
+
+          if (!Array.isArray(this.$store.state.AuthModule.userData.objects) || this.$store.state.AuthModule.userData.objects.length < 1) {
+            await this.silentCreateObject()
             this.check_status = true
             this.sendAnswer(dataEnv)
           } else {

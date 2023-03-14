@@ -85,13 +85,13 @@ const createStore = () => {
             title: 'Главная',
             path: '/',
             icon: 'mdi-home-variant-outline',
-            visible: true,
+            visible: false,
           },
           {
             title: 'Статьи',
             path: '/articles',
             icon: 'mdi-message-text',
-            visible: false,
+            visible: true,
           },
           {
             title: 'Подборки',
@@ -122,6 +122,16 @@ const createStore = () => {
       stateObjectSelected(state) {
         return Boolean(Object.keys(state.currentObject).length)
       },
+      optionsDropzone(state) {
+        return {
+          url: state.BASE_URL + '/entity/files',
+          destroyDropzone: false,
+          duplicateCheck: true,
+          headers: {
+            Authorization: 'Bearer ' + Request.getAccessTokenInCookies(),
+          }
+        }
+      }
     },
     mutations: {
       set_drawer(state, payload) {
@@ -217,6 +227,9 @@ const createStore = () => {
         commit('set_list_tags', response.data)
         return response
       },
+      async getFilesByFilter({state}, objFilter){
+        return await Request.get(state.BASE_URL + '/entity/files'+Request.ConstructFilterQuery(objFilter))
+      }
     },
     modules: {
       AuthModule,

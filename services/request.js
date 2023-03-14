@@ -82,6 +82,10 @@ export default class Request {
     return this.request(url, params, 'PUT', '')
   }
 
+  static async delete(url, params) {
+    return this.request(url, params, 'DELETE')
+  }
+
   static bodyFormData(paramBody) {
     let bodyFormData = new FormData()
 
@@ -98,7 +102,7 @@ export default class Request {
     if (process.client) {
       if (!document.cookie) return list
 
-      document.cookie.split(`;`).forEach(function(cookie) {
+      document.cookie.split(`;`).forEach(function (cookie) {
         let [name, ...rest] = cookie.split(`=`)
         name = name?.trim()
         if (!name) return
@@ -119,13 +123,13 @@ export default class Request {
   }
 
   static ConstructFilterQuery(arrNameParam = []) {
-    let result = "";
+    let result = ''
     for (let [key, value] of Object.entries(arrNameParam)) {
-      result += "filter[" + key + "]=" + value + "&";
+      result += 'filter[' + key + ']=' + value + '&'
     }
-    result = result.slice(0, -1);
+    result = result.slice(0, -1)
 
     // console.log("res", result);
-    return "?" + result;
+    return '?' + result
   }
 }

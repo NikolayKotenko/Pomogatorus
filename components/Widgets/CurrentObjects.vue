@@ -4,10 +4,11 @@
       v-model='$store.state.currentObject'
       :custom-style='true'
       :data='$store.state.currentObject'
+      :have-trigger='true'
       :is-solo='true'
       :item-text="'address'"
       :item-value="'id'"
-      :items='$store.state.AuthModule.userData.objects'
+      :items='checkObjects'
       :placeholder="'Выберите объект'"
       title='Выберите объект'
       @update-input='callback'
@@ -110,6 +111,11 @@ export default {
   },
   mounted() {
     this.$store.dispatch('getListTags')
+  },
+  computed: {
+    checkObjects() {
+      return Array.isArray(this.$store.state.AuthModule.userData.objects) ? this.$store.state.AuthModule.userData.objects : []
+    }
   },
   methods: {
     callback(data) {

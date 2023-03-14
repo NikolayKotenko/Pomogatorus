@@ -9,6 +9,7 @@ export default {
     tabs: [],
     tabData: [],
     inputTypes: [],
+    allTabData: [],
   },
   mutations: {
     setLoading(state, payload) {
@@ -42,6 +43,9 @@ export default {
 
       state.tabData = result
     },
+    setAllFields(state, payload) {
+      state.allTabData = payload
+    },
     setInputTypes(state, payload) {
       state.inputTypes = payload
     },
@@ -74,12 +78,18 @@ export default {
 
       const { data } = await Request.get(this.state.BASE_URL + `/dictionary/object-properties${query}&sort[sort]=asc`)
       commit('setTabData', data)
+      if (payload === 'all') {
+        commit('setAllFields', data)
+      }
 
       commit('setLoadingData', false)
     },
     async getInputTypes({ commit }) {
       const { data } = await Request.get(this.state.BASE_URL + `/dictionary/property-object`)
       commit('setInputTypes', data)
+    },
+    async removeFile({ commit }, payload) {
+      await Request.delete(this.state.BASE_URL + `/entity/files/${payload}`)
     },
   },
   getters: {},

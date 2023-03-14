@@ -24,19 +24,19 @@
     return-object
     single-line
     @focus='isFocused = true'
-    @focusout='isFocused = false'
+    @focusout='focusOut'
     @keyup.delete='handleDelete()'
     @input.native.stop.prevent='stopInput($event)'
   >
     <template v-slot:selection='data'>
       <template v-if='currentData'>
         <span
-          :class='{"scrolling-item": data.item[itemText].length > 24}'
+          :class='{"scrolling-item": data.item[itemText] && data.item[itemText].length > 24}'
           class='selected-item'
           v-bind='data.attrs'
           @click='data.select; focusOn()'
         >
-          {{ data.item[itemText] }}
+          {{ data.item[itemText] ? data.item[itemText] : 'Не заполнено наименование или адрес' }}
         </span>
       </template>
       <template v-else>
@@ -57,6 +57,10 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import _clone from '../../helpers/deepClone'
+import _deepEqual from '../../helpers/deepCompareObjects'
+
 export default {
   name: 'SelectObjectStyled',
   props: {
@@ -100,14 +104,38 @@ export default {
     customStyle: {
       type: Boolean,
       default: false
+    },
+    haveTrigger: {
+      type: Boolean,
+      default: false
     }
   },
   data: () => ({
     internalData: '',
     isFocused: false,
-    blockSearch: ''
+    blockSearch: '',
+    defaultObject: {}
   }),
+  watch: {
+    'open_close_cabinet': {
+      handler(v) {
+        if (v && this.haveTrigger) {
+          if (this.$refs.autocomplete) {
+            this.defaultObject = _clone(this.$store.state.currentObject)
+            this.$refs.autocomplete.focus()
+            this.$refs.autocomplete.activateMenu()
+            this.$refs.autocomplete.isMenuActive = true
+          } else {
+            // TODO: мы не можем через наш селектор создать новый объект -> Необходимо продумать логику и отрисовать макет
+            // this.$refs.createNewObj.focus()
+          }
+        }
+      }
+    }
+  },
   computed: {
+    ...mapGetters(['open_close_cabinet']),
+
     computedPlaceholder() {
       if (this.isFocused) {
         return ''
@@ -136,8 +164,22 @@ export default {
     focusOn() {
       this.$refs.autocomplete.isMenuActive = true
     },
+    focusOut() {
+      this.isFocused = false
+
+      if (this.haveTrigger) {
+        this.resetValues()
+      }
+    },
     handleDelete() {
       this.currentData = null
+    },
+    resetValues() {
+      setTimeout(() => {
+        if (_deepEqual(this.defaultObject, this.$store.state.currentObject)) {
+          this.$store.commit('change_showCabinet', false)
+        }
+      }, 400)
     }
   }
 }
