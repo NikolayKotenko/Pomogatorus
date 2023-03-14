@@ -1,5 +1,19 @@
 <template>
   <v-container class="podborki">
+    <SearchStyled
+      :is-placeholder="'Поиск тегов'"
+      :is-loading="$store.state.PopularSelectionsModule.loadingState"
+      :is-disabled="$store.state.PopularSelectionsModule.loadingState"
+      :is-items="$store.state.PopularSelectionsModule.list_selections"
+      :is-clearable="true"
+      :is-item-text="'text'"
+      :is-item-value="'text'"
+      :is-hide-selected="true"
+      @update-search-input="localGetListItems"
+      @click-clear="$store.dispatch('PopularSelectionsModule/getListSelections');"
+    >
+    </SearchStyled>
+
       <v-card
         class=""
         :href="$route.path + '/' + item.code"
@@ -19,10 +33,14 @@
 </template>
 
 <script>
+import SearchStyled from "@/components/Common/SearchStyled.vue";
+
 export default {
   name: 'index.vue',
-  components: {},
-  data: () => ({}),
+  components: {SearchStyled},
+  data: () => ({
+    debounceTimeout: null
+  }),
   head: {
     title: 'Подборки',
     meta: []
@@ -40,6 +58,14 @@ export default {
     this.$store.dispatch('PopularSelectionsModule/getListSelections')
   },
   methods: {
+    async localGetListItems(searchString){
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
+
+      this.debounceTimeout = setTimeout(async () => {
+        const payload = (searchString) ? { name: searchString } : null
+        await this.$store.dispatch('PopularSelectionsModule/getListSelections', payload)
+      }, 1000)
+    },
   },
 }
 </script>

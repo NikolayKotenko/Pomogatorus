@@ -1,4 +1,5 @@
 import Request from '@/services/request'
+import constructFilterQuery from "~/utils/constructFilterQuery";
 
 export default {
   namespaced: true,
@@ -43,9 +44,11 @@ export default {
     },
   },
   actions: {
-    async getListSelections({ commit }) {
-      const query = 'filter[public_field_filter]=true'
-      const response = await Request.get(this.state.BASE_URL + '/dictionary/tags?' + query)
+    async getListSelections({ commit }, queryParams) {
+      const basedFilter = {public_field_filter: true};
+      const query = constructFilterQuery({ ...basedFilter, ...queryParams });
+
+      const response = await Request.get(this.state.BASE_URL + '/dictionary/tags' + query)
       commit('setListSelections', response.data)
       return response
     },
