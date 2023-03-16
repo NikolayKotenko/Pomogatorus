@@ -17,7 +17,7 @@
       </v-tab>
     </v-tabs>
 
-    <v-tabs-items v-model='current'>
+    <v-tabs-items v-if='!isLoadingData' v-model='current'>
       <v-tab-item
         v-for='(item, indexTab) in tabs'
         :key='indexTab'
@@ -42,12 +42,12 @@
                   <span v-else>{{ calcCountNormal(index) }}</span>
                 </div>
                 <CustomField
+                  :code-property='tabItem.code'
                   :data='getObjectProperty(tabItem.code)'
                   :deleted-file='deletedFile'
                   :id-object='dataObject.id'
                   :id-property='tabItem.id'
                   :items='getItems(tabItem)'
-                  :code-property='tabItem.code'
                   :label='tabItem.name'
                   :type='getInputType(tabItem)'
                   @update-field='changeAnswer($event, tabItem.code)'

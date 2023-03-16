@@ -30,13 +30,13 @@
       <div ref='docContent' class='object-wrapper-documents'>
         <div class='object-wrapper-documents__img-container'>
           <span>Фото объекта</span>
-          <div :class='{"dropzone-empty": ! getMainPhotoObject}' class="list-files-styled-wrapper">
-            <img v-if="getMainPhotoObject"
-                 height="100%"
-                 width="100%"
-                 style="object-fit: cover"
-                 :src="$store.state.BASE_URL + getMainPhotoObject.full_path"
-                 :title="getMainPhotoObject.title_image"
+          <div :class='{"dropzone-empty": ! getMainPhotoObject}' class='list-files-styled-wrapper'>
+            <img v-if='getMainPhotoObject'
+                 :src='$store.state.BASE_URL + getMainPhotoObject.full_path'
+                 :title='getMainPhotoObject.title_image'
+                 height='100%'
+                 style='object-fit: cover'
+                 width='100%'
             >
             <span v-else class='empty-placeholder'>Здесь будут фото вашего объекта</span>
           </div>
@@ -100,7 +100,7 @@
 import TabsCustom from '../Common/TabsCustom'
 import SelectObjectStyled from '../Common/SelectObjectStyled'
 import SelectGeo from '../Common/SelectGeo'
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import ButtonStyled from '../Common/ButtonStyled'
 import ListFilesStyled from '~/components/Common/ListFilesStyled'
 import Vue from 'vue'
@@ -162,17 +162,18 @@ export default {
     showMore() {
       return ((this.parentHeight + this.scrollHeight + this.minHeightInput) <= this.maxScroll)
     },
-    getMainPhotoObject(){
-      if (! this.objectData['osnovnoe-foto-obekta']) return null;
+    getMainPhotoObject() {
+      if (!this.object['osnovnoe-foto-obekta']) return null
 
-      const firstImage = this.objectData['osnovnoe-foto-obekta'].filter((item) => {
+      const firstImage = this.object['osnovnoe-foto-obekta'].filter((item) => {
         return item.main_photo_object === true
-      });
-      return (firstImage) ? firstImage[0] : null;
+      })
+      return (firstImage) ? firstImage[0] : null
     }
   },
   methods: {
     ...mapActions('Objects', ['saveObjData', 'getUserObjects']),
+    ...mapMutations('Tabs', ['setLoadingData']),
 
     scrollBot() {
       this.$refs.scrollParent.scrollTo({
@@ -228,7 +229,12 @@ export default {
       this.object = this.objectData
     },
     callback(value) {
+      this.setLoadingData(true)
       this.object = value
+      // TODO: Отрефакторить, но завтра сдаваться
+      this.$nextTick(() => {
+        this.setLoadingData(false)
+      })
     },
     setAddressMap(data) {
       this.object.address = data.address
@@ -238,7 +244,7 @@ export default {
       this.updateProperties.address = data.address
       this.updateProperties.lat = data.coords[0]
       this.updateProperties.long = data.coords[1]
-    },
+    }
   },
   destroyed() {
     if (process.client) {
