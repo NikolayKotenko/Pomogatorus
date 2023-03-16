@@ -230,6 +230,10 @@ export default {
       type: String,
       default: ''
     },
+    codeProperty: {
+      type: String,
+      default: ''
+    },
     isSolo: {
       type: Boolean,
       default: false
@@ -416,6 +420,10 @@ export default {
       formData.append('uuid', file.upload.uuid)
       formData.append('id_object', parseInt(this.idObject))
       formData.append('id_object_property', parseInt(this.idProperty))
+
+      if (this.codeProperty === 'osnovnoe-foto-obekta'){
+        formData.append('main_photo_object', true)
+      }
     },
     successData(file, response) {
       console.log('successData', response)

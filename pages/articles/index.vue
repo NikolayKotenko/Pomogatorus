@@ -75,7 +75,7 @@ export default {
 
       this.debounceTimeout = setTimeout(async () => {
         await this.getArticlesBySymbols(searchString)
-      }, 1000)
+      }, 500)
     },
     setChip(chip) {
       this.selectedChips = chip

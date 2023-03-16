@@ -22,7 +22,7 @@
         readonly
       >
         <template v-slot:selection='data'>
-          <div class='uploaded-image' v-bind='data.attrs'>
+          <div class='uploaded-image' v-bind='data.attrs' v-if="data.item.main_photo_object === false">
 
             <div v-if="data.item.type === 'text/plain'">
               <a :href='$store.state.BASE_URL + data.item.full_path' target='_blank'>
@@ -175,7 +175,11 @@ export default {
       return result
     },
     isDropzoneNotEmpty() {
-      return !!this.getFilesFromObject.length
+      if (! this.getFilesFromObject.length) return false;
+
+      return this.getFilesFromObject.some((object) => {
+        return object.main_photo_object === false;
+      })
     }
   },
   methods: {

@@ -3,12 +3,12 @@ $width-image: 263px;
 
 .list-files-styled {
   height: 246px;
-  padding-bottom: 15px;
+  padding: 10px 10px 15px 10px;
 
   .dropzone-files {
     height: 100%;
     margin: unset;
-    overflow-x: overlay;
+    overflow-x: scroll;
 
     .theme--light.v-text-field.v-input--is-disabled .v-input__slot::before {
       border: unset !important;
@@ -115,19 +115,19 @@ $width-image: 263px;
 
     }
   }
+}
 
-  &.dropzone-empty {
-    background: rgba(217, 217, 217, 1);
+.dropzone-empty {
+  background: rgba(217, 217, 217, 1);
 
-    .empty-placeholder {
-      height: 100%;
-      width: 100%;
-      display: flex;
-      align-items: center;
-
-      font-size: 1.3em;
-      text-align: center;
-      color: #000000;
-    }
+  .empty-placeholder {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3em;
+    text-align: center;
+    color: #000000;
   }
 }

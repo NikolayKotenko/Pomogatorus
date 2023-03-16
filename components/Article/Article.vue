@@ -39,12 +39,28 @@
           </ButtonStyled>
           <div class="list_elem_wrapper__preview_content__buttons__social_btns">
             <div class="list_elem_wrapper__preview_content__buttons__social_btns__wrapper">
-              <v-icon class="list_elem_wrapper__preview_content__buttons__social_btns__wrapper__btn">mdi-eye</v-icon>
-              <span>212</span>
+              <v-tooltip top>
+                <template v-slot:activator='{ on, attrs }'>
+                  <div v-bind='attrs' v-on='on'>
+                    <v-icon class="list_elem_wrapper__preview_content__buttons__social_btns__wrapper__btn">
+                      mdi-eye
+                    </v-icon>
+                    <span>212</span>
+                  </div>
+                </template>
+                <span>Кол-во просмотров</span>
+              </v-tooltip>
             </div>
             <div class="list_elem_wrapper__preview_content__buttons__social_btns__wrapper">
-              <v-icon class="list_elem_wrapper__preview_content__buttons__social_btns__wrapper__btn">mdi-cards-heart</v-icon>
-              <span>94</span>
+              <v-tooltip top>
+                <template v-slot:activator='{ on, attrs }'>
+                  <div v-bind='attrs' v-on='on'>
+                    <v-icon class="list_elem_wrapper__preview_content__buttons__social_btns__wrapper__btn">mdi-cards-heart</v-icon>
+                    <span>94</span>
+                  </div>
+                </template>
+                <span>Понравилось людям</span>
+              </v-tooltip>
             </div>
           </div>
         </div>

@@ -30,12 +30,20 @@
       <div ref='docContent' class='object-wrapper-documents'>
         <div class='object-wrapper-documents__img-container'>
           <span>Фото объекта</span>
-          <div class='object-wrapper-documents__img-container__img'>
-            <img alt='' src='@/assets/images/typeobject.png'>
+          <div :class='{"dropzone-empty": ! getMainPhotoObject}' class="list-files-styled-wrapper">
+            <img v-if="getMainPhotoObject"
+                 height="100%"
+                 width="100%"
+                 style="object-fit: cover"
+                 :src="$store.state.BASE_URL + getMainPhotoObject.full_path"
+                 :title="getMainPhotoObject.title_image"
+            >
+            <span v-else class='empty-placeholder'>Здесь будут фото вашего объекта</span>
           </div>
         </div>
 
         <div class='object-wrapper-documents__docs'>
+          <span>Прикрепленные документы</span>
           <ListFilesStyled
             :data='object' :id-object='objectData.id'
             @remove-from-global='removeFromGlobal'
@@ -153,6 +161,14 @@ export default {
     },
     showMore() {
       return ((this.parentHeight + this.scrollHeight + this.minHeightInput) <= this.maxScroll)
+    },
+    getMainPhotoObject(){
+      if (! this.objectData['osnovnoe-foto-obekta']) return null;
+
+      const firstImage = this.objectData['osnovnoe-foto-obekta'].filter((item) => {
+        return item.main_photo_object === true
+      });
+      return (firstImage) ? firstImage[0] : null;
     }
   },
   methods: {
@@ -222,7 +238,7 @@ export default {
       this.updateProperties.address = data.address
       this.updateProperties.lat = data.coords[0]
       this.updateProperties.long = data.coords[1]
-    }
+    },
   },
   destroyed() {
     if (process.client) {

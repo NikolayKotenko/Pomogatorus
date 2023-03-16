@@ -47,6 +47,7 @@
                   :id-object='dataObject.id'
                   :id-property='tabItem.id'
                   :items='getItems(tabItem)'
+                  :code-property='tabItem.code'
                   :label='tabItem.name'
                   :type='getInputType(tabItem)'
                   @update-field='changeAnswer($event, tabItem.code)'
