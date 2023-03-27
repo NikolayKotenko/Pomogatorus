@@ -64,6 +64,7 @@
               :value='item.answer'
               @change='changeAnswer(item.dataEnv)'
               @click='getIdElem($event)'
+              color="#95D7AE"
             >
               <template slot='label'>
                 <div style='display: flex; column-gap: 20px; align-items: flex-start'>
@@ -244,35 +245,27 @@
           :placeholder='"Развернутый ответ"'
           class='py-2'
           is-solo
+
+          :is-flat="true"
           @update-input='changeDetailedResponse'
         />
       </div>
 
-      <div v-if='question_data.state_attachment_response' class='py-3 file_input'>
+      <div v-if='question_data.state_attachment_response'>
         <template v-if='(answer || detailed_response) && !disableBtn'>
-          <v-btn
+          <ButtonUploadFiles
             :loading='isSelecting'
-            class='dashedButton'
-            color='primary'
-            dark
-            outlined
-            rounded
-            @click='handleFileImport'
           >
             <v-icon>mdi-paperclip</v-icon>
             {{ !!files.length ? 'Добавить еще' : 'Вложить файл' }}
-          </v-btn>
+          </ButtonUploadFiles>
           <input ref='uploader' class='d-none' type='file' @change='onFileChanged' />
-          <v-btn
-            v-if='files.length'
+          <ButtonUploadFiles
             :disabled="(!!uploadedFiles.length && statusFile) || status_name === 'sending'"
             :loading="status_name === 'sending'"
-            color='green lighten-1'
-            rounded
-            @click='uploadToServer'
           >
             Загрузить файл
-          </v-btn>
+          </ButtonUploadFiles>
         </template>
         <template v-else>
           <v-tooltip bottom>
@@ -331,10 +324,11 @@ import CompareArrays from '../../utils/compareArrays'
 import AuthModal from '../Modals/AuthModal'
 import InputStyled from '../Common/InputStyled'
 import TextAreaStyled from '../Common/TextAreaStyled'
+import ButtonUploadFiles from '../Common/ButtonUploadFiles.vue'
 
 export default {
   name: 'Question',
-  components: { TextAreaStyled, InputStyled, AuthModal },
+  components: { TextAreaStyled, InputStyled, AuthModal, ButtonUploadFiles },
   props: {
     propsData: {
       type: Object,
@@ -882,15 +876,19 @@ export default {
 }
 
 .question_wrapper {
-  max-width: 600px;
+  max-width: 815px;
   position: relative;
-  padding: 16px 10px 8px 10px;
+  padding: 20px;
   border: 2px solid white;
-  border-radius: 15px;
+  border-radius: 5px;
   transition: border-color 0.6s ease-in-out;
 
+  &__content{
+    font-size: 1.1em;
+  }
+
   &:hover {
-    border-color: lighten(yellow, 15%);
+    border-color: #95D7AE;
   }
 
   &__title {
@@ -917,6 +915,7 @@ export default {
       flex: 1;
       transition: all 0.4s ease-in-out;
       padding-bottom: 10px;
+      color: #000000 !important;
     }
 
     &__status {

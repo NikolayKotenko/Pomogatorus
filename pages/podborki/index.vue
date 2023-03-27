@@ -14,30 +14,48 @@
     >
     </SearchStyled>
 
-      <v-card
-        class=""
-        :href="$route.path + '/' + item.code"
-        hover
-        v-for="(item, key) in $store.state.PopularSelectionsModule.list_selections"
-        :key="key"
-      >
-        <div class="podborki__wrapper_list">
-          <v-img height="150" cover :src="$store.getters.getImageByEClientFilesObj(item.e_client_files)"></v-img>
-          <div >
-            <v-card-title>{{ item.name }}</v-card-title>
-            <v-card-text v-html="item.description" style="word-break: break-word; "></v-card-text>
+    <v-card
+      class="podborki__wrapper_list"
+      :href="$route.path + '/' + item.code"
+      hover
+      v-for="(item, key) in $store.state.PopularSelectionsModule.list_selections"
+      :key="key"
+    >
+        <v-img
+          :class="{'empty_placeholder': Object.keys(item.e_client_files).length}"
+          :src="$store.getters.getImageByEClientFilesObj(item.e_client_files)">
+        </v-img>
+        <div class='empty_placeholder'>
+          <span>Фото подборки</span>
+        </div>
+        <div>
+          <HashTagStyled
+            class="podborki__wrapper_list__title"
+            :text="item.name"
+          >
+          </HashTagStyled>
+          <div class="podborki__wrapper_list__text">
+            <v-card-text
+              v-html="item.description"
+            >
+            </v-card-text>
+          </div>
+          <div>
+            <span>Заполненых параметров: </span>
           </div>
         </div>
-      </v-card>
+
+    </v-card>
   </v-container>
 </template>
 
 <script>
 import SearchStyled from "@/components/Common/SearchStyled.vue";
+import HashTagStyled from "../../components/Common/HashTagStyled.vue";
 
 export default {
   name: 'index.vue',
-  components: {SearchStyled},
+  components: {SearchStyled, HashTagStyled},
   data: () => ({
     debounceTimeout: null
   }),
@@ -71,14 +89,49 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
+.empty_placeholder{
+  background-color: #D9D9D9;
+  min-width: 254px;
+  min-height: 170px;
+  border-radius: 5px;
+  margin: 1em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #FFFFFF;
+  font-size: 1.3em;
+}
 .podborki {
   display: grid;
   grid-row-gap: 2em;
   align-content: baseline;
   &__wrapper_list {
-    @media (min-width: 500px) {
-      display: grid;
-      grid-template-columns: 150px auto
+    display: flex;
+    flex-direction: row;
+    //@media (min-width: 500px) {
+    //  display: grid;
+    //  grid-template-columns: 150px auto
+    //}
+    &__img {
+      min-width: 254px;
+      min-height: 170px;
+    }
+    &__title {
+      display: flex;
+      padding-top: 1em;
+      font-size: 1.3em;
+    }
+    &__text {
+      background-color: #D9D9D9;
+      max-height: 85px;
+      margin: 1em 1em 1em 0;
+      padding: 10px;
+      border-radius: 5px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
   }
 }

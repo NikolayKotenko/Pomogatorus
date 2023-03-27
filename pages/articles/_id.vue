@@ -2,30 +2,31 @@
   <div>
     <div class='article-template'>
       <template v-if='article'>
-        <div
-          :class='[
-            { showArticleHeader: isShowTitle },
-            {
-              subHeader: $store.state.show_header && isShowTitle && $device.isDesktop,
-            },
-            { subHeaderMobile: $device.isMobile },
-          ]'
-          class='article-template__subHeader'
-        >
-          <h2 class='mainTitleFont'>
-            <div>{{ article.name }}</div>
-            <social-share></social-share>
-          </h2>
-        </div>
+<!--        <div-->
+<!--          :class='[-->
+<!--            { showArticleHeader: isShowTitle },-->
+<!--            {-->
+<!--              subHeader: $store.state.show_header && isShowTitle && $device.isDesktop,-->
+<!--            },-->
+<!--            { subHeaderMobile: $device.isMobile },-->
+<!--          ]'-->
+<!--          class='article-template__subHeader'-->
+<!--        >-->
+<!--          <h2 class='mainTitleFont'>-->
+<!--            <div>{{ article.name }}</div>-->
+<!--            <social-share></social-share>-->
+<!--          </h2>-->
+<!--        </div>-->
         <div ref='nav' class='article-template__header'>
           <h1 class='article-template__header__title mainTitleFont'>
             <div>{{ article.name }}</div>
-            <social-share></social-share>
+<!--            <social-share></social-share>-->
           </h1>
           <ArticleInfo :article_data='article' @setView='setView' />
+          <div v-if='!renderArticle' class='article-template__content mainContentFont' v-html='refactored_content'></div>
         </div>
 
-        <div v-if='!renderArticle' class='article-template__content mainContentFont' v-html='refactored_content'></div>
+
       </template>
 
       <div v-if='$store.state.ArticleModule.refactoring_content || !article' class='hidden-mask'></div>
@@ -33,7 +34,37 @@
         <v-progress-circular :size='50' color='primary' indeterminate style='margin-top: 20px'></v-progress-circular>
       </v-overlay>
     </div>
+    <div class="article_info_wrapper__feedback">
+      <div>
 
+      </div>
+      <SocialShare>
+
+      </SocialShare>
+    </div>
+    <hr class="article_info_wrapper__divider"></hr>
+
+    <div class="article_info_wrapper__more_article">
+      <div>
+        <span>Ещё статьи по тегу:
+            <HashTagStyled
+              :text="getFirstTag"
+
+            >
+            </HashTagStyled>
+        </span>
+        <div>
+<!--          <Article-->
+<!--          >-->
+<!--          </Article>-->
+        </div>
+      </div>
+<!--      <div>-->
+<!--        <span class="titleFont">-->
+<!--          Cтатьи по тегу: {{ }}-->
+<!--        </span>-->
+<!--      </div>-->
+    </div>
     <!-- TODO: DEPRECATED, Теперь у нас есть боковой виджет объекта -->
     <!--    <footer-summary></footer-summary>-->
   </div>
@@ -47,14 +78,16 @@ import LoginAuth from '~/components/frontLayouts/LoginAuth'
 import Author from '~/components/Article/Author'
 import ArticleInfo from '~/components/Article/ArticleInfo'
 import SocialShare from '~/components/Article/SocialShare'
+import HashTagStyled from '~/components/Common/HashTagStyled'
 
 import Request from '~/services/request'
+import Article from "../../components/Article/Article.vue";
 
 const vuetify_class = require('vuetify')
 
 export default {
   name: '_id.vue',
-  components: { ArticleInfo, Author, SocialShare },
+  components: {Article, ArticleInfo, Author, SocialShare, HashTagStyled},
   async asyncData({ store, params }) {
     try {
       const article_request = await Request.get(`${store.state.BASE_URL}/entity/articles/${params.id}`, '', true)
@@ -170,6 +203,11 @@ export default {
     },
     isShowTitle() {
       return this.coordYNav <= 0 && this.coordYNav !== null
+    },
+    getFirstTag() {
+      return (this.article._all_public_name_tags.length)
+        ?  this.article._all_public_name_tags[0]
+        : ''
     }
   },
   methods: {
@@ -438,15 +476,15 @@ export default {
     &__title {
       margin: 10px 0 10px 0;
       padding-bottom: 6px;
-      border-bottom: 1px solid darkgrey;
     }
   }
 
   &__content {
     word-break: normal;
+    max-width: 815px;
 
     h2 {
-      font-family: 'Google Sans', sans-serif !important;
+      font-family: 'Roboto', sans-serif !important;
       color: rgb(32, 33, 36) !important;
       font-size: 1.25rem !important;
     }
@@ -469,5 +507,17 @@ export default {
   h2 {
     font-size: 1.1em;
   }
+}
+
+.article_info_wrapper__feedback {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 815px;
+}
+
+.article_info_wrapper__divider {
+  max-width: 815px;
+  margin: 1em 0;
 }
 </style>
