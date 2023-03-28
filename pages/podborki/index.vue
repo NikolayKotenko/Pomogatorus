@@ -35,8 +35,8 @@
             :text="item.name"
           >
           </HashTagStyled>
-          <div class="podborki__wrapper_list__text">
-            <v-card-text
+          <div >
+            <v-card-text class="podborki__wrapper_list__text"
               v-html="item.description"
             >
             </v-card-text>
@@ -111,33 +111,43 @@ export default {
   &__wrapper_list {
     display: flex;
     flex-direction: row;
-    //@media (min-width: 500px) {
-    //  display: grid;
-    //  grid-template-columns: 150px auto
-    //}
+    flex-wrap: wrap;
+
     &__img {
       min-width: 254px;
       min-height: 170px;
     }
     &__title {
       display: flex;
-      padding-top: 1em;
+      margin: 1em;
       font-size: 1.3em;
     }
     &__text {
-      background-color: #D9D9D9;
-      max-height: 85px;
-      margin: 1em 1em 1em 0;
-      padding: 10px;
-      border-radius: 5px;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-    &__compilation_info {
 
     }
+    &__compilation_info {
+      margin: 1em;
+    }
+  }
+}
+.podborki__wrapper_list__text{
+  background-color: #D9D9D9;
+  max-height: 85px;
+  width: auto;
+  margin: 1em;
+  border-radius: 5px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@media screen and (max-width: 600px){
+  .podborki__wrapper_list__title {
+    font-size: 1em
+  };
+  .podborki__wrapper_list__compilation_info{
+    font-size: 0.8em;
   }
 }
 </style>

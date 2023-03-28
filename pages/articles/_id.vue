@@ -540,6 +540,7 @@ export default {
   padding-top: 3em;
   flex-wrap: wrap;
 
+
 }
 .article_info_wrapper__divider {
   max-width: 815px;

@@ -3,24 +3,27 @@
     <div v-if='main_tag.description' class='tag-template'>
       <v-card class='mt-5 mb-5 pa-5' style='word-break: break-word' v-html='main_tag.description'></v-card>
     </div>
-    <div class='auth-template mt-5'>
-      <LoginAuth />
-    </div>
-    <div v-if='$store.state.PopularSelectionsModule.article.length' class='article-template list_container mt-5'>
-      <div v-for='(article, index) in $store.state.PopularSelectionsModule.article'>
-        <Article
-          :key='index'
-          :article='article'
-        />
+<!--    <div class='auth-template mt-5'>-->
+<!--      <LoginAuth />-->
+<!--    </div>-->
+    <div class="content_wrapper">
+      <div v-if='$store.state.PopularSelectionsModule.questions.length'>
+        <div v-for='(question, index) in $store.state.PopularSelectionsModule.questions'>
+          <Question
+            :key='index'
+            :props-data='question'
+            :props-index='index + 1'
+          />
+        </div>
       </div>
-    </div>
-    <div v-if='$store.state.PopularSelectionsModule.questions.length' class='question-template mt-5'>
-      <div v-for='(question, index) in $store.state.PopularSelectionsModule.questions'>
-        <Question
-          :key='index'
-          :props-data='question'
-          :props-index='index + 1'
-        />
+      <div v-if='$store.state.PopularSelectionsModule.article.length'>
+        <div v-for='(article, index) in $store.state.PopularSelectionsModule.article'>
+          <ArticleSmallCard
+            class="small_card"
+            :key='index'
+            :article='article'
+          />
+        </div>
       </div>
     </div>
 
@@ -33,12 +36,14 @@ import Question from '../../components/frontLayouts/Question'
 import LoginAuth from '../../components/frontLayouts/LoginAuth'
 import Article from '../../components/Article/Article'
 import Request from '../../services/request'
+import ArticleSmallCard from "../../components/Article/ArticleSmallCard.vue";
 
 const vuetify_class = require('vuetify')
 
 export default {
   name: '_code.vue',
   components: {
+    ArticleSmallCard,
     Question,
     LoginAuth,
     Article
@@ -102,6 +107,16 @@ export default {
 
 <style lang='scss' scoped>
 @import '@/assets/styles/lists';
+
+.content_wrapper{
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  row-gap: 1em;
+
+}
+.small_card{
+
+}
 
 .tag-template {
   .textarea {
