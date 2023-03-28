@@ -124,6 +124,10 @@ export default {
 
     changeAnswer(value, code) {
       this.$emit('update-prop', { key: code, value })
+
+      if (code === 'tip-obekta'){
+        this.getTabs()
+      }
     },
     changeFileData(value, code) {
       this.$emit('update-file', { key: code, value: value.data, index: value.index })
