@@ -54,7 +54,9 @@ export default {
     async getTabs({ commit }) {
       commit('setLoading', true)
 
-      const { data } = await Request.get(this.state.BASE_URL + '/dictionary/tags?filter[flag_engineering_system]=true')
+      const { data } = await Request.get(
+        this.state.BASE_URL + '/dictionary/tags?filter[flag_engineering_system]=true&sort[sort_engineering_system]=asc'
+      )
       commit('setTabs', data)
 
       commit('setLoading', false)
