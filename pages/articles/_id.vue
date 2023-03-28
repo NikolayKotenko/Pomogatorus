@@ -53,10 +53,13 @@
             >
             </HashTagStyled>
         </span>
-        <div>
-<!--          <Article-->
-<!--          >-->
-<!--          </Article>-->
+        <div class="article_info_wrapper__more_article__wrapper">
+          <ArticleSmallCard
+            v-for="(obj, key) in listArticlesExcludeCurrent"
+            :article="obj"
+            :key="key"
+          >
+          </ArticleSmallCard>
         </div>
       </div>
 <!--      <div>-->
@@ -79,15 +82,17 @@ import Author from '~/components/Article/Author'
 import ArticleInfo from '~/components/Article/ArticleInfo'
 import SocialShare from '~/components/Article/SocialShare'
 import HashTagStyled from '~/components/Common/HashTagStyled'
-
 import Request from '~/services/request'
-import Article from "../../components/Article/Article.vue";
+import Article from "~/components/Article/Article.vue";
+import ArticleModule from "../../store/modules/article";
+import constructFilterQuery from "../../utils/constructFilterQuery";
+import ArticleSmallCard from "../../components/Article/ArticleSmallCard.vue";
 
 const vuetify_class = require('vuetify')
 
 export default {
   name: '_id.vue',
-  components: {Article, ArticleInfo, Author, SocialShare, HashTagStyled},
+  components: {ArticleSmallCard, Article, ArticleInfo, Author, SocialShare, HashTagStyled},
   async asyncData({ store, params }) {
     try {
       const article_request = await Request.get(`${store.state.BASE_URL}/entity/articles/${params.id}`, '', true)
@@ -158,7 +163,7 @@ export default {
       }
     ]
   },
-  mounted() {
+  async mounted() {
     this.$route.meta.title = this.article?.name
 
     if (process.client) {
@@ -178,6 +183,12 @@ export default {
         }
       }, 200)
     })
+
+    const query1= constructFilterQuery({
+      'tag': this.article._all_public_tags[0].code,
+    },true)
+    await this.$store.dispatch('getListArticles', query1 + '&filter[activity]=true')
+
   },
   watch: {
     '$store.state.refactoring_content': {
@@ -208,7 +219,12 @@ export default {
       return (this.article._all_public_name_tags.length)
         ?  this.article._all_public_name_tags[0]
         : ''
-    }
+    },
+    listArticlesExcludeCurrent() {
+      return this.$store.state.ArticleModule.list_filtered_articles.filter((obj)=>{
+        return obj.id !== this.article.id
+      })
+    },
   },
   methods: {
     // SCROLL EVENT
@@ -515,7 +531,16 @@ export default {
   width: 100%;
   max-width: 815px;
 }
+.article_info_wrapper__more_article__wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  grid-template-rows: auto;
+  grid-gap: 1em;
+  max-width: 870px;
+  padding-top: 3em;
+  flex-wrap: wrap;
 
+}
 .article_info_wrapper__divider {
   max-width: 815px;
   margin: 1em 0;

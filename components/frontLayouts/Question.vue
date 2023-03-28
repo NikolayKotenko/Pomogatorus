@@ -96,6 +96,7 @@
             :disabled="(check_status && status_question.type === 'sending')"
             :value='item.answer'
             dense
+            color="#95D7AE"
             hide-details
             multiple
             @change='changeAnswer(item.dataEnv)'

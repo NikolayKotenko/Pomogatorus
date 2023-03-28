@@ -22,6 +22,7 @@
       :key="key"
     >
         <v-img
+          v-if="Object.keys(item.e_client_files).length === true"
           :class="{'empty_placeholder': Object.keys(item.e_client_files).length}"
           :src="$store.getters.getImageByEClientFilesObj(item.e_client_files)">
         </v-img>
@@ -40,8 +41,9 @@
             >
             </v-card-text>
           </div>
-          <div>
+          <div class="podborki__wrapper_list__compilation_info">
             <span>Заполненых параметров: </span>
+            <span>Всего статей: </span>
           </div>
         </div>
 
@@ -132,6 +134,9 @@ export default {
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
+    }
+    &__compilation_info {
+
     }
   }
 }
