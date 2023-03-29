@@ -35,6 +35,34 @@
       </v-overlay>
     </div>
     <div class="article_info_wrapper__feedback">
+      <div class="icons_wrapper">
+        <div style="padding-right: 1em">
+          <v-tooltip top>
+            <template v-slot:activator='{ on, attrs }'>
+              <div v-bind='attrs' v-on='on'>
+                <v-icon
+                  size="30"
+                  color="#000000"
+                  class="icon_eye">mdi-eye</v-icon>
+                <span>212</span>
+              </div>
+            </template>
+            <span>Кол-во просмотров</span>
+          </v-tooltip>
+        </div>
+        <v-tooltip top>
+          <template v-slot:activator='{ on, attrs }'>
+            <div v-bind='attrs' v-on='on'>
+              <v-icon
+                size="30"
+                color="#000000"
+                class="icon_like">mdi-cards-heart</v-icon>
+              <span>94</span>
+            </div>
+          </template>
+          <span>Понравилось людям</span>
+        </v-tooltip>
+      </div>
       <div>
 
       </div>
@@ -49,7 +77,6 @@
         <span>Ещё статьи по тегу:
             <HashTagStyled
               :text="getFirstTag"
-
             >
             </HashTagStyled>
         </span>
@@ -545,5 +572,11 @@ export default {
 .article_info_wrapper__divider {
   max-width: 815px;
   margin: 1em 0;
+}
+.icons_wrapper{
+  display: flex;
+  justify-content: space-between;
+
+  margin-right: 1em;
 }
 </style>

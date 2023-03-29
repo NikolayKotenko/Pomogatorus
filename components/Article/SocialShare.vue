@@ -29,7 +29,7 @@
 
     <v-icon
       title="Поделится статьей"
-      dark large
+      size="30"
       color="black"
       class="social-container__button-state"
       @click="tooltip_state = true"

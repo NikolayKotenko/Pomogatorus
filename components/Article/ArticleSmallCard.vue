@@ -9,11 +9,12 @@
       </div>
       <div class="img_wrapper">
         <v-img
-          alt=''
           class='img'
+          :class="{'empty_img': ! $store.getters.getImageByEClientFilesObj(article.e_client_files) }"
           cover
           :src="$store.getters.getImageByEClientFilesObj(article.e_client_files)"
         />
+        <span v-if="! $store.getters.getImageByEClientFilesObj(article.e_client_files)">Фото статьи</span>
       </div>
         <div class="icons_and_time_wrapper">
           <div class="icons_wrapper">
@@ -65,6 +66,7 @@ export default {
   padding: 10px;
   transition: all 0.4s ease-in-out !important;
   opacity: 0.6;
+  max-width: 270px;
 
   &:hover {
     transform: scale(1.05);
@@ -75,6 +77,10 @@ export default {
 
 .title{
   font-size: 1em !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 250px
 }
 
 .img_wrapper{
@@ -83,15 +89,21 @@ export default {
   justify-content: center;
   align-items: center;
   position: relative;
+  width: 250px;
+  height: 150px;
+  span{
+    position: absolute;
+  }
 }
-
 .img{
   height: 100%;
-  max-height: 150px;
-  max-width: 250px;
   border-radius: 5px;
 }
-
+.empty_img{
+  background: #ADADAD;
+  height: 100%;
+  width: 100%;
+}
 .icons_and_time_wrapper{
   display: flex;
   justify-content: space-between;

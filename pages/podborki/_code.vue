@@ -8,8 +8,14 @@
 <!--    </div>-->
     <div class="content_wrapper">
       <div v-if='$store.state.PopularSelectionsModule.questions.length'>
+        <h3 class="text_tag_question">Вопросы по тегу:
+          <HashTagStyled
+            :text="main_tag.name"
+        >
+        </HashTagStyled></h3>
         <div v-for='(question, index) in $store.state.PopularSelectionsModule.questions'>
           <Question
+            class="question_card"
             :key='index'
             :props-data='question'
             :props-index='index + 1'
@@ -17,6 +23,7 @@
         </div>
       </div>
       <div v-if='$store.state.PopularSelectionsModule.article.length'>
+        <h3 class="text_tag_article">Статьи по тегу</h3>
         <div v-for='(article, index) in $store.state.PopularSelectionsModule.article'>
           <ArticleSmallCard
             class="small_card"
@@ -37,6 +44,7 @@ import LoginAuth from '../../components/frontLayouts/LoginAuth'
 import Article from '../../components/Article/Article'
 import Request from '../../services/request'
 import ArticleSmallCard from "../../components/Article/ArticleSmallCard.vue";
+import HashTagStyled from '~/components/Common/HashTagStyled'
 
 const vuetify_class = require('vuetify')
 
@@ -46,7 +54,8 @@ export default {
     ArticleSmallCard,
     Question,
     LoginAuth,
-    Article
+    Article,
+    HashTagStyled
   },
   async asyncData({ store, params }) {
     try {
@@ -110,12 +119,29 @@ export default {
 
 .content_wrapper{
   display: grid;
+  //grid-template-columns: (auto-fit (3fr 1fr));
   grid-template-columns: 3fr 1fr;
   row-gap: 1em;
-
+  @media screen and (max-width: 768px){
+    grid-template-columns: 1fr;
+  }
+}
+.question_card{
+  margin-bottom: 1em;
 }
 .small_card{
+  margin-bottom: 1em;
+}
 
+.text_tag_question {
+  margin: 1em 0 1em 1em;
+  font-size: 1.2em;
+  font-weight: 500;
+}
+.text_tag_article{
+  margin: 1em 0 1em 0;
+  font-size: 1.2em;
+  font-weight: 500;
 }
 
 .tag-template {
