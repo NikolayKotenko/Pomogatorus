@@ -1,13 +1,13 @@
 <template>
-  <v-card class='article_card' :href="'/articles/' + article.id">
+  <v-card
+    class='article_card'
+    :href="'/articles/' + article.id">
     <div class='list_elem_wrapper'>
       <div class="list_elem_wrapper__preview_content__short_info__title_info">
         <h2 class='list_elem_wrapper__preview_content__short_info__title_info__title'>
           {{ article.name }}
         </h2>
-        <h4 class="list_elem_wrapper__preview_content__short_info__title_info__time">
-          {{article.updated_at}}
-        </h4>
+
       </div>
       <div class="list_elem_wrapper__tag_container">
         <a v-for="(tag, key) in article._all_tags" :href="'/podborki/'+tag.code">#{{tag.name}}</a>
@@ -23,7 +23,9 @@
         />
       </div>
       <div class='list_elem_wrapper__preview_content'>
-        <div class='list_elem_wrapper__preview_content__short_info'>
+        <div
+          class='list_elem_wrapper__preview_content__short_info'
+        >
           <h4
             v-if='article.short_header'
             class='list_elem_wrapper__preview_content__short_info__short'
@@ -32,11 +34,11 @@
           </h4>
         </div>
         <div class="list_elem_wrapper__preview_content__buttons">
-          <ButtonStyled
-            local-text="Читать полностью"
-            local-class="style_button"
-          >
-          </ButtonStyled>
+<!--          <ButtonStyled-->
+<!--            local-text="Читать полностью"-->
+<!--            local-class="style_button"-->
+<!--          >-->
+<!--          </ButtonStyled>-->
           <div class="list_elem_wrapper__preview_content__buttons__social_btns">
             <div class="list_elem_wrapper__preview_content__buttons__social_btns__wrapper">
               <v-tooltip top>
@@ -62,9 +64,12 @@
                 <span>Понравилось людям</span>
               </v-tooltip>
             </div>
-          </div>
-        </div>
 
+          </div>
+          <h4 class="list_elem_wrapper__preview_content__short_info__title_info__time">
+            {{article.updated_at}}
+          </h4>
+        </div>
 
       </div>
     </div>
@@ -82,6 +87,7 @@ export default {
   data: () => ({
     previewAuthor: true
   }),
+
   computed: {
     preview() {
       if (this.article.short_header) {

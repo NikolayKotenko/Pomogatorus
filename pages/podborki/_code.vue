@@ -3,24 +3,34 @@
     <div v-if='main_tag.description' class='tag-template'>
       <v-card class='mt-5 mb-5 pa-5' style='word-break: break-word' v-html='main_tag.description'></v-card>
     </div>
-    <div class='auth-template mt-5'>
-      <LoginAuth />
-    </div>
-    <div v-if='$store.state.PopularSelectionsModule.article.length' class='article-template list_container mt-5'>
-      <div v-for='(article, index) in $store.state.PopularSelectionsModule.article'>
-        <Article
-          :key='index'
-          :article='article'
-        />
+<!--    <div class='auth-template mt-5'>-->
+<!--      <LoginAuth />-->
+<!--    </div>-->
+    <div class="content_wrapper">
+      <div v-if='$store.state.PopularSelectionsModule.questions.length'>
+        <h3 class="text_tag_question">Вопросы по тегу:
+          <HashTagStyled
+            :text="main_tag.name"
+        >
+        </HashTagStyled></h3>
+        <div v-for='(question, index) in $store.state.PopularSelectionsModule.questions'>
+          <Question
+            class="question_card"
+            :key='index'
+            :props-data='question'
+            :props-index='index + 1'
+          />
+        </div>
       </div>
-    </div>
-    <div v-if='$store.state.PopularSelectionsModule.questions.length' class='question-template mt-5'>
-      <div v-for='(question, index) in $store.state.PopularSelectionsModule.questions'>
-        <Question
-          :key='index'
-          :props-data='question'
-          :props-index='index + 1'
-        />
+      <div v-if='$store.state.PopularSelectionsModule.article.length'>
+        <h3 class="text_tag_article">Статьи по тегу</h3>
+        <div v-for='(article, index) in $store.state.PopularSelectionsModule.article'>
+          <ArticleSmallCard
+            class="small_card"
+            :key='index'
+            :article='article'
+          />
+        </div>
       </div>
     </div>
 
@@ -33,15 +43,19 @@ import Question from '../../components/frontLayouts/Question'
 import LoginAuth from '../../components/frontLayouts/LoginAuth'
 import Article from '../../components/Article/Article'
 import Request from '../../services/request'
+import ArticleSmallCard from "../../components/Article/ArticleSmallCard.vue";
+import HashTagStyled from '~/components/Common/HashTagStyled'
 
 const vuetify_class = require('vuetify')
 
 export default {
   name: '_code.vue',
   components: {
+    ArticleSmallCard,
     Question,
     LoginAuth,
-    Article
+    Article,
+    HashTagStyled
   },
   async asyncData({ store, params }) {
     try {
@@ -102,6 +116,33 @@ export default {
 
 <style lang='scss' scoped>
 @import '@/assets/styles/lists';
+
+.content_wrapper{
+  display: grid;
+  //grid-template-columns: (auto-fit (3fr 1fr));
+  grid-template-columns: 3fr 1fr;
+  row-gap: 1em;
+  @media screen and (max-width: 768px){
+    grid-template-columns: 1fr;
+  }
+}
+.question_card{
+  margin-bottom: 1em;
+}
+.small_card{
+  margin-bottom: 1em;
+}
+
+.text_tag_question {
+  margin: 1em 0 1em 1em;
+  font-size: 1.2em;
+  font-weight: 500;
+}
+.text_tag_article{
+  margin: 1em 0 1em 0;
+  font-size: 1.2em;
+  font-weight: 500;
+}
 
 .tag-template {
   .textarea {

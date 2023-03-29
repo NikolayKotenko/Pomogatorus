@@ -2,30 +2,31 @@
   <div>
     <div class='article-template'>
       <template v-if='article'>
-        <div
-          :class='[
-            { showArticleHeader: isShowTitle },
-            {
-              subHeader: $store.state.show_header && isShowTitle && $device.isDesktop,
-            },
-            { subHeaderMobile: $device.isMobile },
-          ]'
-          class='article-template__subHeader'
-        >
-          <h2 class='mainTitleFont'>
-            <div>{{ article.name }}</div>
-            <social-share></social-share>
-          </h2>
-        </div>
+<!--        <div-->
+<!--          :class='[-->
+<!--            { showArticleHeader: isShowTitle },-->
+<!--            {-->
+<!--              subHeader: $store.state.show_header && isShowTitle && $device.isDesktop,-->
+<!--            },-->
+<!--            { subHeaderMobile: $device.isMobile },-->
+<!--          ]'-->
+<!--          class='article-template__subHeader'-->
+<!--        >-->
+<!--          <h2 class='mainTitleFont'>-->
+<!--            <div>{{ article.name }}</div>-->
+<!--            <social-share></social-share>-->
+<!--          </h2>-->
+<!--        </div>-->
         <div ref='nav' class='article-template__header'>
           <h1 class='article-template__header__title mainTitleFont'>
             <div>{{ article.name }}</div>
-            <social-share></social-share>
+<!--            <social-share></social-share>-->
           </h1>
           <ArticleInfo :article_data='article' @setView='setView' />
+          <div v-if='!renderArticle' class='article-template__content mainContentFont' v-html='refactored_content'></div>
         </div>
 
-        <div v-if='!renderArticle' class='article-template__content mainContentFont' v-html='refactored_content'></div>
+
       </template>
 
       <div v-if='$store.state.ArticleModule.refactoring_content || !article' class='hidden-mask'></div>
@@ -33,7 +34,67 @@
         <v-progress-circular :size='50' color='primary' indeterminate style='margin-top: 20px'></v-progress-circular>
       </v-overlay>
     </div>
+    <div class="article_info_wrapper__feedback">
+      <div class="icons_wrapper">
+        <div style="padding-right: 1em">
+          <v-tooltip top>
+            <template v-slot:activator='{ on, attrs }'>
+              <div v-bind='attrs' v-on='on'>
+                <v-icon
+                  size="30"
+                  color="#000000"
+                  class="icon_eye">mdi-eye</v-icon>
+                <span>212</span>
+              </div>
+            </template>
+            <span>Кол-во просмотров</span>
+          </v-tooltip>
+        </div>
+        <v-tooltip top>
+          <template v-slot:activator='{ on, attrs }'>
+            <div v-bind='attrs' v-on='on'>
+              <v-icon
+                size="30"
+                color="#000000"
+                class="icon_like">mdi-cards-heart</v-icon>
+              <span>94</span>
+            </div>
+          </template>
+          <span>Понравилось людям</span>
+        </v-tooltip>
+      </div>
+      <div>
 
+      </div>
+      <SocialShare>
+
+      </SocialShare>
+    </div>
+    <hr class="article_info_wrapper__divider"></hr>
+
+    <div class="article_info_wrapper__more_article">
+      <div>
+        <span>Ещё статьи по тегу:
+            <HashTagStyled
+              :text="getFirstTag"
+            >
+            </HashTagStyled>
+        </span>
+        <div class="article_info_wrapper__more_article__wrapper">
+          <ArticleSmallCard
+            v-for="(obj, key) in listArticlesExcludeCurrent"
+            :article="obj"
+            :key="key"
+          >
+          </ArticleSmallCard>
+        </div>
+      </div>
+<!--      <div>-->
+<!--        <span class="titleFont">-->
+<!--          Cтатьи по тегу: {{ }}-->
+<!--        </span>-->
+<!--      </div>-->
+    </div>
     <!-- TODO: DEPRECATED, Теперь у нас есть боковой виджет объекта -->
     <!--    <footer-summary></footer-summary>-->
   </div>
@@ -47,14 +108,18 @@ import LoginAuth from '~/components/frontLayouts/LoginAuth'
 import Author from '~/components/Article/Author'
 import ArticleInfo from '~/components/Article/ArticleInfo'
 import SocialShare from '~/components/Article/SocialShare'
-
+import HashTagStyled from '~/components/Common/HashTagStyled'
 import Request from '~/services/request'
+import Article from "~/components/Article/Article.vue";
+import ArticleModule from "../../store/modules/article";
+import constructFilterQuery from "../../utils/constructFilterQuery";
+import ArticleSmallCard from "../../components/Article/ArticleSmallCard.vue";
 
 const vuetify_class = require('vuetify')
 
 export default {
   name: '_id.vue',
-  components: { ArticleInfo, Author, SocialShare },
+  components: {ArticleSmallCard, Article, ArticleInfo, Author, SocialShare, HashTagStyled},
   async asyncData({ store, params }) {
     try {
       const article_request = await Request.get(`${store.state.BASE_URL}/entity/articles/${params.id}`, '', true)
@@ -125,7 +190,7 @@ export default {
       }
     ]
   },
-  mounted() {
+  async mounted() {
     this.$route.meta.title = this.article?.name
 
     if (process.client) {
@@ -145,6 +210,12 @@ export default {
         }
       }, 200)
     })
+
+    const query1= constructFilterQuery({
+      'tag': this.article._all_public_tags[0].code,
+    },true)
+    await this.$store.dispatch('getListArticles', query1 + '&filter[activity]=true')
+
   },
   watch: {
     '$store.state.refactoring_content': {
@@ -170,7 +241,17 @@ export default {
     },
     isShowTitle() {
       return this.coordYNav <= 0 && this.coordYNav !== null
-    }
+    },
+    getFirstTag() {
+      return (this.article._all_public_name_tags.length)
+        ?  this.article._all_public_name_tags[0]
+        : ''
+    },
+    listArticlesExcludeCurrent() {
+      return this.$store.state.ArticleModule.list_filtered_articles.filter((obj)=>{
+        return obj.id !== this.article.id
+      })
+    },
   },
   methods: {
     // SCROLL EVENT
@@ -438,15 +519,15 @@ export default {
     &__title {
       margin: 10px 0 10px 0;
       padding-bottom: 6px;
-      border-bottom: 1px solid darkgrey;
     }
   }
 
   &__content {
     word-break: normal;
+    max-width: 815px;
 
     h2 {
-      font-family: 'Google Sans', sans-serif !important;
+      font-family: 'Roboto', sans-serif !important;
       color: rgb(32, 33, 36) !important;
       font-size: 1.25rem !important;
     }
@@ -469,5 +550,33 @@ export default {
   h2 {
     font-size: 1.1em;
   }
+}
+
+.article_info_wrapper__feedback {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 815px;
+}
+.article_info_wrapper__more_article__wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  grid-template-rows: auto;
+  grid-gap: 1em;
+  max-width: 870px;
+  padding-top: 3em;
+  flex-wrap: wrap;
+
+
+}
+.article_info_wrapper__divider {
+  max-width: 815px;
+  margin: 1em 0;
+}
+.icons_wrapper{
+  display: flex;
+  justify-content: space-between;
+
+  margin-right: 1em;
 }
 </style>

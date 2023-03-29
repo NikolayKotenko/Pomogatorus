@@ -1,15 +1,18 @@
 <template>
   <v-text-field
+    class="styleTextField"
     v-model='currentData'
     :append-icon='appendIcon'
     :autofocus='isAutofocus'
     :disabled='isDisabled'
     :flat='isFlat'
     :loading='isLoading'
+    :outlined="isOutlined"
     :placeholder='computedPlaceholder'
     :prepend-inner-icon='prependIconInner'
     :readonly='isReadonly'
     :solo='isSolo'
+    :rounded="isRounded"
     dense
     hide-details
     @click='onClick'
@@ -35,6 +38,10 @@ export default {
       type: Boolean,
       default: false
     },
+    isRounded: {
+      type: Boolean,
+      default: false
+    },
     data: {
       type: String,
       default: ''
@@ -46,6 +53,10 @@ export default {
     isLoading: {
       type: Boolean,
       default: false
+    },
+    isOutlined: {
+      type: Boolean,
+      default: true
     },
     isAutofocus: {
       type: Boolean,
@@ -106,6 +117,11 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.styleTextField {
+  border-radius: 5px;
+  &.primary--text {
+    color: #95D7AE !important;
+  }
+}
 </style>

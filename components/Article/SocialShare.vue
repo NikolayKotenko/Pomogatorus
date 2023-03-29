@@ -29,14 +29,14 @@
 
     <v-icon
       title="Поделится статьей"
-      dark large
-      color="indigo"
+      size="30"
+      color="black"
       class="social-container__button-state"
       @click="tooltip_state = true"
       @mouseover="tooltip_state = true"
       @mouseout="tooltip_state = false"
     >
-      mdi-share-variant-outline
+      mdi-export-variant
     </v-icon>
   </div>
 </template>
@@ -69,10 +69,10 @@ export default {
         twitterUser: 'youyuxi'
       },
       networks: [
-        { network: 'odnoklassniki', title: 'Поделится в odnoklassniki', icon: 'fab fah fa-lg fa-odnoklassniki', color: '#ed812b'},
-        { network: 'telegram', title: 'Поделится в telegram', icon: 'fab fah fa-lg fa-telegram-plane', color: '#0088cc' },
-        { network: 'vk', title: 'Поделится в vk', icon: 'fab fah fa-lg fa-vk', color: '#4a76a8' },
-        { network: 'whatsapp', title: 'Поделится в whatsapp', icon: 'fab fah fa-lg fa-whatsapp', color: '#25d366' },
+        { network: 'odnoklassniki', title: 'Поделится в OK', icon: 'fab fah fa-lg fa-odnoklassniki', color: '#ed812b'},
+        { network: 'telegram', title: 'Поделится в TG', icon: 'fab fah fa-lg fa-telegram-plane', color: '#0088cc' },
+        { network: 'vk', title: 'Поделится в VK', icon: 'fab fah fa-lg fa-vk', color: '#4a76a8' },
+        { network: 'whatsapp', title: 'Поделится в WhatsApp', icon: 'fab fah fa-lg fa-whatsapp', color: '#25d366' },
       ]
     }
   },
