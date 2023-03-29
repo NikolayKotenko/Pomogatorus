@@ -71,12 +71,13 @@ export default {
         console.warn(error.response.data.message)
       }
     },
-    async getListArticles({ commit }, query) {
-        console.log('Work', query)
+    async getListArticles({ commit }, extQueryString) {
+      const query1 = constructFilterQuery({'activity': true})
+      const query = query1 + extQueryString;
 
-        const response = await Request.get(`${this.state.BASE_URL}/entity/articles${query}`)
-        commit ('set_list_filtered_articles', response.data)
-        return response
+      const response = await Request.get(`${this.state.BASE_URL}/entity/articles${query}`)
+      commit ('set_list_filtered_articles', response.data)
+      return response
     },
 
     // CONTENT

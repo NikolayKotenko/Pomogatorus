@@ -22,8 +22,8 @@
       :key="key"
     >
         <v-img
-          v-if="Object.keys(item.e_client_files).length === true"
-          :class="{'empty_placeholder': Object.keys(item.e_client_files).length}"
+          v-if="$store.getters.getImageByEClientFilesObj(item.e_client_files)"
+          :class="{'empty_placeholder': ! $store.getters.getImageByEClientFilesObj(item.e_client_files) }"
           :src="$store.getters.getImageByEClientFilesObj(item.e_client_files)">
         </v-img>
         <div class='empty_placeholder'>

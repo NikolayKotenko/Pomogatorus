@@ -72,28 +72,19 @@
     </div>
     <hr class="article_info_wrapper__divider"></hr>
 
-    <div class="article_info_wrapper__more_article">
-      <div>
-        <span>Ещё статьи по тегу:
-            <HashTagStyled
-              :text="getFirstTag"
-            >
-            </HashTagStyled>
-        </span>
-        <div class="article_info_wrapper__more_article__wrapper">
-          <ArticleSmallCard
-            v-for="(obj, key) in listArticlesExcludeCurrent"
-            :article="obj"
-            :key="key"
-          >
-          </ArticleSmallCard>
-        </div>
+    <div class="article_info_wrapper__more_article" v-if="listArticlesExcludeCurrent.length">
+      <span>
+        Ещё статьи по тегу:
+        <HashTagStyled :text="getFirstTag"></HashTagStyled>
+      </span>
+      <div class="article_info_wrapper__more_article__wrapper">
+        <ArticleSmallCard
+          v-for="(obj, key) in listArticlesExcludeCurrent"
+          :article="obj"
+          :key="key"
+        >
+        </ArticleSmallCard>
       </div>
-<!--      <div>-->
-<!--        <span class="titleFont">-->
-<!--          Cтатьи по тегу: {{ }}-->
-<!--        </span>-->
-<!--      </div>-->
     </div>
     <!-- TODO: DEPRECATED, Теперь у нас есть боковой виджет объекта -->
     <!--    <footer-summary></footer-summary>-->
@@ -211,11 +202,7 @@ export default {
       }, 200)
     })
 
-    const query1= constructFilterQuery({
-      'tag': this.article._all_public_tags[0].code,
-    },true)
-    await this.$store.dispatch('getListArticles', query1 + '&filter[activity]=true')
-
+    await this.$store.dispatch('getListArticles', this.getFilterByMainTag)
   },
   watch: {
     '$store.state.refactoring_content': {
@@ -252,6 +239,9 @@ export default {
         return obj.id !== this.article.id
       })
     },
+    getFilterByMainTag(){
+      return '&filter[tag][]='+this.article._all_public_tags[0]?.code;
+    }
   },
   methods: {
     // SCROLL EVENT
