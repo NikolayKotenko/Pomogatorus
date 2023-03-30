@@ -1,5 +1,7 @@
 <template>
   <v-text-field
+    :filled="isFilled"
+    :outlined="isOutlined"
     v-model='currentData'
     :append-icon='appendIcon'
     :autofocus='isAutofocus'
@@ -11,6 +13,7 @@
     :readonly='isReadonly'
     :solo='isSolo'
     dense
+    rounded
     hide-details
     @click='onClick'
     @focus='isFocused = true'
@@ -66,7 +69,16 @@ export default {
     isFlat: {
       type: Boolean,
       default: false
-    }
+    },
+    isFilled: {
+      type: Boolean,
+      default: false
+    },
+    isOutlined: {
+      type: Boolean,
+      default: false
+    },
+
   },
   data: () => ({
     internalData: '',
@@ -106,6 +118,8 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.v-text-field--rounded{
+  border-radius: 10px!important;
+}
 </style>

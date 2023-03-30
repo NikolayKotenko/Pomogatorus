@@ -1,6 +1,7 @@
 <template>
   <v-container class="podborki">
     <SearchStyled
+      :is-class="'styleSearch'"
       :is-placeholder="'Поиск тегов'"
       :is-loading="$store.state.PopularSelectionsModule.loadingState"
       :is-disabled="$store.state.PopularSelectionsModule.loadingState"

@@ -8,6 +8,7 @@ import UserSettings from './modules/userSettings'
 import SearchModule from './modules/search'
 import Tabs from './modules/tabs'
 import Objects from './modules/objects'
+import CollaborationModule from './modules/collaboration'
 
 import Request from '../services/request'
 
@@ -240,6 +241,7 @@ const createStore = () => {
       SearchModule,
       Tabs,
       Objects,
+      CollaborationModule
     },
   })
 }

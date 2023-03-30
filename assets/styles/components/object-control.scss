@@ -1,7 +1,7 @@
 .object-wrapper {
   display: flex;
   flex-direction: column;
-  padding: 0 10px 0 40px;
+  padding: 0 40px 0 40px;
 
   &-top {
     display: inline-flex;
@@ -12,6 +12,7 @@
     background: #FFFFFF;
     top: 0;
     grid-column-gap: 1rem;
+    z-index: 1;
 
     &__selector {
       display: flex;
@@ -33,6 +34,12 @@
 
     &__map {
       width: 100%;
+    }
+    &__share{
+      display: inline-flex;
+      align-items: center;
+      grid-column-gap: 0.5em;
+      position: relative;
     }
   }
 
@@ -126,7 +133,8 @@
 }
 
 .object-wrapper-main {
-  padding: 0 15px 0 0 !important;
+  padding: 0!important;
+  margin-top: 15px;
   /* width */
   &::-webkit-scrollbar {
     width: 10px;

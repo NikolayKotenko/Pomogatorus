@@ -1,9 +1,10 @@
 <template>
     <v-combobox
-      class="styleSearch"
       :class="isClass"
       :outlined="isOutlined"
       :dense="isDense"
+      :filled="isFilled"
+      :rounded="isRounded"
       :hide-details="isHideDetails"
       :hide-selected="isHideSelected"
       :placeholder="isPlaceholder"
@@ -62,6 +63,14 @@ export default {
     isDense: {
       type: Boolean,
       default: true
+    },
+    isFilled: {
+      type: Boolean,
+      default: false
+    },
+    isRounded: {
+      type: Boolean,
+      default: false
     },
     isHideDetails: {
       type: Boolean,
@@ -171,6 +180,9 @@ export default {
 </script>
 
 <style lang='scss' scoped>
+.v-text-field--rounded{
+  border-radius: 5px!important;
+}
 </style>
 
 <style lang='scss'>

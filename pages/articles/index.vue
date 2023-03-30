@@ -2,6 +2,7 @@
   <v-container class="search_page">
     <div class="wrapper_search">
       <SearchStyled
+        :class="'styleSearch'"
         :is-placeholder="'Поиск тегов, статей'"
         :is-loading="loading"
         :is-disabled="loading"

@@ -20,9 +20,25 @@
           />
         </div>
       </div>
-
       <div class='object-wrapper-top__map'>
         <SelectGeo v-if='notEmptyObject' :data='object' :outerCoords='getCoords' @set-new-address='setAddressMap' />
+      </div>
+      <div class="object-wrapper-top__share">
+        <v-menu offset-y left>
+          <template v-slot:activator="{ on, attrs }">
+            <div v-bind="attrs" v-on="on" style="display: inline-flex; grid-column-gap: 5px">
+              Поделиться
+              <v-icon
+                color="black"
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-export-variant
+              </v-icon>
+            </div>
+          </template>
+          <Collaboration></Collaboration>
+        </v-menu>
       </div>
     </div>
 
@@ -104,10 +120,11 @@ import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import ButtonStyled from '../Common/ButtonStyled'
 import ListFilesStyled from '~/components/Common/ListFilesStyled'
 import Vue from 'vue'
+import Collaboration from "~/components/Modals/Collaboration";
 
 export default {
   name: 'ObjectGlobal',
-  components: { ListFilesStyled, ButtonStyled, SelectGeo, SelectObjectStyled, TabsCustom },
+  components: { Collaboration, ListFilesStyled, ButtonStyled, SelectGeo, SelectObjectStyled, TabsCustom },
   props: {
     objectData: {
       type: Object,
