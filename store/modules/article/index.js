@@ -1,4 +1,5 @@
 import Request from '../../../services/request'
+import constructFilterQuery from "../../../utils/constructFilterQuery";
 
 export default {
   state: {
@@ -9,7 +10,7 @@ export default {
     count_of_questions: 0,
     intialized_app: false,
     refactoring_content: true,
-
+    list_filtered_articles: [],
     answers: [],
   },
   mutations: {
@@ -30,6 +31,10 @@ export default {
       if (current) {
         current.files = payload.files
       }
+    },
+    set_list_filtered_articles(state, payload){
+      state.list_filtered_articles = []
+      state.list_filtered_articles = payload
     },
 
     change_refactoring_content(state, value) {
@@ -65,6 +70,14 @@ export default {
       } catch (error) {
         console.warn(error.response.data.message)
       }
+    },
+    async getListArticles({ commit }, extQueryString) {
+      const query1 = constructFilterQuery({'activity': true})
+      const query = query1 + extQueryString;
+
+      const response = await Request.get(`${this.state.BASE_URL}/entity/articles${query}`)
+      commit ('set_list_filtered_articles', response.data)
+      return response
     },
 
     // CONTENT

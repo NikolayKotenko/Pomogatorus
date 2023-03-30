@@ -3,12 +3,6 @@
     <div class='article_info_wrapper__info'>
       <div class='article_info_wrapper__info__left'>
         <div class='article_info_wrapper__info__left__block'>
-          <div class='article_info_wrapper__info__left__block__title'>
-            <v-icon class='article_info_wrapper__info__left__block__title__icon' size='22'>
-              mdi-calendar-month-outline
-            </v-icon>
-            <span> Опубликовано: </span>
-          </div>
           <span class='article_info_wrapper__info__left__block__value date'>
             {{ article_data.created_at }}
           </span>
@@ -35,48 +29,48 @@
             </a>
           </div>
         </div>
-        <!--        <div class='article_info_wrapper__info__left__block'>-->
-        <!--          <div class='article_info_wrapper__info__left__block__title'>-->
-        <!--            <v-icon class='article_info_wrapper__info__left__block__title__icon' size='22'> mdi-eye-outline</v-icon>-->
-        <!--            <span> Прочитали: </span>-->
-        <!--          </div>-->
-        <!--          <span class='article_info_wrapper__info__left__block__value counters'> 722 человек </span>-->
-        <!--        </div>-->
+<!--                <div class='article_info_wrapper__info__left__block'>-->
+<!--                  <div class='article_info_wrapper__info__left__block__title'>-->
+<!--                    <v-icon class='article_info_wrapper__info__left__block__title__icon' size='22'> mdi-eye-outline</v-icon>-->
+<!--                    <span> Прочитали: </span>-->
+<!--                  </div>-->
+<!--                  <span class='article_info_wrapper__info__left__block__value counters'> 722 человек </span>-->
+<!--                </div>-->
       </div>
-      <div class='article_info_wrapper__info__right'>
-        <v-btn-toggle v-model='articleView' color='deep-purple accent-3' dense @change='setView'>
-          <v-tooltip bottom>
-            <template v-slot:activator='{ on, attrs }'>
-              <v-btn
-                large
-                v-bind='attrs'
-                value='normal'
-                v-on='on'
-              >
-                <v-icon>
-                  mdi-text-box-search-outline
-                </v-icon>
-              </v-btn>
-            </template>
-            <span>Переключить на обычное отображение статьи</span>
-          </v-tooltip>
-          <v-tooltip bottom>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <template v-slot:activator='{ on, attrs }'>
-              <v-btn large v-bind='attrs' value='flat' v-on='on'>
-                <v-icon> mdi-form-select</v-icon>
-              </v-btn>
-            </template>
-            <span>Оставить только вопросы</span>
-          </v-tooltip>
-        </v-btn-toggle>
-      </div>
+<!--      <div class='article_info_wrapper__info__right'>-->
+<!--        <v-btn-toggle v-model='articleView' color='deep-purple accent-3' dense @change='setView'>-->
+<!--          <v-tooltip bottom>-->
+<!--            <template v-slot:activator='{ on, attrs }'>-->
+<!--              <v-btn-->
+<!--                large-->
+<!--                v-bind='attrs'-->
+<!--                value='normal'-->
+<!--                v-on='on'-->
+<!--              >-->
+<!--                <v-icon>-->
+<!--                  mdi-text-box-search-outline-->
+<!--                </v-icon>-->
+<!--              </v-btn>-->
+<!--            </template>-->
+<!--            <span>Переключить на обычное отображение статьи</span>-->
+<!--          </v-tooltip>-->
+<!--          <v-tooltip bottom>-->
+<!--          </v-tooltip>-->
+<!--          <v-tooltip bottom>-->
+<!--            <template v-slot:activator='{ on, attrs }'>-->
+<!--              <v-btn large v-bind='attrs' value='flat' v-on='on'>-->
+<!--                <v-icon> mdi-form-select</v-icon>-->
+<!--              </v-btn>-->
+<!--            </template>-->
+<!--            <span>Оставить только вопросы</span>-->
+<!--          </v-tooltip>-->
+<!--        </v-btn-toggle>-->
+<!--      </div>-->
     </div>
     <v-img :src='$store.getters.getImageByEClientFilesObj(article_data.e_client_files)'
            class='mt-5'
            contain
-           max-width='500'
+           max-width='815'
     ></v-img>
     <div v-if='article_data.preview' class='article_info_wrapper__anons'>
       <span>
@@ -129,6 +123,7 @@ export default {
 
 .article_info_wrapper {
   color: black;
+  max-width: 815px;
 
   &__info {
     display: flex;
@@ -162,15 +157,16 @@ export default {
   }
 
   &__anons {
-    border-left: solid 5px #e95320;
-    background-color: lightgoldenrodyellow;
-    padding: 10px 10px 10px 10px;
+    border-radius: 5px;
+    background-color: #E3E3E3;
+    padding: 20px;
     margin: 15px 0 15px 0;
+    max-width: 815px;
   }
 
   &__divider {
-    width: 100%;
-    margin: 30px auto;
+    max-width: 270px;
+    margin: 2em auto 2em auto;
   }
 }
 
