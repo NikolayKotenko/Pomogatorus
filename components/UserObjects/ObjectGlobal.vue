@@ -24,7 +24,7 @@
         <SelectGeo v-if='notEmptyObject' :data='object' :outerCoords='getCoords' @set-new-address='setAddressMap' />
       </div>
       <div class="object-wrapper-top__share">
-        <v-menu offset-y left>
+        <v-menu offset-y left :close-on-content-click="false">
           <template v-slot:activator="{ on, attrs }">
             <div v-bind="attrs" v-on="on" style="display: inline-flex; grid-column-gap: 5px">
               Поделиться

@@ -57,7 +57,7 @@ export default {
     },
     isOutlined: {
       type: Boolean,
-      default: true
+      default: false
     },
     isAutofocus: {
       type: Boolean,
