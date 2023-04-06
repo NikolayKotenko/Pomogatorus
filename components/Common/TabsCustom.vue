@@ -148,6 +148,7 @@ export default {
     },
     focusOut(item) {
       item.active = false
+      this.$emit('focus-out-field')
     }
   }
 }

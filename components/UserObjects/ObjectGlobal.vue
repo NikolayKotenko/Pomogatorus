@@ -76,6 +76,7 @@
           @update-file='setFileField'
           @change-tab='changeTab'
           @remove-file='removeFile'
+          @focus-out-field="animationSaveBtn"
         />
 
         <div :class='{"show-more": showMore}' class='more-arrow'>
@@ -88,6 +89,7 @@
       <div class='object-wrapper-footer__left'>
         <ButtonStyled
           :isLoading='isLoading'
+          :is-animation="animationBtn"
           local-class='style_button'
           local-text='Сохранить изменения'
           @click-button='onSave'
@@ -138,7 +140,9 @@ export default {
 
     minHeightInput: 76,
     scrollHeight: null,
-    maxScroll: null
+    maxScroll: null,
+    animationBtn: false,
+    debounceTimeout: null,
   }),
   mounted() {
     this.getObjectFromProp()
@@ -217,6 +221,13 @@ export default {
     },
     closeModal() {
       this.$emit('close-modal')
+    },
+    animationSaveBtn(){
+      this.animationBtn = true;
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
+      this.debounceTimeout = setTimeout(() => {
+        this.animationBtn = false;
+      }, 2000)
     },
     setField(data) {
       this.object[data.key] = data.value

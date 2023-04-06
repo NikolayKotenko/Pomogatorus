@@ -193,7 +193,7 @@ body {
     //margin-left: unset !important;
   }
   &__right_column{
-    @media only screen and (max-width: 1200px) {
+    @media only screen and (max-width: 1440px) {
       display: none !important;
     }
     padding: 20px!important;

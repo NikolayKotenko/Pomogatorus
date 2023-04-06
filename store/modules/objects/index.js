@@ -5,7 +5,7 @@ export default {
   namespaced: true,
   state: {
     isLoading: false,
-    isLoadingObjects: false,
+    isLoadingObjects: true,
     listObjects: [],
   },
   mutations: {

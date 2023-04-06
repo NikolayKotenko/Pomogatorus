@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container>
     <div class='article-template'>
       <template v-if='article'>
 <!--        <div-->
@@ -88,7 +88,7 @@
     </div>
     <!-- TODO: DEPRECATED, Теперь у нас есть боковой виджет объекта -->
     <!--    <footer-summary></footer-summary>-->
-  </div>
+  </v-container>
 </template>
 
 <script>
@@ -477,7 +477,6 @@ export default {
 
 .article-template {
   margin: 0 auto;
-  padding: 0 10px;
   display: flex;
   flex-direction: column;
 

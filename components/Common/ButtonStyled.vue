@@ -1,8 +1,7 @@
 <template>
   <v-btn
-    :class='localClass'
+    :class='computedClass'
     :loading='isLoading'
-    class='btnStyled'
     @click="$emit('click-button')"
   >
     <template v-if='customSlot'>
@@ -22,6 +21,10 @@ export default {
       type: Boolean,
       default: false
     },
+    isAnimation: {
+      type: Boolean,
+      default: false
+    },
     localClass: {
       type: String,
       default: ''
@@ -37,6 +40,13 @@ export default {
     customSlot: {
       type: Boolean,
       default: false
+    }
+  },
+  computed:{
+    computedClass(){
+      const basedClass = 'btnStyled';
+      const animatedClass = (this.isAnimation) ? 'animation_save' : '';
+      return basedClass + ' ' + this.localClass + ' ' + animatedClass;
     }
   }
 }
@@ -75,6 +85,14 @@ export default {
     background: #95D7AE !important;
     transition: 0.4s;
   }
+}
+.animation_save{
+  background: #95D7AE !important;
+  transition-property: transform;
+  transition-duration: 2s;
+  transition-timing-function: ease-out;
+  transition-delay: 0s;
+  transform: scale(1.1);
 }
 
 

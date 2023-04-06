@@ -176,6 +176,7 @@
           @click='onClick'
           @focus='focusStart'
           @focusout='focusEnd'
+          :menu-props="{ bottom: true, offsetY: true }"
         >
           <template v-slot:append>
             <template v-if='!isFocused'>
@@ -184,6 +185,13 @@
             <template v-else>
               <v-icon>mdi-minus</v-icon>
             </template>
+          </template>
+          <template v-slot:no-data>
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>Не найдено заполненных параметров справочника</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
           </template>
         </v-select>
       </template>

@@ -10,8 +10,8 @@
     </template>
 
     <template v-else>
-      <div v-if='showObjects' class='card_object flex-grow-1 flex-shrink-1 pa-5'>
-        <div v-if='listObjects' class='card_object_container'>
+      <div v-if='listObjects.length' class='card_object flex-grow-1 flex-shrink-1 pa-5'>
+        <div v-if='listObjects.length' class='card_object_container'>
           <ObjectCard
             v-for='(object, index) in listObjects'
             :key='index'
@@ -28,7 +28,7 @@
       <LoginAuth v-else />
 
       <div class='modal_footer pa-5'>
-        <div v-if='showObjects' class='modal_footer__new'>
+        <div v-if='listObjects.length' class='modal_footer__new'>
           <v-divider />
           <div class='card_object_new'>
             <div class='card_object_new__card'>
@@ -97,6 +97,9 @@ export default {
     showDetail: false,
     detailData: {}
   }),
+  mounted() {
+    this.getListObjects()
+  },
   watch: {
     'getUserId': {
       handler(oldV, newV) {
@@ -116,9 +119,9 @@ export default {
     isMobile() {
       return this.$device.isMobile
     },
-    showObjects() {
-      return this.$store.state.AuthModule.userData && Object.keys(this.$store.state.AuthModule.userData).length
-    }
+    // showObjects() {
+    //   return this.$store.state.AuthModule.userData && Object.keys(this.$store.state.AuthModule.userData).length
+    // }
   },
   methods: {
     ...mapActions('Objects', ['getUserObjects']),

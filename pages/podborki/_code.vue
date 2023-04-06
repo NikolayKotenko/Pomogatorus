@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container class="podborki_detail">
     <div v-if='main_tag.description' class='tag-template'>
       <v-card class='mt-5 mb-5 pa-5' style='word-break: break-word' v-html='main_tag.description'></v-card>
     </div>
@@ -35,7 +35,7 @@
     </div>
 
     <footer-summary></footer-summary>
-  </div>
+  </v-container>
 </template>
 
 <script>
@@ -117,44 +117,51 @@ export default {
 <style lang='scss' scoped>
 @import '@/assets/styles/lists';
 
-.content_wrapper{
-  display: grid;
-  //grid-template-columns: (auto-fit (3fr 1fr));
-  grid-template-columns: 3fr 1fr;
-  row-gap: 1em;
-  @media screen and (max-width: 768px){
-    grid-template-columns: 1fr;
+.podborki_detail {
+
+  .content_wrapper {
+    display: grid;
+    //grid-template-columns: (auto-fit (3fr 1fr));
+    grid-template-columns: 3fr 1fr;
+    row-gap: 1em;
+    column-gap: 1em;
+    @media screen and (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
   }
-}
-.question_card{
-  margin-bottom: 1em;
-}
-.small_card{
-  margin-bottom: 1em;
-}
 
-.text_tag_question {
-  margin: 1em 0 1em 1em;
-  font-size: 1.2em;
-  font-weight: 500;
-}
-.text_tag_article{
-  margin: 1em 0 1em 0;
-  font-size: 1.2em;
-  font-weight: 500;
-}
-
-.tag-template {
-  .textarea {
-    box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
-
-    padding: 1em;
-    word-break: break-word;
+  .question_card {
+    margin-bottom: 1em;
   }
-}
 
-.auth_container {
-  margin-right: auto !important;
-  margin: unset;
+  .small_card {
+    margin-bottom: 1em;
+  }
+
+  .text_tag_question {
+    //margin: 1em 0 1em 1em;
+    font-size: 1.2em;
+    font-weight: 500;
+  }
+
+  .text_tag_article {
+    margin: 1em 0 1em 0;
+    font-size: 1.2em;
+    font-weight: 500;
+  }
+
+  .tag-template {
+    .textarea {
+      box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+
+      padding: 1em;
+      word-break: break-word;
+    }
+  }
+
+  .auth_container {
+    margin-right: auto !important;
+    margin: unset;
+  }
 }
 </style>

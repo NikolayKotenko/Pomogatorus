@@ -79,7 +79,7 @@ class ConstructBreadcrumbs
   margin: 0 auto;
   width: 100%;
   .v-breadcrumbs{
-    padding-left: 15px;
+    padding-left: 12px;
   }
 }
 </style>

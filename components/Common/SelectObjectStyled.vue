@@ -193,7 +193,7 @@ export default {
     input {
       position: absolute !important;
       pointer-events: none !important;
-      opacity: 0;
+      opacity: 1;
     }
   }
 }

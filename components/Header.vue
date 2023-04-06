@@ -1,6 +1,6 @@
 <template>
   <v-app-bar id='navbar' app class='header' :class="{isMobile: isMobile}" dark elevate-on-scroll>
-    <v-container class="d-flex custom_grid_system" style="align-items: center">
+    <v-container class="d-flex custom_grid_system">
       <v-app-bar-nav-icon v-if='isMobile' @click='showDrawer'></v-app-bar-nav-icon>
       <v-toolbar-title v-if='isMobile'>
         <router-link :to='getCurrentRoute.path' style='color: unset; text-decoration: unset'>{{ getCurrentRoute.title }}
@@ -179,5 +179,10 @@ export default {
   line-height: 1.5;
   letter-spacing: 1px;
   font-weight: lighter !important;
+}
+
+.custom_grid_system{
+  align-items: center;
+  padding-left: 10px;
 }
 </style>
