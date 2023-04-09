@@ -92,40 +92,77 @@
                     <img :src='require(`~/assets/svg/pdf_icon.svg`)' style='object-fit: contain;' />
                   </a>
                 </div>
+
+                <!-- КОСТЫЛЬ, чтобы передать массив изображений для нашей либы просмотрщика фоток -->
                 <template v-else>
-                  <viewer :options='viewOptions'>
-                    <img :alt='data.item.alt_image' :src='$store.state.BASE_URL + data.item.full_path'
-                         class='list-files-img'>
+                  <viewer v-if='data.index === 0' :images='onlyImages' :options='viewOptions'
+                          class='uploaded-image__image-container'>
+                    <div v-for='(image, index) in onlyImages' :key='index'
+                         class='uploaded-image__image-container__block'>
+                      <img :alt='image.alt_image'
+                           :src='$store.state.BASE_URL + image.full_path'
+                           class='list-files-img'>
+
+                      <div class='uploaded-image__image-container__block__name'>
+                        {{ image.filename }}
+                      </div>
+
+                      <v-tooltip top>
+                        <template v-slot:activator='{ on, attrs }'>
+                          <div class='uploaded-image__image-container__block__remove' v-bind='attrs' v-on='on'>
+                            <v-icon color='#000000' @click='onRemoveFile(image.id)'>mdi-trash-can</v-icon>
+                          </div>
+                        </template>
+                        <span>Удалить файл</span>
+                      </v-tooltip>
+
+                      <v-overlay
+                        :absolute='true'
+                        :value='getLoadingImg(image.id)'
+                        :z-index='2'
+                      >
+                        <v-progress-circular
+                          v-if='getLoadingImg(image.id)'
+                          :indeterminate='true'
+                          :size='30'
+                          color='#95D7AE'
+                          style='margin: auto'
+                          width='4'
+                        ></v-progress-circular>
+                      </v-overlay>
+                    </div>
                   </viewer>
                 </template>
 
-                <div class='uploaded-image__name'>
-                  {{ data.item.filename }}
-                </div>
+                <template v-if="data.item.type === 'text/plain' || data.item.type === 'application/pdf'">
+                  <div class='uploaded-image__name'>
+                    {{ data.item.filename }}
+                  </div>
 
-                <v-tooltip top>
-                  <template v-slot:activator='{ on, attrs }'>
-                    <div class='uploaded-image__remove' v-bind='attrs' v-on='on'>
-                      <v-icon color='#000000' @click='onRemoveFile(data.item.id)'>mdi-trash-can</v-icon>
-                    </div>
-                  </template>
-                  <span>Удалить файл</span>
-                </v-tooltip>
+                  <v-tooltip top>
+                    <template v-slot:activator='{ on, attrs }'>
+                      <div class='uploaded-image__remove' v-bind='attrs' v-on='on'>
+                        <v-icon color='#000000' @click='onRemoveFile(data.item.id)'>mdi-trash-can</v-icon>
+                      </div>
+                    </template>
+                    <span>Удалить файл</span>
+                  </v-tooltip>
 
-                <v-overlay
-                  :absolute='true'
-                  :value='getLoadingImg(data.item.id)'
-                  :z-index='2'
-                >
-                  <v-progress-circular
-                    v-if='getLoadingImg(data.item.id)'
-                    :indeterminate='true'
-                    :size='30'
-                    color='#95D7AE'
-                    style='margin: auto'
-                    width='4'
-                  ></v-progress-circular>
-                </v-overlay>
+                  <v-overlay
+                    :absolute='true'
+                    :value='getLoadingImg(data.item.id)'
+                    :z-index='2'
+                  >
+                    <v-progress-circular
+                      v-if='getLoadingImg(data.item.id)'
+                      :indeterminate='true'
+                      :size='30'
+                      color='#95D7AE'
+                      style='margin: auto'
+                      width='4'
+                    ></v-progress-circular>
+                  </v-overlay>
+                </template>
               </div>
             </template>
           </v-autocomplete>
@@ -162,6 +199,11 @@
           :items='items'
           :label='label'
           :loading='isLoading'
+          :menu-props='{
+            closeOnContentClick: true,
+            bottom: true,
+            offsetY: true,
+          }'
           :outlined='isOutlined'
           :placeholder='placeholder'
           :prepend-icon='prependIcon'
@@ -331,7 +373,9 @@ export default {
       loadedImages: [],
       viewOptions: {
         'movable': false,
-        'zoomable': true
+        'zoomable': true,
+        'rotatable': false,
+        'scalable': false
       }
     }
   },
@@ -373,6 +417,9 @@ export default {
         }
         this.$emit('update-field', value)
       }
+    },
+    onlyImages() {
+      return this.dropzone_uploaded.filter(elem => elem.type === 'image/jpeg' || elem.type === 'image/png')
     }
   },
   methods: {
@@ -421,7 +468,7 @@ export default {
       formData.append('id_object', parseInt(this.idObject))
       formData.append('id_object_property', parseInt(this.idProperty))
 
-      if (this.codeProperty === 'osnovnoe-foto-obekta'){
+      if (this.codeProperty === 'osnovnoe-foto-obekta') {
         formData.append('main_photo_object', true)
       }
     },
