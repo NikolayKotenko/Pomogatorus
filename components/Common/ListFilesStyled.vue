@@ -5,7 +5,7 @@
   >
     <div v-if='isDropzoneNotEmpty' class='dropzone-files'>
       <v-autocomplete
-        v-model='getFilesFromObject'
+        v-model='sortedDropzone'
         :append-icon='appendIcon'
         :autofocus='isAutofocus'
         :disabled='isDropzoneNotEmpty'
@@ -222,7 +222,22 @@ export default {
     },
 
     onlyImages() {
-      return this.getFilesFromObject.filter(elem => elem.type === 'image/jpeg' || elem.type === 'image/png')
+      return this.getFilesFromObject.filter(elem => elem.type === 'image/jpeg' || elem.type === 'image/png').sort((a, b) => {
+        if (parseInt(a.id) > parseInt(b.id)) {
+          return -1
+        } else {
+          return 1
+        }
+      })
+    },
+    sortedDropzone() {
+      return this.getFilesFromObject.sort((a, b) => {
+        if (a.type === 'image/jpeg' || a.type === 'image/png') {
+          return -1
+        } else {
+          return 1
+        }
+      })
     }
   },
   methods: {

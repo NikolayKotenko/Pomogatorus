@@ -60,7 +60,7 @@
       <template v-else-if='type === "fail"'>
         <div :class='{"dropzone-column": isDropzoneNotEmpty}' class='dropzone-files'>
           <v-autocomplete
-            v-model='dropzone_uploaded'
+            v-model='sortedDropzone'
             :append-icon='appendIcon'
             :autofocus='isAutofocus'
             :disabled='isDropzoneNotEmpty'
@@ -218,7 +218,6 @@
           @click='onClick'
           @focus='focusStart'
           @focusout='focusEnd'
-          :menu-props="{ bottom: true, offsetY: true }"
         >
           <template v-slot:append>
             <template v-if='!isFocused'>
@@ -427,7 +426,22 @@ export default {
       }
     },
     onlyImages() {
-      return this.dropzone_uploaded.filter(elem => elem.type === 'image/jpeg' || elem.type === 'image/png')
+      return this.dropzone_uploaded.filter(elem => elem.type === 'image/jpeg' || elem.type === 'image/png').sort((a, b) => {
+        if (parseInt(a.id) > parseInt(b.id)) {
+          return -1
+        } else {
+          return 1
+        }
+      })
+    },
+    sortedDropzone() {
+      return this.dropzone_uploaded.sort((a, b) => {
+        if (a.type === 'image/jpeg' || a.type === 'image/png') {
+          return -1
+        } else {
+          return 1
+        }
+      })
     }
   },
   methods: {
