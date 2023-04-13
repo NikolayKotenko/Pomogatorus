@@ -5,7 +5,7 @@
   >
     <div v-if='isDropzoneNotEmpty' class='dropzone-files'>
       <v-autocomplete
-        v-model='getFilesFromObject'
+        v-model='sortedDropzone'
         :append-icon='appendIcon'
         :autofocus='isAutofocus'
         :disabled='isDropzoneNotEmpty'
@@ -22,7 +22,7 @@
         readonly
       >
         <template v-slot:selection='data'>
-          <div class='uploaded-image' v-bind='data.attrs' v-if="data.item.main_photo_object === false">
+          <div v-if='data.item.main_photo_object === false' class='uploaded-image' v-bind='data.attrs'>
 
             <div v-if="data.item.type === 'text/plain'">
               <a :href='$store.state.BASE_URL + data.item.full_path' target='_blank'>
@@ -34,41 +34,78 @@
                 <img :src='require(`~/assets/svg/pdf_icon.svg`)' style='object-fit: contain;' />
               </a>
             </div>
+
+            <!-- КОСТЫЛЬ, чтобы передать массив изображений для нашей либы просмотрщика фоток -->
             <template v-else>
-              <viewer :options='viewOptions'>
-                <img :alt='data.item.alt_image' :src='$store.state.BASE_URL + data.item.full_path'
-                     class='list-files-img'>
+              <!-- TODO: вынести в отедльный компонент, если понадобиться хоть еще где-то -->
+              <viewer v-if='data.index === 0' :images='onlyImages' :options='viewOptions'
+                      class='uploaded-image__image-container'>
+                <div v-for='(image, index) in onlyImages' :key='index'
+                     class='uploaded-image__image-container__block'>
+                  <img :alt='image.alt_image'
+                       :src='$store.state.BASE_URL + image.full_path'
+                       class='list-files-img'>
+
+                  <div class='uploaded-image__image-container__block__name'>
+                    {{ image.filename }}
+                  </div>
+
+                  <v-tooltip top>
+                    <template v-slot:activator='{ on, attrs }'>
+                      <div class='uploaded-image__image-container__block__remove' v-bind='attrs' v-on='on'>
+                        <v-icon color='#000000' @click='onRemoveFile(image.id)'>mdi-trash-can</v-icon>
+                      </div>
+                    </template>
+                    <span>Удалить файл</span>
+                  </v-tooltip>
+
+                  <v-overlay
+                    :absolute='true'
+                    :value='getLoadingImg(image.id)'
+                    :z-index='2'
+                  >
+                    <v-progress-circular
+                      v-if='getLoadingImg(image.id)'
+                      :indeterminate='true'
+                      :size='30'
+                      color='#95D7AE'
+                      style='margin: auto'
+                      width='4'
+                    ></v-progress-circular>
+                  </v-overlay>
+                </div>
               </viewer>
             </template>
 
-            <div class='uploaded-image__name'>
-              {{ data.item.filename }}
-            </div>
+            <template v-if="data.item.type === 'text/plain' || data.item.type === 'application/pdf'">
+              <div class='uploaded-image__name'>
+                {{ data.item.filename }}
+              </div>
 
-            <v-tooltip top>
-              <template v-slot:activator='{ on, attrs }'>
-                <div class='uploaded-image__remove' v-bind='attrs' v-on='on'>
-                  <v-icon color='#000000' @click='onRemoveFile(data.item.id)'>mdi-trash-can</v-icon>
-                </div>
-              </template>
-              <span>Удалить файл</span>
-            </v-tooltip>
+              <v-tooltip top>
+                <template v-slot:activator='{ on, attrs }'>
+                  <div class='uploaded-image__remove' v-bind='attrs' v-on='on'>
+                    <v-icon color='#000000' @click='onRemoveFile(data.item.id)'>mdi-trash-can</v-icon>
+                  </div>
+                </template>
+                <span>Удалить файл</span>
+              </v-tooltip>
 
-
-            <v-overlay
-              :absolute='true'
-              :value='getLoadingImg(data.item.id)'
-              :z-index='2'
-            >
-              <v-progress-circular
-                v-if='getLoadingImg(data.item.id)'
-                :indeterminate='true'
-                :size='30'
-                color='#95D7AE'
-                style='margin: auto'
-                width='4'
-              ></v-progress-circular>
-            </v-overlay>
+              <v-overlay
+                :absolute='true'
+                :value='getLoadingImg(data.item.id)'
+                :z-index='2'
+              >
+                <v-progress-circular
+                  v-if='getLoadingImg(data.item.id)'
+                  :indeterminate='true'
+                  :size='30'
+                  color='#95D7AE'
+                  style='margin: auto'
+                  width='4'
+                ></v-progress-circular>
+              </v-overlay>
+            </template>
           </div>
         </template>
       </v-autocomplete>
@@ -142,7 +179,9 @@ export default {
       fileCodes: {},
       viewOptions: {
         'movable': false,
-        'zoomable': true
+        'zoomable': true,
+        'rotatable': false,
+        'scalable': false
       }
     }
   },
@@ -175,10 +214,29 @@ export default {
       return result
     },
     isDropzoneNotEmpty() {
-      if (! this.getFilesFromObject.length) return false;
+      if (!this.getFilesFromObject.length) return false
 
       return this.getFilesFromObject.some((object) => {
-        return object.main_photo_object === false;
+        return object.main_photo_object === false
+      })
+    },
+
+    onlyImages() {
+      return this.getFilesFromObject.filter(elem => elem.type === 'image/jpeg' || elem.type === 'image/png').sort((a, b) => {
+        if (parseInt(a.id) > parseInt(b.id)) {
+          return -1
+        } else {
+          return 1
+        }
+      })
+    },
+    sortedDropzone() {
+      return this.getFilesFromObject.sort((a, b) => {
+        if (a.type === 'image/jpeg' || a.type === 'image/png') {
+          return -1
+        } else {
+          return 1
+        }
       })
     }
   },
