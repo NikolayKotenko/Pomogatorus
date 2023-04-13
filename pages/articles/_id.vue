@@ -35,34 +35,35 @@
       </v-overlay>
     </div>
     <div class="article_info_wrapper__feedback">
-      <div class="icons_wrapper">
-        <div style="padding-right: 1em">
-          <v-tooltip top>
-            <template v-slot:activator='{ on, attrs }'>
-              <div v-bind='attrs' v-on='on'>
-                <v-icon
-                  size="30"
-                  color="#000000"
-                  class="icon_eye">mdi-eye</v-icon>
-                <span>212</span>
-              </div>
-            </template>
-            <span>Кол-во просмотров</span>
-          </v-tooltip>
-        </div>
-        <v-tooltip top>
-          <template v-slot:activator='{ on, attrs }'>
-            <div v-bind='attrs' v-on='on'>
-              <v-icon
-                size="30"
-                color="#000000"
-                class="icon_like">mdi-cards-heart</v-icon>
-              <span>94</span>
-            </div>
-          </template>
-          <span>Понравилось людям</span>
-        </v-tooltip>
-      </div>
+      <ViewsAndLikes></ViewsAndLikes>
+<!--      <div class="icons_wrapper">-->
+<!--        <div style="padding-right: 1em">-->
+<!--          <v-tooltip top>-->
+<!--            <template v-slot:activator='{ on, attrs }'>-->
+<!--              <div v-bind='attrs' v-on='on'>-->
+<!--                <v-icon-->
+<!--                  size="30"-->
+<!--                  color="#000000"-->
+<!--                  class="icon_eye">mdi-eye</v-icon>-->
+<!--                <span>212</span>-->
+<!--              </div>-->
+<!--            </template>-->
+<!--            <span>Кол-во просмотров</span>-->
+<!--          </v-tooltip>-->
+<!--        </div>-->
+<!--        <v-tooltip top>-->
+<!--          <template v-slot:activator='{ on, attrs }'>-->
+<!--            <div v-bind='attrs' v-on='on'>-->
+<!--              <v-icon-->
+<!--                size="30"-->
+<!--                color="#000000"-->
+<!--                class="icon_like">mdi-cards-heart</v-icon>-->
+<!--              <span>94</span>-->
+<!--            </div>-->
+<!--          </template>-->
+<!--          <span>Понравилось людям</span>-->
+<!--        </v-tooltip>-->
+<!--      </div>-->
       <div>
 
       </div>
@@ -105,12 +106,13 @@ import Article from "~/components/Article/Article.vue";
 import ArticleModule from "../../store/modules/article";
 import constructFilterQuery from "../../utils/constructFilterQuery";
 import ArticleSmallCard from "../../components/Article/ArticleSmallCard.vue";
+import ViewsAndLikes from "../../components/Common/ViewsAndLikes.vue";
 
 const vuetify_class = require('vuetify')
 
 export default {
   name: '_id.vue',
-  components: {ArticleSmallCard, Article, ArticleInfo, Author, SocialShare, HashTagStyled},
+  components: {ViewsAndLikes, ArticleSmallCard, Article, ArticleInfo, Author, SocialShare, HashTagStyled},
   async asyncData({ store, params }) {
     try {
       const article_request = await Request.get(`${store.state.BASE_URL}/entity/articles/${params.id}`, '', true)
