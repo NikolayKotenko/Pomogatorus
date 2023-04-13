@@ -9,9 +9,9 @@
       :item-text="'address'"
       :item-value="'id'"
       :items='$store.state.Objects.listObjects'
-      :is-loading="$store.state.Objects.isLoadingObjects"
-      :is-disabled="$store.state.Objects.isLoadingObjects"
-      :placeholder="'Выберите объект'"
+      :is-loading="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : false"
+      :is-disabled="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : true"
+      :placeholder="$store.getters.stateAuth ? 'Выберите объект' : 'Войдите в учет. запись'"
       title='Выберите объект'
       @update-input='callback'
     />
@@ -115,6 +115,17 @@ export default {
   mounted() {
     this.$store.dispatch('getListTags')
     this.$store.dispatch('getListBroadcastSnippet')
+  },
+  watch:{
+    '$store.getters.stateAuth': {
+      handler(state) {
+        if (state) {
+          this.$store.dispatch('getListBroadcastSnippet')
+        } else {
+          this.$store.commit('set_list_broadcast_snippet', [])
+        }
+      }
+    }
   },
   computed: {
   },
