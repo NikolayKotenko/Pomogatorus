@@ -34,38 +34,9 @@
           </h4>
         </div>
         <div class="list_elem_wrapper__preview_content__buttons">
-<!--          <ButtonStyled-->
-<!--            local-text="Читать полностью"-->
-<!--            local-class="style_button"-->
-<!--          >-->
-<!--          </ButtonStyled>-->
-          <div class="list_elem_wrapper__preview_content__buttons__social_btns">
-            <div class="list_elem_wrapper__preview_content__buttons__social_btns__wrapper">
-              <v-tooltip top>
-                <template v-slot:activator='{ on, attrs }'>
-                  <div v-bind='attrs' v-on='on'>
-                    <v-icon class="list_elem_wrapper__preview_content__buttons__social_btns__wrapper__btn">
-                      mdi-eye
-                    </v-icon>
-                    <span>212</span>
-                  </div>
-                </template>
-                <span>Кол-во просмотров</span>
-              </v-tooltip>
-            </div>
-            <div class="list_elem_wrapper__preview_content__buttons__social_btns__wrapper">
-              <v-tooltip top>
-                <template v-slot:activator='{ on, attrs }'>
-                  <div v-bind='attrs' v-on='on'>
-                    <v-icon class="list_elem_wrapper__preview_content__buttons__social_btns__wrapper__btn">mdi-cards-heart</v-icon>
-                    <span>94</span>
-                  </div>
-                </template>
-                <span>Понравилось людям</span>
-              </v-tooltip>
-            </div>
+          <ViewsAndLikes>
 
-          </div>
+          </ViewsAndLikes>
           <h4 class="list_elem_wrapper__preview_content__short_info__title_info__time">
             {{article.updated_at}}
           </h4>
@@ -79,10 +50,11 @@
 <script>
 import Author from './Author'
 import ButtonStyled from "../Common/ButtonStyled.vue";
+import ViewsAndLikes from "../Common/ViewsAndLikes.vue";
 
 export default {
   name: 'Article',
-  components: {ButtonStyled, Author },
+  components: {ViewsAndLikes, ButtonStyled, Author },
   props: ['article'],
   data: () => ({
     previewAuthor: true

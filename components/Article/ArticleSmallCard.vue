@@ -17,28 +17,7 @@
         <span v-if="! $store.getters.getImageByEClientFilesObj(article.e_client_files)">Фото статьи</span>
       </div>
         <div class="icons_and_time_wrapper">
-          <div class="icons_wrapper">
-            <div style="padding-right: 1em">
-              <v-tooltip top>
-                <template v-slot:activator='{ on, attrs }'>
-                  <div v-bind='attrs' v-on='on'>
-                    <v-icon class="icon_eye">mdi-eye</v-icon>
-                    <span>212</span>
-                  </div>
-                </template>
-                <span>Кол-во просмотров</span>
-              </v-tooltip>
-            </div>
-            <v-tooltip top>
-              <template v-slot:activator='{ on, attrs }'>
-                <div v-bind='attrs' v-on='on'>
-                  <v-icon class="icon_like">mdi-cards-heart</v-icon>
-                  <span>94</span>
-                </div>
-              </template>
-              <span>Понравилось людям</span>
-            </v-tooltip>
-          </div>
+          <ViewsAndLikes></ViewsAndLikes>
           <h4 class="time">
             {{article.updated_at}}
           </h4>
@@ -47,8 +26,11 @@
 </template>
 
 <script>
+import ViewsAndLikes from "../Common/ViewsAndLikes.vue";
+
 export default {
   name: "ArticleSmallCard",
+  components: {ViewsAndLikes},
   props: {
     article: {
       type: Object,
