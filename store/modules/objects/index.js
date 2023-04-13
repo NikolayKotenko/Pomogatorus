@@ -16,8 +16,12 @@ export default {
       state.isLoadingObjects = payload
     },
     listObjects(state, payload) {
+      state.listObjects = []
       state.listObjects = payload
     },
+    clearListObjects(state){
+      state.listObjects = [];
+    }
   },
   actions: {
     // TODO: Когда появится новый "Безопасный" метод заменить на него по токену
@@ -42,6 +46,9 @@ export default {
 
       commit('setLoading', false)
     },
+    clearListObjects({ commit }) {
+      commit('clearListObjects');
+    }
   },
   getters: {},
 }

@@ -63,6 +63,7 @@ const createStore = () => {
       ],
       modalCurrentObject: {},
       list_tags: [],
+      list_broadcast_snippet: [],
     },
     getters: {
       getImageByEClientFilesObj: (state) => (eClientFilesObj) => {
@@ -192,6 +193,10 @@ const createStore = () => {
         state.list_tags = []
         state.list_tags = payload
       },
+      set_list_broadcast_snippet(state, payload) {
+        state.list_broadcast_snippet = []
+        state.list_broadcast_snippet = payload
+      },
     },
     actions: {
       async getListObjects({ state, commit }) {
@@ -226,6 +231,12 @@ const createStore = () => {
         const query = 'filter[public_field_filter]=true'
         const response = await Request.get(this.state.BASE_URL + '/dictionary/tags?' + query)
         commit('set_list_tags', response.data)
+        return response
+      },
+      async getListBroadcastSnippet({ commit }){
+        const query = 'filter[broadcast_to_snippet]=true'
+        const response = await Request.get(this.state.BASE_URL + '/dictionary/object-properties?' + query)
+        commit('set_list_broadcast_snippet', response.data)
         return response
       },
       async getFilesByFilter({state}, objFilter){

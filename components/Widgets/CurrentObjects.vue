@@ -8,7 +8,9 @@
       :is-solo='true'
       :item-text="'address'"
       :item-value="'id'"
-      :items='checkObjects'
+      :items='$store.state.Objects.listObjects'
+      :is-loading="$store.state.Objects.isLoadingObjects"
+      :is-disabled="$store.state.Objects.isLoadingObjects"
       :placeholder="'Выберите объект'"
       title='Выберите объект'
       @update-input='callback'
@@ -16,14 +18,15 @@
     <v-img class='current_object__image' title='Фотография объекта'>
       <v-icon class='current_object__image__icon' x-large>mdi-map-marker-outline</v-icon>
     </v-img>
-    <section class='current_object__wrapper_info'>
-      <span class='current_object__wrapper_info__text'>Площадь:</span>
-      <span class='current_object__wrapper_info__value'>{{ $store.state.currentObject.total_area }}</span>
+
+    <!-- Циклом параметры по булеву "транслировать в сниппет" -->
+    <section class='current_object__wrapper_info'
+             v-for="(obj, key) in $store.state.list_broadcast_snippet"
+    >
+      <span class='current_object__wrapper_info__text'>{{ obj.name }}:</span>
+      <span class='current_object__wrapper_info__value'>{{ $store.state.currentObject[obj.code] }}</span>
     </section>
-    <section v-if='$store.state.currentObject.id_floor' class='current_object__wrapper_info'>
-      <span class='current_object__wrapper_info__text'>Этажи:</span>
-      <span class='current_object__wrapper_info__value'>{{ $store.state.currentObject.id_floor }}</span>
-    </section>
+
     <section class='current_object__wrapper_info'>
       <span class='current_object__wrapper_info__text'>Параметры объекта:</span>
       <span class='current_object__wrapper_info__value'>13 из 22</span>
@@ -111,11 +114,9 @@ export default {
   },
   mounted() {
     this.$store.dispatch('getListTags')
+    this.$store.dispatch('getListBroadcastSnippet')
   },
   computed: {
-    checkObjects() {
-      return Array.isArray(this.$store.state.AuthModule.userData.objects) ? this.$store.state.AuthModule.userData.objects : []
-    }
   },
   methods: {
     callback(data) {
@@ -146,6 +147,7 @@ export default {
   align-self: baseline;
   grid-row-gap: 1em;
   margin-left: 25px;
+  padding-top: unset!important;
 
   &__image {
     width: 209px;

@@ -172,7 +172,7 @@
           dense
           hide-details
           item-text='value'
-          item-value='code'
+          item-value='name'
           @click='onClick'
           @focus='focusStart'
           @focusout='focusEnd'

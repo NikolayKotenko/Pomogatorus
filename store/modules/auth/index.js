@@ -36,17 +36,21 @@ export default {
       commit('change_changedCookie', true, { root: true })
       return tokensData
     },
-    async loginByToken({ commit }) {
+    async loginByToken({ commit, dispatch }) {
       const tokensData = await Request.post(window.location.origin + '/api/auth/validate-auth')
       commit('set_user_data', _clone(tokensData.data?.user_data, 'replace'))
       commit('set_default_user_data', _clone(tokensData.data?.user_data, 'replace'))
+      await dispatch('Objects/getUserObjects', tokensData.data.user_data.id)
+
       commit('change_changedCookie', true, { root: true })
       return tokensData
     },
-    async loginUser({ commit }, objData) {
+    async loginUser({ commit, dispatch }, objData) {
       const tokensData = await Request.post(window.location.origin + '/api/auth/login', objData)
       commit('set_user_data', _clone(tokensData.data?.user_data, 'replace'))
       commit('set_default_user_data', _clone(tokensData.data?.user_data, 'replace'))
+      await dispatch('Objects/getUserObjects', tokensData.data.user_data.id)
+
       commit('change_changedCookie', true, { root: true })
       return tokensData
     },
@@ -63,13 +67,13 @@ export default {
       //Делаем запрос на создание пользователя, если такой есть то будет 409 конфликт ошибка ну и бог с ней
       return await Request.post(this.state.BASE_URL + '/users/create-from-full-credentials', objData)
     },
-    async logout({ commit }) {
-      await Request.post(window.location.origin + '/api/auth/logout').then((response) => {
-        commit('set_user_data', {})
-        commit('set_default_user_data', {})
-        commit('set_isLogout', true)
-        commit('change_changedCookie', true, { root: true })
-      })
+    async logout({ commit, dispatch }) {
+      await Request.post(window.location.origin + '/api/auth/logout')
+      commit('set_user_data', {})
+      commit('set_default_user_data', {})
+      commit('set_isLogout', true)
+      commit('change_changedCookie', true, { root: true })
+      await dispatch('Objects/clearListObjects')
     },
   },
   getters: {
