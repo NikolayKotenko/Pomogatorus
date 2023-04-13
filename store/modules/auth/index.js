@@ -40,7 +40,9 @@ export default {
       const tokensData = await Request.post(window.location.origin + '/api/auth/validate-auth')
       commit('set_user_data', _clone(tokensData.data?.user_data, 'replace'))
       commit('set_default_user_data', _clone(tokensData.data?.user_data, 'replace'))
-      await dispatch('Objects/getUserObjects', tokensData.data.user_data.id)
+      if (tokensData.data?.user_data) {
+        await dispatch('Objects/getUserObjects', tokensData.data.user_data.id)
+      }
 
       commit('change_changedCookie', true, { root: true })
       return tokensData
@@ -49,7 +51,9 @@ export default {
       const tokensData = await Request.post(window.location.origin + '/api/auth/login', objData)
       commit('set_user_data', _clone(tokensData.data?.user_data, 'replace'))
       commit('set_default_user_data', _clone(tokensData.data?.user_data, 'replace'))
-      await dispatch('Objects/getUserObjects', tokensData.data.user_data.id)
+      if (tokensData.data?.user_data) {
+        await dispatch('Objects/getUserObjects', tokensData.data.user_data.id)
+      }
 
       commit('change_changedCookie', true, { root: true })
       return tokensData
