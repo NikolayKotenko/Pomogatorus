@@ -27,9 +27,27 @@ $main-color: red;
 
 $max-width: 1140px;
 
-.files-dashed-border{
+.files-dashed-border {
   background-image: repeating-linear-gradient(20deg, #b3b3b3, #b3b3b3 7px, transparent 7px, transparent 19px, #b3b3b3 19px), repeating-linear-gradient(110deg, #b3b3b3, #b3b3b3 7px, transparent 7px, transparent 19px, #b3b3b3 19px), repeating-linear-gradient(200deg, #b3b3b3, #b3b3b3 7px, transparent 7px, transparent 19px, #b3b3b3 19px), repeating-linear-gradient(290deg, #b3b3b3, #b3b3b3 7px, transparent 7px, transparent 19px, #b3b3b3 19px);
   background-size: 2px 100%, 100% 2px, 2px 100%, 100% 2px;
   background-position: 0 0, 0 0, 100% 0, 0 100%;
   background-repeat: no-repeat;
+}
+
+.img-activator {
+  overflow: hidden;
+
+  .img-container {
+    overflow: hidden;
+  }
+
+  .img-hover {
+    transition: transform 1s ease-in-out;
+  }
+
+  &:hover {
+    .img-hover {
+      transform: scale(1.1)
+    }
+  }
 }
