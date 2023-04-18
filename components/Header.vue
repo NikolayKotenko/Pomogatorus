@@ -10,7 +10,7 @@
       <!-- Desktop -->
       <template v-if='!isMobile'>
         <v-toolbar-items class='header_center'>
-          <upcoming-title v-for='item in $store.getters.menuItems' v-if='item.visible' :key='item.title'>
+          <TooltipStyled v-for='item in $store.getters.menuItems' v-if='item.visible' :key='item.title'>
             <v-btn
               :href='item.path'
               class='text-capitalize link_btn'
@@ -18,7 +18,7 @@
             >
               <span :class='{activeElement: getCurrentRoute.title === item.title}'>{{ item.title }}</span>
             </v-btn>
-          </upcoming-title>
+          </TooltipStyled>
         </v-toolbar-items>
       </template>
 
@@ -45,11 +45,11 @@
 
 <script>
 import { mapState } from 'vuex'
-import UpcomingTitle from './Upcoming/UpcomingTitle'
+import TooltipStyled from './Common/TooltipStyled'
 
 export default {
   name: 'Header',
-  components: { UpcomingTitle },
+  components: { TooltipStyled },
   data() {
     return {
       debounceTimeout: null

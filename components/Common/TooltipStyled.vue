@@ -5,13 +5,19 @@
         <slot></slot>
       </div>
     </template>
-    <span class='upcoming-title'>Функционал в разработке!</span>
+    <span class='tooltip-styled'>{{ title }}</span>
   </v-tooltip>
 </template>
 
 <script>
 export default {
-  name: 'UpcomingTitle'
+  name: 'TooltipStyled',
+  props:{
+    title: {
+      type: String,
+      default: 'Функционал в разработке'
+    },
+  }
 }
 </script>
 

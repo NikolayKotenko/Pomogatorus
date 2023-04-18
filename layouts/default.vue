@@ -6,7 +6,7 @@
     <v-main id='main_content' class='main'>
       <VerticalMenu class="fixed_left_menu"></VerticalMenu>
       <Nuxt class="custom_grid_system main__left_column"/>
-      <CurrentObjects class="main__right_column" v-if="! listExcludedRightColumn"></CurrentObjects>
+      <CurrentObjects v-if="! listExcludedRightColumn"></CurrentObjects>
     </v-main>
     <!-- КАСКАДНЫЕ МОДАЛКИ -->
     <div
@@ -191,17 +191,6 @@ body {
   &__left_column{
     width: 100%;
     //margin-left: unset !important;
-  }
-  &__right_column{
-    @media only screen and (max-width: 1440px) {
-      display: none !important;
-    }
-    padding: 20px!important;
-    padding-top: 10px!important;
-    background: #ffffff;
-    position: absolute;
-    right: -275px;
-    margin: unset;
   }
 }
 .v-main__wrap{

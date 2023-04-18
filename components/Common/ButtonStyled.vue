@@ -3,6 +3,8 @@
     :class='computedClass'
     :loading='isLoading'
     @click="$emit('click-button')"
+    :disabled="isDisabled"
+    :href="href"
   >
     <template v-if='customSlot'>
       <slot></slot>
@@ -21,9 +23,17 @@ export default {
       type: Boolean,
       default: false
     },
+    isDisabled: {
+      type: Boolean,
+      default: false
+    },
     isAnimation: {
       type: Boolean,
       default: false
+    },
+    href: {
+      type: String,
+      default: ''
     },
     localClass: {
       type: String,
