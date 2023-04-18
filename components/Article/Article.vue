@@ -1,25 +1,25 @@
 <template>
   <v-card
-    class='article_card'
-    :href="'/articles/' + article.id">
+    :href="'/articles/' + article.id"
+    class='article_card img-activator'>
     <div class='list_elem_wrapper'>
-      <div class="list_elem_wrapper__preview_content__short_info__title_info">
+      <div class='list_elem_wrapper__preview_content__short_info__title_info'>
         <h2 class='list_elem_wrapper__preview_content__short_info__title_info__title'>
           {{ article.name }}
         </h2>
 
       </div>
-      <div class="list_elem_wrapper__tag_container">
-        <a v-for="(tag, key) in article._all_tags" :href="'/podborki/'+tag.code">#{{tag.name}}</a>
+      <div class='list_elem_wrapper__tag_container'>
+        <a v-for='(tag, key) in article._all_tags' :href="'/podborki/'+tag.code">#{{ tag.name }}</a>
       </div>
-      <div class='list_elem_wrapper__img_container'>
+      <div class='list_elem_wrapper__img_container img-container'>
         <v-img
+          :src='$store.getters.getImageByEClientFilesObj(article.e_client_files)'
           alt=''
-          class='list_elem_wrapper__img_container__img'
-          height="100%"
-          max-width="300"
+          class='list_elem_wrapper__img_container__img img-hover'
           cover
-          :src="$store.getters.getImageByEClientFilesObj(article.e_client_files)"
+          height='100%'
+          max-width='300'
         />
       </div>
       <div class='list_elem_wrapper__preview_content'>
@@ -33,12 +33,12 @@
             {{ preview }}
           </h4>
         </div>
-        <div class="list_elem_wrapper__preview_content__buttons">
+        <div class='list_elem_wrapper__preview_content__buttons'>
           <ViewsAndLikes>
 
           </ViewsAndLikes>
-          <h4 class="list_elem_wrapper__preview_content__short_info__title_info__time">
-            {{article.updated_at}}
+          <h4 class='list_elem_wrapper__preview_content__short_info__title_info__time'>
+            {{ article.updated_at }}
           </h4>
         </div>
 
@@ -49,12 +49,12 @@
 
 <script>
 import Author from './Author'
-import ButtonStyled from "../Common/ButtonStyled.vue";
-import ViewsAndLikes from "../Common/ViewsAndLikes.vue";
+import ButtonStyled from '../Common/ButtonStyled.vue'
+import ViewsAndLikes from '../Common/ViewsAndLikes.vue'
 
 export default {
   name: 'Article',
-  components: {ViewsAndLikes, ButtonStyled, Author },
+  components: { ViewsAndLikes, ButtonStyled, Author },
   props: ['article'],
   data: () => ({
     previewAuthor: true
