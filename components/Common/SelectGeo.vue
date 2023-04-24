@@ -138,6 +138,10 @@ export default {
         '{% endfor %}',
         '</ul>'
       ].join('')
+    },
+
+    isMobile() {
+      return this.$device.isMobile
     }
   },
   methods: {

@@ -88,3 +88,25 @@
 .input-file-padding {
   padding-right: 20px;
 }
+
+@media (max-width: 768px) {
+  .more-arrow {
+    padding: 14px 0;
+    bottom: -2px;
+    transform: translateY(0);
+  }
+
+  .show-more {
+    max-height: 100%;
+    padding: 14px 0;
+  }
+
+  .tab-content {
+    padding: 0px 6px 4px 12px;
+    column-gap: 12px;
+
+    &__count {
+      font-size: 22px;
+    }
+  }
+}

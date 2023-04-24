@@ -66,9 +66,11 @@
       <v-dialog
         v-if='showDetail'
         v-model='showDetail'
+        :fullscreen='isMobile'
+        :hide-overlay='isMobile'
+        :width='isMobile ? 1080 : null'
         content-class='dialogStyled'
         scrollable
-        width='1080'
       >
         <ObjectGlobal
           :object-data='detailData'
@@ -118,10 +120,7 @@ export default {
 
     isMobile() {
       return this.$device.isMobile
-    },
-    // showObjects() {
-    //   return this.$store.state.AuthModule.userData && Object.keys(this.$store.state.AuthModule.userData).length
-    // }
+    }
   },
   methods: {
     ...mapActions('Objects', ['getUserObjects']),
@@ -165,26 +164,6 @@ export default {
 
 <style lang='scss'>
 @import 'assets/styles/userObjects';
-
-@media only screen and (max-width: 600px) {
-  .card_object_new {
-    &__card {
-      align-items: start !important;
-      font-size: 0.9rem !important;
-
-      &__plus {
-        padding-top: 4px;
-      }
-    }
-  }
-  .modal_wrapper {
-    //padding: 10px !important;
-  }
-}
-
-//::v-deep .v-dialog {
-//  max-height: 80%;
-//}
 
 .modal_wrapper {
   padding-bottom: 0;
@@ -260,5 +239,29 @@ export default {
 .dialogStyled {
   max-height: 92% !important;
   margin: 60px 0 0 0;
+}
+
+@media (max-width: 768px) {
+  .dialogStyled {
+    max-height: unset !important;
+    margin: 56px 0 0 0;
+  }
+
+  .modal_wrapper {
+    justify-self: center;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .card_object_new {
+    &__card {
+      align-items: start !important;
+      font-size: 0.9rem !important;
+
+      &__plus {
+        padding-top: 4px;
+      }
+    }
+  }
 }
 </style>

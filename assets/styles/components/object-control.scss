@@ -35,7 +35,8 @@
     &__map {
       width: 100%;
     }
-    &__share{
+
+    &__share {
       display: inline-flex;
       align-items: center;
       grid-column-gap: 0.5em;
@@ -50,7 +51,7 @@
     column-gap: 1rem;
     margin-bottom: 2em;
 
-    %header_column{
+    %header_column {
       font-size: 16px;
       color: #37392E;
     }
@@ -74,6 +75,7 @@
         height: 246px;
         max-height: 246px;
       }
+
       &__img {
         //width: 400px;
         //height: 300px;
@@ -133,7 +135,7 @@
 }
 
 .object-wrapper-main {
-  padding: 0!important;
+  padding: 0 !important;
   margin-top: 15px;
   /* width */
   &::-webkit-scrollbar {
@@ -159,4 +161,80 @@
   &::-webkit-scrollbar-thumb:hover {
     background: darken(#BABABA, 5%);
   }
+}
+
+@media (max-width: 768px) {
+  .object-wrapper {
+
+    &-top {
+      display: flex;
+      flex-direction: column;
+      row-gap: 1rem;
+      padding: 12px 16px !important;
+
+      &__selector {
+        min-width: unset;
+      }
+    }
+
+    &-documents {
+      display: flex;
+      flex-direction: column;
+      row-gap: 1rem;
+
+      &__img-container {
+        min-width: unset;
+        max-width: unset;
+
+        .list-files-styled-wrapper {
+          width: unset;
+          max-width: unset;
+        }
+      }
+    }
+
+    &-main {
+      padding: 0 16px !important;
+
+      .v-slide-group.v-item-group > .v-slide-group__next, .v-slide-group.v-item-group > .v-slide-group__prev {
+        //display: none !important;
+      }
+    }
+
+    .object-wrapper-tabs {
+      min-height: 150px;
+    }
+
+    &-footer {
+      display: flex;
+      padding: 12px 16px 20px 16px !important;
+      bottom: 56px;
+
+      &__left {
+        column-gap: 2rem;
+      }
+    }
+  }
+}
+
+.object-wrapper-top--mobile {
+  width: 100%;
+  top: 0;
+  position: absolute;
+  transform: translateY(0);
+  transition: transform 0.6s ease-in-out;
+}
+
+.object-wrapper-top--mobile--move {
+  transform: translateY(-150px);
+}
+
+.object-wrapper-main--mobile {
+  padding-top: 150px !important;
+  transition: padding-top 0.6s ease-in-out;
+  margin-bottom: 54px;
+}
+
+.object-wrapper-main--mobile--move {
+  padding-top: 0 !important;
 }
