@@ -1,12 +1,12 @@
 <template>
   <div class="modal_wrapper">
     <template v-if="isLoadingObjects">
-      <v-progress-circular
+      <VProgressCircular
         :size="50"
         color="primary"
         indeterminate
         style="margin: 20px auto 40px auto"
-      ></v-progress-circular>
+      />
     </template>
 
     <template v-else>
@@ -16,7 +16,7 @@
             v-for="(object, index) in listObjects"
             :key="index"
             :object_data="object"
-            @openDetail="openDetail"
+            @open-detail="openDetail"
           />
         </div>
 
@@ -25,18 +25,19 @@
           Создайте объект!
         </div>
       </div>
-      <LoginAuth v-else />
+      <LoginAuth v-else/>
       <div v-if="listObjects.length" class="new_object_wrapper">
-        <!--        <v-divider class="new_obj_divider"></v-divider>-->
+        <!--        <v-divider class="new_obj_divider"></v-divider> -->
         <div class="new_object">
-
           <div class="details_new_object">
             <div class="object_name">
               <div class="object_name_title">
-                <v-icon color="#000000" style="margin-right: 10px">mdi-plus-circle-outline</v-icon>
+                <VIcon color="#000000" style="margin-right: 10px">
+                  mdi-plus-circle-outline
+                </VIcon>
                 <span>Cоздайте новый объект</span>
               </div>
-              <v-text-field
+              <VTextField
                 v-model="newObjName"
                 auto-grow
                 class="text_field"
@@ -46,10 +47,8 @@
                 no-resize
                 row-height="1"
                 solo
-              >
-              </v-text-field>
+              />
             </div>
-
           </div>
           <div class="new_object_button">
             <ButtonStyled
@@ -58,12 +57,12 @@
               :local-text="'Создать объект'"
               local-class="style_button"
               @click-button="createNewObject"
-            ></ButtonStyled>
+            />
           </div>
         </div>
       </div>
 
-      <v-dialog
+      <VDialog
         v-if="showDetail"
         v-model="showDetail"
         :fullscreen="isMobile"
@@ -76,117 +75,113 @@
           :object-data="detailData"
           @close-modal="closeDetailObj"
         />
-      </v-dialog>
+      </VDialog>
     </template>
   </div>
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from "vuex";
+import { mapActions, mapGetters, mapState } from 'vuex'
 
-import ObjectCard from "./ObjectCard";
-import LoginAuth from "../frontLayouts/LoginAuth";
+import LoginAuth from '../frontLayouts/LoginAuth'
 
-import Request from "../../services/request";
-import ObjectDetail from "./ObjectDetail";
-import ObjectGlobal from "./ObjectGlobal";
-import CardObject from "./CardObject.vue";
-import ButtonStyled from "../Common/ButtonStyled.vue";
-import SelectGeo from "../Common/SelectGeo.vue";
-import TooltipStyled from "../Common/TooltipStyled.vue";
+import Request from '../../services/request'
+import ButtonStyled from '../Common/ButtonStyled.vue'
+import ObjectGlobal from './ObjectGlobal'
+import CardObject from './CardObject.vue'
 
 export default {
-  name: "ListObjects",
-  components: { TooltipStyled, SelectGeo, ButtonStyled, CardObject, ObjectGlobal, ObjectDetail, LoginAuth, ObjectCard },
+  name: 'ListObjects',
+  components: { ButtonStyled, CardObject, ObjectGlobal, LoginAuth },
   data: () => ({
     object: {},
-    newObjAddress: "",
-    newObjName: "",
+    newObjAddress: '',
+    newObjName: '',
     showDetail: false,
     detailData: {}
   }),
-  mounted() {
-    this.getListObjects();
-  },
   watch: {
-    "getUserId": {
+    'getUserId': {
       handler(oldV, newV) {
         if (oldV !== newV) {
-          this.getListObjects();
+          this.getListObjects()
         }
       }
     }
+  },
+  mounted() {
+    this.getListObjects()
   },
   computed: {
     ...mapState({
       loadingObjects: state => state.loading_objects
     }),
-    ...mapState("Objects", ["listObjects", "isLoadingObjects"]),
-    ...mapGetters(["getUserId"]),
+    ...mapState('Objects', ['listObjects', 'isLoadingObjects']),
+    ...mapGetters(['getUserId']),
 
     notEmptyObject() {
-      return !!Object.keys(this.object).length;
+      return !!Object.keys(this.object).length
     },
 
     getCoords() {
-      return this.object?.long && this.object?.lat ? [this.object.lat, this.object.long] : [55.753215, 37.622504];
+      return this.object?.long && this.object?.lat ? [this.object.lat, this.object.long] : [55.753215, 37.622504]
     },
 
     isMobile() {
-      return this.$device.isMobile;
+      return this.$device.isMobile
     }
   },
   methods: {
-    ...mapActions("Objects", ["getUserObjects"]),
+    ...mapActions('Objects', ['getUserObjects']),
 
     getListObjects() {
-      this.getUserObjects(this.getUserId);
+      this.getUserObjects(this.getUserId)
     },
 
     async createNewObject() {
-      this.$store.commit("change_loaderObjects", true);
+      this.$store.commit('change_loaderObjects', true)
 
-      let { data } = await Request.post(this.$store.state.BASE_URL + "/entity/objects", {
+      const { data } = await Request.post(this.$store.state.BASE_URL + '/entity/objects', {
         address: this.newObjAddress,
         name: this.newObjName
-      });
+      })
 
-      await this.getUserObjects(this.getUserId);
+      await this.getUserObjects(this.getUserId)
 
       if (this.$store.state.AuthModule.userData.objects.length < 1) {
-        this.$store.commit("set_currentObject", data);
+        this.$store.commit('set_currentObject', data)
       }
 
-      this.$store.commit("change_listObjects", [data]);
+      this.$store.commit('change_listObjects', [data])
 
-      this.newObjAddress = "";
+      this.newObjAddress = ''
 
-      this.$store.commit("change_loaderObjects", false);
+      this.$store.commit('change_loaderObjects', false)
     },
     closeDetailObj() {
-      this.showDetail = false;
+      this.showDetail = false
     },
     closeDetail() {
-      this.$emit("closeDetail");
+      this.$emit('close-detail')
     },
     openDetail(data) {
-      this.detailData = data;
-      this.showDetail = true;
+      this.detailData = data
+      this.showDetail = true
     },
     setAddressMap(data) {
-      this.object.address = data.address;
-      this.object.lat = data.coords[0];
-      this.object.long = data.coords[1];
+      this.object.address = data.address
+      this.object.lat = data.coords[0]
+      this.object.long = data.coords[1]
 
-      this.updateProperties.address = data.address;
-      this.updateProperties.lat = data.coords[0];
-      this.updateProperties.long = data.coords[1];
+      this.updateProperties.address = data.address
+      this.updateProperties.lat = data.coords[0]
+      this.updateProperties.long = data.coords[1]
     }
   }
-};
+}
 </script>
 
-<style lang="scss">
+<style lang='scss'>
 @import 'assets/styles/userObjects';
 
 .modal_wrapper {

@@ -1,12 +1,12 @@
 <template>
   <div class="card_obj">
     <div class="img">
-      <v-img
+      <VImg
         v-if="stateFilledImageObject"
         :class="{'empty_placeholder': ! stateFilledImageObject }"
         :src="$store.getters.getImageMainPhotoObjects(object_data['osnovnoe-foto-obekta'][0])"
-        height="100%">
-      </v-img>
+        height="100%"
+      />
       <span v-else class="empty_placeholder">Фото объекта</span>
     </div>
     <div class="obj_info">
@@ -17,10 +17,10 @@
         </div>
         <div class="share_and_activity">
           <TooltipStyled :title="'Коллаборация'">
-            <v-menu :close-on-content-click="false" left offset-y>
-              <template v-slot:activator="{ on, attrs }">
+            <VMenu :close-on-content-click="false" left offset-y>
+              <template #activator="{ on, attrs }">
                 <div style="display: inline-flex; grid-column-gap: 5px" v-bind="attrs" v-on="on">
-                  <v-icon
+                  <VIcon
                     class="share"
                     color="#ADADAD"
                     size="26"
@@ -28,52 +28,54 @@
                     v-on="on"
                   >
                     mdi-account-group-outline
-                  </v-icon>
+                  </VIcon>
                 </div>
               </template>
-              <Collaboration></Collaboration>
-            </v-menu>
+              <Collaboration/>
+            </VMenu>
           </TooltipStyled>
 
           <TooltipStyled :title="stateCurrentObject ? 'Текущий объект' : 'Выбрать текущим'">
             <div class="activity">
-              <v-simple-checkbox
+              <VSimpleCheckbox
                 :value="stateCurrentObject"
                 color="#000000"
                 @click="setObject"
-              ></v-simple-checkbox>
+              />
             </div>
           </TooltipStyled>
-
         </div>
       </div>
       <div>
         <TooltipStyled :title="'Заполнено параметров: '">
-          <v-progress-linear
+          <VProgressLinear
             background-opacity="0.3"
             class="progress_bar"
             color="#95D7AE"
             rounded
             value="15"
-          ></v-progress-linear>
+          />
         </TooltipStyled>
       </div>
       <div class="footer">
         <div class="more_info">
-          <section v-for="(obj, key) in $store.state.list_broadcast_snippet"
-                   class="current_object__wrapper_info"
+          <section
+            v-for="(obj, key) in $store.state.list_broadcast_snippet"
+            class="current_object__wrapper_info"
           >
             <span class="current_object__wrapper_info__text">{{ obj.name }}:</span>
             <span class="current_object__wrapper_info__value">{{ object_data[obj.code] }}</span>
           </section>
         </div>
-        <div class="button"
-             @click="openDetailCard">
+        <div
+          class="button"
+          @click="openDetailCard"
+        >
           <ButtonStyled
             :href="$store.getters.stateObjectSelected ? '/objects/'+$store.state.currentObject.id : ''"
             :local-text="'Открыть объект'"
             local-class="style_button"
-          ></ButtonStyled>
+          />
         </div>
       </div>
     </div>
@@ -81,63 +83,63 @@
 </template>
 
 <script>
-import ButtonStyled from "../Common/ButtonStyled.vue";
-import ObjectDetail from "./ObjectDetail.vue";
-import Collaboration from "../Modals/Collaboration.vue";
-import TooltipStyled from "../Common/TooltipStyled.vue";
+import ButtonStyled from '../Common/ButtonStyled.vue'
+import Collaboration from '../Modals/Collaboration.vue'
+import TooltipStyled from '../Common/TooltipStyled.vue'
+import ObjectDetail from './ObjectDetail.vue'
 
 
 export default {
-  name: "CardObject",
-  props: ["object_data"],
+  name: 'CardObject',
   components: { TooltipStyled, Collaboration, ButtonStyled, ObjectDetail },
+  props: ['object_data'],
   data: () => ({
     showDetailObj: false
   }),
-  mounted() {
-    this.$store.dispatch("getListBroadcastSnippet");
-  },
-  watch: {},
   computed: {
     stateCurrentObject() {
-      return this.object_data.id === this.$store.state.currentObject.id;
+      return this.object_data.id === this.$store.state.currentObject.id
     },
     stateFilledImageObject() {
-      if (!this.object_data.hasOwnProperty("osnovnoe-foto-obekta")) return false;
+      if (!this.object_data.hasOwnProperty('osnovnoe-foto-obekta')) return false
 
-      return this.object_data["osnovnoe-foto-obekta"].length;
+      return this.object_data['osnovnoe-foto-obekta'].length
     },
     selectedObj() {
-      if (!this.$store.state.currentObject) return false;
-      if (!Object.keys(this.$store.state.currentObject).length) return false;
-      return this.object_data.id === this.$store.state.currentObject?.id;
+      if (!this.$store.state.currentObject) return false
+      if (!Object.keys(this.$store.state.currentObject).length) return false
+      return this.object_data.id === this.$store.state.currentObject?.id
     },
     modalWidth() {
       if (process.client) {
-        return window.innerWidth * 0.5;
+        return window.innerWidth * 0.5
       } else {
-        return 0;
+        return 0
       }
     }
   },
+  watch: {},
+  mounted() {
+    this.$store.dispatch('getListBroadcastSnippet')
+  },
   methods: {
     setObject() {
-      this.$store.commit("set_currentObject", this.object_data);
+      this.$store.commit('set_currentObject', this.object_data)
     },
     openDetailCard() {
-      this.$emit("openDetail", this.object_data);
+      this.$emit('open-detail', this.object_data)
       // this.$store.state.modalCurrentObject = this.object_data
       // this.$store.state.listModal[1].isOpen = true
     },
     async closeDetail() {
-      this.showDetailObj = false;
-      await this.$store.dispatch("loginByToken");
+      this.showDetailObj = false
+      await this.$store.dispatch('loginByToken')
     }
   }
-};
+}
 </script>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 .card_obj {
   display: flex;
   justify-content: space-between;

@@ -1,128 +1,127 @@
 <template>
-  <v-form v-model='isFormValid'>
-
+  <VForm v-model="isFormValid">
     <!--  MOBILE  -->
-    <template v-if='isMobile'>
-      <v-text-field
-        v-model='form.first_name'
-        class='mb-4'
+    <template v-if="isMobile">
+      <VTextField
+        v-model="form.first_name"
+        class="mb-4"
         dense
         hide-details
-        label='Введите имя'
+        label="Введите имя"
         solo
-        @change='setData'
-      ></v-text-field>
+        @change="setData"
+      />
 
-      <v-text-field
-        v-model='form.middle_name'
-        class='mb-4'
+      <VTextField
+        v-model="form.middle_name"
+        class="mb-4"
         dense
         hide-details
-        label='Введите фамилию'
+        label="Введите фамилию"
         solo
-        @change='setData'
-      ></v-text-field>
+        @change="setData"
+      />
 
-      <v-text-field
-        v-model='form.last_name'
-        class='mb-4'
+      <VTextField
+        v-model="form.last_name"
+        class="mb-4"
         dense
         hide-details
-        label='Введите отчество'
+        label="Введите отчество"
         solo
-        @change='setData'
-      ></v-text-field>
+        @change="setData"
+      />
 
-      <v-text-field
-        v-model='form.email'
-        :rules='emailRules'
-        class='mb-4'
+      <VTextField
+        v-model="form.email"
+        :rules="emailRules"
+        class="mb-4"
         dense
         hide-details
-        label='Введите email'
+        label="Введите email"
         solo
-        @change='setData'
-      ></v-text-field>
+        @change="setData"
+      />
 
-      <v-text-field
-        v-model='form.telephone'
+      <VTextField
+        v-model="form.telephone"
         v-mask="'+7 (###) ###-##-##'"
-        class='mb-4'
+        class="mb-4"
         dense
         hide-details
-        label='Введите телефон'
+        label="Введите телефон"
         solo
-        @change='setData'
-      ></v-text-field>
+        @change="setData"
+      />
     </template>
 
     <!--  DESKTOP  -->
     <template v-else>
-      <v-row>
-        <v-col>
-          <v-text-field
-            v-model='form.first_name'
-            label='Введите имя'
+      <VRow>
+        <VCol>
+          <VTextField
+            v-model="form.first_name"
+            label="Введите имя"
             solo
-            @change='setData'
-          ></v-text-field>
-        </v-col>
-        <v-col>
-          <v-text-field
-            v-model='form.middle_name'
-            label='Введите фамилию'
+            @change="setData"
+          />
+        </VCol>
+        <VCol>
+          <VTextField
+            v-model="form.middle_name"
+            label="Введите фамилию"
             solo
-            @change='setData'
-          ></v-text-field>
-        </v-col>
-        <v-col>
-          <v-text-field
-            v-model='form.last_name'
-            label='Введите отчество'
+            @change="setData"
+          />
+        </VCol>
+        <VCol>
+          <VTextField
+            v-model="form.last_name"
+            label="Введите отчество"
             solo
-            @change='setData'
-          ></v-text-field>
-        </v-col>
-      </v-row>
+            @change="setData"
+          />
+        </VCol>
+      </VRow>
 
-      <v-row>
-        <v-col>
-          <v-text-field
-            v-model='form.email'
-            :rules='emailRules'
-            label='Введите email'
+      <VRow>
+        <VCol>
+          <VTextField
+            v-model="form.email"
+            :rules="emailRules"
+            label="Введите email"
             solo
-            @change='setData'
-          ></v-text-field>
-        </v-col>
-        <v-col>
-          <v-text-field
-            v-model='form.telephone'
+            @change="setData"
+          />
+        </VCol>
+        <VCol>
+          <VTextField
+            v-model="form.telephone"
             v-mask="'+7 (###) ###-##-##'"
-            label='Введите телефон'
+            label="Введите телефон"
             solo
-            @change='setData'
-          ></v-text-field>
-        </v-col>
-      </v-row>
+            @change="setData"
+          />
+        </VCol>
+      </VRow>
     </template>
 
-    <v-row>
-      <v-col>
-        <v-checkbox
-          v-for='(type, index) in types'
-          :key='index'
-          v-model.number='form[type.key]'
-          :false-value='0'
-          :label='type.text'
-          :true-value='1'
+    <VRow>
+      <VCol>
+        <VCheckbox
+          v-for="(type, index) in types"
+          :key="index"
+          v-model.number="form[type.key]"
+          :false-value="0"
+          :label="type.text"
+          :true-value="1"
           dense
           hide-details
-          @change='setData'
-        ></v-checkbox>
-      </v-col>
-    </v-row>
-  </v-form>
+          @change="setData"
+        />
+      </VCol>
+    </VRow>
+  </VForm>
 </template>
 
 <script>
@@ -160,15 +159,15 @@ export default {
       v => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Введите корректный email'
     ]
   }),
-  mounted() {
-    this.getUserInfo()
-  },
   watch: {
     'isChanged': {
       handler(v) {
-        this.$emit('isChanged', v)
+        this.$emit('is-changed', v)
       }
     }
+  },
+  mounted() {
+    this.getUserInfo()
   },
   computed: {
     ...mapState({
@@ -180,9 +179,9 @@ export default {
       return !!this.$device.isMobile
     },
     isChanged() {
-      let result = []
+      const result = []
 
-      for (let key in this.form) {
+      for (const key in this.form) {
         result.push(this.form[key] == this.defaultUserData[key])
       }
 
@@ -192,13 +191,13 @@ export default {
   methods: {
     getUserInfo() {
       if (this.userData && Object.keys(this.userData).length) {
-        for (let key in this.form) {
+        for (const key in this.form) {
           this.form[key] = this.userData[key]
         }
       }
     },
     setData() {
-      this.$emit('newData', { data: this.form, isValid: this.isFormValid })
+      this.$emit('new-data', { data: this.form, isValid: this.isFormValid })
     }
   }
 }

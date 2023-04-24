@@ -1,42 +1,44 @@
 <template>
-  <div class='modal_wrapper'>
-    <div class='card_title d-flex justify-space-between align-center mb-4'>
+  <div class="modal_wrapper">
+    <div class="card_title d-flex justify-space-between align-center mb-4">
       <h3>Настройки профиля</h3>
-      <v-icon large @click='closeDetail'>mdi-close</v-icon>
+      <VIcon large @click="closeDetail">
+        mdi-close
+      </VIcon>
     </div>
 
-    <div class='card_object flex-grow-1 flex-shrink-1 pa-5'>
-      <div v-if='isLoggedIn' class='card_object_container'>
+    <div class="card_object flex-grow-1 flex-shrink-1 pa-5">
+      <div v-if="isLoggedIn" class="card_object_container">
         <UserFields
-          @isChanged='setChanged'
-          @newData='setData'
+          @is-changed="setChanged"
+          @new-data="setData"
         />
       </div>
-      <LoginAuth v-else />
+      <LoginAuth v-else/>
     </div>
 
-    <div class='modal_footer pa-5'>
-      <Transition mode='out-in' name='fade'>
-        <v-btn
-          v-if='isChanged'
-          :disabled='!isValid'
-          :loading='isUpdating'
-          class='mb-2'
-          color='success'
-          @click='saveUser'
+    <div class="modal_footer pa-5">
+      <Transition mode="out-in" name="fade">
+        <VBtn
+          v-if="isChanged"
+          :disabled="!isValid"
+          :loading="isUpdating"
+          class="mb-2"
+          color="success"
+          @click="saveUser"
         >
           Сохранить
-        </v-btn>
+        </VBtn>
       </Transition>
-      <div v-if='isLoggedIn' class='modal_footer__new'>
-        <v-divider />
-        <v-btn
+      <div v-if="isLoggedIn" class="modal_footer__new">
+        <VDivider/>
+        <VBtn
           block
-          color='primary'
-          @click='logout'
+          color="primary"
+          @click="logout"
         >
           Выйти
-        </v-btn>
+        </VBtn>
       </div>
     </div>
   </div>
@@ -71,7 +73,7 @@ export default {
   },
   methods: {
     closeDetail() {
-      this.$emit('closeDetail')
+      this.$emit('close-detail')
     },
     logout() {
       this.$store.dispatch('logout')
