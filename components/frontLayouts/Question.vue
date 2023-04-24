@@ -882,14 +882,14 @@ export default {
   padding: 20px;
   border: 2px solid white;
   border-radius: 5px;
-  transition: border-color 0.6s ease-in-out;
+  transition: background-color 0.6s ease-in-out;
 
   &__content{
     font-size: 1.1em;
   }
 
   &:hover {
-    border-color: #95D7AE;
+    background-color: #FFF4CB;
   }
 
   &__title {

@@ -75,6 +75,14 @@ const createStore = () => {
         const firstElem = eClientFilesObj.find((e) => e.preview_image === true)
         return firstElem ? state.BASE_URL + firstElem.full_path : ''
       },
+      getImageMainPhotoObjects: (state) => (obj) => {
+        const templateImage =
+          'https://cdn.dribbble.com/users/41613/screenshots/3848663/chronicle_prev.jpg?compress=1&resize=400x300'
+
+        if (!obj) return ''
+
+        return state.BASE_URL + obj.full_path;
+      },
       open_close_cabinet(state) {
         return state.showCabinet
       },
