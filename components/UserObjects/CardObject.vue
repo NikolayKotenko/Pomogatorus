@@ -175,6 +175,8 @@ export default {
 
   .obj_info {
     width: 100%;
+    grid-row-gap: 1em;
+    display: grid;
     //background-color: #FFFFFF !important;
   }
 

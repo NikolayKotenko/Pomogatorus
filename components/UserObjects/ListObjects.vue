@@ -26,8 +26,8 @@
         </div>
       </div>
       <LoginAuth v-else />
-      <div class="new_object_wrapper">
-        <v-divider class="new_obj_divider"></v-divider>
+      <div v-if='listObjects.length' class="new_object_wrapper">
+<!--        <v-divider class="new_obj_divider"></v-divider>-->
         <div class="new_object">
 
           <div class="details_new_object">
@@ -327,6 +327,7 @@ export default {
   position: sticky;
   bottom: 0;
   padding-bottom: 20px;
+  margin-top: 10px;
   background: white;
   box-shadow: none;
 }
@@ -340,7 +341,7 @@ export default {
 
 
   padding: 20px;
-  border: 1px solid #000000;
+  border: 1px solid #d9d9d9;
   border-radius: 5px;
   box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.25);
   transition: all 0.4s ease-in-out !important;
