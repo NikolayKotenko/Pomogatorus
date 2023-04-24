@@ -198,9 +198,10 @@ export default {
     align-self: baseline;
     grid-row-gap: 1em;
     padding: 20px !important;
+    transition: all 0.4s ease-in-out !important;
 
     &:hover {
-      outline: 1px solid #FFDB58;
+      background-color: #FFF4CB;
       border-radius: 5px;
     }
 
