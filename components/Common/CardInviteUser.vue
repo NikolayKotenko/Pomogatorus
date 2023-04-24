@@ -29,19 +29,21 @@ export default {
 <style lang="scss" scoped>
 $grey-color: #857885;
 
-.card_invite_user{
+.card_invite_user {
   display: inline-flex;
   grid-column-gap: 1em;
   align-items: center;
   width: 100%;
 
-  .main_info{
+  .main_info {
     display: grid;
 
-    .name{
+    .name {
     }
+
     .wrapper_role_email {
       display: inline-flex;
+
       .role {
         color: #F79256;
         font-weight: bold;
@@ -53,16 +55,21 @@ $grey-color: #857885;
         font-size: 0.88em;
       }
     }
-    .wrapper_type_name_company{
+
+    .wrapper_type_name_company {
       color: $grey-color;
       font-size: 0.88em;
-      .type{}
-      .name{
+
+      .type {
+      }
+
+      .name {
         font-weight: bold;
       }
     }
   }
-  .access_rights{
+
+  .access_rights {
     color: $grey-color;
     font-size: 0.88em;
     margin-left: auto;

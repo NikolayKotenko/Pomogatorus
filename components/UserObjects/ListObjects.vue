@@ -1,22 +1,22 @@
 <template>
-  <div class='modal_wrapper'>
-    <template v-if='isLoadingObjects'>
+  <div class="modal_wrapper">
+    <template v-if="isLoadingObjects">
       <v-progress-circular
-        :size='50'
-        color='primary'
+        :size="50"
+        color="primary"
         indeterminate
-        style='margin: 20px auto 40px auto'
+        style="margin: 20px auto 40px auto"
       ></v-progress-circular>
     </template>
 
     <template v-else>
-      <div v-if='listObjects.length' class='card_object flex-grow-1 flex-shrink-1'>
-        <div v-if='listObjects.length' class='card_object_container'>
+      <div v-if="listObjects.length" class="card_object flex-grow-1 flex-shrink-1">
+        <div v-if="listObjects.length" class="card_object_container">
           <CardObject
-            v-for='(object, index) in listObjects'
-            :key='index'
-            :object_data='object'
-            @openDetail='openDetail'
+            v-for="(object, index) in listObjects"
+            :key="index"
+            :object_data="object"
+            @openDetail="openDetail"
           />
         </div>
 
@@ -26,25 +26,25 @@
         </div>
       </div>
       <LoginAuth v-else />
-      <div v-if='listObjects.length' class="new_object_wrapper">
-<!--        <v-divider class="new_obj_divider"></v-divider>-->
+      <div v-if="listObjects.length" class="new_object_wrapper">
+        <!--        <v-divider class="new_obj_divider"></v-divider>-->
         <div class="new_object">
 
           <div class="details_new_object">
             <div class="object_name">
               <div class="object_name_title">
-                <v-icon style="margin-right: 10px" color="#000000">mdi-plus-circle-outline</v-icon>
+                <v-icon color="#000000" style="margin-right: 10px">mdi-plus-circle-outline</v-icon>
                 <span>Cоздайте новый объект</span>
               </div>
               <v-text-field
-                v-model='newObjName'
+                v-model="newObjName"
                 auto-grow
-                class='text_field'
+                class="text_field"
                 dense
                 hide-details
-                label='Введите название объекта'
+                label="Введите название объекта"
                 no-resize
-                row-height='1'
+                row-height="1"
                 solo
               >
               </v-text-field>
@@ -53,28 +53,28 @@
           </div>
           <div class="new_object_button">
             <ButtonStyled
-              :disabled='!newObjName'
-              :loading='loadingObjects'
+              :disabled="!newObjName"
+              :loading="loadingObjects"
               :local-text="'Создать объект'"
               local-class="style_button"
-              @click-button='createNewObject'
+              @click-button="createNewObject"
             ></ButtonStyled>
           </div>
         </div>
       </div>
 
       <v-dialog
-        v-if='showDetail'
-        v-model='showDetail'
-        :fullscreen='isMobile'
-        :hide-overlay='isMobile'
-        :width='isMobile ? 1080 : null'
-        content-class='dialogStyled'
+        v-if="showDetail"
+        v-model="showDetail"
+        :fullscreen="isMobile"
+        :hide-overlay="isMobile"
+        :width="isMobile ? 1080 : null"
+        content-class="dialogStyled"
         scrollable
       >
         <ObjectGlobal
-          :object-data='detailData'
-          @close-modal='closeDetailObj'
+          :object-data="detailData"
+          @close-modal="closeDetailObj"
         />
       </v-dialog>
     </template>
@@ -82,111 +82,111 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from "vuex";
 
-import ObjectCard from './ObjectCard'
-import LoginAuth from '../frontLayouts/LoginAuth'
+import ObjectCard from "./ObjectCard";
+import LoginAuth from "../frontLayouts/LoginAuth";
 
-import Request from '../../services/request'
-import ObjectDetail from './ObjectDetail'
-import ObjectGlobal from './ObjectGlobal'
+import Request from "../../services/request";
+import ObjectDetail from "./ObjectDetail";
+import ObjectGlobal from "./ObjectGlobal";
 import CardObject from "./CardObject.vue";
 import ButtonStyled from "../Common/ButtonStyled.vue";
 import SelectGeo from "../Common/SelectGeo.vue";
 import TooltipStyled from "../Common/TooltipStyled.vue";
 
 export default {
-  name: 'ListObjects',
-  components: {TooltipStyled, SelectGeo, ButtonStyled, CardObject, ObjectGlobal, ObjectDetail, LoginAuth, ObjectCard },
+  name: "ListObjects",
+  components: { TooltipStyled, SelectGeo, ButtonStyled, CardObject, ObjectGlobal, ObjectDetail, LoginAuth, ObjectCard },
   data: () => ({
     object: {},
-    newObjAddress: '',
-    newObjName: '',
+    newObjAddress: "",
+    newObjName: "",
     showDetail: false,
     detailData: {}
   }),
   mounted() {
-    this.getListObjects()
+    this.getListObjects();
   },
   watch: {
-    'getUserId': {
+    "getUserId": {
       handler(oldV, newV) {
         if (oldV !== newV) {
-          this.getListObjects()
+          this.getListObjects();
         }
       }
     }
   },
   computed: {
     ...mapState({
-    loadingObjects: state => state.loading_objects
+      loadingObjects: state => state.loading_objects
     }),
-    ...mapState('Objects', ['listObjects', 'isLoadingObjects']),
-    ...mapGetters(['getUserId']),
+    ...mapState("Objects", ["listObjects", "isLoadingObjects"]),
+    ...mapGetters(["getUserId"]),
 
     notEmptyObject() {
-      return !!Object.keys(this.object).length
+      return !!Object.keys(this.object).length;
     },
 
     getCoords() {
-      return this.object?.long && this.object?.lat ? [this.object.lat, this.object.long] : [55.753215, 37.622504]
+      return this.object?.long && this.object?.lat ? [this.object.lat, this.object.long] : [55.753215, 37.622504];
     },
 
     isMobile() {
-      return this.$device.isMobile
+      return this.$device.isMobile;
     }
   },
   methods: {
-    ...mapActions('Objects', ['getUserObjects']),
+    ...mapActions("Objects", ["getUserObjects"]),
 
     getListObjects() {
-      this.getUserObjects(this.getUserId)
+      this.getUserObjects(this.getUserId);
     },
 
     async createNewObject() {
-      this.$store.commit('change_loaderObjects', true)
+      this.$store.commit("change_loaderObjects", true);
 
-      let { data } = await Request.post(this.$store.state.BASE_URL + '/entity/objects', {
+      let { data } = await Request.post(this.$store.state.BASE_URL + "/entity/objects", {
         address: this.newObjAddress,
         name: this.newObjName
-      })
+      });
 
-      await this.getUserObjects(this.getUserId)
+      await this.getUserObjects(this.getUserId);
 
       if (this.$store.state.AuthModule.userData.objects.length < 1) {
-        this.$store.commit('set_currentObject', data)
+        this.$store.commit("set_currentObject", data);
       }
 
-      this.$store.commit('change_listObjects', [data])
+      this.$store.commit("change_listObjects", [data]);
 
-      this.newObjAddress = ''
+      this.newObjAddress = "";
 
-      this.$store.commit('change_loaderObjects', false)
+      this.$store.commit("change_loaderObjects", false);
     },
     closeDetailObj() {
-      this.showDetail = false
+      this.showDetail = false;
     },
     closeDetail() {
-      this.$emit('closeDetail')
+      this.$emit("closeDetail");
     },
     openDetail(data) {
-      this.detailData = data
-      this.showDetail = true
+      this.detailData = data;
+      this.showDetail = true;
     },
     setAddressMap(data) {
-      this.object.address = data.address
-      this.object.lat = data.coords[0]
-      this.object.long = data.coords[1]
+      this.object.address = data.address;
+      this.object.lat = data.coords[0];
+      this.object.long = data.coords[1];
 
-      this.updateProperties.address = data.address
-      this.updateProperties.lat = data.coords[0]
-      this.updateProperties.long = data.coords[1]
+      this.updateProperties.address = data.address;
+      this.updateProperties.lat = data.coords[0];
+      this.updateProperties.long = data.coords[1];
     }
   }
-}
+};
 </script>
 
-<style lang='scss'>
+<style lang="scss">
 @import 'assets/styles/userObjects';
 
 .modal_wrapper {
@@ -266,30 +266,7 @@ export default {
   margin: 60px 0 0 0;
 }
 
-@media (max-width: 768px) {
-  .dialogStyled {
-    max-height: unset !important;
-    margin: 56px 0 0 0;
-  }
-
-  .modal_wrapper {
-    justify-self: center;
-  }
-}
-
-@media only screen and (max-width: 600px) {
-  .card_object_new {
-    &__card {
-      align-items: start !important;
-      font-size: 0.9rem !important;
-
-      &__plus {
-        padding-top: 4px;
-      }
-    }
-  }
-}
-.new_object_wrapper{
+.new_object_wrapper {
   position: sticky;
   bottom: 0;
   padding-bottom: 20px;
@@ -297,15 +274,14 @@ export default {
   background: white;
   box-shadow: none;
 }
+
 .new_obj_divider {
   background-color: #353e47;
   margin: 50px 0 50px 0;
 }
+
 .new_object {
   display: flex;
-  //justify-content: space-between;
-
-
   padding: 20px;
   border: 1px solid #d9d9d9;
   border-radius: 5px;
@@ -313,10 +289,10 @@ export default {
   transition: all 0.4s ease-in-out !important;
 
   &:hover {
-
     box-shadow: 0px 5px 20px 7px rgba(34, 60, 80, 0.2) !important;
     background-color: #FFF4CB;
   }
+
   .img {
 
     .empty_placeholder {
@@ -332,14 +308,17 @@ export default {
       font-size: 1.3em;
     }
   }
+
   .details_new_object {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
-    .object_name{
+
+    .object_name {
       width: 100%;
       font-size: 1.5em;
       font-weight: 400;
+
       .object_name_title {
         display: flex;
         align-items: center;
@@ -349,17 +328,53 @@ export default {
         margin-top: 1em;
       }
     }
+
     .object_address {
       display: flex;
-      align-items: end;
+      align-items: flex-end;
       width: 100%;
     }
 
   }
+
   .new_object_button {
     display: flex;
-    align-items: end;
+    align-items: flex-end;
     margin-left: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dialogStyled {
+    max-height: unset !important;
+    margin: 56px 0 0 0;
+  }
+
+  .modal_wrapper {
+    justify-self: center;
+  }
+
+  .new_object {
+    flex-direction: column;
+    row-gap: 1rem;
+
+    .new_object_button {
+      margin-left: 0;
+      justify-content: center;
+    }
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .card_object_new {
+    &__card {
+      align-items: flex-start !important;
+      font-size: 0.9rem !important;
+
+      &__plus {
+        padding-top: 4px;
+      }
+    }
   }
 }
 </style>

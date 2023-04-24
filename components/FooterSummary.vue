@@ -1,104 +1,106 @@
 <template>
-  <v-footer
-    v-if='$store.getters.stateAuth'
+  <VFooter
+    v-if="$store.getters.stateAuth"
     :color="'#d3d3d3'"
-    elevation='20'
+    elevation="20"
     fixed
     outlined
     padless
   >
-    <v-container class='wrapper_footer'>
-      <div v-if='$store.state.AuthModule.userData.objects.length' class='wrapper_objects_list'>
+    <VContainer class="wrapper_footer">
+      <div v-if="$store.state.AuthModule.userData.objects.length" class="wrapper_objects_list">
         <span>Ваш объект заполнен на - 15 %</span>
-        <v-select
-          ref='selectObject'
-          v-model='$store.state.currentObject'
-          :items='getItems'
-          :menu-props='{
+        <VSelect
+          ref="selectObject"
+          v-model="$store.state.currentObject"
+          :items="getItems"
+          :menu-props="{
             closeOnContentClick: true,
             top: true,
             offsetY: true,
-          }'
+          }"
           clearable
           dense
           hide-details
-          placeholder='Выберите объект'
+          placeholder="Выберите объект"
           return-object
           solo
-          @focusout='resetValues'
-          @click:clear='clearValues'
+          @focusout="resetValues"
+          @click:clear="clearValues"
         >
-          <template v-slot:selection='data'>
-            <div class='wrapper_selection_data'>
-              <v-list-item-content class='wrap_item_data_slot'>
-                <v-list-item-title>{{ (data.item.address) ? data.item.address : 'Нет адреса' }}</v-list-item-title>
-                <v-list-item-subtitle>Объект описан: {{ data.item.created_at }}</v-list-item-subtitle>
-                <v-list-item-subtitle> Площадь: {{ data.item.total_area }}</v-list-item-subtitle>
-              </v-list-item-content>
+          <template #selection="data">
+            <div class="wrapper_selection_data">
+              <VListItemContent class="wrap_item_data_slot">
+                <VListItemTitle>{{ (data.item.address) ? data.item.address : "Нет адреса" }}</VListItemTitle>
+                <VListItemSubtitle>Объект описан: {{ data.item.created_at }}</VListItemSubtitle>
+                <VListItemSubtitle> Площадь: {{ data.item.total_area }}</VListItemSubtitle>
+              </VListItemContent>
             </div>
           </template>
 
-          <template v-slot:item='{ item }'>
-            <v-list-item @click="$store.commit('set_currentObject', item)">
-              <v-list-item-content class='wrap_item_slot'>
-                <v-list-item-title>{{ (item.address) ? item.address : 'Нет адреса' }}</v-list-item-title>
-                <v-list-item-subtitle>Объект описан: {{ item.created_at }}</v-list-item-subtitle>
-                <v-list-item-subtitle> Площадь: {{ item.total_area }}</v-list-item-subtitle>
-                <v-list-item-subtitle>Готовность:</v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
+          <template #item="{ item }">
+            <VListItem @click="$store.commit('set_currentObject', item)">
+              <VListItemContent class="wrap_item_slot">
+                <VListItemTitle>{{ (item.address) ? item.address : "Нет адреса" }}</VListItemTitle>
+                <VListItemSubtitle>Объект описан: {{ item.created_at }}</VListItemSubtitle>
+                <VListItemSubtitle> Площадь: {{ item.total_area }}</VListItemSubtitle>
+                <VListItemSubtitle>Готовность:</VListItemSubtitle>
+              </VListItemContent>
+            </VListItem>
           </template>
-        </v-select>
+        </VSelect>
       </div>
-      <div v-else class='wrapper_add_object'>
-        <v-text-field
-          ref='createNewObj'
-          v-model='address'
-          class='field_address'
+      <div v-else class="wrapper_add_object">
+        <VTextField
+          ref="createNewObj"
+          v-model="address"
+          class="field_address"
           clearable
           dense
           flat
           hide-details
-          placeholder='Введите адресс нового объекта'
-        ></v-text-field>
-        <v-btn color='primary' right small @click="$store.dispatch('createNewObject', address)">Добавить объект</v-btn>
+          placeholder="Введите адресс нового объекта"
+        />
+        <VBtn color="primary" right small @click="$store.dispatch('createNewObject', address)">
+          Добавить объект
+        </VBtn>
       </div>
-    </v-container>
-  </v-footer>
+    </VContainer>
+  </VFooter>
 </template>
 
 <script>
-import LoginAuth from '/components/frontLayouts/LoginAuth'
-import { mapGetters } from 'vuex'
-import _deepEqual from '../helpers/deepCompareObjects'
-import _clone from '../helpers/deepClone'
+import LoginAuth from '/components/frontLayouts/LoginAuth';
+import { mapGetters } from 'vuex';
+import _deepEqual from '../helpers/deepCompareObjects';
+import _clone from '../helpers/deepClone';
 
 export default {
-  components: { LoginAuth },
   name: 'FooterSummary',
+  components: { LoginAuth },
   data() {
     return {
       address: '',
       defaultObject: {}
-    }
+    };
   },
   computed: {
     ...mapGetters(['open_close_cabinet']),
 
     getItems() {
-      return this.$store.state.AuthModule.userData.objects
-    },
+      return this.$store.state.AuthModule.userData.objects;
+    }
   },
   watch: {
     'open_close_cabinet': {
       handler(v) {
         if (v) {
-          this.defaultObject = _clone(this.$store.state.currentObject)
+          this.defaultObject = _clone(this.$store.state.currentObject);
           if (this.$refs.selectObject) {
-            this.$refs.selectObject.focus()
-            this.$refs.selectObject.activateMenu()
+            this.$refs.selectObject.focus();
+            this.$refs.selectObject.activateMenu();
           } else {
-            this.$refs.createNewObj.focus()
+            this.$refs.createNewObj.focus();
           }
         }
       }
@@ -108,20 +110,20 @@ export default {
     resetValues() {
       setTimeout(() => {
         if (_deepEqual(this.defaultObject, this.$store.state.currentObject)) {
-          this.$store.commit('change_showCabinet', false)
+          this.$store.commit('change_showCabinet', false);
         }
-      }, 400)
+      }, 400);
     },
     clearValues() {
       this.$nextTick(() => {
-        this.$store.commit('set_currentObject', {})
-      })
+        this.$store.commit('set_currentObject', {});
+      });
     }
   }
-}
+};
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .wrapper_footer {
   padding: 10px 10px;
 

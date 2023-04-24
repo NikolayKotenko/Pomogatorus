@@ -2,10 +2,10 @@
   <div class="card_obj">
     <div class="img">
       <v-img
-        height='100%'
         v-if="stateFilledImageObject"
         :class="{'empty_placeholder': ! stateFilledImageObject }"
-        :src="$store.getters.getImageMainPhotoObjects(object_data['osnovnoe-foto-obekta'][0])">
+        :src="$store.getters.getImageMainPhotoObjects(object_data['osnovnoe-foto-obekta'][0])"
+        height="100%">
       </v-img>
       <span v-else class="empty_placeholder">Фото объекта</span>
     </div>
@@ -17,15 +17,15 @@
         </div>
         <div class="share_and_activity">
           <TooltipStyled :title="'Коллаборация'">
-            <v-menu :close-on-content-click='false' left offset-y>
-              <template v-slot:activator='{ on, attrs }'>
-                <div style='display: inline-flex; grid-column-gap: 5px' v-bind='attrs' v-on='on'>
+            <v-menu :close-on-content-click="false" left offset-y>
+              <template v-slot:activator="{ on, attrs }">
+                <div style="display: inline-flex; grid-column-gap: 5px" v-bind="attrs" v-on="on">
                   <v-icon
                     class="share"
                     color="#ADADAD"
-                    v-bind='attrs'
-                    v-on='on'
                     size="26"
+                    v-bind="attrs"
+                    v-on="on"
                   >
                     mdi-account-group-outline
                   </v-icon>
@@ -40,7 +40,7 @@
               <v-simple-checkbox
                 :value="stateCurrentObject"
                 color="#000000"
-                @click='setObject'
+                @click="setObject"
               ></v-simple-checkbox>
             </div>
           </TooltipStyled>
@@ -50,29 +50,29 @@
       <div>
         <TooltipStyled :title="'Заполнено параметров: '">
           <v-progress-linear
-            class="progress_bar"
-            value="15"
             background-opacity="0.3"
-            color='#95D7AE'
+            class="progress_bar"
+            color="#95D7AE"
             rounded
+            value="15"
           ></v-progress-linear>
         </TooltipStyled>
       </div>
       <div class="footer">
         <div class="more_info">
-          <section class='current_object__wrapper_info'
-                   v-for="(obj, key) in $store.state.list_broadcast_snippet"
+          <section v-for="(obj, key) in $store.state.list_broadcast_snippet"
+                   class="current_object__wrapper_info"
           >
-            <span class='current_object__wrapper_info__text'>{{ obj.name }}:</span>
-            <span class='current_object__wrapper_info__value'>{{object_data[obj.code] }}</span>
+            <span class="current_object__wrapper_info__text">{{ obj.name }}:</span>
+            <span class="current_object__wrapper_info__value">{{ object_data[obj.code] }}</span>
           </section>
         </div>
         <div class="button"
-             @click='openDetailCard'>
+             @click="openDetailCard">
           <ButtonStyled
+            :href="$store.getters.stateObjectSelected ? '/objects/'+$store.state.currentObject.id : ''"
             :local-text="'Открыть объект'"
             local-class="style_button"
-            :href="$store.getters.stateObjectSelected ? '/objects/'+$store.state.currentObject.id : ''"
           ></ButtonStyled>
         </div>
       </div>
@@ -89,52 +89,52 @@ import TooltipStyled from "../Common/TooltipStyled.vue";
 
 export default {
   name: "CardObject",
-  props: ['object_data'],
-  components: {TooltipStyled, Collaboration, ButtonStyled, ObjectDetail },
+  props: ["object_data"],
+  components: { TooltipStyled, Collaboration, ButtonStyled, ObjectDetail },
   data: () => ({
     showDetailObj: false
   }),
   mounted() {
-    this.$store.dispatch('getListBroadcastSnippet')
+    this.$store.dispatch("getListBroadcastSnippet");
   },
   watch: {},
   computed: {
-    stateCurrentObject(){
+    stateCurrentObject() {
       return this.object_data.id === this.$store.state.currentObject.id;
     },
-    stateFilledImageObject(){
-      if (! this.object_data.hasOwnProperty('osnovnoe-foto-obekta')) return false;
+    stateFilledImageObject() {
+      if (!this.object_data.hasOwnProperty("osnovnoe-foto-obekta")) return false;
 
-      return this.object_data['osnovnoe-foto-obekta'].length;
+      return this.object_data["osnovnoe-foto-obekta"].length;
     },
     selectedObj() {
-      if (!this.$store.state.currentObject) return false
-      if (!Object.keys(this.$store.state.currentObject).length) return false
-      return this.object_data.id === this.$store.state.currentObject?.id
+      if (!this.$store.state.currentObject) return false;
+      if (!Object.keys(this.$store.state.currentObject).length) return false;
+      return this.object_data.id === this.$store.state.currentObject?.id;
     },
     modalWidth() {
       if (process.client) {
-        return window.innerWidth * 0.5
+        return window.innerWidth * 0.5;
       } else {
-        return 0
+        return 0;
       }
     }
   },
   methods: {
     setObject() {
-      this.$store.commit('set_currentObject', this.object_data)
+      this.$store.commit("set_currentObject", this.object_data);
     },
     openDetailCard() {
-      this.$emit('openDetail', this.object_data)
+      this.$emit("openDetail", this.object_data);
       // this.$store.state.modalCurrentObject = this.object_data
       // this.$store.state.listModal[1].isOpen = true
     },
     async closeDetail() {
-      this.showDetailObj = false
-      await this.$store.dispatch('loginByToken')
+      this.showDetailObj = false;
+      await this.$store.dispatch("loginByToken");
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -159,6 +159,7 @@ export default {
     min-width: 250px;
     min-height: 160px;
     margin-right: 20px;
+
     .empty_placeholder {
       background-color: #D9D9D9;
       min-width: 250px;
@@ -177,59 +178,77 @@ export default {
     width: 100%;
     grid-row-gap: 1em;
     display: grid;
-    //background-color: #FFFFFF !important;
   }
 
-    .header {
-      display: flex;
-      justify-content: space-between;
+  .header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .name_and_address {
+    display: grid;
+  }
+
+  .name {
+    font-size: 1.5em;
+    font-weight: 400;
+  }
+
+  .address {
+    font-size: 1.2em;
+    font-weight: 300;
+  }
+
+  .share_and_activity {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .share {
+    &:hover {
+      color: #000000 !important;
     }
+  }
 
-      .name_and_address {
-        display: grid;
-      }
+  .activity {
+    margin-left: 24px;
+  }
 
-        .name {
-          font-size: 1.5em;
-          font-weight: 400;
-        }
+  .progress_bar {
+    width: auto;
+    height: 16px !important;
+  }
 
-        .address {
-          font-size: 1.2em;
-          font-weight: 300;
-        }
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
 
-      .share_and_activity {
-        display: flex;
-        align-items: start;
-      }
+  .more_info {
+    display: grid;
+  }
+}
 
-        .share {
-          &:hover {
-            color: #000000 !important;
-          }
-        }
-
-        .activity {
-          margin-left: 24px;
-        }
-
-    .progress_bar {
-      width: auto;
-      height: 16px !important;
-    }
+@media (max-width: 768px) {
+  .card_obj {
+    flex-direction: column;
+    row-gap: 1rem;
 
     .footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: end;
-    }
+      flex-direction: column;
+      row-gap: 1rem;
 
       .more_info {
-        display: grid;
+        width: 100%;
       }
 
       .button {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      }
+    }
   }
 }
 </style>
