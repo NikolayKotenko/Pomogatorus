@@ -24,9 +24,12 @@
         />
       </TooltipStyled>
 
-      <v-img class='current_object__image' title='Фотография объекта'>
-        <v-icon class='current_object__image__icon' x-large>mdi-map-marker-outline</v-icon>
-      </v-img>
+      <TooltipStyled :title="'Фотография объекта'">
+        <v-img class='current_object__image'
+        >
+          <v-icon class='current_object__image__icon' x-large>mdi-map-marker-outline</v-icon>
+        </v-img>
+      </TooltipStyled>
 
       <!-- Циклом параметры по булеву "транслировать в сниппет" -->
       <section class='current_object__wrapper_info'
@@ -179,6 +182,8 @@ export default {
 </script>
 
 <style lang='scss' scoped>
+@import "@/assets/styles/global.scss";
+
 .wrapper_current_object {
   height: 1px;
   //width: 1px;
@@ -200,8 +205,8 @@ export default {
     padding: 20px !important;
 
     &:hover {
-      outline: 1px solid #FFDB58;
-      border-radius: 5px;
+      @extend .border-hover;
+      @extend .background-hover;
     }
 
     &__label {

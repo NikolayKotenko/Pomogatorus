@@ -2,6 +2,7 @@
   <v-autocomplete
     ref='autocomplete'
     v-model='currentData'
+    :auto-select-first="true"
     :autofocus='isAutofocus'
     :class='{"selector-custom": currentData && customStyle}'
     :disabled='isDisabled'
@@ -13,6 +14,7 @@
             closeOnContentClick: true,
             bottom: true,
             offsetY: true,
+            maxWidth: 250
           }'
     :multiple='false'
     :no-filter='currentData && customStyle'
@@ -53,6 +55,16 @@
         <v-icon>mdi-minus</v-icon>
       </template>
     </template>
+    <template v-slot:append-item>
+      <v-card class="wrapper_add_new_object" elevation="8">
+        <v-card-actions>
+          <v-btn small text plain block :href="'/objects/'" class="btn_add_new_object">
+            <v-icon>mdi-plus-circle-outline</v-icon>
+            <span>Создать новый объект</span>
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </template>
   </v-autocomplete>
 </template>
 
@@ -64,6 +76,10 @@ import _deepEqual from '../../helpers/deepCompareObjects'
 export default {
   name: 'SelectObjectStyled',
   props: {
+    class: {
+      type: String,
+      default: ''
+    },
     placeholder: {
       type: String,
       default: 'Выберите объект'
@@ -186,6 +202,14 @@ export default {
 </script>
 
 <style lang='scss'>
+@import "@/assets/styles/global.scss";
+
+.v-menu__content{
+  &:hover{
+    @extend .border-hover;
+  }
+}
+
 .selector-custom {
   .v-select__selections {
     overflow: hidden;
@@ -215,4 +239,28 @@ export default {
   white-space: nowrap;
   cursor: pointer;
 }
+</style>
+<style lang="scss" scoped>
+
+.v-list{
+  padding-bottom: unset;
+}
+
+.wrapper_add_new_object{
+  margin-top: 5px;
+  //position: absolute;
+  //z-index: 9;
+}
+.btn_add_new_object{
+  text-transform: unset;
+  i{
+    margin-right: 2px;
+  }
+  span{
+    font-family: unset;
+    font-size: 14px;
+    text-decoration: underline;
+  }
+}
+
 </style>

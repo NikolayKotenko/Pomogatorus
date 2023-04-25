@@ -27,6 +27,17 @@ $main-color: red;
 
 $max-width: 1140px;
 
+.border-hover{
+  outline: 1px solid #FFDB58;
+  border-radius: 5px;
+}
+.background-hover{
+  background: #FFF4CB;
+  -webkit-transition: background-color 500ms linear;
+  -ms-transition: background-color 500ms linear;
+  transition: background-color 500ms linear;
+}
+
 .files-dashed-border{
   background-image: repeating-linear-gradient(20deg, #b3b3b3, #b3b3b3 7px, transparent 7px, transparent 19px, #b3b3b3 19px), repeating-linear-gradient(110deg, #b3b3b3, #b3b3b3 7px, transparent 7px, transparent 19px, #b3b3b3 19px), repeating-linear-gradient(200deg, #b3b3b3, #b3b3b3 7px, transparent 7px, transparent 19px, #b3b3b3 19px), repeating-linear-gradient(290deg, #b3b3b3, #b3b3b3 7px, transparent 7px, transparent 19px, #b3b3b3 19px);
   background-size: 2px 100%, 100% 2px, 2px 100%, 100% 2px;
