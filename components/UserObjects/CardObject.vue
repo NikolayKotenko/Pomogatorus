@@ -175,6 +175,8 @@ export default {
 
   .obj_info {
     width: 100%;
+    display: grid;
+    grid-row-gap: 1em;
     //background-color: #FFFFFF !important;
   }
 
@@ -199,7 +201,7 @@ export default {
 
       .share_and_activity {
         display: flex;
-        align-items: start;
+        align-items: flex-start;
       }
 
         .share {
@@ -220,7 +222,7 @@ export default {
     .footer {
       display: flex;
       justify-content: space-between;
-      align-items: end;
+      align-items: flex-end;
     }
 
       .more_info {

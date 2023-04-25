@@ -76,7 +76,7 @@ import _deepEqual from '../../helpers/deepCompareObjects'
 export default {
   name: 'SelectObjectStyled',
   props: {
-    class: {
+    localClass: {
       type: String,
       default: ''
     },

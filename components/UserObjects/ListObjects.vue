@@ -384,14 +384,14 @@ export default {
     }
     .object_address {
       display: flex;
-      align-items: end;
+      align-items: flex-end;
       width: 100%;
     }
 
   }
   .new_object_button {
     display: flex;
-    align-items: end;
+    align-items: flex-end;
     margin-left: 20px;
   }
 }
