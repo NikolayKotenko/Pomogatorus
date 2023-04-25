@@ -80,11 +80,16 @@
     </div>
     <hr class="article_info_wrapper__divider">
   </div>
+
 </template>
 
+
 <script>
+import Biathlon from "../Common/Biathlon.vue";
+
 export default {
   name: 'ArticleInfo',
+  components: {Biathlon},
   props: ['article_data'],
   data: () => ({
     articleView: 'normal'
