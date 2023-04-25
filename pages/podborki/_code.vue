@@ -36,8 +36,7 @@
         </div>
       </div>
     </div>
-
-    <FooterSummary/>
+    <Biathlon></Biathlon>
   </VContainer>
 </template>
 
@@ -48,10 +47,12 @@ import Article from '../../components/Article/Article'
 import Request from '../../services/request'
 import ArticleSmallCard from '../../components/Article/ArticleSmallCard.vue'
 import HashTagStyled from '~/components/Common/HashTagStyled'
+import Biathlon from "../../components/Common/Biathlon.vue";
 
 export default {
   name: '_code.vue',
   components: {
+    Biathlon,
     ArticleSmallCard,
     Question,
     LoginAuth,
