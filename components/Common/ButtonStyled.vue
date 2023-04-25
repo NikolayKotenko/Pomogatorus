@@ -1,10 +1,10 @@
 <template>
   <v-btn
     :class='computedClass'
+    :disabled='isDisabled'
+    :href='href'
     :loading='isLoading'
     @click="$emit('click-button')"
-    :disabled="isDisabled"
-    :href="href"
   >
     <template v-if='customSlot'>
       <slot></slot>
@@ -50,13 +50,18 @@ export default {
     customSlot: {
       type: Boolean,
       default: false
+    },
+    isMobile: {
+      type: Boolean,
+      default: false
     }
   },
-  computed:{
-    computedClass(){
-      const basedClass = 'btnStyled';
-      const animatedClass = (this.isAnimation) ? 'animation_save' : '';
-      return basedClass + ' ' + this.localClass + ' ' + animatedClass;
+  computed: {
+    computedClass() {
+      const basedClass = 'btnStyled'
+      const animatedClass = (this.isAnimation) ? 'animation_save' : ''
+      const mobileClass = this.isMobile ? '' : 'desktop_style'
+      return `${basedClass} ${mobileClass} ${this.localClass} ${animatedClass}`
     }
   }
 }
@@ -65,10 +70,6 @@ export default {
 <style lang='scss' scoped>
 
 .btnStyled {
-  height: 3.2em !important;
-  width: 14.2em;
-  max-height: 45px;
-  max-width: 200px;
   font-weight: 400;
   text-transform: none !important;
   letter-spacing: normal !important;
@@ -86,6 +87,13 @@ export default {
 
 }
 
+.desktop_style {
+  height: 3.2em !important;
+  width: 14.2em;
+  max-height: 45px;
+  max-width: 200px;
+}
+
 .style_button {
   background-color: #ffffff !important;
   color: #000000;
@@ -96,7 +104,8 @@ export default {
     transition: 0.4s;
   }
 }
-.animation_save{
+
+.animation_save {
   background: #95D7AE !important;
   transition-property: transform;
   transition-duration: 2s;

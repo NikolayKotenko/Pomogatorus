@@ -1,22 +1,22 @@
 <template>
-  <div class='modal_wrapper'>
-    <template v-if='isLoadingObjects'>
-      <v-progress-circular
-        :size='50'
-        color='primary'
+  <div class="modal_wrapper">
+    <template v-if="isLoadingObjects">
+      <VProgressCircular
+        :size="50"
+        color="primary"
         indeterminate
-        style='margin: 20px auto 40px auto'
-      ></v-progress-circular>
+        style="margin: 20px auto 40px auto"
+      />
     </template>
 
     <template v-else>
-      <div v-if='listObjects.length' class='card_object flex-grow-1 flex-shrink-1'>
-        <div v-if='listObjects.length' class='card_object_container'>
+      <div v-if="listObjects.length" class="card_object flex-grow-1 flex-shrink-1">
+        <div v-if="listObjects.length" class="card_object_container">
           <CardObject
-            v-for='(object, index) in listObjects'
-            :key='index'
-            :object_data='object'
-            @openDetail='openDetail'
+            v-for="(object, index) in listObjects"
+            :key="index"
+            :object_data="object"
+            @open-detail="openDetail"
           />
         </div>
 
@@ -25,92 +25,57 @@
           Создайте объект!
         </div>
       </div>
-      <LoginAuth v-else />
-      <div class="new_object_wrapper">
-        <v-divider class="new_obj_divider"></v-divider>
+      <LoginAuth v-else/>
+      <div v-if="listObjects.length" class="new_object_wrapper">
+        <!--        <v-divider class="new_obj_divider"></v-divider> -->
         <div class="new_object">
-
           <div class="details_new_object">
             <div class="object_name">
               <div class="object_name_title">
-                <v-icon style="margin-right: 10px" color="#000000">mdi-plus-circle-outline</v-icon>
+                <VIcon color="#000000" style="margin-right: 10px">
+                  mdi-plus-circle-outline
+                </VIcon>
                 <span>Cоздайте новый объект</span>
               </div>
-              <v-text-field
-                v-model='newObjName'
+              <VTextField
+                v-model="newObjName"
                 auto-grow
-                class='text_field'
+                class="text_field"
                 dense
                 hide-details
-                label='Введите название объекта'
+                label="Введите название объекта"
                 no-resize
-                row-height='1'
+                row-height="1"
                 solo
-              >
-              </v-text-field>
+              />
             </div>
-
           </div>
           <div class="new_object_button">
             <ButtonStyled
-              :disabled='!newObjName'
-              :loading='loadingObjects'
+              :disabled="!newObjName"
+              :loading="loadingObjects"
               :local-text="'Создать объект'"
               local-class="style_button"
-              @click-button='createNewObject'
-            ></ButtonStyled>
+              @click-button="createNewObject"
+            />
           </div>
         </div>
       </div>
 
-<!--      <div class='modal_footer pa-5'>-->
-<!--        <div v-if='listObjects.length' class='modal_footer__new'>-->
-<!--          <v-divider />-->
-<!--          <div class='card_object_new'>-->
-<!--            <div class='card_object_new__card'>-->
-<!--              <div class='card_object_new__card__plus'>-->
-<!--                <v-icon :size="!isMobile ? '88' : '36'"> mdi-plus-circle-outline</v-icon>-->
-<!--              </div>-->
-<!--              <div class='card_object_new__card__inputs'>-->
-<!--                <v-text-field-->
-<!--                  v-model='newObjAddress'-->
-<!--                  auto-grow-->
-<!--                  class='card_object_new__card__inputs__input'-->
-<!--                  dense-->
-<!--                  hide-details-->
-<!--                  label='Введите адрес объекта'-->
-<!--                  no-resize-->
-<!--                  row-height='1'-->
-<!--                  solo-->
-<!--                >-->
-<!--                </v-text-field>-->
-<!--                <v-btn-->
-<!--                  :disabled='!newObjAddress'-->
-<!--                  :loading='loadingObjects'-->
-<!--                  class='card_object_new__card__inputs__btn'-->
-<!--                  color='green lighten-1'-->
-<!--                  @click='createNewObject'-->
-<!--                >-->
-<!--                  Добавить-->
-<!--                </v-btn>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
-
-      <v-dialog
-        v-if='showDetail'
-        v-model='showDetail'
-        content-class='dialogStyled'
+      <VDialog
+        v-if="showDetail"
+        v-model="showDetail"
+        :fullscreen="isMobile"
+        :hide-overlay="isMobile"
+        :width="isMobile ? 1080 : null"
+        content-class="dialogStyled"
         scrollable
-        width='1080'
       >
         <ObjectGlobal
-          :object-data='detailData'
-          @close-modal='closeDetailObj'
+          :object-data="detailData"
+          @close-modal="closeDetailObj"
         />
-      </v-dialog>
+      </VDialog>
     </template>
   </div>
 </template>
@@ -118,20 +83,16 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
 
-import ObjectCard from './ObjectCard'
 import LoginAuth from '../frontLayouts/LoginAuth'
 
 import Request from '../../services/request'
-import ObjectDetail from './ObjectDetail'
+import ButtonStyled from '../Common/ButtonStyled.vue'
 import ObjectGlobal from './ObjectGlobal'
-import CardObject from "./CardObject.vue";
-import ButtonStyled from "../Common/ButtonStyled.vue";
-import SelectGeo from "../Common/SelectGeo.vue";
-import TooltipStyled from "../Common/TooltipStyled.vue";
+import CardObject from './CardObject.vue'
 
 export default {
   name: 'ListObjects',
-  components: {TooltipStyled, SelectGeo, ButtonStyled, CardObject, ObjectGlobal, ObjectDetail, LoginAuth, ObjectCard },
+  components: { ButtonStyled, CardObject, ObjectGlobal, LoginAuth },
   data: () => ({
     object: {},
     newObjAddress: '',
@@ -139,9 +100,6 @@ export default {
     showDetail: false,
     detailData: {}
   }),
-  mounted() {
-    this.getListObjects()
-  },
   watch: {
     'getUserId': {
       handler(oldV, newV) {
@@ -151,9 +109,12 @@ export default {
       }
     }
   },
+  mounted() {
+    this.getListObjects()
+  },
   computed: {
     ...mapState({
-    loadingObjects: state => state.loading_objects
+      loadingObjects: state => state.loading_objects
     }),
     ...mapState('Objects', ['listObjects', 'isLoadingObjects']),
     ...mapGetters(['getUserId']),
@@ -168,10 +129,7 @@ export default {
 
     isMobile() {
       return this.$device.isMobile
-    },
-    // showObjects() {
-    //   return this.$store.state.AuthModule.userData && Object.keys(this.$store.state.AuthModule.userData).length
-    // }
+    }
   },
   methods: {
     ...mapActions('Objects', ['getUserObjects']),
@@ -183,11 +141,10 @@ export default {
     async createNewObject() {
       this.$store.commit('change_loaderObjects', true)
 
-      let { data } = await Request.post(this.$store.state.BASE_URL + '/entity/objects', {
+      const { data } = await Request.post(this.$store.state.BASE_URL + '/entity/objects', {
         address: this.newObjAddress,
         name: this.newObjName
       })
-
 
       await this.getUserObjects(this.getUserId)
 
@@ -205,7 +162,7 @@ export default {
       this.showDetail = false
     },
     closeDetail() {
-      this.$emit('closeDetail')
+      this.$emit('close-detail')
     },
     openDetail(data) {
       this.detailData = data
@@ -227,28 +184,8 @@ export default {
 <style lang='scss'>
 @import 'assets/styles/userObjects';
 
-@media only screen and (max-width: 600px) {
-  .card_object_new {
-    &__card {
-      align-items: start !important;
-      font-size: 0.9rem !important;
-
-      &__plus {
-        padding-top: 4px;
-      }
-    }
-  }
-  .modal_wrapper {
-    //padding: 10px !important;
-  }
-}
-
-//::v-deep .v-dialog {
-//  max-height: 80%;
-//}
-
 .modal_wrapper {
-  padding: 0!important;
+  padding: 0 !important;
 }
 
 .card_title {
@@ -323,33 +260,34 @@ export default {
   max-height: 92% !important;
   margin: 60px 0 0 0;
 }
-.new_object_wrapper{
+
+.new_object_wrapper {
   position: sticky;
   bottom: 0;
   padding-bottom: 20px;
+  margin-top: 10px;
   background: white;
   box-shadow: none;
 }
+
 .new_obj_divider {
   background-color: #353e47;
   margin: 50px 0 50px 0;
 }
+
 .new_object {
   display: flex;
-  //justify-content: space-between;
-
-
   padding: 20px;
-  border: 1px solid #000000;
+  border: 1px solid #d9d9d9;
   border-radius: 5px;
   box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.25);
   transition: all 0.4s ease-in-out !important;
 
   &:hover {
-
     box-shadow: 0px 5px 20px 7px rgba(34, 60, 80, 0.2) !important;
     background-color: #FFF4CB;
   }
+
   .img {
 
     .empty_placeholder {
@@ -365,14 +303,17 @@ export default {
       font-size: 1.3em;
     }
   }
+
   .details_new_object {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
-    .object_name{
+
+    .object_name {
       width: 100%;
       font-size: 1.5em;
       font-weight: 400;
+
       .object_name_title {
         display: flex;
         align-items: center;
@@ -382,6 +323,7 @@ export default {
         margin-top: 1em;
       }
     }
+
     .object_address {
       display: flex;
       align-items: flex-end;
@@ -389,10 +331,45 @@ export default {
     }
 
   }
+
   .new_object_button {
     display: flex;
     align-items: flex-end;
     margin-left: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dialogStyled {
+    max-height: unset !important;
+    margin: 56px 0 0 0;
+  }
+
+  .modal_wrapper {
+    justify-self: center;
+  }
+
+  .new_object {
+    flex-direction: column;
+    row-gap: 1rem;
+
+    .new_object_button {
+      margin-left: 0;
+      justify-content: center;
+    }
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .card_object_new {
+    &__card {
+      align-items: flex-start !important;
+      font-size: 0.9rem !important;
+
+      &__plus {
+        padding-top: 4px;
+      }
+    }
   }
 }
 </style>

@@ -1,41 +1,44 @@
 <template>
-  <v-container class="podborki_detail">
-    <div v-if='main_tag.description' class='tag-template'>
-      <v-card class='mt-5 mb-5 pa-5' style='word-break: break-word' v-html='main_tag.description'></v-card>
+  <VContainer class="podborki_detail">
+    <div v-if="main_tag.description" class="tag-template">
+      <VCard class="mt-5 mb-5 pa-5" style="word-break: break-word" v-html="main_tag.description"/>
     </div>
-<!--    <div class='auth-template mt-5'>-->
-<!--      <LoginAuth />-->
-<!--    </div>-->
+    <!--    <div class='auth-template mt-5'> -->
+    <!--      <LoginAuth /> -->
+    <!--    </div> -->
     <div class="content_wrapper">
-      <div v-if='$store.state.PopularSelectionsModule.questions.length'>
-        <h3 class="text_tag_question">Вопросы по тегу:
+      <div v-if="$store.state.PopularSelectionsModule.questions.length">
+        <h3 class="text_tag_question">
+          Вопросы по тегу:
           <HashTagStyled
             :text="main_tag.name"
-        >
-        </HashTagStyled></h3>
-        <div v-for='(question, index) in $store.state.PopularSelectionsModule.questions'>
+          />
+        </h3>
+        <div v-for="(question, index) in $store.state.PopularSelectionsModule.questions">
           <Question
+            :key="index"
+            :props-data="question"
+            :props-index="index + 1"
             class="question_card"
-            :key='index'
-            :props-data='question'
-            :props-index='index + 1'
           />
         </div>
       </div>
-      <div v-if='$store.state.PopularSelectionsModule.article.length'>
-        <h3 class="text_tag_article">Статьи по тегу</h3>
-        <div v-for='(article, index) in $store.state.PopularSelectionsModule.article'>
+      <div v-if="$store.state.PopularSelectionsModule.article.length">
+        <h3 class="text_tag_article">
+          Статьи по тегу
+        </h3>
+        <div v-for="(article, index) in $store.state.PopularSelectionsModule.article">
           <ArticleSmallCard
+            :key="index"
+            :article="article"
             class="small_card"
-            :key='index'
-            :article='article'
           />
         </div>
       </div>
     </div>
 
-    <footer-summary></footer-summary>
-  </v-container>
+    <FooterSummary/>
+  </VContainer>
 </template>
 
 <script>
@@ -43,10 +46,8 @@ import Question from '../../components/frontLayouts/Question'
 import LoginAuth from '../../components/frontLayouts/LoginAuth'
 import Article from '../../components/Article/Article'
 import Request from '../../services/request'
-import ArticleSmallCard from "../../components/Article/ArticleSmallCard.vue";
+import ArticleSmallCard from '../../components/Article/ArticleSmallCard.vue'
 import HashTagStyled from '~/components/Common/HashTagStyled'
-
-const vuetify_class = require('vuetify')
 
 export default {
   name: '_code.vue',
@@ -101,6 +102,8 @@ export default {
       ]
     }
   },
+  computed: {},
+  watch: {},
   created() {
   },
   async mounted() {
@@ -108,8 +111,6 @@ export default {
     await this.$store.dispatch('PopularSelectionsModule/getArticlesInfo', this.$route.params.code)
     await this.$store.dispatch('PopularSelectionsModule/getQuestionsInfo', this.$route.params.code)
   },
-  watch: {},
-  computed: {},
   methods: {}
 }
 </script>

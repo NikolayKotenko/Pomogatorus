@@ -55,3 +55,23 @@
     margin: 0;
   }
 }
+
+@media (max-width: 768px) {
+  @mixin dz-image() {
+    max-height: 140px;
+
+    img {
+      float: left;
+      width: 200px;
+      height: 140px;
+      object-fit: cover;
+    }
+
+    .list-files-img {
+      width: 200px;
+      max-height: unset;
+      max-width: unset;
+      height: 140px;
+    }
+  }
+}

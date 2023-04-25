@@ -2,7 +2,7 @@
   <div class='object-tabs'>
     <v-tabs
       v-model='current'
-      :show-arrows='false'
+      :show-arrows='isMobile'
       :slider-size='4'
       grow
     >
@@ -17,7 +17,7 @@
       </v-tab>
     </v-tabs>
 
-    <v-tabs-items v-if='!isLoadingData' v-model='current'>
+    <v-tabs-items v-if='!isLoadingData' v-model='current' :touchless='true'>
       <v-tab-item
         v-for='(item, indexTab) in tabs'
         :key='indexTab'
@@ -55,6 +55,7 @@
                   @remove-file='removeFile($event, tabItem.code)'
                   @focus-in='focusIn(tabItem)'
                   @focus-out='focusOut(tabItem)'
+                  @mousedown.native.stop
                 />
               </div>
             </template>
@@ -92,7 +93,11 @@ export default {
     this.getTabData()
   },
   computed: {
-    ...mapState('Tabs', ['tabs', 'isLoading', 'tabData', 'isLoadingData'])
+    ...mapState('Tabs', ['tabs', 'isLoading', 'tabData', 'isLoadingData']),
+
+    isMobile() {
+      return this.$device.isMobile
+    }
   },
   methods: {
     ...mapActions('Tabs', ['getTabs', 'getTabInfo', 'getInputTypes']),
@@ -125,7 +130,7 @@ export default {
     changeAnswer(value, code) {
       this.$emit('update-prop', { key: code, value })
 
-      if (code === 'tip-obekta'){
+      if (code === 'tip-obekta') {
         this.getTabs()
       }
     },

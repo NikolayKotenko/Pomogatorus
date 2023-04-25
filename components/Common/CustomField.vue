@@ -1,134 +1,134 @@
 <template>
   <div
     :class='{"input-file-padding": (type === "fail" && dropzone_uploaded.length > 2)}'
-    class='tab-content__input'>
-    <div :class='{"custom-fields-padding": (type === "fail" && dropzone_uploaded.length > 2)}' class='custom-fields'>
+    class="tab-content__input">
+    <div :class='{"custom-fields-padding": (type === "fail" && dropzone_uploaded.length > 2)}' class="custom-fields">
       <template v-if='type === "cislo"'>
         <v-text-field
-          v-model='currentData'
-          :append-icon='appendIcon'
-          :autofocus='isAutofocus'
-          :disabled='isDisabled'
-          :flat='isFlat'
-          :label='label'
-          :loading='isLoading'
-          :placeholder='placeholder'
-          :prepend-inner-icon='prependIconInner'
-          :readonly='isReadonly'
-          :solo='isSolo'
+          v-model="currentData"
+          :append-icon="appendIcon"
+          :autofocus="isAutofocus"
+          :disabled="isDisabled"
+          :flat="isFlat"
+          :label="label"
+          :loading="isLoading"
+          :placeholder="placeholder"
+          :prepend-inner-icon="prependIconInner"
+          :readonly="isReadonly"
+          :solo="isSolo"
           dense
           hide-details
-          type='number'
-          @click='onClick'
-          @focus='focusStart'
-          @focusout='focusEnd'
+          type="number"
+          @click="onClick"
+          @focus="focusStart"
+          @focusout="focusEnd"
         />
       </template>
 
       <template v-else-if='type === "stroka"'>
         <v-textarea
-          v-model='currentData'
-          :append-icon='appendIcon'
-          :autofocus='isAutofocus'
-          :clearable='isClearable'
-          :disabled='isDisabled'
-          :flat='isFlat'
-          :hide-details='!currentRules.length'
-          :label='label'
-          :loading='isLoading'
-          :multi-line='multiLine'
-          :outlined='isOutlined'
-          :placeholder='placeholder'
-          :prepend-icon='prependIcon'
-          :prepend-inner-icon='prependIconInner'
-          :readonly='isReadonly'
-          :required='isRequired'
-          :rows='rowsCount'
-          :rules='currentRules'
-          :solo='isSolo'
-          :type='typeData'
+          v-model="currentData"
+          :append-icon="appendIcon"
+          :autofocus="isAutofocus"
+          :clearable="isClearable"
+          :disabled="isDisabled"
+          :flat="isFlat"
+          :hide-details="!currentRules.length"
+          :label="label"
+          :loading="isLoading"
+          :multi-line="multiLine"
+          :outlined="isOutlined"
+          :placeholder="placeholder"
+          :prepend-icon="prependIcon"
+          :prepend-inner-icon="prependIconInner"
+          :readonly="isReadonly"
+          :required="isRequired"
+          :rows="rowsCount"
+          :rules="currentRules"
+          :solo="isSolo"
+          :type="typeData"
           auto-grow
           dense
           hide-details
-          row-height='25'
-          @click='onClick'
-          @focus='focusStart'
-          @focusout='focusEnd'
+          row-height="25"
+          @click="onClick"
+          @focus="focusStart"
+          @focusout="focusEnd"
         />
       </template>
 
       <template v-else-if='type === "fail"'>
-        <div :class='{"dropzone-column": isDropzoneNotEmpty}' class='dropzone-files'>
+        <div :class='{"dropzone-column": isDropzoneNotEmpty}' class="dropzone-files">
           <v-autocomplete
-            v-model='sortedDropzone'
-            :append-icon='appendIcon'
-            :autofocus='isAutofocus'
-            :disabled='isDropzoneNotEmpty'
-            :flat='isFlat'
-            :items='dzData'
-            :label='label'
-            :loading='isLoading'
-            :placeholder='placeholder'
-            :prepend-inner-icon='prependIconInner'
-            :solo='isSolo'
+            v-model="sortedDropzone"
+            :append-icon="appendIcon"
+            :autofocus="isAutofocus"
+            :disabled="isDropzoneNotEmpty"
+            :flat="isFlat"
+            :items="dzData"
+            :label="label"
+            :loading="isLoading"
+            :placeholder="placeholder"
+            :prepend-inner-icon="prependIconInner"
+            :solo="isSolo"
             dense
             hide-details
-            item-value='id'
+            item-value="id"
             multiple
             readonly
-            @click='forceDropzone'
-            @focus='focusStart'
-            @focusout='focusEnd'
+            @click="forceDropzone"
+            @focus="focusStart"
+            @focusout="focusEnd"
           >
-            <template v-slot:selection='data'>
-              <div class='uploaded-image' v-bind='data.attrs'>
-                <div v-if="data.item.type === 'text/plain'" class='img-activator'>
-                  <a :href='$store.state.BASE_URL + data.item.full_path' class='img-container' target='_blank'>
-                    <img :src='require(`~/assets/images/txt_doc_type.png`)' class='img-hover'
-                         style='object-fit: contain;' />
+            <template v-slot:selection="data">
+              <div class="uploaded-image" v-bind="data.attrs">
+                <div v-if="data.item.type === 'text/plain'" class="img-activator">
+                  <a :href="$store.state.BASE_URL + data.item.full_path" class="img-container" target="_blank">
+                    <img :src="require(`~/assets/images/txt_doc_type.png`)" class="img-hover"
+                         style="object-fit: contain;" />
                   </a>
                 </div>
-                <div v-else-if="data.item.type === 'application/pdf'" class='img-activator'>
-                  <a :href='$store.state.BASE_URL + data.item.full_path' class='img-container' target='_blank'>
-                    <img :src='require(`~/assets/svg/pdf_icon.svg`)' class='img-hover' style='object-fit: contain;' />
+                <div v-else-if="data.item.type === 'application/pdf'" class="img-activator">
+                  <a :href="$store.state.BASE_URL + data.item.full_path" class="img-container" target="_blank">
+                    <img :src="require(`~/assets/svg/pdf_icon.svg`)" class="img-hover" style="object-fit: contain;" />
                   </a>
                 </div>
 
                 <!-- КОСТЫЛЬ, чтобы передать массив изображений для нашей либы просмотрщика фоток -->
                 <template v-else>
-                  <viewer v-if='data.index === 0' :images='onlyImages' :options='viewOptions'
-                          class='uploaded-image__image-container'>
-                    <div v-for='(image, index) in onlyImages' :key='index'
-                         class='uploaded-image__image-container__block img-activator'>
-                      <img :alt='image.alt_image'
-                           :src='$store.state.BASE_URL + image.full_path'
-                           class='list-files-img img-hover'>
+                  <viewer v-if="data.index === 0" :images="onlyImages" :options="viewOptions"
+                          class="uploaded-image__image-container">
+                    <div v-for="(image, index) in onlyImages" :key="index"
+                         class="uploaded-image__image-container__block img-activator">
+                      <img :alt="image.alt_image"
+                           :src="$store.state.BASE_URL + image.full_path"
+                           class="list-files-img img-hover">
 
-                      <div class='uploaded-image__image-container__block__name'>
+                      <div class="uploaded-image__image-container__block__name">
                         {{ image.filename }}
                       </div>
 
                       <v-tooltip top>
-                        <template v-slot:activator='{ on, attrs }'>
-                          <div class='uploaded-image__image-container__block__remove' v-bind='attrs' v-on='on'>
-                            <v-icon color='#000000' @click='onRemoveFile(image.id)'>mdi-trash-can</v-icon>
+                        <template v-slot:activator="{ on, attrs }">
+                          <div class="uploaded-image__image-container__block__remove" v-bind="attrs" v-on="on">
+                            <v-icon color="#000000" @click="onRemoveFile(image.id)">mdi-trash-can</v-icon>
                           </div>
                         </template>
                         <span>Удалить файл</span>
                       </v-tooltip>
 
                       <v-overlay
-                        :absolute='true'
-                        :value='getLoadingImg(image.id)'
-                        :z-index='2'
+                        :absolute="true"
+                        :value="getLoadingImg(image.id)"
+                        :z-index="2"
                       >
                         <v-progress-circular
-                          v-if='getLoadingImg(image.id)'
-                          :indeterminate='true'
-                          :size='30'
-                          color='#95D7AE'
-                          style='margin: auto'
-                          width='4'
+                          v-if="getLoadingImg(image.id)"
+                          :indeterminate="true"
+                          :size="30"
+                          color="#95D7AE"
+                          style="margin: auto"
+                          width="4"
                         ></v-progress-circular>
                       </v-overlay>
                     </div>
@@ -136,31 +136,31 @@
                 </template>
 
                 <template v-if="data.item.type === 'text/plain' || data.item.type === 'application/pdf'">
-                  <div class='uploaded-image__name'>
+                  <div class="uploaded-image__name">
                     {{ data.item.filename }}
                   </div>
 
                   <v-tooltip top>
-                    <template v-slot:activator='{ on, attrs }'>
-                      <div class='uploaded-image__remove' v-bind='attrs' v-on='on'>
-                        <v-icon color='#000000' @click='onRemoveFile(data.item.id)'>mdi-trash-can</v-icon>
+                    <template v-slot:activator="{ on, attrs }">
+                      <div class="uploaded-image__remove" v-bind="attrs" v-on="on">
+                        <v-icon color="#000000" @click="onRemoveFile(data.item.id)">mdi-trash-can</v-icon>
                       </div>
                     </template>
                     <span>Удалить файл</span>
                   </v-tooltip>
 
                   <v-overlay
-                    :absolute='true'
-                    :value='getLoadingImg(data.item.id)'
-                    :z-index='2'
+                    :absolute="true"
+                    :value="getLoadingImg(data.item.id)"
+                    :z-index="2"
                   >
                     <v-progress-circular
-                      v-if='getLoadingImg(data.item.id)'
-                      :indeterminate='true'
-                      :size='30'
-                      color='#95D7AE'
-                      style='margin: auto'
-                      width='4'
+                      v-if="getLoadingImg(data.item.id)"
+                      :indeterminate="true"
+                      :size="30"
+                      color="#95D7AE"
+                      style="margin: auto"
+                      width="4"
                     ></v-progress-circular>
                   </v-overlay>
                 </template>
@@ -168,19 +168,19 @@
             </template>
           </v-autocomplete>
           <dropzone
-            id='dropzone'
-            ref='dropzone'
-            :destroyDropzone='true'
-            :include-styling='false'
-            :options='$store.getters.optionsDropzone'
-            :useCustomSlot='true'
-            @vdropzone-success='successData'
-            @vdropzone-sending='sendingData'
+            id="dropzone"
+            ref="dropzone"
+            :destroyDropzone="true"
+            :include-styling="false"
+            :options="$store.getters.optionsDropzone"
+            :useCustomSlot="true"
+            @vdropzone-success="successData"
+            @vdropzone-sending="sendingData"
           >
-            <div ref='dropzoneTemplate' class='dropzone-custom-content'>
+            <div ref="dropzoneTemplate" class="dropzone-custom-content">
               <!--              <div v-if='isDropzoneNotEmpty' class='separator'></div>-->
-              <div class='dropzone-label'>
-                <v-icon color='#B3B3B3' large>mdi-cloud-upload</v-icon>
+              <div class="dropzone-label">
+                <v-icon color="#B3B3B3" large>mdi-cloud-upload</v-icon>
                 <span>{{ computedLabel }}</span>
               </div>
             </div>
@@ -190,38 +190,38 @@
 
       <template v-else-if='type === "vybor-iz-spravocnika"'>
         <v-select
-          v-model='currentData'
-          :append-icon='appendIcon'
-          :autofocus='isAutofocus'
-          :clearable='isClearable'
-          :disabled='isDisabled'
-          :flat='isFlat'
-          :hide-details='!currentRules.length'
-          :items='items'
-          :label='label'
-          :loading='isLoading'
-          :menu-props='{
+          v-model="currentData"
+          :append-icon="appendIcon"
+          :autofocus="isAutofocus"
+          :clearable="isClearable"
+          :disabled="isDisabled"
+          :flat="isFlat"
+          :hide-details="!currentRules.length"
+          :items="items"
+          :label="label"
+          :loading="isLoading"
+          :menu-props="{
             closeOnContentClick: true,
             bottom: true,
             offsetY: true,
-          }'
-          :outlined='isOutlined'
-          :placeholder='placeholder'
-          :prepend-icon='prependIcon'
-          :prepend-inner-icon='prependIconInner'
-          :readonly='isReadonly'
-          :rules='currentRules'
-          :solo='isSolo'
+          }"
+          :outlined="isOutlined"
+          :placeholder="placeholder"
+          :prepend-icon="prependIcon"
+          :prepend-inner-icon="prependIconInner"
+          :readonly="isReadonly"
+          :rules="currentRules"
+          :solo="isSolo"
           dense
           hide-details
-          item-text='value'
-          item-value='name'
-          @click='onClick'
-          @focus='focusStart'
-          @focusout='focusEnd'
+          item-text="value"
+          item-value="name"
+          @click="onClick"
+          @focus="focusStart"
+          @focusout="focusEnd"
         >
           <template v-slot:append>
-            <template v-if='!isFocused'>
+            <template v-if="!isFocused">
               <v-icon>mdi-chevron-down</v-icon>
             </template>
             <template v-else>
@@ -242,22 +242,22 @@
 </template>
 
 <script>
-import Dropzone from 'nuxt-dropzone'
-import 'nuxt-dropzone/dropzone.css'
-import { mapActions, mapState } from 'vuex'
-import _clone from '@/helpers/deepClone'
+import Dropzone from "nuxt-dropzone";
+import "nuxt-dropzone/dropzone.css";
+import { mapActions, mapState } from "vuex";
+import _clone from "@/helpers/deepClone";
 
-import Vue from 'vue'
-import VueViewer from 'v-viewer'
-import 'viewerjs/dist/viewer.css'
+import Vue from "vue";
+import VueViewer from "v-viewer";
+import "viewerjs/dist/viewer.css";
 
-Vue.use(VueViewer)
+Vue.use(VueViewer);
 
 export default {
   components: {
     Dropzone
   },
-  name: 'CustomField',
+  name: "CustomField",
   props: {
     type: {
       type: String,
@@ -274,15 +274,15 @@ export default {
 
     placeholder: {
       type: String,
-      default: ''
+      default: ""
     },
     label: {
       type: String,
-      default: ''
+      default: ""
     },
     codeProperty: {
       type: String,
-      default: ''
+      default: ""
     },
     isSolo: {
       type: Boolean,
@@ -290,7 +290,7 @@ export default {
     },
     data: {
       type: [String, Array, Number],
-      default: ''
+      default: ""
     },
     isDisabled: {
       type: Boolean,
@@ -310,11 +310,11 @@ export default {
     },
     appendIcon: {
       type: String,
-      default: ''
+      default: ""
     },
     prependIconInner: {
       type: String,
-      default: ''
+      default: ""
     },
     isFlat: {
       type: Boolean,
@@ -322,7 +322,7 @@ export default {
     },
     rowsCount: {
       type: String,
-      default: '1'
+      default: "1"
     },
     multiLine: {
       type: Boolean,
@@ -330,11 +330,11 @@ export default {
     },
     prependIcon: {
       type: String,
-      default: ''
+      default: ""
     },
     typeData: {
       type: String,
-      default: 'text'
+      default: "text"
     },
     isRequired: {
       type: Boolean,
@@ -346,11 +346,11 @@ export default {
     },
     itemText: {
       type: String,
-      default: ''
+      default: ""
     },
     itemValue: {
       type: String,
-      default: ''
+      default: ""
     },
     currentRules: {
       type: Array,
@@ -374,157 +374,157 @@ export default {
   },
   data() {
     return {
-      internalData: '',
+      internalData: "",
       isFocused: false,
       dzData: [],
       dropzone_uploaded: [],
       loadedImages: [],
       viewOptions: {
-        'movable': false,
-        'zoomable': true,
-        'rotatable': false,
-        'scalable': false
+        "movable": false,
+        "zoomable": true,
+        "rotatable": false,
+        "scalable": false
       }
-    }
+    };
   },
   mounted() {
-    this.checkDropZoneFiles()
+    this.checkDropZoneFiles();
   },
   watch: {
-    'deletedFile': {
+    "deletedFile": {
       handler(newV, oldV) {
         if (newV !== oldV) {
-          let index = this.dropzone_uploaded.findIndex(elem => elem.id === newV)
+          let index = this.dropzone_uploaded.findIndex(elem => elem.id === newV);
           if (index !== -1) {
-            this.dropzone_uploaded.splice(index, 1)
+            this.dropzone_uploaded.splice(index, 1);
           }
         }
       }
     }
   },
   computed: {
-    ...mapState('Tabs', ['inputTypes']),
+    ...mapState("Tabs", ["inputTypes"]),
 
     isDropzoneNotEmpty() {
-      return !!this.dropzone_uploaded.length
+      return !!this.dropzone_uploaded.length;
     },
     computedLabel() {
-      return this.isDropzoneNotEmpty ? 'Загрузить еще' : 'Загрузить файлы'
+      return this.isDropzoneNotEmpty ? "Загрузить еще" : "Загрузить файлы";
     },
 
     currentData: {
       get() {
         if (this.data) {
-          return this.data
+          return this.data;
         }
-        return this.internalData
+        return this.internalData;
       },
       set(value) {
         if (!this.data) {
-          this.internalData = value
+          this.internalData = value;
         }
-        this.$emit('update-field', value)
+        this.$emit("update-field", value);
       }
     },
     onlyImages() {
-      return this.dropzone_uploaded.filter(elem => elem.type === 'image/jpeg' || elem.type === 'image/png').sort((a, b) => {
+      return this.dropzone_uploaded.filter(elem => elem.type === "image/jpeg" || elem.type === "image/png").sort((a, b) => {
         if (parseInt(a.id) > parseInt(b.id)) {
-          return -1
+          return -1;
         } else {
-          return 1
+          return 1;
         }
-      })
+      });
     },
     sortedDropzone() {
       return this.dropzone_uploaded.sort((a, b) => {
-        if (a.type === 'image/jpeg' || a.type === 'image/png') {
-          return -1
+        if (a.type === "image/jpeg" || a.type === "image/png") {
+          return -1;
         } else {
-          return 1
+          return 1;
         }
-      })
+      });
     }
   },
   methods: {
-    ...mapActions('Tabs', ['removeFile']),
+    ...mapActions("Tabs", ["removeFile"]),
 
     onClick() {
-      this.$emit('on-click')
+      this.$emit("on-click");
     },
     focusStart() {
-      this.isFocused = true
-      this.$emit('focus-in')
+      this.isFocused = true;
+      this.$emit("focus-in");
     },
     focusEnd() {
-      this.isFocused = false
-      this.$emit('focus-out')
+      this.isFocused = false;
+      this.$emit("focus-out");
     },
 
     /* DROPZONE */
     checkDropZoneFiles() {
-      if (this.type === 'fail' && Array.isArray(this.data) && this.data.length) {
-        this.getDropzoneData()
+      if (this.type === "fail" && Array.isArray(this.data) && this.data.length) {
+        this.getDropzoneData();
       }
     },
     getDropzoneData() {
       this.$nextTick(() => {
 
         this.dropzone_uploaded = this.data.map(file => {
-          return _clone(file)
-        })
+          return _clone(file);
+        });
         this.dzData = this.data.map(file => {
-          return _clone(file)
-        })
+          return _clone(file);
+        });
 
         this.dropzone_uploaded.forEach(file => {
-          this.$refs.dropzone.manuallyAddFile(file, this.$store.state.BASE_URL + file.full_path)
-        })
-      })
+          this.$refs.dropzone.manuallyAddFile(file, this.$store.state.BASE_URL + file.full_path);
+        });
+      });
     },
     forceDropzone() {
       if (!this.isDropzoneNotEmpty) {
-        this.$refs.dropzoneTemplate.click()
+        this.$refs.dropzoneTemplate.click();
       }
     },
     sendingData(file, xhr, formData) {
-      formData.append('uuid', file.upload.uuid)
-      formData.append('id_object', parseInt(this.idObject))
-      formData.append('id_object_property', parseInt(this.idProperty))
+      formData.append("uuid", file.upload.uuid);
+      formData.append("id_object", parseInt(this.idObject));
+      formData.append("id_object_property", parseInt(this.idProperty));
 
-      if (this.codeProperty === 'osnovnoe-foto-obekta') {
-        formData.append('main_photo_object', true)
+      if (this.codeProperty === "osnovnoe-foto-obekta") {
+        formData.append("main_photo_object", true);
       }
     },
     successData(file, response) {
-      console.log('successData', response)
-      const formatObj = Object.assign({}, response.data)
-      this.dzData.push(formatObj)
-      this.dropzone_uploaded.push(formatObj)
+      console.log("successData", response);
+      const formatObj = Object.assign({}, response.data);
+      this.dzData.push(formatObj);
+      this.dropzone_uploaded.push(formatObj);
 
-      this.$emit('uploaded-file', { data: formatObj, index: this.dropzone_uploaded.length - 1 })
+      this.$emit("uploaded-file", { data: formatObj, index: this.dropzone_uploaded.length - 1 });
     },
     async onRemoveFile(id) {
-      this.loadedImages.push(id)
+      this.loadedImages.push(id);
 
       await this.removeFile(id)
         .then(() => {
-          let index = this.dropzone_uploaded.findIndex(elem => elem.id === id)
+          let index = this.dropzone_uploaded.findIndex(elem => elem.id === id);
           if (index !== -1) {
-            this.dropzone_uploaded.splice(index, 1)
-            this.$emit('remove-file', id)
+            this.dropzone_uploaded.splice(index, 1);
+            this.$emit("remove-file", id);
           }
         })
         .finally(() => {
-          let index = this.dropzone_uploaded.findIndex(elem => elem.id === id)
+          let index = this.dropzone_uploaded.findIndex(elem => elem.id === id);
           if (index !== -1) {
-            this.loadedImages.splice(index, 1)
+            this.loadedImages.splice(index, 1);
           }
-        })
+        });
     },
     getLoadingImg(id) {
-      return this.loadedImages.includes(id)
+      return this.loadedImages.includes(id);
     }
   }
-}
+};
 </script>
 

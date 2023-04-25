@@ -1,6 +1,7 @@
 <template>
   <v-card class='object-wrapper'>
-    <div class='object-wrapper-top'>
+    <div :class='{"object-wrapper-top--mobile": isMobile, "object-wrapper-top--mobile--move": isMoving}'
+         class='object-wrapper-top'>
       <div class='object-wrapper-top__selector'>
         <div class='object-wrapper-top__selector__title'>
           <span>Объект:</span>
@@ -42,7 +43,10 @@
       </div>
     </div>
 
-    <v-card-text ref='scrollParent' class='object-wrapper-main' style='height: 1200px;'>
+    <v-card-text ref='scrollParent'
+                 :class='{"object-wrapper-main--mobile": isMobile, "object-wrapper-main--mobile--move": isMoving}'
+                 class='object-wrapper-main'
+                 style='height: 1200px;'>
       <div ref='docContent' class='object-wrapper-documents'>
         <div class='object-wrapper-documents__img-container'>
           <span>Фото объекта</span>
@@ -87,30 +91,65 @@
     </v-card-text>
 
     <div class='object-wrapper-footer'>
-      <div class='object-wrapper-footer__left'>
-        <ButtonStyled
-          :is-animation='animationBtn'
-          :isLoading='isLoading'
-          local-class='style_button'
-          local-text='Сохранить изменения'
-          @click-button='onSave'
-        />
+      <template v-if='isMobile'>
+        <div class='object-wrapper-footer__left'>
+          <ButtonStyled
+            :custom-slot='true'
+            :is-animation='animationBtn'
+            :is-loading='isLoading'
+            :is-mobile='true'
+            local-class='style_button'
+            @click-button='closeModal'
+          >
+            <v-icon color='#5C856BFF'>mdi-check</v-icon>
+          </ButtonStyled>
+
+          <ButtonStyled
+            :custom-slot='true'
+            :is-mobile='true'
+            @click-button='closeModal'
+          >
+            <v-icon>mdi-download</v-icon>
+          </ButtonStyled>
+        </div>
 
         <ButtonStyled
           :custom-slot='true'
+          :is-mobile='true'
+          local-class='style_close'
+          local-text='Отмена'
           @click-button='closeModal'
         >
+          <v-icon color='#AF673DFF'>mdi-close</v-icon>
+        </ButtonStyled>
+      </template>
+
+      <template v-else>
+        <div class='object-wrapper-footer__left'>
+          <ButtonStyled
+            :is-animation='animationBtn'
+            :is-loading='isLoading'
+            local-class='style_button'
+            local-text='Сохранить изменения'
+            @click-button='onSave'
+          />
+
+          <ButtonStyled
+            :custom-slot='true'
+            @click-button='closeModal'
+          >
           <span>
              Скачать PDF
            </span>
-        </ButtonStyled>
-      </div>
+          </ButtonStyled>
+        </div>
 
-      <ButtonStyled
-        local-class='style_close'
-        local-text='Отмена'
-        @click-button='closeModal'
-      />
+        <ButtonStyled
+          local-class='style_close'
+          local-text='Отмена'
+          @click-button='closeModal'
+        />
+      </template>
     </div>
   </v-card>
 </template>
@@ -143,7 +182,9 @@ export default {
     scrollHeight: null,
     maxScroll: null,
     animationBtn: false,
-    debounceTimeout: null
+    debounceTimeout: null,
+    startScroll: 0,
+    isMoving: false
   }),
   mounted() {
     this.getObjectFromProp()
@@ -151,6 +192,9 @@ export default {
     if (process.client && this.$refs.scrollParent) {
       const tabContent = this.$refs.scrollParent
       tabContent.addEventListener('scroll', this.scrollWindow)
+      if (this.isMobile) {
+        tabContent.addEventListener('scroll', this.scrollHeader, false)
+      }
       this.scrollWindow()
     }
   },
@@ -184,6 +228,9 @@ export default {
     showMore() {
       return ((this.parentHeight + this.scrollHeight + this.minHeightInput) <= this.maxScroll)
     },
+    isMobile() {
+      return this.$device.isMobile
+    },
   },
   methods: {
     ...mapActions('Objects', ['saveObjData', 'getUserObjects']),
@@ -195,6 +242,22 @@ export default {
         left: 0,
         behavior: 'smooth'
       })
+    },
+    scrollHeader() {
+      let st = this.$refs.scrollParent.scrollTop
+
+      if (!this.showMore) {
+        return
+      }
+
+      if (st > this.startScroll) {
+        // console.log('down')
+        this.isMoving = true
+      } else if (st < this.startScroll) {
+        // console.log('up')
+        this.isMoving = false
+      }
+      this.startScroll = st <= 0 ? 0 : st // For Mobile or negative scrolling
     },
     scrollWindow() {
       setTimeout(() => {

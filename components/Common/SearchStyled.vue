@@ -1,56 +1,51 @@
 <template>
-    <v-combobox
-      :class="isClass"
-      :outlined="isOutlined"
-      :dense="isDense"
-      :filled="isFilled"
-      :rounded="isRounded"
-      :hide-details="isHideDetails"
-      :hide-selected="isHideSelected"
-      :placeholder="isPlaceholder"
-      :loading="false"
-      :disabled="false"
-      :hide-no-data="isHideNoData"
-      :items="isItems"
-      :chips="isChips"
-      :item-text="isItemText"
-      :item-value="isItemValue"
-      :return-object="isReturnObject"
-      :clearable="(localSearchInputSync || localSelected) ? isClearable : false"
-      @click:clear="$emit('click-clear')"
-      :search-input.sync="localSearchInputSync"
-      v-model="currentData"
-      @update:search-input="$emit('update-search-input', localSearchInputSync)"
-      @change="$emit('change-search', localSelected)"
-      :menu-props="(computedSearchInputState && compareSearchStringAndExistEntry) ? {} : {value: false}"
-      >
-<!--      <template v-slot:append>-->
-<!--        <v-icon class="selectIcon">mdi-select</v-icon>-->
-<!--      </template>-->
-      <template v-slot:item="data" v-if="isCustomTemplateSelections">
-        <v-list-item-content @click="watchDataRedirect(data.item)">
-
-          <v-list-item-title v-if="data.item.category === 'Тэги'">
-            <hash-tag-styled :text="getTitleString(data.item.text)"></hash-tag-styled>
-          </v-list-item-title>
-          <v-list-item-title v-else>
-            <span v-html="getTitleString(data.item.text)"></span>
-          </v-list-item-title>
-
-        </v-list-item-content>
-      </template>
-    </v-combobox>
+  <VCombobox
+    v-model="currentData"
+    :chips="isChips"
+    :class="isClass"
+    :clearable="(localSearchInputSync || localSelected) ? isClearable : false"
+    :dense="isDense"
+    :disabled="false"
+    :filled="isFilled"
+    :hide-details="isHideDetails"
+    :hide-no-data="isHideNoData"
+    :hide-selected="isHideSelected"
+    :item-text="isItemText"
+    :item-value="isItemValue"
+    :items="isItems"
+    :loading="false"
+    :menu-props="(computedSearchInputState && compareSearchStringAndExistEntry) ? {} : {value: false}"
+    :outlined="isOutlined"
+    :placeholder="isPlaceholder"
+    :return-object="isReturnObject"
+    :rounded="isRounded"
+    :search-input.sync="localSearchInputSync"
+    @change="$emit('change-search', localSelected)"
+    @click:clear="$emit('click-clear')"
+    @update:search-input="$emit('update-search-input', localSearchInputSync)"
+  >
+    <!--      <template v-slot:append> -->
+    <!--        <v-icon class="selectIcon">mdi-select</v-icon> -->
+    <!--      </template> -->
+    <template v-if="isCustomTemplateSelections" #item="data">
+      <VListItemContent @click="watchDataRedirect(data.item)">
+        <VListItemTitle v-if="data.item.category === 'Тэги'">
+          <HashTagStyled :text="getTitleString(data.item.text)"/>
+        </VListItemTitle>
+        <VListItemTitle v-else>
+          <span v-html="getTitleString(data.item.text)"/>
+        </VListItemTitle>
+      </VListItemContent>
+    </template>
+  </VCombobox>
 </template>
 
 <script>
-import HashTagStyled from "~/components/Common/HashTagStyled";
+import HashTagStyled from '~/components/Common/HashTagStyled'
+
 export default {
   name: 'SearchStyled',
   components: { HashTagStyled },
-  data: () => ({
-    localSearchInputSync: '',
-    localSelected: null
-  }),
   props: {
     isClass: {
       type: String,
@@ -116,11 +111,15 @@ export default {
       type: [String, Number],
       default: null
     },
-    isCustomTemplateSelections:{
+    isCustomTemplateSelections: {
       type: Boolean,
       default: false
     }
   },
+  data: () => ({
+    localSearchInputSync: '',
+    localSelected: null
+  }),
   computed: {
     currentData: {
       get() {
@@ -133,16 +132,16 @@ export default {
         this.localSelected = value
       }
     },
-    computedSearchInputState(){
-      if (! this.localSearchInputSync) return false;
+    computedSearchInputState() {
+      if (!this.localSearchInputSync) return false
 
-      return (this.localSearchInputSync.length > 2);
+      return (this.localSearchInputSync.length > 2)
     },
-    compareSearchStringAndExistEntry(){
-      if (! this.localSelected) return true;
+    compareSearchStringAndExistEntry() {
+      if (!this.localSelected) return true
 
       return this.localSelected[this.isItemText] !== this.localSearchInputSync
-    },
+    }
   },
   watch: {
     internalData: function(newVal, oldVal) {
@@ -151,17 +150,17 @@ export default {
       this.$emit('update-search-input', newVal)
     }
   },
-  methods:{
-    watchDataRedirect(data){
+  methods: {
+    watchDataRedirect(data) {
       this.$emit('redirect', data)
     },
-    getTitleString(text){
+    getTitleString(text) {
       const { start, middle, end } = this.getMaskedCharacters(text)
       return `${start}${this.genHighlight(middle)}${end}`
     },
 
-    //Вспомогательные функции
-    getMaskedCharacters(text){
+    // Вспомогательные функции
+    getMaskedCharacters(text) {
       const searchInput = (this.localSearchInputSync || '').toString().toLocaleLowerCase()
       const index = text.toLocaleLowerCase().indexOf(searchInput)
 
@@ -172,16 +171,16 @@ export default {
       const end = text.slice(index + searchInput.length)
       return { start, middle, end }
     },
-    genHighlight (text) {
-      return `<span class="v-list-item__mask">${text}</span>`
-    },
+    genHighlight(text) {
+      return `<span class='v-list-item__mask'>${text}</span>`
+    }
   }
 }
 </script>
 
 <style lang='scss' scoped>
-.v-text-field--rounded{
-  border-radius: 5px!important;
+.v-text-field--rounded {
+  border-radius: 5px !important;
 }
 </style>
 
@@ -203,22 +202,26 @@ export default {
   border-radius: 5px;
   //min-width: 1144px;
 
-  .v-input__slot{
+  .v-input__slot {
     height: 60px;
   }
-  .v-select__selections{
+
+  .v-select__selections {
     height: 60px;
   }
-  .v-input__append-inner{
-    .v-input__icon--append{
+
+  .v-input__append-inner {
+    .v-input__icon--append {
       margin-top: 8px;
     }
+
     //height: 60px;
     //display: flex;
     //align-items: center;
     //padding: 0;
     //margin: 0;
   }
+
   .v-select__slot {
     color: #37392E !important;
 

@@ -1,24 +1,23 @@
 <template>
-  <div class='modal_wrapper'>
-    <div class='detail_object_wrapper px-4'>
-      <div v-for='(param, index) in paramsDetail' class='detail_object_block'>
-          <span class='detail_object_block__count'>
-            {{ index + 1 }}
-          </span>
+  <div class="modal_wrapper">
+    <div class="detail_object_wrapper px-4">
+      <div v-for="(param, index) in paramsDetail" class="detail_object_block">
+        <span class="detail_object_block__count">
+          {{ index + 1 }}
+        </span>
         <div
-          :class='{full_size_value: param.canEdit && !isMobile}'
-          class='detail_object_block__value'
+          :class="{full_size_value: param.canEdit && !isMobile}"
+          class="detail_object_block__value"
         >
-          <template v-if='param.canEdit'>
-            <v-text-field
-              v-model='refactored_object_data[param.key]'
-              :placeholder='inputPlaceholder(param)'
+          <template v-if="param.canEdit">
+            <VTextField
+              v-model="refactored_object_data[param.key]"
+              :placeholder="inputPlaceholder(param)"
               dense
               hide-details
-              @focus='isFocused = param.key'
-              @focusout='isFocused = null'
-            >
-            </v-text-field>
+              @focus="isFocused = param.key"
+              @focusout="isFocused = null"
+            />
           </template>
           <template v-else>
             <span> {{ object_data[param.key] }} </span>
@@ -26,25 +25,22 @@
         </div>
       </div>
     </div>
-    <div class='detail_obj_footer'>
+    <div class="detail_obj_footer">
       <ButtonStyled
         local-class="style_button"
         local-text="Сохранить изменения"
         @click-button="saveData"
-      >
-      </ButtonStyled>
+      />
       <ButtonStyled
         local-class="style_button"
         local-text="Скачать PDF"
         @click-button=""
-      >
-      </ButtonStyled>
+      />
       <ButtonStyled
         local-class="style_close"
         local-text="Закрыть"
-        @click-button='closeDetail'
-      >
-      </ButtonStyled>
+        @click-button="closeDetail"
+      />
     </div>
   </div>
 </template>
@@ -52,7 +48,7 @@
 <script>
 import Request from '../../services/request'
 import InputStyled from '../Common/InputStyled'
-import ButtonStyled from "../Common/ButtonStyled.vue";
+import ButtonStyled from '../Common/ButtonStyled.vue'
 
 export default {
   name: 'ObjectDetail',
@@ -184,15 +180,13 @@ export default {
     isUpdating: false,
     isFocused: null
   }),
-  mounted() {
-  },
   computed: {
     isMobile() {
       return this.$device.isMobile
     },
     refactored_object_data() {
-      let refactored = {}
-      for (let key in this.object_data) {
+      const refactored = {}
+      for (const key in this.object_data) {
         if (this.isJson(this.object_data[key])) {
           if (this.isJson(JSON.parse(this.object_data[key]))) {
             refactored[key] = JSON.parse(JSON.parse(this.object_data[key]))
@@ -205,6 +199,8 @@ export default {
       }
       return refactored
     }
+  },
+  mounted() {
   },
   methods: {
     inputPlaceholder(item) {
@@ -223,7 +219,7 @@ export default {
       return true
     },
     closeDetail() {
-      this.$emit('closeDetail')
+      this.$emit('close-detail')
     },
     async saveData() {
       this.isUpdating = true
@@ -259,7 +255,7 @@ export default {
           : 0,
         total_area: this.refactored_object_data.total_area ? this.refactored_object_data.total_area : '',
         heating_area: this.refactored_object_data.heating_area ? this.refactored_object_data.heating_area : '',
-        basement_area: !!this.refactored_object_data.basement_area ? this.refactored_object_data.basement_area : '',
+        basement_area: this.refactored_object_data.basement_area ? this.refactored_object_data.basement_area : '',
         heat_loss_total: this.refactored_object_data.heat_loss_total ? this.refactored_object_data.heat_loss_total : '',
         dedicated_electrical_power: this.refactored_object_data.dedicated_electrical_power
           ? this.refactored_object_data.dedicated_electrical_power
@@ -341,7 +337,5 @@ export default {
   min-height: 30px !important;
   font-size: 14px !important;
 }
-
-
 
 </style>

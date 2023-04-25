@@ -1,142 +1,146 @@
 <template>
   <div
-    v-if='stateAuthBlock'
-    :id='`component_wrapper-${index_component}`'
-    class='auth_container'
-    contenteditable='false'
+    v-if="stateAuthBlock"
+    :id="`component_wrapper-${index_component}`"
+    class="auth_container"
+    contenteditable="false"
   >
-    <v-container>
-      <v-tabs v-model='tab'>
-        <v-tab :key='0'>Авторизация</v-tab>
-        <v-tab :key='1'>Регистрация</v-tab>
-        <!--Авторизация-->
-        <v-tab-item :key='0'>
-          <v-form
-            ref='form'
-            v-model='valid'
-            class='login'
-            contenteditable='false'
-            @submit.prevent='localLoginUser(`component_wrapper-${index_component}`)'
+    <VContainer>
+      <VTabs v-model="tab">
+        <VTab :key="0">
+          Авторизация
+        </VTab>
+        <VTab :key="1">
+          Регистрация
+        </VTab>
+        <!-- Авторизация -->
+        <VTabItem :key="0">
+          <VForm
+            ref="form"
+            v-model="valid"
+            class="login"
+            contenteditable="false"
+            @submit.prevent="localLoginUser(`component_wrapper-${index_component}`)"
           >
-            <v-text-field
-              ref='email_user'
-              v-model='email_user'
+            <VTextField
+              ref="email_user"
+              v-model="email_user"
               :class="'required'"
-              :rules='emailRules'
-              name='email'
-              placeholder='Введите почту'
+              :rules="emailRules"
+              name="email"
+              placeholder="Введите почту"
               required
               single-line
-              type='email'
-            ></v-text-field>
-            <v-text-field
-              v-model='password'
+              type="email"
+            />
+            <VTextField
+              v-model="password"
               :class="'required field_password'"
-              :rules='passRules'
+              :rules="passRules"
               :type="passStateEye ? 'text' : 'password'"
               counter
-              hint='4 символа'
-              maxlength='4'
-              name='password'
-              placeholder='Введите код доступа'
+              hint="4 символа"
+              maxlength="4"
+              name="password"
+              placeholder="Введите код доступа"
               required
             >
-              <template v-slot:append>
-                <v-tooltip bottom>
-                  <template v-slot:activator='{ on }'>
-                    <v-icon @click='passStateEye = !passStateEye' v-on='on'>
+              <template #append>
+                <VTooltip bottom>
+                  <template #activator="{ on }">
+                    <VIcon @click="passStateEye = !passStateEye" v-on="on">
                       {{ passStateEye ? 'mdi-eye' : 'mdi-eye-off' }}
-                    </v-icon>
+                    </VIcon>
                   </template>
                   Показать/скрыть пароль
-                </v-tooltip>
+                </VTooltip>
               </template>
-              <template v-slot:append-outer>
-                <v-tooltip bottom>
-                  <template v-slot:activator='{ on }'>
-                    <v-icon @click='localResendUserPass(`component_wrapper-${index_component}`)' v-on='on'>
+              <template #append-outer>
+                <VTooltip bottom>
+                  <template #activator="{ on }">
+                    <VIcon @click="localResendUserPass(`component_wrapper-${index_component}`)" v-on="on">
                       mdi-lock-reset
-                    </v-icon>
+                    </VIcon>
                   </template>
                   Восстановить Код доступа
-                </v-tooltip>
+                </VTooltip>
               </template>
-            </v-text-field>
-            <v-btn
-              :loading='loading'
+            </VTextField>
+            <VBtn
+              :loading="loading"
               block
-              class='btn-auth'
-              color='blue darken-1'
-              elevation='2'
+              class="btn-auth"
+              color="blue darken-1"
+              elevation="2"
               large
               rounded
-              type='submit'
+              type="submit"
             >
               Войти
-            </v-btn>
-          </v-form>
-        </v-tab-item>
-        <!--Регистрация-->
-        <v-tab-item :key='1'>
-          <v-form
-            v-model='valid'
-            class='login'
-            contenteditable='false'
-            @submit.prevent='localCreateUser(`component_wrapper-${index_component}`)'
+            </VBtn>
+          </VForm>
+        </VTabItem>
+        <!-- Регистрация -->
+        <VTabItem :key="1">
+          <VForm
+            v-model="valid"
+            class="login"
+            contenteditable="false"
+            @submit.prevent="localCreateUser(`component_wrapper-${index_component}`)"
           >
-            <v-text-field
-              v-model='email_user'
+            <VTextField
+              v-model="email_user"
               :class="'required'"
-              :rules='emailRules'
-              name='email'
-              placeholder='Введите почту'
+              :rules="emailRules"
+              name="email"
+              placeholder="Введите почту"
               required
               single-line
-              type='email'
-            ></v-text-field>
-            <v-text-field
-              v-model='name'
-              name='name'
-              placeholder='Как к вам обращаться ?'
+              type="email"
+            />
+            <VTextField
+              v-model="name"
+              name="name"
+              placeholder="Как к вам обращаться ?"
               single-line
-              type='text'
-            ></v-text-field>
-            <v-btn
-              :loading='loading'
+              type="text"
+            />
+            <VBtn
+              :loading="loading"
               block
-              class='btn-auth'
-              color='blue darken-0'
-              elevation='2'
+              class="btn-auth"
+              color="blue darken-0"
+              elevation="2"
               large
               rounded
-              type='submit'
+              type="submit"
             >
               Зарегестрироваться
-            </v-btn>
-          </v-form>
-        </v-tab-item>
-      </v-tabs>
-      <v-alert
-        v-if='alert.state && !loading'
-        :type='alert.type'
-        :value='alert.state'
+            </VBtn>
+          </VForm>
+        </VTabItem>
+      </VTabs>
+      <VAlert
+        v-if="alert.state && !loading"
+        :type="alert.type"
+        :value="alert.state"
         dismissible
-        @input='alert.state = false'
+        @input="alert.state = false"
       >
-        <span v-html='alert.message'></span>
-      </v-alert>
-    </v-container>
+        <span v-html="alert.message"/>
+      </VAlert>
+    </VContainer>
   </div>
-  <v-alert v-else dismissible type='success'>
+  <VAlert v-else dismissible type="success">
     <span>Здравствуйте {{ $store.getters.getNameUser }}</span>
-  </v-alert>
+  </VAlert>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 
-import Logging from '@/services/logging'
 import Request from '../../services/request'
+import Logging from '@/services/logging'
 
 export default {
   name: 'LoginAuth',
@@ -208,7 +212,7 @@ export default {
       this.loading = false
 
       if (this.alert.type === 'success') {
-        this.$emit('closeModal')
+        this.$emit('close-modal')
       }
     },
 

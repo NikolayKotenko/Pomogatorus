@@ -2,11 +2,13 @@
   <v-app class='app'>
     <Header />
     <BurgerMenu v-if='!$device.isDesktop' />
-    <div style="min-height: 57px;"><SubHeader v-if='$device.isDesktop && loadComponent'/></div>
+    <div v-if='$device.isDesktop && loadComponent' style='min-height: 57px;'>
+      <SubHeader />
+    </div>
     <v-main id='main_content' class='main'>
-      <VerticalMenu class="fixed_left_menu"></VerticalMenu>
-      <Nuxt class="custom_grid_system main__left_column"/>
-      <CurrentObjects v-if="! listExcludedRightColumn"></CurrentObjects>
+      <VerticalMenu class='fixed_left_menu'></VerticalMenu>
+      <Nuxt class='custom_grid_system main__left_column' />
+      <CurrentObjects v-if='! listExcludedRightColumn'></CurrentObjects>
     </v-main>
     <!-- КАСКАДНЫЕ МОДАЛКИ -->
     <div
@@ -31,7 +33,7 @@ import CurrentObjects from '../components/Widgets/CurrentObjects'
 
 import { mapState } from 'vuex'
 import BurgerMenu from '../components/BurgerMenu'
-import VerticalMenu from "../components/VerticalMenu.vue";
+import VerticalMenu from '../components/VerticalMenu.vue'
 
 export default {
   name: 'DefaultLayout',
@@ -126,15 +128,15 @@ export default {
       if (!this.articles_breadcrumbs || !this.articles_breadcrumbs.length) return this.breadcrumbs
       return this.articles_breadcrumbs.concat(this.breadcrumbs)
     },
-    listExcludedRightColumn(){
+    listExcludedRightColumn() {
       const arrPathExcluded = [
         'search',
         'object',
-        'podborki',
-      ];
+        'podborki'
+      ]
       return arrPathExcluded.some((path) => {
         return this.$route.path.match(path)
-      });
+      })
     }
   },
   methods: {
@@ -186,14 +188,15 @@ body {
   //max-width: $max-width;
   margin: 5px auto 0 auto;
   border-radius: 5px;
-  margin-bottom: 65px;
-  padding: unset!important;
-  &__left_column{
+  padding: unset !important;
+
+  &__left_column {
     width: 100%;
     //margin-left: unset !important;
   }
 }
-.v-main__wrap{
+
+.v-main__wrap {
   display: grid;
   grid-template-columns: 1fr auto;
 }
