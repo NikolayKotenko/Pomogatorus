@@ -82,14 +82,15 @@
           >
             <template v-slot:selection='data'>
               <div class='uploaded-image' v-bind='data.attrs'>
-                <div v-if="data.item.type === 'text/plain'">
-                  <a :href='$store.state.BASE_URL + data.item.full_path' target='_blank'>
-                    <img :src='require(`~/assets/images/txt_doc_type.png`)' style='object-fit: contain;' />
+                <div v-if="data.item.type === 'text/plain'" class='img-activator'>
+                  <a :href='$store.state.BASE_URL + data.item.full_path' class='img-container' target='_blank'>
+                    <img :src='require(`~/assets/images/txt_doc_type.png`)' class='img-hover'
+                         style='object-fit: contain;' />
                   </a>
                 </div>
-                <div v-else-if="data.item.type === 'application/pdf'">
-                  <a :href='$store.state.BASE_URL + data.item.full_path' target='_blank'>
-                    <img :src='require(`~/assets/svg/pdf_icon.svg`)' style='object-fit: contain;' />
+                <div v-else-if="data.item.type === 'application/pdf'" class='img-activator'>
+                  <a :href='$store.state.BASE_URL + data.item.full_path' class='img-container' target='_blank'>
+                    <img :src='require(`~/assets/svg/pdf_icon.svg`)' class='img-hover' style='object-fit: contain;' />
                   </a>
                 </div>
 
@@ -98,10 +99,10 @@
                   <viewer v-if='data.index === 0' :images='onlyImages' :options='viewOptions'
                           class='uploaded-image__image-container'>
                     <div v-for='(image, index) in onlyImages' :key='index'
-                         class='uploaded-image__image-container__block'>
+                         class='uploaded-image__image-container__block img-activator'>
                       <img :alt='image.alt_image'
                            :src='$store.state.BASE_URL + image.full_path'
-                           class='list-files-img'>
+                           class='list-files-img img-hover'>
 
                       <div class='uploaded-image__image-container__block__name'>
                         {{ image.filename }}

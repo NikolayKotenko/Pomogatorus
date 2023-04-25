@@ -203,6 +203,7 @@ export default {
     align-self: baseline;
     grid-row-gap: 1em;
     padding: 20px !important;
+    transition: all 0.4s ease-in-out !important;
 
     &:hover {
       @extend .border-hover;

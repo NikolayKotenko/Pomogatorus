@@ -23,15 +23,15 @@
       <div class='object-wrapper-top__map'>
         <SelectGeo v-if='notEmptyObject' :data='object' :outerCoords='getCoords' @set-new-address='setAddressMap' />
       </div>
-      <div class="object-wrapper-top__share">
-        <v-menu offset-y left :close-on-content-click="false">
-          <template v-slot:activator="{ on, attrs }">
-            <div v-bind="attrs" v-on="on" style="display: inline-flex; grid-column-gap: 5px">
+      <div class='object-wrapper-top__share'>
+        <v-menu :close-on-content-click='false' left offset-y>
+          <template v-slot:activator='{ on, attrs }'>
+            <div style='display: inline-flex; grid-column-gap: 5px' v-bind='attrs' v-on='on'>
               Поделиться
               <v-icon
-                color="black"
-                v-bind="attrs"
-                v-on="on"
+                color='black'
+                v-bind='attrs'
+                v-on='on'
               >
                 mdi-export-variant
               </v-icon>
@@ -46,10 +46,11 @@
       <div ref='docContent' class='object-wrapper-documents'>
         <div class='object-wrapper-documents__img-container'>
           <span>Фото объекта</span>
-          <div :class='{"dropzone-empty": ! getMainPhotoObject}' class='list-files-styled-wrapper'>
+          <div :class='{"dropzone-empty": ! getMainPhotoObject}' class='list-files-styled-wrapper img-activator'>
             <img v-if='getMainPhotoObject'
                  :src='$store.state.BASE_URL + getMainPhotoObject.full_path'
                  :title='getMainPhotoObject.title_image'
+                 class='img-hover'
                  height='100%'
                  style='object-fit: cover'
                  width='100%'
@@ -76,7 +77,7 @@
           @update-file='setFileField'
           @change-tab='changeTab'
           @remove-file='removeFile'
-          @focus-out-field="animationSaveBtn"
+          @focus-out-field='animationSaveBtn'
         />
 
         <div :class='{"show-more": showMore}' class='more-arrow'>
@@ -88,8 +89,8 @@
     <div class='object-wrapper-footer'>
       <div class='object-wrapper-footer__left'>
         <ButtonStyled
+          :is-animation='animationBtn'
           :isLoading='isLoading'
-          :is-animation="animationBtn"
           local-class='style_button'
           local-text='Сохранить изменения'
           @click-button='onSave'
@@ -122,7 +123,7 @@ import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import ButtonStyled from '../Common/ButtonStyled'
 import ListFilesStyled from '~/components/Common/ListFilesStyled'
 import Vue from 'vue'
-import Collaboration from "~/components/Modals/Collaboration";
+import Collaboration from '~/components/Modals/Collaboration'
 
 export default {
   name: 'ObjectGlobal',
@@ -142,7 +143,7 @@ export default {
     scrollHeight: null,
     maxScroll: null,
     animationBtn: false,
-    debounceTimeout: null,
+    debounceTimeout: null
   }),
   mounted() {
     this.getObjectFromProp()
@@ -222,11 +223,11 @@ export default {
     closeModal() {
       this.$emit('close-modal')
     },
-    animationSaveBtn(){
-      this.animationBtn = true;
+    animationSaveBtn() {
+      this.animationBtn = true
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
       this.debounceTimeout = setTimeout(() => {
-        this.animationBtn = false;
+        this.animationBtn = false
       }, 2000)
     },
     setField(data) {

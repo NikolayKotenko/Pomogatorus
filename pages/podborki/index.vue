@@ -113,6 +113,9 @@ export default {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    &:hover {
+      background-color: #FFF4CB;
+    }
 
     &__img {
       min-width: 254px;

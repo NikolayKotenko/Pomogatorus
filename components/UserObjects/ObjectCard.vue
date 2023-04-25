@@ -1,5 +1,6 @@
 <template>
   <div class='card_object_container__wrapper'>
+    <div class="card_object_container__wrapper__img"></div>
     <div class='card_object_container__wrapper__header' @click='openDetailCard'>
       <span>{{ object_data.address }}</span>
       <span>{{ object_data.created_at }}</span>
