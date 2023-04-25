@@ -17,7 +17,7 @@ module.exports = {
     'plugin:vue/recommended',
     'plugin:vue/essential',
     'plugin:vue/base',
-    'plugin:vuetify/base',
+    // 'plugin:vuetify/base',
   ],
   plugins: [],
   // add your custom rules here
@@ -48,14 +48,14 @@ module.exports = {
       },
     ],
     // открывающий и закрывающий теги в одной строке, если содержимое в одну строку
-    'vue/component-name-in-template-casing': [
-      'error',
-      'PascalCase',
-      {
-        registeredComponentsOnly: false,
-        ignores: ['dropzone', 'nuxt-link'],
-      },
-    ],
+    // 'vue/component-name-in-template-casing': [
+    //   'error',
+    //   'PascalCase',
+    //   {
+    //     registeredComponentsOnly: false,
+    //     ignores: ['dropzone', 'nuxt-link'],
+    //   },
+    // ],
     'vue/custom-event-name-casing': ['error', 'kebab-case'],
     'vue/prop-name-casing': ['error', 'camelCase'],
     'vue/html-comment-content-newline': [
