@@ -50,10 +50,10 @@
       <div ref='docContent' class='object-wrapper-documents'>
         <div class='object-wrapper-documents__img-container'>
           <span>Фото объекта</span>
-          <div :class='{"dropzone-empty": ! getMainPhotoObject}' class='list-files-styled-wrapper img-activator'>
-            <img v-if='getMainPhotoObject'
-                 :src='$store.state.BASE_URL + getMainPhotoObject.full_path'
-                 :title='getMainPhotoObject.title_image'
+          <div :class='{"dropzone-empty": ! $store.getters.getMainPhotoObject(object) }' class='list-files-styled-wrapper img-activator'>
+            <img v-if='$store.getters.getMainPhotoObject(object)'
+                 :src='$store.state.BASE_URL + $store.getters.getMainPhotoObject(object).full_path'
+                 :title='$store.getters.getMainPhotoObject(object).title_image'
                  class='img-hover'
                  height='100%'
                  style='object-fit: cover'
@@ -228,17 +228,9 @@ export default {
     showMore() {
       return ((this.parentHeight + this.scrollHeight + this.minHeightInput) <= this.maxScroll)
     },
-    getMainPhotoObject() {
-      if (!this.object['osnovnoe-foto-obekta']) return null
-
-      const firstImage = this.object['osnovnoe-foto-obekta'].filter((item) => {
-        return item.main_photo_object === true
-      })
-      return (firstImage) ? firstImage[0] : null
-    },
     isMobile() {
       return this.$device.isMobile
-    }
+    },
   },
   methods: {
     ...mapActions('Objects', ['saveObjData', 'getUserObjects']),

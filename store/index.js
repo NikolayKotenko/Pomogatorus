@@ -81,7 +81,15 @@ const createStore = () => {
 
         if (!obj) return ''
 
-        return state.BASE_URL + obj.full_path;
+        return state.BASE_URL + obj.full_path
+      },
+      getMainPhotoObject: (state) => (obj) => {
+        if (!obj.hasOwnProperty('osnovnoe-foto-obekta')) return null
+
+        const firstImage = obj['osnovnoe-foto-obekta'].filter((item) => {
+          return item.main_photo_object === true
+        })
+        return firstImage ? firstImage[0] : null
       },
       open_close_cabinet(state) {
         return state.showCabinet
@@ -139,9 +147,9 @@ const createStore = () => {
           duplicateCheck: true,
           headers: {
             Authorization: 'Bearer ' + Request.getAccessTokenInCookies(),
-          }
+          },
         }
-      }
+      },
     },
     mutations: {
       set_drawer(state, payload) {
@@ -241,15 +249,15 @@ const createStore = () => {
         commit('set_list_tags', response.data)
         return response
       },
-      async getListBroadcastSnippet({ commit }){
+      async getListBroadcastSnippet({ commit }) {
         const query = 'filter[broadcast_to_snippet]=true'
         const response = await Request.get(this.state.BASE_URL + '/dictionary/object-properties?' + query)
         commit('set_list_broadcast_snippet', response.data)
         return response
       },
-      async getFilesByFilter({state}, objFilter){
-        return await Request.get(state.BASE_URL + '/entity/files'+Request.ConstructFilterQuery(objFilter))
-      }
+      async getFilesByFilter({ state }, objFilter) {
+        return await Request.get(state.BASE_URL + '/entity/files' + Request.ConstructFilterQuery(objFilter))
+      },
     },
     modules: {
       AuthModule,
@@ -260,7 +268,7 @@ const createStore = () => {
       SearchModule,
       Tabs,
       Objects,
-      CollaborationModule
+      CollaborationModule,
     },
   })
 }

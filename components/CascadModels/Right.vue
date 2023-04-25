@@ -13,7 +13,7 @@
       :is='currentComponent'
       v-if='data.isOpen'
       :object_data='$store.state.modalCurrentObject'
-      @closeDetail='closeCurrent'
+      @close-detail='closeCurrent'
       @wheel.prevent
       @touchmove.prevent
       @scroll.prevent

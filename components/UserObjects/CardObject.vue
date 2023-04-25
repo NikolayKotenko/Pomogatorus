@@ -178,8 +178,9 @@ export default {
 
   .obj_info {
     width: 100%;
-    grid-row-gap: 1em;
     display: grid;
+    grid-row-gap: 1em;
+    //background-color: #FFFFFF !important;
   }
 
   .header {
@@ -221,11 +222,11 @@ export default {
     height: 16px !important;
   }
 
-  .footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-  }
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
 
   .more_info {
     display: grid;
