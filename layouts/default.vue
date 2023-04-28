@@ -1,29 +1,28 @@
 <template>
-  <v-app class='app'>
-    <Header />
-    <BurgerMenu v-if='!$device.isDesktop' />
-    <div v-if='$device.isDesktop && loadComponent' style='min-height: 57px;'>
-      <SubHeader />
+  <v-app class="app">
+    <Header/>
+    <BurgerMenu v-if="!$device.isDesktop"/>
+    <div v-if="$device.isDesktop && loadComponent" style="min-height: 57px;">
+      <SubHeader/>
     </div>
-    <v-main id='main_content' class='main'>
-      <VerticalMenu class='fixed_left_menu'></VerticalMenu>
-      <Nuxt class='custom_grid_system main__left_column' />
-      <CurrentObjects v-if='! listExcludedRightColumn'></CurrentObjects>
+    <v-main id="main_content" class="main">
+      <VerticalMenu class="fixed_left_menu"/>
+      <Nuxt class="custom_grid_system main__left_column"/>
+      <CurrentObjects v-if="! listExcludedRightColumn"/>
     </v-main>
     <!-- КАСКАДНЫЕ МОДАЛКИ -->
     <div
-      v-for='(item, index) in listModal'
-      :key='index'
+      v-for="(item, index) in listModal"
+      :key="index"
     >
-      <Right :data='item' :index='index' />
+      <Right :data="item" :index="index"/>
     </div>
   </v-app>
 </template>
 
 <script>
-import Logging from '@/services/logging'
-import Request from '@/services/request'
 
+import { mapState } from 'vuex'
 import Header from '../components/Header'
 import SubHeader from '../components/SubHeader'
 import ListObjects from '../components/UserObjects/ListObjects'
@@ -31,9 +30,10 @@ import ObjectDetail from '../components/UserObjects/ObjectDetail'
 import Right from '../components/CascadModels/Right'
 import CurrentObjects from '../components/Widgets/CurrentObjects'
 
-import { mapState } from 'vuex'
 import BurgerMenu from '../components/BurgerMenu'
 import VerticalMenu from '../components/VerticalMenu.vue'
+import Request from '@/services/request'
+import Logging from '@/services/logging'
 
 export default {
   name: 'DefaultLayout',
@@ -46,6 +46,22 @@ export default {
     ListObjects,
     ObjectDetail,
     CurrentObjects
+  },
+  data() {
+    return {
+      loadComponent: false,
+      breadcrumbs: [
+        {
+          url: 'https://pomogatorus.ru',
+          text: 'Этот сервис поможем вам в подборе и установке газового оборудования'
+        },
+        {
+          url: 'https://pomogatorus.ru/articles',
+          text: 'Эти статьи помогут вам подобрать решение для вашей проблемы'
+        }
+      ],
+      articles_breadcrumbs: []
+    }
   },
   async fetch() {
     const options = {
@@ -62,22 +78,6 @@ export default {
       })
     } catch (error) {
       console.warn(error.response.data.message)
-    }
-  },
-  data() {
-    return {
-      loadComponent: false,
-      breadcrumbs: [
-        {
-          url: 'https://pomogatorus.ru',
-          text: 'Этот сервис поможем вам в подборе и установке газового оборудования'
-        },
-        {
-          url: 'https://pomogatorus.ru/articles',
-          text: 'Эти статьи помогут вам подобрать решение для вашей проблемы'
-        }
-      ],
-      articles_breadcrumbs: []
     }
   },
   jsonld() {

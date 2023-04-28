@@ -1,29 +1,31 @@
 <template>
   <div class="social-container">
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"
-          integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ="
-          crossorigin="anonymous"
-    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"
+      integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ="
+      crossorigin="anonymous"
+    >
 
-    <div class="social-container__list-socials"
-         :class="{visible: tooltip_state}"
-         @mouseout="tooltip_state = false"
-         @mouseover="tooltip_state = true"
+    <div
+      class="social-container__list-socials"
+      :class="{visible: tooltip_state}"
+      @mouseout="tooltip_state = false"
+      @mouseover="tooltip_state = true"
     >
       <ShareNetwork
         v-for="network in networks"
-        :network="network.network"
         :key="network.network"
+        :network="network.network"
         :style="{backgroundColor: network.color}"
         :url="sharing.url"
         :title="sharing.title"
         :description="sharing.description"
         :quote="sharing.quote"
         :hashtags="sharing.hashtags"
-        :twitterUser="sharing.twitterUser"
+        :twitter-user="sharing.twitterUser"
       >
-        <i :class="network.icon" :title="network.title"></i>
+        <i :class="network.icon" :title="network.title"/>
       </ShareNetwork>
     </div>
 
@@ -36,18 +38,18 @@
       @mouseover="tooltip_state = true"
       @mouseout="tooltip_state = false"
     >
-      mdi-export-variant
+      mdi-share-outline
     </v-icon>
   </div>
 </template>
 
 <script>
 export default {
-  name: "SocialShare",
+  name: 'SocialShare',
   components: {},
+  props:['mouseStateEvent'],
   async asyncData({ $axios, store, params }) {
   },
-  props:['mouseStateEvent'],
   // head: {
   //   script: [
   //     {
@@ -69,17 +71,17 @@ export default {
         twitterUser: 'youyuxi'
       },
       networks: [
-        { network: 'odnoklassniki', title: 'Поделится в OK', icon: 'fab fah fa-lg fa-odnoklassniki', color: '#ed812b'},
+        { network: 'odnoklassniki', title: 'Поделится в OK', icon: 'fab fah fa-lg fa-odnoklassniki', color: '#ed812b' },
         { network: 'telegram', title: 'Поделится в TG', icon: 'fab fah fa-lg fa-telegram-plane', color: '#0088cc' },
         { network: 'vk', title: 'Поделится в VK', icon: 'fab fah fa-lg fa-vk', color: '#4a76a8' },
         { network: 'whatsapp', title: 'Поделится в WhatsApp', icon: 'fab fah fa-lg fa-whatsapp', color: '#25d366' },
       ]
     }
   },
+  computed: {
+  },
   mounted() {
     // this.renderVk()
-  },
-  computed: {
   },
   methods: {
     // renderVk(){

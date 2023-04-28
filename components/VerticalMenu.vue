@@ -1,94 +1,94 @@
 <template>
- <div class="vertical_menu">
-   <div class="vertical_menu__element">
-     <v-tooltip left>
-       <template v-slot:activator='{ on, attrs }'>
-         <v-btn
-           :href='$store.getters.menuItems[1].path'
-           text
-           class="vertical_menu__element__btn"
-         >
-           <v-icon
-             class="vertical_menu__element__icon"
-             v-bind='attrs' v-on='on'
-             v-if="$store.getters.menuItems[1].visible"
-             large
-           >
-             {{$store.getters.menuItems[1].icon}}
-           </v-icon>
-         </v-btn>
-       </template>
-       <span class="vertical_menu__element__title">{{ $store.getters.menuItems[1].title }}</span>
-     </v-tooltip>
-   </div>
-   <div class="vertical_menu__element">
-     <v-tooltip left>
-       <template v-slot:activator='{ on, attrs }'>
-         <v-btn
-           :href='$store.getters.menuItems[2].path'
-           text
-           class="vertical_menu__element__btn"
-         >
-           <v-icon
-             class="vertical_menu__element__icon"
-             v-bind='attrs'
-             v-on='on'
-             v-if="$store.getters.menuItems[2].visible"
-             large
-           >
-             {{$store.getters.menuItems[2].icon}}
-           </v-icon>
-         </v-btn>
-       </template>
-       <span>{{ $store.getters.menuItems[2].title }}</span>
-     </v-tooltip>
-   </div>
-   <div class="vertical_menu__element">
-     <v-tooltip left>
-       <template v-slot:activator='{ on, attrs }'>
-         <v-btn
-           :href='$store.getters.menuItems[3].path'
-           text
-           class="vertical_menu__element__btn"
-         >
-           <v-icon
-             class="vertical_menu__element__icon"
-             v-bind='attrs'
-             v-on='on'
-             v-if="$store.getters.menuItems[3].visible"
-             large
-           >
-             {{$store.getters.menuItems[3].icon}}
-           </v-icon>
-         </v-btn>
-       </template>
-       <span>{{ $store.getters.menuItems[3].title }}</span>
-     </v-tooltip>
-   </div>
-   <v-divider class="vertical_menu__divider"></v-divider>
-   <div class="vertical_menu__element">
-     <v-tooltip left>
-       <template v-slot:activator='{ on, attrs }' >
-         <v-icon
-           class="vertical_menu__element__icon"
-           v-bind='attrs'
-           v-on='on'
-           large
-           @click="$store.state.listModal[0].isOpen = !$store.state.listModal[0].isOpen"
-
-         >
-           mdi-account-outline
-         </v-icon>
-       </template>
-       <span>Личный кабинет</span>
-     </v-tooltip>
-   </div>
- </div>
+  <div class="vertical_menu">
+    <div class="vertical_menu__element">
+      <v-tooltip left>
+        <template #activator="{ on, attrs }">
+          <v-btn
+            :href="$store.getters.menuItems[1].path"
+            text
+            class="vertical_menu__element__btn"
+          >
+            <v-icon
+              v-if="$store.getters.menuItems[1].visible"
+              class="vertical_menu__element__icon"
+              v-bind="attrs"
+              large
+              v-on="on"
+            >
+              {{ $store.getters.menuItems[1].icon }}
+            </v-icon>
+          </v-btn>
+        </template>
+        <span class="vertical_menu__element__title">{{ $store.getters.menuItems[1].title }}</span>
+      </v-tooltip>
+    </div>
+    <div class="vertical_menu__element">
+      <v-tooltip left>
+        <template #activator="{ on, attrs }">
+          <v-btn
+            :href="$store.getters.menuItems[2].path"
+            text
+            class="vertical_menu__element__btn"
+          >
+            <v-icon
+              v-if="$store.getters.menuItems[2].visible"
+              class="vertical_menu__element__icon"
+              v-bind="attrs"
+              large
+              v-on="on"
+            >
+              {{ $store.getters.menuItems[2].icon }}
+            </v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $store.getters.menuItems[2].title }}</span>
+      </v-tooltip>
+    </div>
+    <div class="vertical_menu__element">
+      <v-tooltip left>
+        <template #activator="{ on, attrs }">
+          <v-btn
+            :href="$store.getters.menuItems[3].path"
+            text
+            class="vertical_menu__element__btn"
+          >
+            <v-icon
+              v-if="$store.getters.menuItems[3].visible"
+              class="vertical_menu__element__icon"
+              v-bind="attrs"
+              large
+              v-on="on"
+            >
+              {{ $store.getters.menuItems[3].icon }}
+            </v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $store.getters.menuItems[3].title }}</span>
+      </v-tooltip>
+    </div>
+    <v-divider class="vertical_menu__divider"/>
+    <div class="vertical_menu__element">
+      <v-tooltip left>
+        <template #activator="{ on, attrs }">
+          <v-icon
+            class="vertical_menu__element__icon"
+            v-bind="attrs"
+            large
+            v-on="on"
+            @click="$store.state.listModal[0].isOpen = !$store.state.listModal[0].isOpen"
+          >
+            mdi-account-outline
+          </v-icon>
+        </template>
+        <span>Личный кабинет</span>
+      </v-tooltip>
+    </div>
+  </div>
 </template>
 
 <script>
 export default {
-  name: "VerticalMenu",
+  name: 'VerticalMenu',
   data() {
     return {
       show: true
