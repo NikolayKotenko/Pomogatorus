@@ -1,19 +1,19 @@
 <template>
   <v-navigation-drawer
-    v-model='data.isOpen'
-    :permanent='data.isOpen'
-    :style='computedLayout'
-    :width='widthModal'
+    v-model="data.isOpen"
+    :permanent="data.isOpen"
+    :style="computedLayout"
+    :width="widthModal"
     absolute
-    class='sidebar-wrapper'
+    class="sidebar-wrapper"
     right
     temporary
   >
     <component
-      :is='currentComponent'
-      v-if='data.isOpen'
-      :object_data='$store.state.modalCurrentObject'
-      @close-detail='closeCurrent'
+      :is="currentComponent"
+      v-if="data.isOpen"
+      :object_data="$store.state.Objects.modalCurrentObject"
+      @close-detail="closeCurrent"
       @wheel.prevent
       @touchmove.prevent
       @scroll.prevent
@@ -22,14 +22,14 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState } from "vuex";
 
-import ListObjects from '../UserObjects/ListObjects'
-import ObjectDetail from '../UserObjects/ObjectDetail'
-import UserInfo from '../User/UserInfo'
+import ListObjects from "../UserObjects/ListObjects";
+import ObjectDetail from "../UserObjects/ObjectDetail";
+import UserInfo from "../User/UserInfo";
 
 export default {
-  name: 'Right',
+  name: "Right",
   data: () => ({
     widthModal: 0
   }),
@@ -45,18 +45,18 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      window.addEventListener('resize', this.getWidth)
-      this.getWidth()
-    })
+      window.addEventListener("resize", this.getWidth);
+      this.getWidth();
+    });
   },
 
   watch: {
-    'isSomeOpen': {
+    "isSomeOpen": {
       handler(v) {
         if (v) {
-          document.documentElement.style.overflow = 'hidden'
+          document.documentElement.style.overflow = "hidden";
         } else {
-          document.documentElement.style.overflow = 'auto'
+          document.documentElement.style.overflow = "auto";
         }
       }
     }
@@ -65,47 +65,47 @@ export default {
     ...mapState({
       listModal: state => state.listModal
     }),
-    ...mapGetters(['isSomeOpen']),
+    ...mapGetters(["isSomeOpen"]),
 
     currentComponent() {
-      if (this.data.name === 'UserInfo') {
-        return UserInfo
+      if (this.data.name === "UserInfo") {
+        return UserInfo;
       }
-      if (this.data.name === 'ObjectDetail') {
-        return ObjectDetail
+      if (this.data.name === "ObjectDetail") {
+        return ObjectDetail;
       }
-      if (this.data.name === 'ListObjects') {
-        return ListObjects
+      if (this.data.name === "ListObjects") {
+        return ListObjects;
       }
     },
     isMobile() {
-      return this.$device.isMobile
+      return this.$device.isMobile;
     },
     computedLayout() {
-      return `z-index: ${400 * (this.index + 1)}; padding-top: ${this.isMobile ? '56px' : '64px'}`
+      return `z-index: ${400 * (this.index + 1)}; padding-top: ${this.isMobile ? "56px" : "64px"}`;
     }
   },
   methods: {
     closeCurrent() {
-      this.listModal[this.index].isOpen = false
+      this.listModal[this.index].isOpen = false;
     },
     getWidth() {
       if (process.client) {
         if (this.isMobile) {
-          this.widthModal = window.innerWidth
+          this.widthModal = window.innerWidth;
         } else {
-          this.widthModal = window.innerWidth * (0.6 - ((this.index + 1) / 10))
+          this.widthModal = window.innerWidth * (0.6 - ((this.index + 1) / 10));
         }
       }
     }
   },
   beforeDestroy() {
-    window.removeEventListener('resize', this.getWidth)
+    window.removeEventListener("resize", this.getWidth);
   }
-}
+};
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .sidebar-wrapper {
   overflow: hidden;
   position: fixed;

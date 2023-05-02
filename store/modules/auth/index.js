@@ -30,30 +30,40 @@ export default {
   actions: {
     // AUTH
     async refreshTokens({ commit }) {
-      const tokensData = await Request.post(window.location.origin + '/api/auth/refresh')
+      const tokensData = await Request.post(
+        window.location.origin + '/api/auth/refresh'
+      )
       commit('set_user_data', _clone(tokensData.data?.user_data, 'replace'))
-      commit('set_default_user_data', _clone(tokensData.data?.user_data, 'replace'))
+      commit(
+        'set_default_user_data',
+        _clone(tokensData.data?.user_data, 'replace')
+      )
       commit('change_changedCookie', true, { root: true })
       return tokensData
     },
     async loginByToken({ commit, dispatch }) {
-      const tokensData = await Request.post(window.location.origin + '/api/auth/validate-auth')
+      const tokensData = await Request.post(
+        window.location.origin + '/api/auth/validate-auth'
+      )
       commit('set_user_data', _clone(tokensData.data?.user_data, 'replace'))
-      commit('set_default_user_data', _clone(tokensData.data?.user_data, 'replace'))
-      if (tokensData.data?.user_data) {
-        await dispatch('Objects/getUserObjects', tokensData.data.user_data.id)
-      }
+      commit(
+        'set_default_user_data',
+        _clone(tokensData.data?.user_data, 'replace')
+      )
 
       commit('change_changedCookie', true, { root: true })
       return tokensData
     },
     async loginUser({ commit, dispatch }, objData) {
-      const tokensData = await Request.post(window.location.origin + '/api/auth/login', objData)
+      const tokensData = await Request.post(
+        window.location.origin + '/api/auth/login',
+        objData
+      )
       commit('set_user_data', _clone(tokensData.data?.user_data, 'replace'))
-      commit('set_default_user_data', _clone(tokensData.data?.user_data, 'replace'))
-      if (tokensData.data?.user_data) {
-        await dispatch('Objects/getUserObjects', tokensData.data.user_data.id)
-      }
+      commit(
+        'set_default_user_data',
+        _clone(tokensData.data?.user_data, 'replace')
+      )
 
       commit('change_changedCookie', true, { root: true })
       return tokensData
@@ -62,14 +72,23 @@ export default {
       return await Request.post(this.state.BASE_URL + '/email/send', objData)
     },
     async createUserByEmail(_, objData) {
-      return await Request.post(this.state.BASE_URL + '/users/create-from-only-email', objData)
+      return await Request.post(
+        this.state.BASE_URL + '/users/create-from-only-email',
+        objData
+      )
     },
     async resendUserPass(_, objData) {
-      return await Request.post(this.state.BASE_URL + '/users/resend-user-pass', objData)
+      return await Request.post(
+        this.state.BASE_URL + '/users/resend-user-pass',
+        objData
+      )
     },
     async createUserFromEmailAndPass(_, objData) {
       //Делаем запрос на создание пользователя, если такой есть то будет 409 конфликт ошибка ну и бог с ней
-      return await Request.post(this.state.BASE_URL + '/users/create-from-full-credentials', objData)
+      return await Request.post(
+        this.state.BASE_URL + '/users/create-from-full-credentials',
+        objData
+      )
     },
     async logout({ commit, dispatch }) {
       await Request.post(window.location.origin + '/api/auth/logout')
@@ -82,7 +101,9 @@ export default {
   },
   getters: {
     userIsAgent(state) {
-      return Object.keys(state.userData).length ? state.userData.is_agent : false
+      return Object.keys(state.userData).length
+        ? state.userData.is_agent
+        : false
     },
     getNameUser(state) {
       return Object.keys(state.userData).length ? state.userData.first_name : ''

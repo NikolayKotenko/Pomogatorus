@@ -1,6 +1,6 @@
 <template>
   <div class="card_object_container__wrapper">
-    <div class="card_object_container__wrapper__img"/>
+    <div class="card_object_container__wrapper__img" />
     <div class="card_object_container__wrapper__header" @click="openDetailCard">
       <span>{{ object_data.address }}</span>
       <span>{{ object_data.created_at }}</span>
@@ -8,14 +8,14 @@
     <div class="card_object_container__wrapper__info" @click="openDetailCard">
       <div class="card_object_container__wrapper__info__block">
         <span class="card_object_container__wrapper__info__block__title">Площадь</span>
-        <div class="card_object_container__wrapper__info__block__divider"/>
+        <div class="card_object_container__wrapper__info__block__divider" />
         <span class="card_object_container__wrapper__info__block__value">
-          {{ object_data.total_area ? object_data.total_area : '0' }}
+          {{ object_data.total_area ? object_data.total_area : "0" }}
         </span>
       </div>
       <div class="card_object_container__wrapper__info__block">
         <span class="card_object_container__wrapper__info__block__title">Готовность</span>
-        <div class="card_object_container__wrapper__info__block__divider"/>
+        <div class="card_object_container__wrapper__info__block__divider" />
         <span class="card_object_container__wrapper__info__block__value">Готов</span>
       </div>
     </div>
@@ -31,26 +31,26 @@
 </template>
 
 <script>
-import ObjectDetail from './ObjectDetail'
+import ObjectDetail from "./ObjectDetail";
 
 export default {
-  name: 'ObjectCard',
+  name: "ObjectCard",
   components: { ObjectDetail },
-  props: ['object_data'],
+  props: ["object_data"],
   data: () => ({
     showDetailObj: false
   }),
   computed: {
     selectedObj() {
-      if (!this.$store.state.currentObject) return false
-      if (!Object.keys(this.$store.state.currentObject).length) return false
-      return this.object_data.id === this.$store.state.currentObject?.id
+      if (!this.$store.state.Objects.currentObject) return false;
+      if (!Object.keys(this.$store.state.Objects.currentObject).length) return false;
+      return this.object_data.id === this.$store.state.Objects.currentObject?.id;
     },
     modalWidth() {
       if (process.client) {
-        return window.innerWidth * 0.5
+        return window.innerWidth * 0.5;
       } else {
-        return 0
+        return 0;
       }
     }
   },
@@ -58,23 +58,23 @@ export default {
   mounted() {
   },
   methods: {
-    setObject() {
-      this.$store.commit('set_currentObject', this.object_data)
+    async setObject() {
+      await this.$store.dispatch("Objects/setCurrentObject", this.object_data);
     },
     openDetailCard() {
-      this.$emit('open-detail', this.object_data)
-      // this.$store.state.modalCurrentObject = this.object_data
+      this.$emit("open-detail", this.object_data);
+      // this.$store.state.Objects.modalCurrentObject = this.object_data
       // this.$store.state.listModal[1].isOpen = true
     },
     async closeDetail() {
-      this.showDetailObj = false
-      await this.$store.dispatch('loginByToken')
+      this.showDetailObj = false;
+      await this.$store.dispatch("loginByToken");
     }
   }
-}
+};
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .v-navigation-drawer {
   z-index: 410 !important;
 }

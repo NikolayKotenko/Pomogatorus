@@ -7,6 +7,9 @@ export default {
     isLoading: false,
     isLoadingObjects: true,
     listObjects: [],
+    currentObject: {},
+    modalCurrentObject: {},
+    loading_objects: false,
   },
   mutations: {
     setLoading(state, payload) {
@@ -15,25 +18,43 @@ export default {
     setLoadingObjects(state, payload) {
       state.isLoadingObjects = payload
     },
-    listObjects(state, payload) {
+    setListObjects(state, payload) {
       state.listObjects = []
       state.listObjects = payload
     },
-    clearListObjects(state){
-      state.listObjects = [];
-    }
+    clearListObjects(state) {
+      state.listObjects = []
+    },
+    set_currentObject(state, value) {
+      state.currentObject = value
+    },
+    change_loaderObjects(state, value) {
+      state.loading_objects = value
+    },
   },
   actions: {
+    onloadSetCurrentUserObject({ commit, state }) {
+      const currentObj = state.listObjects.filter((obj) => {
+        return obj.m_to_m_users_objects.state_current_object === true
+      })
+      commit('set_currentObject', currentObj[0])
+    },
     // TODO: Когда появится новый "Безопасный" метод заменить на него по токену
-    async getUserObjects({ commit }, payload) {
-      commit('setLoadingObjects', true)
+    async getListObjectsByUserId({ commit, dispatch }, idUser) {
+      if (!idUser) {
+        commit('setLoadingObjects', false)
+        return false
+      }
 
       const query = constructFilterQuery({
-        id_user: payload,
+        id_user: idUser,
       })
 
-      const { data } = await Request.get(this.state.BASE_URL + `/entity/objects${query}`)
-      commit('listObjects', data)
+      const { data } = await Request.get(
+        this.state.BASE_URL + `/entity/objects${query}`
+      )
+      commit('setListObjects', data)
+      dispatch('onloadSetCurrentUserObject')
 
       commit('setLoadingObjects', false)
     },
@@ -47,8 +68,42 @@ export default {
       commit('setLoading', false)
     },
     clearListObjects({ commit }) {
-      commit('clearListObjects');
-    }
+      commit('clearListObjects')
+    },
+    async createNewObject({ state, commit, dispatch }, newObjAddress) {
+      commit('change_loaderObjects', true)
+
+      const { data } = await Request.post(
+        this.state.BASE_URL + '/entity/objects',
+        {
+          address: newObjAddress,
+        }
+      )
+
+      await dispatch('loginByToken', null, { root: true })
+
+      if (state.AuthModule.userData.objects.length < 1) {
+        await dispatch('setCurrentObject', data)
+      }
+
+      commit('change_loaderObjects', false)
+    },
+    /* На бэке скрипт обнуляет state_current_object по текущему пользователю
+       и выставляет объект который передаем
+     */
+    async setCurrentObject({ commit, state }, object) {
+      const response = await Request.put(
+        this.state.BASE_URL +
+          `/m-to-m/set-current-object/${object.m_to_m_users_objects.id}`,
+        object.m_to_m_users_objects
+      )
+      commit('set_currentObject', object)
+      return response
+    },
   },
-  getters: {},
+  getters: {
+    stateObjectSelected(state) {
+      return Boolean(Object.keys(state.currentObject).length)
+    },
+  },
 }

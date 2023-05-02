@@ -1,44 +1,44 @@
 <template>
   <v-autocomplete
-    ref='autocomplete'
-    v-model='currentData'
+    ref="autocomplete"
+    v-model="currentData"
     :auto-select-first="true"
-    :autofocus='isAutofocus'
+    :autofocus="isAutofocus"
     :class='{"selector-custom": currentData && customStyle}'
-    :disabled='isDisabled'
-    :item-text='itemText'
-    :item-value='itemValue'
-    :items='items'
-    :loading='isLoading'
-    :menu-props='{
+    :disabled="isDisabled"
+    :item-text="itemText"
+    :item-value="itemValue"
+    :items="items"
+    :loading="isLoading"
+    :menu-props="{
             closeOnContentClick: true,
             bottom: true,
             offsetY: true,
             maxWidth: 250
-          }'
-    :multiple='false'
-    :no-filter='currentData && customStyle'
-    :placeholder='computedPlaceholder'
-    :search-input='blockSearch'
-    :solo='isSolo'
+          }"
+    :multiple="false"
+    :no-filter="currentData && customStyle"
+    :placeholder="computedPlaceholder"
+    :search-input="blockSearch"
+    :solo="isSolo"
     dense
     hide-details
     return-object
     single-line
-    @focus='isFocused = true'
-    @focusout='focusOut'
-    @keyup.delete='handleDelete()'
-    @input.native.stop.prevent='stopInput($event)'
+    @focus="isFocused = true"
+    @focusout="focusOut"
+    @keyup.delete="handleDelete()"
+    @input.native.stop.prevent="stopInput($event)"
   >
-    <template v-slot:selection='data'>
-      <template v-if='currentData'>
+    <template v-slot:selection="data">
+      <template v-if="currentData">
         <span
           :class='{"scrolling-item": data.item[itemText] && data.item[itemText].length > 24}'
-          class='selected-item'
-          v-bind='data.attrs'
-          @click='data.select; focusOn()'
+          class="selected-item"
+          v-bind="data.attrs"
+          @click="data.select; focusOn()"
         >
-          {{ data.item[itemText] ? data.item[itemText] : 'Не заполнено наименование или адрес' }}
+          {{ data.item[itemText] ? data.item[itemText] : "Не заполнено наименование" }}
         </span>
       </template>
       <template v-else>
@@ -48,7 +48,7 @@
       </template>
     </template>
     <template v-slot:append>
-      <template v-if='!isFocused'>
+      <template v-if="!isFocused">
         <v-icon>mdi-chevron-down</v-icon>
       </template>
       <template v-else>
@@ -58,31 +58,34 @@
     <template v-slot:append-item>
       <v-card class="wrapper_add_new_object" elevation="8">
         <v-card-actions>
-          <v-btn small text plain block :href="'/objects/'" class="btn_add_new_object">
+          <v-btn :href="'/objects/'" block class="btn_add_new_object" plain small text>
             <v-icon>mdi-plus-circle-outline</v-icon>
             <span>Создать новый объект</span>
           </v-btn>
         </v-card-actions>
       </v-card>
     </template>
+    <template v-slot:item="{ item }">
+      {{ (item.address) ? item.address : "Не заполнен адрес" }}
+    </template>
   </v-autocomplete>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import _clone from '../../helpers/deepClone'
-import _deepEqual from '../../helpers/deepCompareObjects'
+import { mapGetters } from "vuex";
+import _clone from "../../helpers/deepClone";
+import _deepEqual from "../../helpers/deepCompareObjects";
 
 export default {
-  name: 'SelectObjectStyled',
+  name: "SelectObjectStyled",
   props: {
     localClass: {
       type: String,
-      default: ''
+      default: ""
     },
     placeholder: {
       type: String,
-      default: 'Выберите объект'
+      default: "Выберите объект"
     },
     isSolo: {
       type: Boolean,
@@ -95,11 +98,11 @@ export default {
     },
     itemText: {
       type: String,
-      default: ''
+      default: ""
     },
     itemValue: {
       type: String,
-      default: ''
+      default: ""
     },
     items: {
       type: Array,
@@ -127,20 +130,20 @@ export default {
     }
   },
   data: () => ({
-    internalData: '',
+    internalData: "",
     isFocused: false,
-    blockSearch: '',
+    blockSearch: "",
     defaultObject: {}
   }),
   watch: {
-    'open_close_cabinet': {
+    "open_close_cabinet": {
       handler(v) {
         if (v && this.haveTrigger) {
           if (this.$refs.autocomplete) {
-            this.defaultObject = _clone(this.$store.state.currentObject)
-            this.$refs.autocomplete.focus()
-            this.$refs.autocomplete.activateMenu()
-            this.$refs.autocomplete.isMenuActive = true
+            this.defaultObject = _clone(this.$store.state.Objects.currentObject);
+            this.$refs.autocomplete.focus();
+            this.$refs.autocomplete.activateMenu();
+            this.$refs.autocomplete.isMenuActive = true;
           } else {
             // TODO: мы не можем через наш селектор создать новый объект -> Необходимо продумать логику и отрисовать макет
             // this.$refs.createNewObj.focus()
@@ -150,20 +153,20 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['open_close_cabinet']),
+    ...mapGetters(["open_close_cabinet"]),
 
     computedPlaceholder() {
       if (this.isFocused) {
-        return ''
+        return "";
       }
-      return this.placeholder
+      return this.placeholder;
     },
     currentData: {
       get() {
-        return this.data
+        return this.data;
       },
       set(value) {
-        this.$emit('update-input', value)
+        this.$emit("update-input", value);
       }
     }
   },
@@ -171,41 +174,41 @@ export default {
     stopInput(e) {
       this.$nextTick(() => {
         if (this.currentData) {
-          e.stopPropagation()
-          e.preventDefault()
-          this.blockSearch = ''
+          e.stopPropagation();
+          e.preventDefault();
+          this.blockSearch = "";
         }
-      })
+      });
     },
     focusOn() {
-      this.$refs.autocomplete.isMenuActive = true
+      this.$refs.autocomplete.isMenuActive = true;
     },
     focusOut() {
-      this.isFocused = false
+      this.isFocused = false;
 
       if (this.haveTrigger) {
-        this.resetValues()
+        this.resetValues();
       }
     },
     handleDelete() {
-      this.currentData = null
+      this.currentData = null;
     },
     resetValues() {
       setTimeout(() => {
-        if (_deepEqual(this.defaultObject, this.$store.state.currentObject)) {
-          this.$store.commit('change_showCabinet', false)
+        if (_deepEqual(this.defaultObject, this.$store.state.Objects.currentObject)) {
+          this.$store.commit("change_showCabinet", false);
         }
-      }, 400)
+      }, 400);
     }
   }
-}
+};
 </script>
 
-<style lang='scss'>
+<style lang="scss">
 @import "@/assets/styles/global.scss";
 
-.v-menu__content{
-  &:hover{
+.v-menu__content {
+  &:hover {
     @extend .border-hover;
   }
 }
@@ -242,21 +245,24 @@ export default {
 </style>
 <style lang="scss" scoped>
 
-.v-list{
+.v-list {
   padding-bottom: unset;
 }
 
-.wrapper_add_new_object{
+.wrapper_add_new_object {
   margin-top: 5px;
   //position: absolute;
   //z-index: 9;
 }
-.btn_add_new_object{
+
+.btn_add_new_object {
   text-transform: unset;
-  i{
+
+  i {
     margin-right: 2px;
   }
-  span{
+
+  span {
     font-family: unset;
     font-size: 14px;
     text-decoration: underline;

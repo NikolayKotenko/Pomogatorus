@@ -1,5 +1,6 @@
 import Vuex from 'vuex'
 
+import Request from '../services/request'
 import AuthModule from './modules/auth'
 import PdfDataModule from './modules/pdf-data'
 import ArticleModule from './modules/article'
@@ -10,13 +11,13 @@ import Tabs from './modules/tabs'
 import Objects from './modules/objects'
 import CollaborationModule from './modules/collaboration'
 
-import Request from '../services/request'
-
 const createStore = () => {
   return new Vuex.Store({
     state: {
       BASE_URL:
-        process.env.NODE_ENV === 'development' ? 'https://api-test.agregatorus.com' : 'https://api.agregatorus.com',
+        process.env.NODE_ENV === 'development'
+          ? 'https://api-test.agregatorus.com'
+          : 'https://api.agregatorus.com',
       show_header: false,
       breadcrumbs: [],
       defaultBreadcrumbs: [
@@ -38,9 +39,6 @@ const createStore = () => {
       showCabinet: false,
       isAnotherOpen: false,
       showDetailObj: false,
-      loading_objects: false,
-      listObjects: [],
-      currentObject: {},
       idQuestionWhenModal: null,
 
       /* MODALS */
@@ -61,7 +59,6 @@ const createStore = () => {
           index: 3,
         },
       ],
-      modalCurrentObject: {},
       list_tags: [],
       list_broadcast_snippet: [],
     },
@@ -127,7 +124,9 @@ const createStore = () => {
             title: 'Агенты',
             path: '/agents',
             icon: 'mdi-account-group',
-            visible: Object.keys(state.AuthModule.userData).length ? state.AuthModule.userData.is_agent : false,
+            visible: Object.keys(state.AuthModule.userData).length
+              ? state.AuthModule.userData.is_agent
+              : false,
           },
           {
             title: 'Тесты',
@@ -136,9 +135,6 @@ const createStore = () => {
             visible: false,
           },
         ]
-      },
-      stateObjectSelected(state) {
-        return Boolean(Object.keys(state.currentObject).length)
       },
       optionsDropzone(state) {
         return {
@@ -188,15 +184,6 @@ const createStore = () => {
       change_showDetailObj(state, value) {
         state.showDetailObj = value
       },
-      change_loaderObjects(state, value) {
-        state.loading_objects = value
-      },
-      change_listObjects(state, array) {
-        state.listObjects = array
-      },
-      set_currentObject(state, value) {
-        state.currentObject = value
-      },
       set_idQuestionWhenModal(state, value) {
         state.idQuestionWhenModal = value
       },
@@ -215,48 +202,31 @@ const createStore = () => {
       },
     },
     actions: {
-      async getListObjects({ state, commit }) {
-        state.loading_objects = true
-
-        let { data } = await Request.get(state.BASE_URL + '/entity/objects', {
-          'filter[id_user]': this.state.AuthModule.userData.id,
-        })
-        commit('change_listObjects', data)
-      },
-      async createNewObject({ state, commit, dispatch }, newObjAddress) {
-        commit('change_loaderObjects', true)
-
-        let { data } = await Request.post(state.BASE_URL + '/entity/objects', {
-          address: newObjAddress,
-        })
-
-        await dispatch('loginByToken')
-
-        if (state.AuthModule.userData.objects.length < 1) {
-          commit('set_currentObject', data)
-        }
-
-        commit('change_listObjects', [data])
-
-        commit('change_loaderObjects', false)
-      },
       // nuxtServerInit({dispatch}) {
       //   dispatch('req_list_articles')
       // },
       async getListTags({ commit }) {
         const query = 'filter[public_field_filter]=true'
-        const response = await Request.get(this.state.BASE_URL + '/dictionary/tags?' + query)
+        const response = await Request.get(
+          this.state.BASE_URL + '/dictionary/tags?' + query
+        )
         commit('set_list_tags', response.data)
         return response
       },
       async getListBroadcastSnippet({ commit }) {
         const query = 'filter[broadcast_to_snippet]=true'
-        const response = await Request.get(this.state.BASE_URL + '/dictionary/object-properties?' + query)
+        const response = await Request.get(
+          this.state.BASE_URL + '/dictionary/object-properties?' + query
+        )
         commit('set_list_broadcast_snippet', response.data)
         return response
       },
       async getFilesByFilter({ state }, objFilter) {
-        return await Request.get(state.BASE_URL + '/entity/files' + Request.ConstructFilterQuery(objFilter))
+        return await Request.get(
+          state.BASE_URL +
+            '/entity/files' +
+            Request.ConstructFilterQuery(objFilter)
+        )
       },
     },
     modules: {

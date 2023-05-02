@@ -12,7 +12,7 @@
         <span>Ваш объект заполнен на - 15 %</span>
         <VSelect
           ref="selectObject"
-          v-model="$store.state.currentObject"
+          v-model="$store.state.Objects.currentObject"
           :items="getItems"
           :menu-props="{
             closeOnContentClick: true,
@@ -39,7 +39,7 @@
           </template>
 
           <template #item="{ item }">
-            <VListItem @click="$store.commit('set_currentObject', item)">
+            <VListItem @click="$store.dispatch('Objects/setCurrentObject', item)">
               <VListItemContent class="wrap_item_slot">
                 <VListItemTitle>{{ (item.address) ? item.address : "Нет адреса" }}</VListItemTitle>
                 <VListItemSubtitle>Объект описан: {{ item.created_at }}</VListItemSubtitle>
@@ -61,7 +61,7 @@
           hide-details
           placeholder="Введите адресс нового объекта"
         />
-        <VBtn color="primary" right small @click="$store.dispatch('createNewObject', address)">
+        <VBtn color="primary" right small @click="$store.dispatch('Objects/createNewObject', address)">
           Добавить объект
         </VBtn>
       </div>
@@ -70,32 +70,32 @@
 </template>
 
 <script>
-import LoginAuth from '/components/frontLayouts/LoginAuth';
-import { mapGetters } from 'vuex';
-import _deepEqual from '../helpers/deepCompareObjects';
-import _clone from '../helpers/deepClone';
+import LoginAuth from "/components/frontLayouts/LoginAuth";
+import { mapGetters } from "vuex";
+import _deepEqual from "../helpers/deepCompareObjects";
+import _clone from "../helpers/deepClone";
 
 export default {
-  name: 'FooterSummary',
+  name: "FooterSummary",
   components: { LoginAuth },
   data() {
     return {
-      address: '',
+      address: "",
       defaultObject: {}
     };
   },
   computed: {
-    ...mapGetters(['open_close_cabinet']),
+    ...mapGetters(["open_close_cabinet"]),
 
     getItems() {
       return this.$store.state.AuthModule.userData.objects;
     }
   },
   watch: {
-    'open_close_cabinet': {
+    "open_close_cabinet": {
       handler(v) {
         if (v) {
-          this.defaultObject = _clone(this.$store.state.currentObject);
+          this.defaultObject = _clone(this.$store.state.Objects.currentObject);
           if (this.$refs.selectObject) {
             this.$refs.selectObject.focus();
             this.$refs.selectObject.activateMenu();
@@ -109,15 +109,15 @@ export default {
   methods: {
     resetValues() {
       setTimeout(() => {
-        if (_deepEqual(this.defaultObject, this.$store.state.currentObject)) {
-          this.$store.commit('change_showCabinet', false);
+        if (_deepEqual(this.defaultObject, this.$store.state.Objects.currentObject)) {
+          this.$store.commit("change_showCabinet", false);
         }
       }, 400);
     },
     clearValues() {
-      this.$nextTick(() => {
-        this.$store.commit('set_currentObject', {});
-      });
+      // this.$nextTick(() => {
+      //   this.$store.commit('Objects/set_currentObject', {});
+      // });
     }
   }
 };

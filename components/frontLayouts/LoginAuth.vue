@@ -1,8 +1,8 @@
 <template>
-  <div
+  <v-container
     v-if="stateAuthBlock"
     :id="`component_wrapper-${index_component}`"
-    class="auth_container"
+    class="auth_container custom_grid_system"
     contenteditable="false"
   >
     <VContainer>
@@ -49,7 +49,7 @@
                 <VTooltip bottom>
                   <template #activator="{ on }">
                     <VIcon @click="passStateEye = !passStateEye" v-on="on">
-                      {{ passStateEye ? 'mdi-eye' : 'mdi-eye-off' }}
+                      {{ passStateEye ? "mdi-eye" : "mdi-eye-off" }}
                     </VIcon>
                   </template>
                   Показать/скрыть пароль
@@ -127,41 +127,43 @@
         dismissible
         @input="alert.state = false"
       >
-        <span v-html="alert.message"/>
+        <span v-html="alert.message" />
       </VAlert>
     </VContainer>
-  </div>
-  <VAlert v-else dismissible type="success">
-    <span>Здравствуйте {{ $store.getters.getNameUser }}</span>
-  </VAlert>
+  </v-container>
+  <v-container v-else class="custom_grid_system">
+    <VAlert dismissible type="success">
+      <span>Здравствуйте {{ $store.getters.getNameUser }}</span>
+    </VAlert>
+  </v-container>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 
-import Request from '../../services/request'
-import Logging from '@/services/logging'
+import Request from "../../services/request";
+import Logging from "@/services/logging";
 
 export default {
-  name: 'LoginAuth',
+  name: "LoginAuth",
   data() {
     return {
       tab: 0,
       valid: false,
       loading: false,
       emailRules: [
-        (v) => !!v || 'Обязательное для заполнение поле',
-        (v) => /.+@.+/.test(v) || 'E-mail должен быть валидным.'
+        (v) => !!v || "Обязательное для заполнение поле",
+        (v) => /.+@.+/.test(v) || "E-mail должен быть валидным."
       ],
-      passRules: [(v) => !!v || 'Обязательное для заполнение поле', (v) => v.length === 4 || 'Необходимо 4 символа'],
+      passRules: [(v) => !!v || "Обязательное для заполнение поле", (v) => v.length === 4 || "Необходимо 4 символа"],
       passStateEye: false,
-      email_user: '',
-      password: '',
-      name: '',
+      email_user: "",
+      password: "",
+      name: "",
       alert: {
         state: false,
-        type: 'info',
-        message: ''
+        type: "info",
+        message: ""
       },
 
       // inserted_component
@@ -169,118 +171,118 @@ export default {
       height: 0,
       index_component: null,
       stateAuthBlock: true
-    }
+    };
   },
   mounted() {
-    this.getData()
+    this.getData();
     if (this.$store.state.changedCookie) {
-      this.hasCookie()
+      this.hasCookie();
     }
   },
   computed: {
-    ...mapGetters(['stateAuth']),
-    ...mapGetters(['getNameUser'])
+    ...mapGetters(["stateAuth"]),
+    ...mapGetters(["getNameUser"])
   },
   watch: {
-    '$store.getters.stateAuth': {
+    "$store.getters.stateAuth": {
       handler() {
-        this.hasCookie()
+        this.hasCookie();
       }
     },
-    '$store.state.changedCookie': {
+    "$store.state.changedCookie": {
       handler() {
-        this.hasCookie()
+        this.hasCookie();
       }
     }
   },
   methods: {
     hasCookie() {
       if (Request.getAccessTokenInCookies() && this.$store.getters.stateAuth) {
-        this.stateAuthBlock = false
+        this.stateAuthBlock = false;
       } else {
-        this.stateAuthBlock = true
+        this.stateAuthBlock = true;
       }
     },
     alertCall(response) {
-      this.alert.state = true
-      this.alert.message = Logging.getMessage(response)
+      this.alert.state = true;
+      this.alert.message = Logging.getMessage(response);
       this.alert.type = Logging.checkExistErr(response)
-        ? 'error'
+        ? "error"
         : Request.getAccessTokenInCookies()
-          ? 'success'
-          : 'warning'
-      this.loading = false
+          ? "success"
+          : "warning";
+      this.loading = false;
 
-      if (this.alert.type === 'success') {
-        this.$emit('close-modal')
+      if (this.alert.type === "success") {
+        this.$emit("close-modal");
       }
     },
 
     async localLoginUser(index_component) {
-      if (this.valid === false) return false
+      if (this.valid === false) return false;
 
-      this.loading = true
-      const res = await this.$store.dispatch('loginUser', {
+      this.loading = true;
+      const res = await this.$store.dispatch("loginUser", {
         email: this.email_user,
         password: this.password,
         id_dom_elem: index_component,
         full_url: window.location.href
-      })
-      this.alertCall(res)
+      });
+      this.alertCall(res);
       this.$nextTick(() => {
-        this.hasCookie()
-      })
+        this.hasCookie();
+      });
     },
     async localCreateUser(index_component) {
-      if (this.valid === false) return false
+      if (this.valid === false) return false;
 
-      this.loading = true
+      this.loading = true;
       // Пытаемся создать пользователя
-      const res = await this.$store.dispatch('createUserByEmail', {
+      const res = await this.$store.dispatch("createUserByEmail", {
         email: this.email_user,
         name: this.name,
         id_dom_elem: index_component,
         full_url: window.location.href
-      })
+      });
       if (res.codeResponse === 200 || res.codeResponse === 409) {
-        this.tab = 0
+        this.tab = 0;
       }
-      this.alertCall(res)
+      this.alertCall(res);
     },
     async localResendUserPass(index_component) {
-      if (this.$refs.email_user.validate(true) === false) return false
+      if (this.$refs.email_user.validate(true) === false) return false;
 
-      this.loading = true
+      this.loading = true;
       // Пытаемся создать пользователя
-      const res = await this.$store.dispatch('resendUserPass', {
+      const res = await this.$store.dispatch("resendUserPass", {
         email: this.email_user,
         name: this.name,
         id_dom_elem: index_component,
         full_url: window.location.href
-      })
+      });
       if (res.codeResponse === 404) {
-        this.email_user = ''
-        this.$refs.email_user.validate(true)
+        this.email_user = "";
+        this.$refs.email_user.validate(true);
       }
       if (res.codeResponse === 200 || res.codeResponse === 409) {
-        this.tab = 0
+        this.tab = 0;
       }
-      this.alertCall(res)
+      this.alertCall(res);
     },
     // inserted_components
     getData() {
-      this.index_component = this.$store.state.ArticleModule.countLayout
+      this.index_component = this.$store.state.ArticleModule.countLayout;
     },
     deleteQuestion() {
-      const elem = document.getElementById(`component_wrapper-${this.index_component}`)
-      elem.remove()
-      this.$store.dispatch('deleteComponent', this.index_component)
+      const elem = document.getElementById(`component_wrapper-${this.index_component}`);
+      elem.remove();
+      this.$store.dispatch("deleteComponent", this.index_component);
     }
   }
-}
+};
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 form.login {
   margin: 1em;
 
@@ -306,7 +308,7 @@ form.login {
 }
 </style>
 
-<style lang='scss'>
+<style lang="scss">
 $yellowBackground: rgb(255, 235, 153);
 
 @media only screen and (max-width: 375px) {

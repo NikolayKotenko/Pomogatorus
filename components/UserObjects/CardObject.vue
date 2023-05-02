@@ -31,7 +31,7 @@
                   </VIcon>
                 </div>
               </template>
-              <Collaboration/>
+              <Collaboration />
             </VMenu>
           </TooltipStyled>
 
@@ -72,7 +72,6 @@
           @click="openDetailCard"
         >
           <ButtonStyled
-            :href="$store.getters.stateObjectSelected ? '/objects/'+$store.state.currentObject.id : ''"
             :local-text="'Открыть объект'"
             local-class="style_button"
           />
@@ -83,63 +82,63 @@
 </template>
 
 <script>
-import ButtonStyled from '../Common/ButtonStyled.vue'
-import Collaboration from '../Modals/Collaboration.vue'
-import TooltipStyled from '../Common/TooltipStyled.vue'
-import ObjectDetail from './ObjectDetail.vue'
+import ButtonStyled from "../Common/ButtonStyled.vue";
+import Collaboration from "../Modals/Collaboration.vue";
+import TooltipStyled from "../Common/TooltipStyled.vue";
+import ObjectDetail from "./ObjectDetail.vue";
 
 
 export default {
-  name: 'CardObject',
+  name: "CardObject",
   components: { TooltipStyled, Collaboration, ButtonStyled, ObjectDetail },
-  props: ['object_data'],
+  props: ["object_data"],
   data: () => ({
     showDetailObj: false
   }),
   computed: {
     stateCurrentObject() {
-      return this.object_data.id === this.$store.state.currentObject.id
+      return this.object_data.id === this.$store.state.Objects.currentObject?.id;
     },
     stateFilledImageObject() {
-      if (!this.object_data.hasOwnProperty('osnovnoe-foto-obekta')) return false
+      if (!this.object_data.hasOwnProperty("osnovnoe-foto-obekta")) return false;
 
-      return this.object_data['osnovnoe-foto-obekta'].length
+      return this.object_data["osnovnoe-foto-obekta"].length;
     },
     selectedObj() {
-      if (!this.$store.state.currentObject) return false
-      if (!Object.keys(this.$store.state.currentObject).length) return false
-      return this.object_data.id === this.$store.state.currentObject?.id
+      if (!this.$store.state.Objects.currentObject) return false;
+      if (!Object.keys(this.$store.state.Objects.currentObject).length) return false;
+      return this.object_data.id === this.$store.state.Objects.currentObject?.id;
     },
     modalWidth() {
       if (process.client) {
-        return window.innerWidth * 0.5
+        return window.innerWidth * 0.5;
       } else {
-        return 0
+        return 0;
       }
     }
   },
   watch: {},
   mounted() {
-    this.$store.dispatch('getListBroadcastSnippet')
+    this.$store.dispatch("getListBroadcastSnippet");
   },
   methods: {
-    setObject() {
-      this.$store.commit('set_currentObject', this.object_data)
+    async setObject() {
+      await this.$store.dispatch("Objects/setCurrentObject", this.object_data);
     },
     openDetailCard() {
-      this.$emit('open-detail', this.object_data)
-      // this.$store.state.modalCurrentObject = this.object_data
+      this.$emit("open-detail", this.object_data);
+      // this.$store.state.Objects.modalCurrentObject = this.object_data
       // this.$store.state.listModal[1].isOpen = true
     },
     async closeDetail() {
-      this.showDetailObj = false
-      await this.$store.dispatch('loginByToken')
+      this.showDetailObj = false;
+      await this.$store.dispatch("loginByToken");
     }
   }
-}
+};
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .card_obj {
   display: flex;
   justify-content: space-between;
@@ -222,11 +221,11 @@ export default {
     height: 16px !important;
   }
 
-    .footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-    }
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
 
   .more_info {
     display: grid;

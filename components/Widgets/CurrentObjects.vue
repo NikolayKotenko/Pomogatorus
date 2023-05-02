@@ -1,93 +1,98 @@
 <template>
   <div class="wrapper_current_object">
-    <div class='current_object'>
+    <div class="current_object">
       <div class="current_object__label">
         <span>Текущий объект</span>
-        <v-divider></v-divider>
+        <v-divider />
       </div>
 
       <TooltipStyled :title="'Выбрать объект или создать новый'">
         <SelectObjectStyled
-          v-model='$store.state.currentObject'
-          :custom-style='true'
-          :data='$store.state.currentObject'
-          :have-trigger='true'
-          :is-solo='true'
+          :custom-style="true"
+          :data="$store.state.Objects.currentObject"
+          :have-trigger="true"
+          :is-disabled="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : true"
+          :is-loading="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : false"
+          :is-solo="true"
           :item-text="'address'"
           :item-value="'id'"
-          :items='$store.state.Objects.listObjects'
-          :is-loading="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : false"
-          :is-disabled="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : true"
+          :items="$store.state.Objects.listObjects"
           :placeholder="$store.getters.stateAuth ? 'Выберите объект' : 'Войдите в учет. запись'"
-          title='Выберите объект'
-          @update-input='callback'
+          title="Выберите объект"
+          @update-input="callback"
         />
       </TooltipStyled>
 
       <TooltipStyled :title="'Фотография объекта'">
-        <v-img class='current_object__image'
-        >
-          <v-icon class='current_object__image__icon' x-large>mdi-map-marker-outline</v-icon>
+        <v-img class="current_object__image">
+          <v-icon class="current_object__image__icon" x-large>
+            mdi-map-marker-outline
+          </v-icon>
         </v-img>
       </TooltipStyled>
 
       <!-- Циклом параметры по булеву "транслировать в сниппет" -->
-      <section class='current_object__wrapper_info'
-               v-for="(obj, key) in $store.state.list_broadcast_snippet"
+      <section
+        v-for="(obj, key) in $store.state.list_broadcast_snippet"
+        :key="key"
+        class="current_object__wrapper_info"
       >
-        <span class='current_object__wrapper_info__text'>{{ obj.name }}:</span>
-        <span class='current_object__wrapper_info__value'>{{ $store.state.currentObject[obj.code] }}</span>
+        <span class="current_object__wrapper_info__text">{{ obj.name }}:</span>
+        <span class="current_object__wrapper_info__value">{{ $store.state.Objects.currentObject[obj.code] }}</span>
       </section>
 
-      <section class='current_object__wrapper_info'>
-        <span class='current_object__wrapper_info__text'>Параметры объекта:</span>
-        <span class='current_object__wrapper_info__value'>13 из 22</span>
+      <section class="current_object__wrapper_info">
+        <span class="current_object__wrapper_info__text">Параметры объекта:</span>
+        <span class="current_object__wrapper_info__value">13 из 22</span>
       </section>
-      <section class='current_object__wrapper_info'>
-        <span class='current_object__wrapper_info__text'>ТЗ объекта: {{ $store.state.currentObject.name }}</span>
-        <span class='current_object__wrapper_info__value'>7 из 130</span>
+      <section class="current_object__wrapper_info">
+        <span class="current_object__wrapper_info__text">ТЗ объекта: {{ $store.state.Objects.currentObject.name
+          }}</span>
+        <span class="current_object__wrapper_info__value">7 из 130</span>
         <div class="wrapper_button">
           <TooltipStyled :title="'Перейти к объекту'">
             <ButtonStyled
+              :href="$store.getters['Objects/stateObjectSelected'] ? '/objects/'+$store.state.Objects.currentObject.id : ''"
               :local-text="'Открыть'"
               local-class="style_button"
-              :href="$store.getters.stateObjectSelected ? '/objects/'+$store.state.currentObject.id : ''"
-            ></ButtonStyled>
+            />
           </TooltipStyled>
           <TooltipStyled :title="'Сгенерировать PDF Технического Задания'">
             <ButtonStyled
-              local-class="style_button"
-              @click-button='state_tech_task_block = !state_tech_task_block'
               :custom-slot="true"
+              local-class="style_button"
+              @click-button="state_tech_task_block = !state_tech_task_block"
             >
-              <span>{{ state_tech_task_block ? 'Скрыть&nbsp; ТЗ' : 'Создать ТЗ' }}</span>
-              <v-icon>{{state_tech_task_block ? 'mdi-chevron-up' : 'mdi-chevron-down'}}</v-icon>
+              <span>{{ state_tech_task_block ? "Скрыть&nbsp; ТЗ" : "Создать ТЗ" }}</span>
+              <v-icon>{{ state_tech_task_block ? "mdi-chevron-up" : "mdi-chevron-down" }}</v-icon>
             </ButtonStyled>
           </TooltipStyled>
         </div>
 
-        <span v-show='state_tech_task_block' class='current_object__wrapper_info__hide_block'>
-          <v-checkbox
-            v-for='(tag, key) in $store.state.list_tags'
-            v-if='$store.state.list_tags.length'
-            :key='key'
-            v-model='selected_ids_tags'
-            :disabled='!$store.getters.stateObjectSelected'
-            :label='tag.name'
-            :value='tag.id'
-            class='current_object__wrapper_info__hide_block__checkbox'
-            hide-details
-          ></v-checkbox>
+        <span v-show="state_tech_task_block" class="current_object__wrapper_info__hide_block">
+          <div v-if="$store.state.list_tags.length">
+            <v-checkbox
+              v-for="(tag, key) in $store.state.list_tags"
+              :key="key"
+              v-model="selected_ids_tags"
+              :disabled="!$store.getters['Objects/stateObjectSelected']"
+              :label="tag.name"
+              :value="tag.id"
+              class="current_object__wrapper_info__hide_block__checkbox"
+              hide-details
+            />
+          </div>
           <div>
-            <TooltipStyled :title="$store.getters.stateObjectSelected
-                      ? 'Техническое задание по инженерным системам'
-                      : 'Выберите ваш объект для формирования документа'"
+            <TooltipStyled
+              :title="$store.getters['Objects/stateObjectSelected']
+                ? 'Техническое задание по инженерным системам'
+                : 'Выберите ваш объект для формирования документа'"
             >
               <ButtonStyled
-                local-class="style_button downloadPDF"
-                @click-button='downloadPDF()'
                 :custom-slot="true"
-                :is-disabled="!$store.getters.stateObjectSelected"
+                :is-disabled="!$store.getters['Objects/stateObjectSelected']"
+                local-class="style_button downloadPDF"
+                @click-button="downloadPDF()"
               >
                 <span>Скачать PDF</span>
               </ButtonStyled>
@@ -95,26 +100,26 @@
             <!-- Генерация пдф -->
             <client-only>
               <vue-html2pdf
-                ref='html2Pdf'
-                :enable-download='true'
+                ref="html2Pdf"
+                :enable-download="true"
                 :html-to-pdf-options="$store.getters['PdfDataModule/htmlToPdfOptions']('Техническое задание')"
-                :manual-pagination='true'
-                :pdf-quality='2'
-                :show-layout='false'
-                pdf-content-width='100%'
+                :manual-pagination="true"
+                :pdf-quality="2"
+                :show-layout="false"
+                pdf-content-width="100%"
               >
-                <section slot='pdf-content'>
+                <section slot="pdf-content">
                   <!-- content -->
-                  <pdf-content></pdf-content>
+                  <pdf-content />
                   <!-- /content -->
                 </section>
               </vue-html2pdf>
             </client-only>
             <v-alert
-              v-if='alert.state'
-              type='error'
+              v-if="alert.state"
+              type="error"
             >
-              <span v-html='alert.message'></span>
+              <span v-html="alert.message" />
             </v-alert>
           </div>
         </span>
@@ -124,15 +129,16 @@
 </template>
 
 <script>
-import InputStyled from '../Common/InputStyled'
-import SelectStyled from '../Common/SelectStyled'
-import PdfContent from '../PdfReports/PdfContent'
-import SelectObjectStyled from '../Common/SelectObjectStyled'
+import InputStyled from "../Common/InputStyled";
+import SelectStyled from "../Common/SelectStyled";
+import PdfContent from "../PdfReports/PdfContent";
+import SelectObjectStyled from "../Common/SelectObjectStyled";
 import TooltipStyled from "~/components/Common/TooltipStyled";
 import ButtonStyled from "~/components/Common/ButtonStyled";
 
 export default {
-  name: 'CurrentObjects',
+  name: "CurrentObjects",
+  // eslint-disable-next-line vue/no-unused-components
   components: { ButtonStyled, TooltipStyled, SelectObjectStyled, InputStyled, SelectStyled, PdfContent },
   data() {
     return {
@@ -140,48 +146,52 @@ export default {
       selected_ids_tags: [],
       alert: {
         state: false,
-        message: ''
+        message: ""
+      }
+    };
+  },
+  computed: {},
+  watch: {
+    "$store.getters.stateAuth": {
+      handler(state) {
+        if (state) {
+          this.$store.dispatch("getListBroadcastSnippet");
+        } else {
+          this.$store.commit("set_list_broadcast_snippet", []);
+        }
+      }
+    },
+    "$store.getters.getUserId": {
+      handler(value) {
+        this.$store.dispatch("Objects/getListObjectsByUserId", value);
       }
     }
   },
   mounted() {
-    this.$store.dispatch('getListTags')
-    this.$store.dispatch('getListBroadcastSnippet')
-  },
-  watch:{
-    '$store.getters.stateAuth': {
-      handler(state) {
-        if (state) {
-          this.$store.dispatch('getListBroadcastSnippet')
-        } else {
-          this.$store.commit('set_list_broadcast_snippet', [])
-        }
-      }
-    }
-  },
-  computed: {
+    this.$store.dispatch("getListTags");
+    this.$store.dispatch("getListBroadcastSnippet");
   },
   methods: {
-    callback(data) {
-      this.$store.commit('set_currentObject', data)
+    async callback(data) {
+      await this.$store.dispatch("Objects/setCurrentObject", data);
     },
     async downloadPDF() {
-      const response = await this.$store.dispatch('PdfDataModule/getBodyData', { ids_tags: this.selected_ids_tags })
-      console.log('WTF', response)
+      const response = await this.$store.dispatch("PdfDataModule/getBodyData", { ids_tags: this.selected_ids_tags });
+      // console.log("WTF", response);
       if (response.codeResponse === 200) {
-        this.$refs.html2Pdf.generatePdf()
-        this.alert.state = false
-        this.alert.message = ''
+        this.$refs.html2Pdf.generatePdf();
+        this.alert.state = false;
+        this.alert.message = "";
       } else {
-        this.alert.state = true
-        this.alert.message = response.message
+        this.alert.state = true;
+        this.alert.message = response.message;
       }
     }
   }
-}
+};
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @import "@/assets/styles/global.scss";
 
 .wrapper_current_object {
@@ -189,6 +199,7 @@ export default {
   //width: 1px;
   top: 15px;
   position: sticky;
+
   .current_object {
     top: 0;
     //right: -320px;
@@ -280,7 +291,8 @@ export default {
         width: 100%;
       }
     }
-    .downloadPDF{
+
+    .downloadPDF {
       margin-top: 10px;
       width: 100%;
       max-width: unset;
