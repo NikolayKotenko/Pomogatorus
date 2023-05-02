@@ -77,7 +77,7 @@ export default {
   // },
   data() {
     return {
-      tooltip_state: true,
+      tooltip_state: false,
       sharing: {
         url: "https://pomogatorus.ru" + this.$route.fullPath,
         title: (this.$route.meta.title) ? this.$route.meta.title : "",
@@ -96,7 +96,7 @@ export default {
   },
   computed: {
     getCurrentUrl() {
-      return this.$store.state.BASE_URL + this.$route.fullPath;
+      return "https://pomogatorus.ru" + this.$route.fullPath;
     }
   },
   mounted() {

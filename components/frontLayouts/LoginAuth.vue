@@ -5,24 +5,24 @@
     class="auth_container custom_grid_system"
     contenteditable="false"
   >
-    <VContainer>
-      <VTabs v-model="tab">
-        <VTab :key="0">
+    <v-container>
+      <v-tabs v-model="tab">
+        <v-tab :key="0">
           Авторизация
-        </VTab>
-        <VTab :key="1">
+        </v-tab>
+        <v-tab :key="1">
           Регистрация
-        </VTab>
+        </v-tab>
         <!-- Авторизация -->
-        <VTabItem :key="0">
-          <VForm
+        <v-tab-item :key="0">
+          <v-form
             ref="form"
             v-model="valid"
             class="login"
             contenteditable="false"
             @submit.prevent="localLoginUser(`component_wrapper-${index_component}`)"
           >
-            <VTextField
+            <v-text-field
               ref="email_user"
               v-model="email_user"
               :class="'required'"
@@ -33,7 +33,7 @@
               single-line
               type="email"
             />
-            <VTextField
+            <v-text-field
               v-model="password"
               :class="'required field_password'"
               :rules="passRules"
@@ -46,27 +46,27 @@
               required
             >
               <template #append>
-                <VTooltip bottom>
+                <v-tooltip bottom>
                   <template #activator="{ on }">
-                    <VIcon @click="passStateEye = !passStateEye" v-on="on">
+                    <v-icon @click="passStateEye = !passStateEye" v-on="on">
                       {{ passStateEye ? "mdi-eye" : "mdi-eye-off" }}
-                    </VIcon>
+                    </v-icon>
                   </template>
                   Показать/скрыть пароль
-                </VTooltip>
+                </v-tooltip>
               </template>
               <template #append-outer>
-                <VTooltip bottom>
+                <v-tooltip bottom>
                   <template #activator="{ on }">
-                    <VIcon @click="localResendUserPass(`component_wrapper-${index_component}`)" v-on="on">
+                    <v-icon @click="localResendUserPass(`component_wrapper-${index_component}`)" v-on="on">
                       mdi-lock-reset
-                    </VIcon>
+                    </v-icon>
                   </template>
                   Восстановить Код доступа
-                </VTooltip>
+                </v-tooltip>
               </template>
-            </VTextField>
-            <VBtn
+            </v-text-field>
+            <v-btn
               :loading="loading"
               block
               class="btn-auth"
@@ -77,18 +77,18 @@
               type="submit"
             >
               Войти
-            </VBtn>
-          </VForm>
-        </VTabItem>
+            </v-btn>
+          </v-form>
+        </v-tab-item>
         <!-- Регистрация -->
-        <VTabItem :key="1">
-          <VForm
+        <v-tab-item :key="1">
+          <v-form
             v-model="valid"
             class="login"
             contenteditable="false"
             @submit.prevent="localCreateUser(`component_wrapper-${index_component}`)"
           >
-            <VTextField
+            <v-text-field
               v-model="email_user"
               :class="'required'"
               :rules="emailRules"
@@ -98,14 +98,14 @@
               single-line
               type="email"
             />
-            <VTextField
+            <v-text-field
               v-model="name"
               name="name"
               placeholder="Как к вам обращаться ?"
               single-line
               type="text"
             />
-            <VBtn
+            <v-btn
               :loading="loading"
               block
               class="btn-auth"
@@ -116,11 +116,11 @@
               type="submit"
             >
               Зарегестрироваться
-            </VBtn>
-          </VForm>
-        </VTabItem>
-      </VTabs>
-      <VAlert
+            </v-btn>
+          </v-form>
+        </v-tab-item>
+      </v-tabs>
+      <v-alert
         v-if="alert.state && !loading"
         :type="alert.type"
         :value="alert.state"
@@ -128,13 +128,13 @@
         @input="alert.state = false"
       >
         <span v-html="alert.message" />
-      </VAlert>
-    </VContainer>
+      </v-alert>
+    </v-container>
   </v-container>
   <v-container v-else class="custom_grid_system">
-    <VAlert dismissible type="success">
+    <v-alert dismissible type="success">
       <span>Здравствуйте {{ $store.getters.getNameUser }}</span>
-    </VAlert>
+    </v-alert>
   </v-container>
 </template>
 

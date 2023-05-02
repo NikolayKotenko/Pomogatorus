@@ -26,6 +26,8 @@ export default {
       state.listObjects = []
     },
     set_currentObject(state, value) {
+      if (!value) return false
+
       state.currentObject = value
     },
     change_loaderObjects(state, value) {

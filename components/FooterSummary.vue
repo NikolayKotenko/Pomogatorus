@@ -7,7 +7,7 @@
     outlined
     padless
   >
-    <VContainer class="wrapper_footer">
+    <v-container class="wrapper_footer">
       <div v-if="$store.state.AuthModule.userData.objects.length" class="wrapper_objects_list">
         <span>Ваш объект заполнен на - 15 %</span>
         <VSelect
@@ -65,7 +65,7 @@
           Добавить объект
         </VBtn>
       </div>
-    </VContainer>
+    </v-container>
   </VFooter>
 </template>
 
