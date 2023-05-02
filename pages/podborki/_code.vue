@@ -1,7 +1,11 @@
 <template>
   <VContainer class="podborki_detail">
     <div v-if="main_tag.description" class="tag-template">
-      <VCard class="mt-5 mb-5 pa-5" style="word-break: break-word" v-html="main_tag.description"/>
+      <VCard
+        class="mt-5 mb-5 pa-5"
+        style="word-break: break-word"
+        v-html="main_tag.description"
+      />
     </div>
     <!--    <div class='auth-template mt-5'> -->
     <!--      <LoginAuth /> -->
@@ -36,7 +40,7 @@
         </div>
       </div>
     </div>
-    <Biathlon></Biathlon>
+    <Biathlon/>
   </VContainer>
 </template>
 
@@ -46,8 +50,8 @@ import LoginAuth from '../../components/frontLayouts/LoginAuth'
 import Article from '../../components/Article/Article'
 import Request from '../../services/request'
 import ArticleSmallCard from '../../components/Article/ArticleSmallCard.vue'
+import Biathlon from '../../components/Common/Biathlon.vue';
 import HashTagStyled from '~/components/Common/HashTagStyled'
-import Biathlon from "../../components/Common/Biathlon.vue";
 
 export default {
   name: '_code.vue',

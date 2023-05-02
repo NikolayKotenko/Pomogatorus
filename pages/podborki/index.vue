@@ -12,53 +12,50 @@
       :is-hide-selected="true"
       @update-search-input="localGetListItems"
       @click-clear="$store.dispatch('PopularSelectionsModule/getListSelections');"
-    >
-    </SearchStyled>
+    />
 
     <v-card
+      v-for="(item, key) in $store.state.PopularSelectionsModule.list_selections"
+      :key="key"
       class="podborki__wrapper_list"
       :href="$route.path + '/' + item.code"
       hover
-      v-for="(item, key) in $store.state.PopularSelectionsModule.list_selections"
-      :key="key"
     >
-        <v-img
-          v-if="$store.getters.getImageByEClientFilesObj(item.e_client_files)"
-          :class="{'empty_placeholder': ! $store.getters.getImageByEClientFilesObj(item.e_client_files) }"
-          :src="$store.getters.getImageByEClientFilesObj(item.e_client_files)">
-        </v-img>
-        <div class='empty_placeholder'>
-          <span>Фото подборки</span>
-        </div>
+      <v-img
+        v-if="$store.getters.getImageByEClientFilesObj(item.e_client_files)"
+        :class="{'empty_placeholder': ! $store.getters.getImageByEClientFilesObj(item.e_client_files) }"
+        :src="$store.getters.getImageByEClientFilesObj(item.e_client_files)"
+      />
+      <div class="empty_placeholder">
+        <span>Фото подборки</span>
+      </div>
+      <div>
+        <HashTagStyled
+          class="podborki__wrapper_list__title"
+          :text="item.name"
+        />
         <div>
-          <HashTagStyled
-            class="podborki__wrapper_list__title"
-            :text="item.name"
-          >
-          </HashTagStyled>
-          <div >
-            <v-card-text class="podborki__wrapper_list__text"
-              v-html="item.description"
-            >
-            </v-card-text>
-          </div>
-          <div class="podborki__wrapper_list__compilation_info">
-            <span>Заполненых параметров: </span>
-            <span>Всего статей: </span>
-          </div>
+          <v-card-text
+            class="podborki__wrapper_list__text"
+            v-html="item.description"
+          />
         </div>
-
+        <div class="podborki__wrapper_list__compilation_info">
+          <span>Заполненых параметров: </span>
+          <span>Всего статей: </span>
+        </div>
+      </div>
     </v-card>
   </v-container>
 </template>
 
 <script>
-import SearchStyled from "@/components/Common/SearchStyled.vue";
-import HashTagStyled from "../../components/Common/HashTagStyled.vue";
+import HashTagStyled from '../../components/Common/HashTagStyled.vue';
+import SearchStyled from '@/components/Common/SearchStyled.vue';
 
 export default {
   name: 'index.vue',
-  components: {SearchStyled, HashTagStyled},
+  components: { SearchStyled, HashTagStyled },
   data: () => ({
     debounceTimeout: null
   }),
