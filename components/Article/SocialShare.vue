@@ -1,34 +1,42 @@
 <template>
   <div class="social-container">
     <link
-      rel="stylesheet"
+      crossorigin="anonymous"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"
       integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ="
-      crossorigin="anonymous"
+      rel="stylesheet"
     >
 
     <div
-      class="social-container__list-socials"
       :class="{visible: tooltip_state}"
+      class="social-container__list-socials"
       @mouseout="tooltip_state = false"
       @mouseover="tooltip_state = true"
     >
+      <input
+        ref="linkUrl"
+        :value="getCurrentUrl"
+        readonly
+        style="position: fixed; left: -999999"
+        v-on:focus="$event.target.select()" />
       <v-icon
         class="link"
-      >mdi-link-variant</v-icon>
+        @click="copyUrl"
+      >mdi-link-variant
+      </v-icon>
       <ShareNetwork
         v-for="network in networks"
         :key="network.network"
-        class="style_share"
-        :network="network.network"
-        :style="{backgroundColor: network.color}"
-        :url="sharing.url"
-        :title="sharing.title"
         :description="sharing.description"
-        :quote="sharing.quote"
         :hashtags="sharing.hashtags"
-        :twitter-user="sharing.twitterUser"
+        :network="network.network"
+        :quote="sharing.quote"
+        :style="{backgroundColor: network.color}"
         :text="network.text"
+        :title="sharing.title"
+        :twitter-user="sharing.twitterUser"
+        :url="sharing.url"
+        class="style_share"
       >
         <i
           :class="network.icon"
@@ -38,13 +46,13 @@
     </div>
 
     <v-icon
-      title="Поделится статьей"
-      size="30"
-      color="black"
       class="social-container__button-state"
+      color="black"
+      size="30"
+      title="Поделится статьей"
       @click="tooltip_state = true"
-      @mouseover="tooltip_state = true"
       @mouseout="tooltip_state = false"
+      @mouseover="tooltip_state = true"
     >
       mdi-share-outline
     </v-icon>
@@ -53,9 +61,9 @@
 
 <script>
 export default {
-  name: 'SocialShare',
+  name: "SocialShare",
   components: {},
-  props:['mouseStateEvent'],
+  props: ["mouseStateEvent"],
   async asyncData({ $axios, store, params }) {
   },
   // head: {
@@ -67,26 +75,29 @@ export default {
   //     },
   //   ],
   // },
-  data () {
+  data() {
     return {
-      tooltip_state: false,
+      tooltip_state: true,
       sharing: {
-        url: 'https://pomogatorus.ru'+this.$route.fullPath,
-        title: (this.$route.meta.title) ? this.$route.meta.title : '',
-        description: 'This week, I’d like to introduce you to "Vite", which means "Fast". It’s a brand new development setup created by Evan You.',
-        quote: 'The hot reload is so fast it\'s near instant. - Evan You',
-        hashtags: 'vuejs,vite,javascript',
-        twitterUser: 'youyuxi'
+        url: "https://pomogatorus.ru" + this.$route.fullPath,
+        title: (this.$route.meta.title) ? this.$route.meta.title : "",
+        description: "This week, I’d like to introduce you to \"Vite\", which means \"Fast\". It’s a brand new development setup created by Evan You.",
+        quote: "The hot reload is so fast it's near instant. - Evan You",
+        hashtags: "vuejs,vite,javascript",
+        twitterUser: "youyuxi"
       },
       networks: [
-        { network: 'odnoklassniki', title: 'Поделится в OK', icon: 'fab fa-lg fa-odnoklassniki', },
-        { network: 'telegram', title: 'Поделится в TG', icon: 'fab fa-lg fa-telegram',},
-        { network: 'vk', title: 'Поделится в VK', icon: 'fab fa-lg fa-vk',},
-        { network: 'whatsapp', title: 'Поделится в WhatsApp', icon: 'fab fa-lg fa-whatsapp',},
+        { network: "odnoklassniki", title: "Поделится в OK", icon: "fab fa-lg fa-odnoklassniki" },
+        { network: "telegram", title: "Поделится в TG", icon: "fab fa-lg fa-telegram" },
+        { network: "vk", title: "Поделится в VK", icon: "fab fa-lg fa-vk" },
+        { network: "whatsapp", title: "Поделится в WhatsApp", icon: "fab fa-lg fa-whatsapp" }
       ]
-    }
+    };
   },
   computed: {
+    getCurrentUrl() {
+      return this.$store.state.BASE_URL + this.$route.fullPath;
+    }
   },
   mounted() {
     // this.renderVk()
@@ -101,20 +112,22 @@ export default {
     //     })
     // },
     // renderTg() {
-      // document.getElementById('tg_share_button').innerHTML =
-    copyUrl(){
-      navigator.clipboard.writeText(window.location.href);
+    // document.getElementById('tg_share_button').innerHTML =
+    copyUrl() {
+      this.$refs.linkUrl.focus();
+      document.execCommand("copy");
     }
-  },
-}
+  }
+};
 </script>
 
 <style lang="scss">
-.tooltip-social{
+.tooltip-social {
   pointer-events: unset;
   background-color: white;
   box-shadow: 0px 3px 8px 2px rgba(34, 60, 80, 0.2);
 }
+
 .social-container {
   display: flex;
   grid-row-gap: 5px;
@@ -138,6 +151,7 @@ export default {
       cursor: pointer;
       margin-bottom: 10px;
     }
+
     &.visible {
       visibility: visible;
       opacity: 1;
@@ -157,35 +171,37 @@ export default {
     .style_share {
 
     }
-      i{
-        text-align: center;
-        &.fa-odnoklassniki, &.fa-vk, &.fa-telegram, &.fa-whatsapp {
-          color: #857885;
-        }
-      }
 
-      //a[class^="share-network-"] {
-      //  flex: none;
-      //  color: #FFFFFF;
-      //  background-color: #333;
-      //  border-radius: 3px;
-      //  overflow: hidden;
-      //  display: flex;
-      //  flex-direction: row;
-      //  align-content: center;
-      //  align-items: center;
-      //  cursor: pointer;
-      //}
-      //a[class^="share-network-"] .fah {
-      //  background-color: rgba(0, 0, 0, 0.2);
-      //  padding: 5px;
-      //  flex: 0 1 auto;
-      //}
-      //a[class^="share-network-"] span {
-      //  flex: 1 1 0%;
-      //  font-weight: 500;
-      //}
+    i {
+      text-align: center;
+
+      &.fa-odnoklassniki, &.fa-vk, &.fa-telegram, &.fa-whatsapp {
+        color: #857885;
+      }
     }
+
+    //a[class^="share-network-"] {
+    //  flex: none;
+    //  color: #FFFFFF;
+    //  background-color: #333;
+    //  border-radius: 3px;
+    //  overflow: hidden;
+    //  display: flex;
+    //  flex-direction: row;
+    //  align-content: center;
+    //  align-items: center;
+    //  cursor: pointer;
+    //}
+    //a[class^="share-network-"] .fah {
+    //  background-color: rgba(0, 0, 0, 0.2);
+    //  padding: 5px;
+    //  flex: 0 1 auto;
+    //}
+    //a[class^="share-network-"] span {
+    //  flex: 1 1 0%;
+    //  font-weight: 500;
+    //}
   }
+}
 
 </style>
