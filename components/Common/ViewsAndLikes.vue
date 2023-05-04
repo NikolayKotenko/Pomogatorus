@@ -12,7 +12,7 @@
            @click="setLikesDislikes(stateLike ? null : true)"
       >
         <v-icon :class="{active: stateLike}" class="icons">mdi-thumb-up-outline</v-icon>
-        <span>{{ article.likes }}</span>
+        <span>{{ article?.likes }}</span>
       </div>
     </TooltipStyled>
 
@@ -22,7 +22,7 @@
         @click="setLikesDislikes(stateDislike ? null : false)"
       >
         <v-icon :class="{active: stateDislike}" class="icons">mdi-thumb-down-outline</v-icon>
-        <span>{{ article.dislikes }}</span>
+        <span>{{ article?.dislikes }}</span>
       </div>
     </TooltipStyled>
   </div>
@@ -73,13 +73,18 @@ export default {
   computed: {
     stateLike() {
       if (!this.entryLikeDislikeByUser) return false;
+
       return this.entryLikeDislikeByUser.likes_or_dislikes === true;
     },
     stateDislike() {
       if (!this.entryLikeDislikeByUser) return false;
+
       return this.entryLikeDislikeByUser.likes_or_dislikes === false;
     },
     entryLikeDislikeByUser() {
+      if (!this.article) return null;
+      if (!this.article.hasOwnProperty("likes_dislikes")) return null;
+
       const entry = this.article.likes_dislikes.filter((obj) => obj.id_user === this.$store.getters.getUserId);
       return (entry) ? entry[0] : null;
     }
@@ -102,6 +107,7 @@ export default {
 
 .icons {
   color: #000000 !important;
+
   &:hover {
     color: #F6C5A7 !important;
   }
