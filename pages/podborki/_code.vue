@@ -40,21 +40,24 @@
         </div>
       </div>
     </div>
-    <Biathlon />
+    <Biathlon v-if="! $store.state.ArticleModule.refactoring_content"/>
+    <v-overlay z-index="10" :value="$store.state.ArticleModule.refactoring_content">
+      <v-progress-circular :size="50" color="primary" indeterminate style="margin-top: 20px"/>
+    </v-overlay>
   </v-container>
 </template>
 
 <script>
-import Question from "../../components/frontLayouts/Question";
-import LoginAuth from "../../components/frontLayouts/LoginAuth";
-import Article from "../../components/Article/Article";
-import Request from "../../services/request";
-import ArticleSmallCard from "../../components/Article/ArticleSmallCard.vue";
-import Biathlon from "../../components/Common/Biathlon.vue";
-import HashTagStyled from "~/components/Common/HashTagStyled";
+import Question from '../../components/frontLayouts/Question';
+import LoginAuth from '../../components/frontLayouts/LoginAuth';
+import Article from '../../components/Article/Article';
+import Request from '../../services/request';
+import ArticleSmallCard from '../../components/Article/ArticleSmallCard.vue';
+import Biathlon from '../../components/Common/Biathlon.vue';
+import HashTagStyled from '~/components/Common/HashTagStyled';
 
 export default {
-  name: "_code.vue",
+  name: '_code.vue',
   components: {
     Biathlon,
     ArticleSmallCard,
@@ -65,7 +68,7 @@ export default {
   },
   async asyncData({ store, params }) {
     try {
-      const request = await Request.get(`${store.state.BASE_URL}/dictionary/tags-by-code/${params.code}`, "", true);
+      const request = await Request.get(`${store.state.BASE_URL}/dictionary/tags-by-code/${params.code}`, '', true);
       const main_tag = request.data;
       return { main_tag };
     } catch (error) {
@@ -74,7 +77,7 @@ export default {
   },
   data: () => ({
     params_of_component: {
-      name: ""
+      name: ''
     },
     data_of_components: [],
     coordYNav: null,
@@ -84,25 +87,25 @@ export default {
     return {
       title: `${this.main_tag?.seo_title}`,
       meta: [
-        { charset: "utf-8" },
+        { charset: 'utf-8' },
         {
-          name: "viewport",
-          content: "width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1"
+          name: 'viewport',
+          content: 'width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1'
         },
         {
-          hid: "keywords",
-          name: "keywords",
+          hid: 'keywords',
+          name: 'keywords',
           content: `${this.main_tag?.seo_keywords}`
         },
         {
-          hid: "description",
-          name: "description",
+          hid: 'description',
+          name: 'description',
           content: `${this.main_tag?.seo_description}`
         },
         {
-          hid: "theme-color",
-          name: "theme-color",
-          content: "blue"
+          hid: 'theme-color',
+          name: 'theme-color',
+          content: 'blue'
         }
       ]
     };
@@ -113,8 +116,8 @@ export default {
   },
   async mounted() {
     this.$route.meta.title = this.main_tag?.name;
-    await this.$store.dispatch("PopularSelectionsModule/getArticlesInfo", this.$route.params.code);
-    await this.$store.dispatch("PopularSelectionsModule/getQuestionsInfo", this.$route.params.code);
+    await this.$store.dispatch('PopularSelectionsModule/getArticlesInfo', this.$route.params.code);
+    await this.$store.dispatch('PopularSelectionsModule/getQuestionsInfo', this.$route.params.code);
   },
   methods: {}
 };

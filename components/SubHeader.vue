@@ -1,31 +1,30 @@
 <template>
-    <div class="subheader custom_grid_system">
-        <v-breadcrumbs :items="$store.state.breadcrumbs">
-          <template v-slot:item="{ item }">
-            <v-breadcrumbs-item
-              :href="item.to"
-              :disabled="item.disabled"
-            >
-              {{ item.text }}
-            </v-breadcrumbs-item>
-          </template>
-          <template v-slot:divider>
-            <v-icon>mdi-chevron-right</v-icon>
-          </template>
-        </v-breadcrumbs>
-    </div>
-
+  <div class="subheader custom_grid_system">
+    <v-breadcrumbs :items="$store.state.breadcrumbs">
+      <template #item="{ item }">
+        <v-breadcrumbs-item
+          :href="item.to"
+          :disabled="item.disabled"
+        >
+          {{ item.text }}
+        </v-breadcrumbs-item>
+      </template>
+      <template #divider>
+        <v-icon>mdi-chevron-right</v-icon>
+      </template>
+    </v-breadcrumbs>
+  </div>
 </template>
 
 <script>
 export default  {
   name: 'SubHeader',
   data: () => ({}),
+  computed: {},
+  watch: {},
   mounted() {
     this.setSubHeaders();
   },
-  watch: {},
-  computed: {},
   methods: {
     setSubHeaders(){
       const menuItem = this.$store.getters.menuItems.find((elem) =>  {

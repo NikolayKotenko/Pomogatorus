@@ -1,5 +1,8 @@
 <template>
-  <VTooltip bottom>
+  <VTooltip
+    :bottom="isBottom"
+    :top="isTop"
+  >
     <template #activator="{ on, attrs }">
       <div v-bind="attrs" v-on="on">
         <slot/>
@@ -16,6 +19,14 @@ export default {
     title: {
       type: String,
       default: 'Функционал в разработке'
+    },
+    isBottom: {
+      type: Boolean,
+      default:true
+    },
+    isTop: {
+      type: Boolean,
+      default: false
     }
   }
 }

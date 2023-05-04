@@ -16,13 +16,14 @@
           <span class="address">{{ object_data.address }}</span>
         </div>
         <div class="share_and_activity">
+          <CopyLinkButton/>
           <TooltipStyled :title="'Коллаборация'">
             <VMenu :close-on-content-click="false" left offset-y>
               <template #activator="{ on, attrs }">
                 <div style="display: inline-flex; grid-column-gap: 5px" v-bind="attrs" v-on="on">
                   <VIcon
                     class="share"
-                    color="#ADADAD"
+                    color="#000000"
                     size="26"
                     v-bind="attrs"
                     v-on="on"
@@ -31,7 +32,7 @@
                   </VIcon>
                 </div>
               </template>
-              <Collaboration />
+              <Collaboration/>
             </VMenu>
           </TooltipStyled>
 
@@ -82,16 +83,17 @@
 </template>
 
 <script>
-import ButtonStyled from "../Common/ButtonStyled.vue";
-import Collaboration from "../Modals/Collaboration.vue";
-import TooltipStyled from "../Common/TooltipStyled.vue";
-import ObjectDetail from "./ObjectDetail.vue";
+import ButtonStyled from '../Common/ButtonStyled.vue';
+import Collaboration from '../Modals/Collaboration.vue';
+import TooltipStyled from '../Common/TooltipStyled.vue';
+import CopyLinkButton from '../Common/CopyLinkButton.vue';
+import ObjectDetail from './ObjectDetail.vue';
 
 
 export default {
-  name: "CardObject",
-  components: { TooltipStyled, Collaboration, ButtonStyled, ObjectDetail },
-  props: ["object_data"],
+  name: 'CardObject',
+  components: { CopyLinkButton, TooltipStyled, Collaboration, ButtonStyled, ObjectDetail },
+  props: ['object_data'],
   data: () => ({
     showDetailObj: false
   }),
@@ -100,9 +102,9 @@ export default {
       return this.object_data.id === this.$store.state.Objects.currentObject?.id;
     },
     stateFilledImageObject() {
-      if (!this.object_data.hasOwnProperty("osnovnoe-foto-obekta")) return false;
+      if (!this.object_data.hasOwnProperty('osnovnoe-foto-obekta')) return false;
 
-      return this.object_data["osnovnoe-foto-obekta"].length;
+      return this.object_data['osnovnoe-foto-obekta'].length;
     },
     selectedObj() {
       if (!this.$store.state.Objects.currentObject) return false;
@@ -119,20 +121,20 @@ export default {
   },
   watch: {},
   mounted() {
-    this.$store.dispatch("getListBroadcastSnippet");
+    this.$store.dispatch('getListBroadcastSnippet');
   },
   methods: {
     async setObject() {
-      await this.$store.dispatch("Objects/setCurrentObject", this.object_data);
+      await this.$store.dispatch('Objects/setCurrentObject', this.object_data);
     },
     openDetailCard() {
-      this.$emit("open-detail", this.object_data);
+      this.$emit('open-detail', this.object_data);
       // this.$store.state.Objects.modalCurrentObject = this.object_data
       // this.$store.state.listModal[1].isOpen = true
     },
     async closeDetail() {
       this.showDetailObj = false;
-      await this.$store.dispatch("loginByToken");
+      await this.$store.dispatch('loginByToken');
     }
   }
 };

@@ -1,20 +1,23 @@
 <template>
-  <div :id="`component_wrapper-${index_component}`" class="question_wrapper question_hover article_component"
-       contenteditable="false">
+  <div
+    :id="`component_wrapper-${index_component}`"
+    class="question_wrapper question_hover article_component"
+    contenteditable="false"
+  >
     <template v-if="Object.keys(question_data).length">
       <div class="question_wrapper__content">
         <div class="question_wrapper__title">
           <h3>{{ index_questions }}. {{ question_data.name }}</h3>
           <div v-if="question_data.title" class="helper_wrapper">
             <v-tooltip bottom>
-              <template v-slot:activator="{ on, attrs }">
+              <template #activator="{ on, attrs }">
                 <img
                   :src="require(`~/assets/svg/help-circle.svg`)"
                   alt="help"
                   class="help_img"
                   v-bind="attrs"
                   v-on="on"
-                />
+                >
               </template>
               <span>{{ question_data.title }}</span>
             </v-tooltip>
@@ -28,7 +31,7 @@
               :size="20"
               color="primary"
               indeterminate
-            ></v-progress-circular>
+            />
           </div>
         </transition>
       </div>
@@ -38,9 +41,9 @@
         <template v-if="question_data.id_type_answer == '1'">
           <InputStyled
             :data="answer"
-            :fullSincProp="true"
-            :is-disabled='(check_status && status_question.type === "sending")'
-            :placeholder='"Введите ответ"'
+            :full-sinc-prop="true"
+            :is-disabled="(check_status && status_question.type === &quot;sending&quot;)"
+            :placeholder="&quot;Введите ответ&quot;"
             is-solo
             @update-input="textAnswer"
           />
@@ -48,9 +51,9 @@
         <template v-else-if="question_data.id_type_answer == '2'">
           <TextAreaStyled
             :data="answer"
-            :fullSincProp="true"
-            :is-disabled='(check_status && status_question.type === "sending")'
-            :placeholder='"Введите ответ"'
+            :full-sinc-prop="true"
+            :is-disabled="(check_status && status_question.type === &quot;sending&quot;)"
+            :placeholder="&quot;Введите ответ&quot;"
             is-solo
             @update-input="textAnswer"
           />
@@ -68,20 +71,17 @@
             >
               <template slot="label">
                 <div style="display: flex; column-gap: 20px; align-items: flex-start">
-                  <span class="answerList" v-html="item.answer" @click.stop></span>
+                  <span class="answerList" @click.stop v-html="item.answer"/>
                   <div v-if="item.commentary" class="helper_wrapper" @click.stop="stopEvent">
-                    <v-tooltip bottom>
-                      <template v-slot:activator="{ on, attrs }">
+                    <TooltipStyled :title="item.commentary">
+                      <template>
                         <img
                           :src="require(`/assets/svg/help-circle.svg`)"
                           alt="help"
                           class="help_img"
-                          v-bind="attrs"
-                          v-on="on"
-                        />
+                        >
                       </template>
-                      <span>{{ item.commentary }}</span>
-                    </v-tooltip>
+                    </TooltipStyled>
                   </div>
                 </div>
               </template>
@@ -104,20 +104,17 @@
           >
             <template slot="label">
               <div style="display: flex; column-gap: 20px">
-                <span class="answerList" v-html="item.answer" @click.stop></span>
+                <span class="answerList" @click.stop v-html="item.answer"/>
                 <div v-if="item.commentary" class="helper_wrapper" @click.stop="stopEvent">
-                  <v-tooltip bottom>
-                    <template v-slot:activator="{ on, attrs }">
+                  <TooltipStyled :title="item.commentary">
+                    <template>
                       <img
                         :src="require(`/assets/svg/help-circle.svg`)"
                         alt="help"
                         class="help_img"
-                        v-bind="attrs"
-                        v-on="on"
-                      />
+                      >
                     </template>
-                    <span>{{ item.commentary }}</span>
-                  </v-tooltip>
+                  </TooltipStyled>
                 </div>
               </div>
             </template>
@@ -129,9 +126,9 @@
             :disabled="(check_status && status_question.type === 'sending')"
             :items="value_type_answer"
             :menu-props="{
-            closeOnContentClick: true,
-            bottom: true,
-            offsetY: true,
+              closeOnContentClick: true,
+              bottom: true,
+              offsetY: true,
             }"
             clearable
             dense
@@ -143,26 +140,26 @@
             solo
             @change="changeAnswer()"
           >
-            <template v-slot:selection="data">
-              <span v-bind="data.attrs" v-html="data.item.answer"></span>
+            <template #selection="data">
+              <span v-bind="data.attrs" v-html="data.item.answer"/>
             </template>
-            <template v-slot:item="{ active, item, attrs, on }">
+            <template #item="{ active, item, attrs, on }">
               <v-list-item v-bind="attrs" @click="getIdElem($event)" v-on="on">
                 <v-list-item-content>
                   <v-list-item-title>
                     <v-row align="center" no-gutters>
-                      <span class="answerList" v-html="item.answer" @click.stop></span>
-                      <v-spacer></v-spacer>
+                      <span class="answerList" @click.stop v-html="item.answer"/>
+                      <v-spacer/>
                       <div v-if="item.commentary" class="helper_wrapper" @click.stop="stopEvent">
                         <v-tooltip bottom>
-                          <template v-slot:activator="{ on, attrs }">
+                          <template #activator="{ on, attrs }">
                             <img
                               :src="require(`/assets/svg/help-circle.svg`)"
                               alt="help"
                               class="help_img"
                               v-bind="attrs"
                               v-on="on"
-                            />
+                            >
                           </template>
                           <span>{{ item.commentary }}</span>
                         </v-tooltip>
@@ -175,9 +172,7 @@
           </v-select>
         </template>
         <template v-else-if="question_data.id_type_answer == '6'">
-        <span
-        >Укажите число в диапозоне от {{ value_type_answer[0].answer }} и до {{ value_type_answer[1].answer }}</span
-        >
+          <span>Укажите число в диапозоне от {{ value_type_answer[0].answer }} и до {{ value_type_answer[1].answer }}</span>
           <v-text-field
             v-model="answer"
             :class="{ rangeError: rangeError }"
@@ -190,18 +185,20 @@
             @change="changeAnswer()"
           >
             <template slot="prepend-inner">
-              <v-icon color="primary" @click="rangeEdit('minus')"> mdi-minus</v-icon>
+              <v-icon color="primary" @click="rangeEdit('minus')">
+                mdi-minus
+              </v-icon>
             </template>
             <template slot="append">
-              <v-icon color="primary" @click="rangeEdit('plus')"> mdi-plus</v-icon>
+              <v-icon color="primary" @click="rangeEdit('plus')">
+                mdi-plus
+              </v-icon>
             </template>
           </v-text-field>
           <small v-if="rangeError" style="color: lightcoral"> Неккоректные значения </small>
         </template>
         <template v-else-if="question_data.id_type_answer == '7'">
-        <span
-        >Укажите число в диапозоне от {{ value_type_answer[0].answer }} и до {{ value_type_answer[1].answer }}</span
-        >
+          <span>Укажите число в диапозоне от {{ value_type_answer[0].answer }} и до {{ value_type_answer[1].answer }}</span>
           <v-range-slider
             v-model="answer"
             :disabled="(check_status && status_question.type === 'sending')"
@@ -212,7 +209,7 @@
             type="number"
             @change="changeAnswer()"
           >
-            <template v-slot:prepend>
+            <template #prepend>
               <v-text-field
                 :value="answer[0]"
                 class="mt-0 pt-0"
@@ -221,9 +218,9 @@
                 style="width: 60px"
                 type="number"
                 @change="$set(answer, 0, $event)"
-              ></v-text-field>
+              />
             </template>
-            <template v-slot:append>
+            <template #append>
               <v-text-field
                 :value="answer[1]"
                 class="mt-0 pt-0"
@@ -232,7 +229,7 @@
                 style="width: 60px"
                 type="number"
                 @change="$set(answer, 1, $event)"
-              ></v-text-field>
+              />
             </template>
           </v-range-slider>
           <small v-if="rangeError" style="color: lightcoral"> Неккоректные значения </small>
@@ -242,9 +239,9 @@
         <InputStyled
           v-if="question_data.state_detailed_response"
           :data="detailed_response"
-          :fullSincProp="true"
+          :full-sinc-prop="true"
           :is-flat="true"
-          :placeholder='"Развернутый ответ"'
+          :placeholder="&quot;Развернутый ответ&quot;"
           class="py-2"
 
           is-solo
@@ -260,7 +257,7 @@
             <v-icon>mdi-paperclip</v-icon>
             {{ !!files.length ? "Добавить еще" : "Вложить файл" }}
           </ButtonUploadFiles>
-          <input ref="uploader" class="d-none" type="file" @change="onFileChanged" />
+          <input ref="uploader" class="d-none" type="file" @change="onFileChanged">
           <ButtonUploadFiles
             :disabled="(!!uploadedFiles.length && statusFile) || status_name === 'sending'"
             :loading="status_name === 'sending'"
@@ -270,7 +267,7 @@
         </template>
         <template v-else>
           <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <div v-bind="attrs" v-on="on">
                 <v-btn
                   :loading="isSelecting"
@@ -290,7 +287,9 @@
       </div>
 
       <div v-if="files.length" class="files_chips">
-        <h5 class="files_chips__title">Добавленные файлы</h5>
+        <h5 class="files_chips__title">
+          Добавленные файлы
+        </h5>
         <div class="files_chips__wrapper">
           <div v-for="(file, index) in files" class="files_chips__wrapper__chip">
             <v-chip :key="index" class="mr-1 text-truncate" close small @click:close="remove(index)">
@@ -300,36 +299,39 @@
           </div>
         </div>
       </div>
-
       <transition name="list">
-        <div v-if="status_question.type !== 'sending' && status_question.type !== 'warning' && check_status"
-             class="question_wrapper__content__alert">
+        <div
+          v-if="status_question.type !== 'sending' && status_question.type !== 'warning' && check_status"
+          class="question_wrapper__content__alert"
+        >
           <v-alert :icon="status_question.icon" :type="status_question.type">
-            <span v-html="status_question.text"></span>
+            <span v-html="status_question.text"/>
           </v-alert>
         </div>
       </transition>
     </template>
 
     <!--  MODALS  -->
-    <AuthModal ref="authModal" />
+    <AuthModal ref="authModal"/>
   </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters } from 'vuex';
 
-import Request from "../../services/request";
-import Answers from "../../services/answers/answers";
-import CompareArrays from "../../utils/compareArrays";
-import AuthModal from "../Modals/AuthModal";
-import InputStyled from "../Common/InputStyled";
-import TextAreaStyled from "../Common/TextAreaStyled";
-import ButtonUploadFiles from "../Common/ButtonUploadFiles.vue";
+import Request from '../../services/request';
+import Answers from '../../services/answers/answers';
+import CompareArrays from '../../utils/compareArrays';
+import AuthModal from '../Modals/AuthModal';
+import InputStyled from '../Common/InputStyled';
+import TextAreaStyled from '../Common/TextAreaStyled';
+import ButtonUploadFiles from '../Common/ButtonUploadFiles.vue';
+import TooltipStyled from '../Common/TooltipStyled.vue';
 
 export default {
-  name: "Question",
-  components: { TextAreaStyled, InputStyled, AuthModal, ButtonUploadFiles },
+  // eslint-disable-next-line vue/multi-word-component-names
+  name: 'Question',
+  components: { TooltipStyled, TextAreaStyled, InputStyled, AuthModal, ButtonUploadFiles },
   props: {
     propsData: {
       type: Object,
@@ -351,8 +353,8 @@ export default {
     saveTextDebounce: null,
 
     check_status: false,
-    status_name: "sending",
-    detailed_response: "",
+    status_name: 'sending',
+    detailed_response: '',
     answer: null,
     id_answer: null,
     agentCode: null,
@@ -372,19 +374,10 @@ export default {
     selectedFile: null,
     uploadedFiles: []
   }),
-  mounted() {
-    if (Object.keys(this.propsData).length) {
-      this.index_questions = this.propsIndex;
-      this.index_component = Math.floor(Math.random() * 100);
-      this.question_data = this.propsData;
-    } else {
-      this.getData();
-    }
-  },
   watch: {
     answer: {
       handler() {
-        if (this.question_data.id_type_answer == "6") {
+        if (this.question_data.id_type_answer == '6') {
           if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
           this.debounceTimeout = setTimeout(() => {
             this.rangeError =
@@ -407,41 +400,50 @@ export default {
           this.check_status = false;
           this.$nextTick(() => {
             this.answer = null;
-            this.detailed_response = "";
+            this.detailed_response = '';
           });
         }
       },
       deep: true
     },
-    "open_close_cabinet": {
+    'open_close_cabinet': {
       handler(v) {
         if (!v) {
           this.$nextTick(() => {
-            this.answer = "";
-            this.detailed_response = "";
+            this.answer = '';
+            this.detailed_response = '';
           });
-          this.$store.commit("set_idQuestionWhenModal", null);
+          this.$store.commit('set_idQuestionWhenModal', null);
         }
       }
     },
-    "$store.state.Objects.currentObject": {
+    '$store.state.Objects.currentObject': {
       handler() {
         if (this.$store.state.idQuestionWhenModal === this.question_data.id) {
           if (this.$store.state.Objects.currentObject && Object.keys(this.$store.state.Objects.currentObject).length) {
             this.changeAnswer();
           }
-          this.$store.commit("set_idQuestionWhenModal", null);
+          this.$store.commit('set_idQuestionWhenModal', null);
         }
       },
       deep: true
     }
   },
+  mounted() {
+    if (Object.keys(this.propsData).length) {
+      this.index_questions = this.propsIndex;
+      this.index_component = Math.floor(Math.random() * 100);
+      this.question_data = this.propsData;
+    } else {
+      this.getData();
+    }
+  },
   computed: {
-    ...mapGetters(["stateAuth", "open_close_cabinet"]),
+    ...mapGetters(['stateAuth', 'open_close_cabinet']),
     status_question() {
       let auth_block;
-      let index = this.$store.state.ArticleModule.components_after_request.findIndex((i) => {
-        return i.component.name === "auth";
+      const index = this.$store.state.ArticleModule.components_after_request.findIndex((i) => {
+        return i.component.name === 'auth';
       });
       if (index !== -1) auth_block = this.$store.state.ArticleModule.components_after_request[index].index;
 
@@ -457,8 +459,8 @@ export default {
   methods: {
     /* AGENT PROP */
     getIdElem(event) {
-      let child =
-        event.target.parentElement.parentElement.querySelectorAll(".answerList") || event.target.nextElementSibling;
+      const child =
+        event.target.parentElement.parentElement.querySelectorAll('.answerList') || event.target.nextElementSibling;
       if (child) {
         if (Array.from(child).length === 1) {
           if (Array.from(child)[0].children.length) {
@@ -480,7 +482,7 @@ export default {
 
       // After obtaining the focus when closing the FilePicker, return the button state to normal
       window.addEventListener(
-        "focus",
+        'focus',
         () => {
           this.isSelecting = false;
         },
@@ -495,7 +497,7 @@ export default {
       this.files = [...this.selectedFile, ...this.files];
     },
     uploadToServer() {
-      this.status_name = "sending";
+      this.status_name = 'sending';
       const promises = [];
       this.files.forEach((elem) => {
         promises.push(this.requestFunc(elem));
@@ -504,32 +506,32 @@ export default {
         .then((values) => {
           if (
             values.some((elem) => {
-              return elem.codeResponse != "201";
+              return elem.codeResponse != '201';
             })
           ) {
-            this.status_name = "error";
+            this.status_name = 'error';
           } else {
             this.uploadedFiles = [...this.files];
-            this.status_name = "success";
+            this.status_name = 'success';
           }
         })
         .catch((error) => {
           console.warn(error);
-          this.status_name = "error";
+          this.status_name = 'error';
         })
         .finally(() => {
           if (this.$store.state.ArticleModule.answers.map(elem => elem.id).includes(this.question_data.id)) {
-            this.$store.commit("set_files_answer", {
+            this.$store.commit('set_files_answer', {
               id: this.question_data.id,
               files: this.files
             });
           } else {
             const files = structuredClone(this.files);
-            this.$store.commit("add_answers", {
+            this.$store.commit('add_answers', {
               id: this.question_data.id,
               answer: this.answer,
               detailed_response: this.detailed_response,
-              files: files
+              files
             });
           }
         });
@@ -565,8 +567,7 @@ export default {
           }
         };
         this.data_env.data[dataEnv.data.data.column] = JSON.stringify(this.answer);
-      } else {
-        if (!this.answer && this.detailed_response) {
+      } else if (!this.answer && this.detailed_response) {
           if (this.value_type_answer && this.value_type_answer.length) {
             if (this.value_type_answer[0]?.dataEnv) {
               this.data_env = {
@@ -582,7 +583,7 @@ export default {
               });
             }
           }
-        } else if (typeof this.answer === "string") {
+        } else if (typeof this.answer === 'string') {
           if (this.value_type_answer && this.value_type_answer.length) {
             if (this.value_type_answer[0]?.dataEnv) {
               this.data_env = {
@@ -596,8 +597,7 @@ export default {
               this.data_env.data[this.value_type_answer[0].dataEnv.data.data.column] = JSON.stringify(this.answer);
             }
           }
-        } else {
-          if (this.answer?.dataEnv) {
+        } else if (this.answer?.dataEnv) {
             this.data_env = {
               model: this.answer.dataEnv.data.model,
               controller: this.answer.dataEnv.data.controller,
@@ -608,28 +608,26 @@ export default {
             };
             this.data_env.data[this.answer.dataEnv.data.data.column] = JSON.stringify(this.answer);
           }
-        }
-      }
     },
 
     // TODO вот тут - Objects/createNewObject находится общая функция создание объекта можем её  использовать ?
     async silentCreateObject() {
-      this.$store.commit("Objects/change_loaderObjects", true);
+      this.$store.commit('Objects/change_loaderObjects', true);
 
-      let { data } = await Request.post(this.$store.state.BASE_URL + "/entity/objects");
+      const { data } = await Request.post(this.$store.state.BASE_URL + '/entity/objects');
 
       this.isSilentCreated = true;
 
-      await this.$store.dispatch("loginByToken");
+      await this.$store.dispatch('loginByToken');
 
-      await this.$store.dispatch("Objects/setCurrentObject", data);
+      await this.$store.dispatch('Objects/setCurrentObject', data);
 
-      this.$store.commit("Objects/setListObjects", [data]);
+      this.$store.commit('Objects/setListObjects', [data]);
 
-      this.$store.commit("Objects/change_loaderObjects", false);
+      this.$store.commit('Objects/change_loaderObjects', false);
     },
     sendAnswer(dataEnv) {
-      this.status_name = "sending";
+      this.status_name = 'sending';
       this.$nextTick(async () => {
         this.setDataEnv(dataEnv);
         if (this.id_answer) {
@@ -645,18 +643,18 @@ export default {
                 value_answer: JSON.stringify(this.answer),
                 data_env: JSON.stringify(this.data_env),
                 detailed_response: this.detailed_response,
-                attachment_files: ""
+                attachment_files: ''
               },
               this.id_answer
             );
-            if (result.codeResponse != "202") {
-              this.status_name = "error";
+            if (result.codeResponse != '202') {
+              this.status_name = 'error';
             } else {
-              this.status_name = "success";
+              this.status_name = 'success';
               this.id_answer = result.data.id;
             }
           } catch (e) {
-            this.status_name = "error";
+            this.status_name = 'error';
             console.warn(e);
           }
         } else {
@@ -671,27 +669,27 @@ export default {
               value_answer: JSON.stringify(this.answer),
               data_env: JSON.stringify(this.data_env),
               detailed_response: this.detailed_response,
-              attachment_files: ""
+              attachment_files: ''
             });
-            if (result.codeResponse != "201") {
-              this.status_name = "error";
+            if (result.codeResponse != '201') {
+              this.status_name = 'error';
             } else {
-              this.status_name = "success";
+              this.status_name = 'success';
               this.id_answer = result.data.id;
             }
           } catch (e) {
-            this.status_name = "error";
+            this.status_name = 'error';
             console.warn(e);
           }
         }
 
         // AFTER WE CREATE WE SAVE OUR ANSWER TO STORE
         const files = structuredClone(this.files);
-        this.$store.commit("add_answers", {
+        this.$store.commit('add_answers', {
           id: this.question_data.id,
           answer: this.answer,
           detailed_response: this.detailed_response,
-          files: files
+          files
         });
       });
     },
@@ -703,15 +701,14 @@ export default {
     async changeAnswer(dataEnv) {
       this.check_status = true;
       if (!this.stateAuth) {
-        this.status_name = "warning";
+        this.status_name = 'warning';
         this.$nextTick(() => {
           /* Fix default scroll by hash on page */
           this.createAnchorToAuth();
         });
         this.$refs.authModal.openModal();
-      } else {
-        if (!this.$store.state.Objects.currentObject || !Object.keys(this.$store.state.Objects.currentObject).length) {
-          console.log("no selected obj");
+      } else if (!this.$store.state.Objects.currentObject || !Object.keys(this.$store.state.Objects.currentObject).length) {
+          console.log('no selected obj');
 
           if (!Array.isArray(this.$store.state.AuthModule.userData.objects) || this.$store.state.AuthModule.userData.objects.length < 1) {
             await this.silentCreateObject();
@@ -719,22 +716,21 @@ export default {
             this.sendAnswer(dataEnv);
           } else {
             this.check_status = false;
-            this.$store.commit("set_idQuestionWhenModal", this.question_data.id);
-            this.$store.commit("change_showCabinet", true);
+            this.$store.commit('set_idQuestionWhenModal', this.question_data.id);
+            this.$store.commit('change_showCabinet', true);
           }
         } else {
           this.sendAnswer(dataEnv);
         }
-      }
     },
     createAnchorToAuth() {
-      document.querySelectorAll("#authAnchor").forEach((anchor) => {
+      document.querySelectorAll('#authAnchor').forEach((anchor) => {
         const elem = document.getElementById(this.status_question?.anchor);
         if (elem) {
           const heightNav = 70;
           const headerTitle = 54;
           const top = window.scrollY + elem.getBoundingClientRect().top - heightNav - headerTitle;
-          anchor.addEventListener("click", function(e) {
+          anchor.addEventListener('click', function(e) {
             e.preventDefault();
             window.scrollTo(0, top);
           });
@@ -744,10 +740,10 @@ export default {
     deleteQuestion() {
       const elem = document.getElementById(`component_wrapper-${this.index_component}`);
       elem.remove();
-      this.$store.dispatch("deleteComponent", this.index_component);
+      this.$store.dispatch('deleteComponent', this.index_component);
     },
     rangeEdit(action) {
-      if (action === "plus") {
+      if (action === 'plus') {
         if (!this.answer) {
           this.$nextTick(() => {
             this.answer = 1;
@@ -757,8 +753,7 @@ export default {
             this.answer = parseInt(this.answer) + 1;
           });
         }
-      } else {
-        if (!this.answer) {
+      } else if (!this.answer) {
           this.$nextTick(() => {
             this.answer = 0;
           });
@@ -770,7 +765,6 @@ export default {
           this.$nextTick(() => {
             this.answer = 0;
           });
-      }
       this.changeAnswer();
     },
     getData() {
@@ -783,7 +777,7 @@ export default {
         this.getWidthOfControls();
 
         if (this.$store.state.ArticleModule.answers.length) {
-          let current = this.$store.state.ArticleModule.answers.find(elem => elem.id === this.question_data.id);
+          const current = this.$store.state.ArticleModule.answers.find(elem => elem.id === this.question_data.id);
           if (current) {
             this.files = current.files;
             this.answer = current.answer;
@@ -793,9 +787,9 @@ export default {
       }
     },
     getValue_type_answer() {
-      if (this.question_data["id_type_answer"] == "7") {
+      if (this.question_data.id_type_answer == '7') {
         let parsed = null;
-        parsed = JSON.parse(JSON.parse(this.question_data["value_type_answer"]));
+        parsed = JSON.parse(JSON.parse(this.question_data.value_type_answer));
         if (Array.isArray(parsed)) {
           this.value_type_answer = parsed;
         } else {
@@ -810,7 +804,7 @@ export default {
         }
       } else {
         let parsed = null;
-        parsed = JSON.parse(JSON.parse(this.question_data["value_type_answer"]));
+        parsed = JSON.parse(JSON.parse(this.question_data.value_type_answer));
         if (Array.isArray(parsed)) {
           this.value_type_answer = parsed;
         } else {
@@ -879,7 +873,6 @@ export default {
 }
 
 .question_wrapper {
-  max-width: 815px;
   position: relative;
   padding: 20px;
   border: 2px solid white;

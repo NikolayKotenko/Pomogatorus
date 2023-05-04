@@ -1,99 +1,50 @@
 <template>
   <v-container>
-    <div class='article-template'>
-      <template v-if='article'>
-<!--        <div-->
-<!--          :class='[-->
-<!--            { showArticleHeader: isShowTitle },-->
-<!--            {-->
-<!--              subHeader: $store.state.show_header && isShowTitle && $device.isDesktop,-->
-<!--            },-->
-<!--            { subHeaderMobile: $device.isMobile },-->
-<!--          ]'-->
-<!--          class='article-template__subHeader'-->
-<!--        >-->
-<!--          <h2 class='mainTitleFont'>-->
-<!--            <div>{{ article.name }}</div>-->
-<!--            <social-share></social-share>-->
-<!--          </h2>-->
-<!--        </div>-->
-        <div ref='nav' class='article-template__header'>
-          <h1 class='article-template__header__title mainTitleFont'>
+    <div class="article-template">
+      <template v-if="article">
+        <div ref="nav" class="article-template__header">
+          <h1 class="article-template__header__title mainTitleFont">
             <div>{{ article.name }}</div>
-<!--            <social-share></social-share>-->
           </h1>
-          <ArticleInfo :article_data='article' @setView='setView' />
-          <div v-if='!renderArticle' class='article-template__content mainContentFont' v-html='refactored_content'></div>
+          <ArticleInfo :article_data="article" @set-view="setView"/>
+          <div v-if="!renderArticle" class="article-template__content mainContentFont" v-html="refactored_content"/>
         </div>
-
-
       </template>
 
-      <div v-if='$store.state.ArticleModule.refactoring_content || !article' class='hidden-mask'></div>
-      <v-overlay :value='$store.state.ArticleModule.refactoring_content'>
-        <v-progress-circular :size='50' color='primary' indeterminate style='margin-top: 20px'></v-progress-circular>
-      </v-overlay>
+      <div v-if="$store.state.ArticleModule.refactoring_content || !article" class="hidden-mask"/>
     </div>
-    <div class="article_info_wrapper__feedback">
-      <ViewsAndLikes></ViewsAndLikes>
-<!--      <div class="icons_wrapper">-->
-<!--        <div style="padding-right: 1em">-->
-<!--          <v-tooltip top>-->
-<!--            <template v-slot:activator='{ on, attrs }'>-->
-<!--              <div v-bind='attrs' v-on='on'>-->
-<!--                <v-icon-->
-<!--                  size="30"-->
-<!--                  color="#000000"-->
-<!--                  class="icon_eye">mdi-eye</v-icon>-->
-<!--                <span>212</span>-->
-<!--              </div>-->
-<!--            </template>-->
-<!--            <span>Кол-во просмотров</span>-->
-<!--          </v-tooltip>-->
-<!--        </div>-->
-<!--        <v-tooltip top>-->
-<!--          <template v-slot:activator='{ on, attrs }'>-->
-<!--            <div v-bind='attrs' v-on='on'>-->
-<!--              <v-icon-->
-<!--                size="30"-->
-<!--                color="#000000"-->
-<!--                class="icon_like">mdi-cards-heart</v-icon>-->
-<!--              <span>94</span>-->
-<!--            </div>-->
-<!--          </template>-->
-<!--          <span>Понравилось людям</span>-->
-<!--        </v-tooltip>-->
-<!--      </div>-->
-      <div>
 
-      </div>
-      <SocialShare>
 
-      </SocialShare>
-    </div>
-    <hr class="article_info_wrapper__divider"></hr>
-
-    <div class="article_info_wrapper__more_article" v-if="listArticlesExcludeCurrent.length">
-      <span>
+    <div v-if="listArticlesExcludeCurrent.length" class="article_info_wrapper__more_article">
+      <h3>
         Ещё статьи по тегу:
-        <HashTagStyled :text="getFirstTag"></HashTagStyled>
-      </span>
+        <HashTagStyled :text="getFirstTag"/>
+      </h3>
       <div class="article_info_wrapper__more_article__wrapper">
         <ArticleSmallCard
           v-for="(obj, key) in listArticlesExcludeCurrent"
-          :article="obj"
           :key="key"
-        >
-        </ArticleSmallCard>
+          :article="obj"
+        />
       </div>
     </div>
+    <Biathlon v-if="! $store.state.ArticleModule.refactoring_content"/>
+    <v-overlay z-index="10" :value="$store.state.ArticleModule.refactoring_content">
+      <v-progress-circular :size="50" color="primary" indeterminate style="margin-top: 20px"/>
+    </v-overlay>
+
     <!-- TODO: DEPRECATED, Теперь у нас есть боковой виджет объекта -->
-    <!--    <footer-summary></footer-summary>-->
+    <!--    <footer-summary></footer-summary> -->
   </v-container>
 </template>
 
 <script>
 import Vue from 'vue'
+import ArticleModule from '../../store/modules/article';
+import constructFilterQuery from '../../utils/constructFilterQuery';
+import ArticleSmallCard from '../../components/Article/ArticleSmallCard.vue';
+import ViewsAndLikes from '../../components/Common/ViewsAndLikes.vue';
+import Biathlon from '../../components/Common/Biathlon.vue';
 import ImageLayout from '~/components/frontLayouts/ImageLayout'
 import Question from '~/components/frontLayouts/Question'
 import LoginAuth from '~/components/frontLayouts/LoginAuth'
@@ -102,17 +53,13 @@ import ArticleInfo from '~/components/Article/ArticleInfo'
 import SocialShare from '~/components/Article/SocialShare'
 import HashTagStyled from '~/components/Common/HashTagStyled'
 import Request from '~/services/request'
-import Article from "~/components/Article/Article.vue";
-import ArticleModule from "../../store/modules/article";
-import constructFilterQuery from "../../utils/constructFilterQuery";
-import ArticleSmallCard from "../../components/Article/ArticleSmallCard.vue";
-import ViewsAndLikes from "../../components/Common/ViewsAndLikes.vue";
+import Article from '~/components/Article/Article.vue';
 
 const vuetify_class = require('vuetify')
 
 export default {
   name: '_id.vue',
-  components: {ViewsAndLikes, ArticleSmallCard, Article, ArticleInfo, Author, SocialShare, HashTagStyled},
+  components: { Biathlon, ViewsAndLikes, ArticleSmallCard, Article, ArticleInfo, Author, SocialShare, HashTagStyled },
   async asyncData({ store, params }) {
     try {
       const article_request = await Request.get(`${store.state.BASE_URL}/entity/articles/${params.id}`, '', true)
@@ -183,40 +130,6 @@ export default {
       }
     ]
   },
-  async mounted() {
-    this.$route.meta.title = this.article?.name
-
-    if (process.client) {
-      window.addEventListener('scroll', this.scrollWindow)
-    }
-    this.initializeContent().then(() => {
-      setTimeout(() => {
-        this.changeIndexQuestion()
-        this.$store.commit('change_refactoring_content', false)
-      })
-      // SCROLL TO AUTH BLOCK IF WE COME FROM EMAIL MESSAGE
-      setTimeout(() => {
-        if (this.$route.hash) {
-          const elem = document.getElementById(this.$route.hash.split('#').pop())
-          const top = window.scrollY + elem.getBoundingClientRect().top - this.heightNav - 54
-          window.scrollTo(0, top)
-        }
-      }, 200)
-    })
-
-    await this.$store.dispatch('getListArticles', this.getFilterByMainTag)
-  },
-  watch: {
-    '$store.state.refactoring_content': {
-      handler(v) {
-        if (!v) {
-          this.initializeContent().then(() => {
-            this.$store.commit('change_refactoring_content', false)
-          })
-        }
-      }
-    }
-  },
   computed: {
     refactored_content() {
       return JSON.parse(JSON.parse(this.article.content))
@@ -243,6 +156,53 @@ export default {
     },
     getFilterByMainTag(){
       return '&filter[tag][]='+this.article._all_public_tags[0]?.code;
+    }
+  },
+  watch: {
+    '$store.state.refactoring_content': {
+      handler(v) {
+        if (!v) {
+          this.initializeContent().then(() => {
+            this.$store.commit('change_refactoring_content', false)
+          })
+        }
+      }
+    }
+  },
+  async mounted() {
+    this.$route.meta.title = this.article?.name
+
+    if (process.client) {
+      window.addEventListener('scroll', this.scrollWindow)
+    }
+    this.initializeContent().then(() => {
+      setTimeout(() => {
+        this.changeIndexQuestion()
+        this.$store.commit('change_refactoring_content', false)
+      })
+      // SCROLL TO AUTH BLOCK IF WE COME FROM EMAIL MESSAGE
+      setTimeout(() => {
+        if (this.$route.hash) {
+          const elem = document.getElementById(this.$route.hash.split('#').pop())
+          const top = window.scrollY + elem.getBoundingClientRect().top - this.heightNav - 54
+          window.scrollTo(0, top)
+        }
+      }, 200)
+    })
+
+    await this.$store.dispatch('getListArticles', this.getFilterByMainTag)
+  },
+  beforeDestroy() {
+    this.$store.state.ArticleModule.selectedComponent = {}
+    this.$store.state.ArticleModule.countLayout = 0
+    this.$store.state.ArticleModule.count_of_questions = 0
+    this.$store.state.ArticleModule.components_after_request = []
+
+    this.$store.commit('set_answers', [])
+  },
+  destroyed() {
+    if (process.client) {
+      window.removeEventListener('scroll', this.scrollWindow)
     }
   },
   methods: {
@@ -279,9 +239,9 @@ export default {
       })
     },
     renderFlat() {
-      let components = Array.from(document.getElementsByClassName('article_component'))
+      const components = Array.from(document.getElementsByClassName('article_component'))
 
-      let contentElement = document.getElementsByClassName('article-template__content')[0]
+      const contentElement = document.getElementsByClassName('article-template__content')[0]
       contentElement.innerHTML = ''
 
       components.forEach(elem => {
@@ -291,16 +251,16 @@ export default {
 
     // RENDER ARTICLE
     changeIndexQuestion() {
-      let questions = [...document.getElementsByClassName('question_wrapper')]
+      const questions = [...document.getElementsByClassName('question_wrapper')]
 
       this.$nextTick(() => {
         let counter = 1
 
         questions.forEach((elem) => {
-          let tmpStr = elem.id.match('-(.*)')
-          let id = tmpStr[tmpStr.length - 1]
+          const tmpStr = elem.id.match('-(.*)')
+          const id = tmpStr[tmpStr.length - 1]
 
-          let component = this.data_of_components
+          const component = this.data_of_components
             .filter((elem) => {
               return elem.data.component.name === 'question' || elem.data.component.name === 'questions'
             })
@@ -328,7 +288,7 @@ export default {
 
           arr_of_components.forEach((elem) => {
             if (elem.component.name === 'questions') {
-              let question = questions_data.filter(question => {
+              const question = questions_data.filter(question => {
                 return question.id == elem.component.id
               })[0]
               if (question) {
@@ -363,7 +323,7 @@ export default {
                     const full_url = document
                       .getElementById(`component_wrapper-${elem.index}`)
                       .getElementsByClassName('inserted_image')[0].src
-                    let sub_url = full_url.split('.com')
+                    const sub_url = full_url.split('.com')
                     const alt = document
                       .getElementById(`component_wrapper-${elem.index}`)
                       .getElementsByClassName('inserted_image')[0].alt
@@ -376,7 +336,7 @@ export default {
                       {
                         full_path: sub_url[1]
                       },
-                      { title: title }
+                      { title }
                     )
                     this.$store.commit('M_selectedComponent', {})
                     // return
@@ -385,7 +345,7 @@ export default {
                   this.$store.commit('M_countLayout', elem.index)
                   this.$store.commit('M_selectedComponent', data)
                   const countLayout = this.$store.state.ArticleModule.countLayout
-                  let range = document.createRange()
+                  const range = document.createRange()
                   range.selectNode(document.getElementById(`component_wrapper-${elem.index}`))
                   range.deleteContents()
                   range.collapse(false)
@@ -424,7 +384,7 @@ export default {
         index: this.$store.state.ArticleModule.countLayout,
         component: data_component
       })
-      const params = Object.assign({}, { instance: instance }, { data: data })
+      const params = Object.assign({}, { instance }, { data })
       return new this.Constructor_instance(params)
     },
 
@@ -440,19 +400,6 @@ export default {
 
       this.data = data
       this.instance = instance
-    }
-  },
-  beforeDestroy() {
-    this.$store.state.ArticleModule.selectedComponent = {}
-    this.$store.state.ArticleModule.countLayout = 0
-    this.$store.state.ArticleModule.count_of_questions = 0
-    this.$store.state.ArticleModule.components_after_request = []
-
-    this.$store.commit('set_answers', [])
-  },
-  destroyed() {
-    if (process.client) {
-      window.removeEventListener('scroll', this.scrollWindow)
     }
   }
 }
@@ -478,7 +425,7 @@ export default {
 }
 
 .article-template {
-  margin: 0 auto;
+  margin: 0 0 80px 0;
   display: flex;
   flex-direction: column;
 
@@ -515,7 +462,7 @@ export default {
 
   &__content {
     word-break: normal;
-    max-width: 815px;
+    max-width: 1140px;
 
     h2 {
       font-family: 'Roboto', sans-serif !important;

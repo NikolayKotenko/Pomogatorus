@@ -13,17 +13,6 @@
       @mouseout="tooltip_state = false"
       @mouseover="tooltip_state = true"
     >
-      <input
-        ref="linkUrl"
-        :value="getCurrentUrl"
-        readonly
-        style="position: fixed; left: -999999"
-        v-on:focus="$event.target.select()" />
-      <v-icon
-        class="link"
-        @click="copyUrl"
-      >mdi-link-variant
-      </v-icon>
       <ShareNetwork
         v-for="network in networks"
         :key="network.network"
@@ -48,22 +37,22 @@
     <v-icon
       class="social-container__button-state"
       color="black"
-      size="30"
+      size="24"
       title="Поделится статьей"
       @click="tooltip_state = true"
       @mouseout="tooltip_state = false"
       @mouseover="tooltip_state = true"
     >
-      mdi-share-outline
+      mdi-export-variant
     </v-icon>
   </div>
 </template>
 
 <script>
 export default {
-  name: "SocialShare",
+  name: 'SocialShare',
   components: {},
-  props: ["mouseStateEvent"],
+  props: ['mouseStateEvent'],
   async asyncData({ $axios, store, params }) {
   },
   // head: {
@@ -79,24 +68,24 @@ export default {
     return {
       tooltip_state: false,
       sharing: {
-        url: "https://pomogatorus.ru" + this.$route.fullPath,
-        title: (this.$route.meta.title) ? this.$route.meta.title : "",
-        description: "This week, I’d like to introduce you to \"Vite\", which means \"Fast\". It’s a brand new development setup created by Evan You.",
-        quote: "The hot reload is so fast it's near instant. - Evan You",
-        hashtags: "vuejs,vite,javascript",
-        twitterUser: "youyuxi"
+        url: 'https://pomogatorus.ru' + this.$route.fullPath,
+        title: (this.$route.meta.title) ? this.$route.meta.title : '',
+        description: 'This week, I’d like to introduce you to "Vite", which means "Fast". It’s a brand new development setup created by Evan You.',
+        quote: 'The hot reload is so fast it\'s near instant. - Evan You',
+        hashtags: 'vuejs,vite,javascript',
+        twitterUser: 'youyuxi'
       },
       networks: [
-        { network: "odnoklassniki", title: "Поделится в OK", icon: "fab fa-lg fa-odnoklassniki" },
-        { network: "telegram", title: "Поделится в TG", icon: "fab fa-lg fa-telegram" },
-        { network: "vk", title: "Поделится в VK", icon: "fab fa-lg fa-vk" },
-        { network: "whatsapp", title: "Поделится в WhatsApp", icon: "fab fa-lg fa-whatsapp" }
+        { network: 'odnoklassniki', title: 'Поделится в OK', icon: 'fab fa-lg fa-odnoklassniki' },
+        { network: 'telegram', title: 'Поделится в TG', icon: 'fab fa-lg fa-telegram' },
+        { network: 'vk', title: 'Поделится в VK', icon: 'fab fa-lg fa-vk' },
+        { network: 'whatsapp', title: 'Поделится в WhatsApp', icon: 'fab fa-lg fa-whatsapp' }
       ]
     };
   },
   computed: {
     getCurrentUrl() {
-      return "https://pomogatorus.ru" + this.$route.fullPath;
+      return 'https://pomogatorus.ru' + this.$route.fullPath;
     }
   },
   mounted() {
@@ -113,10 +102,6 @@ export default {
     // },
     // renderTg() {
     // document.getElementById('tg_share_button').innerHTML =
-    copyUrl() {
-      this.$refs.linkUrl.focus();
-      document.execCommand("copy");
-    }
   }
 };
 </script>
@@ -139,29 +124,33 @@ export default {
   &__button-state {
     justify-content: right !important;
     padding-left: 10px;
+
+    &:hover{
+      color: #F6C5A7 !important;
+    }
+    &:active{
+      color: #F79256 !important;
+    }
+    &::after {
+      background-color: #FFFFFF !important;
+    }
   }
 
   &__list-socials {
     opacity: 0;
-    transition: opacity 1s;
+    transition: opacity 0.5ms;
     visibility: hidden;
-
-    .link {
-      color: #000000 !important;
-      cursor: pointer;
-      margin-bottom: 10px;
-    }
 
     &.visible {
       visibility: visible;
       opacity: 1;
-      transition: opacity 1s;
+      transition: opacity 0.5ms;
     }
 
     display: grid;
     position: absolute;
     text-align: center;
-    margin-bottom: 180px;
+    margin-bottom: 140px;
     box-shadow: 0px 3px 8px 2px rgba(34, 60, 80, 0.4);
     grid-row-gap: 2px;
     padding: 5px;

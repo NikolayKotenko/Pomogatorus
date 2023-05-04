@@ -29,49 +29,40 @@
             </a>
           </div>
         </div>
-        <!--                <div class='article_info_wrapper__info__left__block'> -->
-        <!--                  <div class='article_info_wrapper__info__left__block__title'> -->
-        <!--                    <v-icon class='article_info_wrapper__info__left__block__title__icon' size='22'> mdi-eye-outline</v-icon> -->
-        <!--                    <span> Прочитали: </span> -->
-        <!--                  </div> -->
-        <!--                  <span class='article_info_wrapper__info__left__block__value counters'> 722 человек </span> -->
-        <!--                </div> -->
       </div>
-      <!--      <div class='article_info_wrapper__info__right'> -->
-      <!--        <v-btn-toggle v-model='articleView' color='deep-purple accent-3' dense @change='setView'> -->
-      <!--          <v-tooltip bottom> -->
-      <!--            <template v-slot:activator='{ on, attrs }'> -->
-      <!--              <v-btn -->
-      <!--                large -->
-      <!--                v-bind='attrs' -->
-      <!--                value='normal' -->
-      <!--                v-on='on' -->
-      <!--              > -->
-      <!--                <v-icon> -->
-      <!--                  mdi-text-box-search-outline -->
-      <!--                </v-icon> -->
-      <!--              </v-btn> -->
-      <!--            </template> -->
-      <!--            <span>Переключить на обычное отображение статьи</span> -->
-      <!--          </v-tooltip> -->
-      <!--          <v-tooltip bottom> -->
-      <!--          </v-tooltip> -->
-      <!--          <v-tooltip bottom> -->
-      <!--            <template v-slot:activator='{ on, attrs }'> -->
-      <!--              <v-btn large v-bind='attrs' value='flat' v-on='on'> -->
-      <!--                <v-icon> mdi-form-select</v-icon> -->
-      <!--              </v-btn> -->
-      <!--            </template> -->
-      <!--            <span>Оставить только вопросы</span> -->
-      <!--          </v-tooltip> -->
-      <!--        </v-btn-toggle> -->
-      <!--      </div> -->
+      <div class="article_info_wrapper__info__right">
+        <v-btn-toggle v-model="articleView" color="deep-purple accent-3" dense @change="setView">
+          <TooltipStyled :title="'Переключить на обычное отображение статьи'">
+            <template>
+              <v-btn
+                large
+                value="normal"
+              >
+                <v-icon>
+                  mdi-text-box-search-outline
+                </v-icon>
+              </v-btn>
+            </template>
+          </TooltipStyled>
+
+          <TooltipStyled :title="'Оставить только вопросы'">
+            <template>
+              <v-btn
+                large
+                value="flat"
+              >
+                <v-icon> mdi-form-select</v-icon>
+              </v-btn>
+            </template>
+          </TooltipStyled>
+        </v-btn-toggle>
+      </div>
     </div>
     <VImg
       :src="$store.getters.getImageByEClientFilesObj(article_data.e_client_files)"
       class="mt-5"
       contain
-      max-width="815"
+      max-width="1140"
     />
     <div v-if="article_data.preview" class="article_info_wrapper__anons">
       <span>
@@ -80,16 +71,16 @@
     </div>
     <hr class="article_info_wrapper__divider">
   </div>
-
 </template>
 
 
 <script>
-import Biathlon from "../Common/Biathlon.vue";
+
+import TooltipStyled from '../Common/TooltipStyled.vue';
 
 export default {
   name: 'ArticleInfo',
-  components: {Biathlon},
+  components: { TooltipStyled },
   props: ['article_data'],
   data: () => ({
     articleView: 'normal'
@@ -129,7 +120,7 @@ export default {
 
 .article_info_wrapper {
   color: black;
-  max-width: 815px;
+  max-width: 1140px;
 
   &__info {
     display: flex;
@@ -167,7 +158,7 @@ export default {
     background-color: #E3E3E3;
     padding: 20px;
     margin: 15px 0 15px 0;
-    max-width: 815px;
+    max-width: 1140px;
   }
 
   &__divider {

@@ -77,7 +77,7 @@
             v-on="on"
             @click="$store.state.listModal[0].isOpen = !$store.state.listModal[0].isOpen"
           >
-            mdi-account-outline
+            mdi-account
           </v-icon>
         </template>
         <span>Личный кабинет</span>
