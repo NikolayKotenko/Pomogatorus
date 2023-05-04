@@ -38,7 +38,7 @@
           v-bind="data.attrs"
           @click="data.select; focusOn()"
         >
-          {{ data.item[itemText] ? data.item[itemText] : "Не заполнено наименование" }}
+          {{ data.item.name }}
         </span>
       </template>
       <template v-else>
@@ -55,7 +55,10 @@
         <v-icon>mdi-minus</v-icon>
       </template>
     </template>
-    <template v-slot:append-item>
+    <template v-slot:item="{ item }">
+      {{ item.name }}
+    </template>
+    <template v-slot:no-data>
       <v-card class="wrapper_add_new_object" elevation="8">
         <v-card-actions>
           <v-btn :href="'/objects/'" block class="btn_add_new_object" plain small text>
@@ -64,9 +67,6 @@
           </v-btn>
         </v-card-actions>
       </v-card>
-    </template>
-    <template v-slot:item="{ item }">
-      {{ (item.address) ? item.address : "Не заполнен адрес" }}
     </template>
   </v-autocomplete>
 </template>

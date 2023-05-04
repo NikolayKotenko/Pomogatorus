@@ -6,21 +6,25 @@
         <v-divider />
       </div>
 
-      <TooltipStyled :title="'Выбрать объект или создать новый'">
-        <SelectObjectStyled
-          :custom-style="true"
-          :data="$store.state.Objects.currentObject"
-          :have-trigger="true"
-          :is-disabled="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : true"
-          :is-loading="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : false"
-          :is-solo="true"
-          :item-text="'address'"
-          :item-value="'id'"
-          :items="$store.state.Objects.listObjects"
-          :placeholder="$store.getters.stateAuth ? 'Выберите объект' : 'Войдите в учет. запись'"
-          title="Выберите объект"
-          @update-input="callback"
-        />
+      <TooltipStyled :title="$store.getters.stateAuth ?
+        'Выбрать объект или создать новый' : 'Для выбора объекта войдите в личный кабинет'"
+      >
+        <div @click="callAuthModal">
+          <SelectObjectStyled
+            :custom-style="true"
+            :data="$store.state.Objects.currentObject"
+            :have-trigger="true"
+            :is-disabled="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : true"
+            :is-loading="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : false"
+            :is-solo="true"
+            :item-text="'address'"
+            :item-value="'id'"
+            :items="$store.state.Objects.listObjects"
+            :placeholder="$store.getters.stateAuth ? 'Выберите объект' : 'Войдите в учет. запись'"
+            title="Выберите объект"
+            @update-input="callback"
+          />
+        </div>
       </TooltipStyled>
 
       <TooltipStyled :title="'Фотография объекта'">
@@ -53,6 +57,8 @@
           <TooltipStyled :title="'Перейти к объекту'">
             <ButtonStyled
               :href="$store.getters['Objects/stateObjectSelected'] ? '/objects/'+$store.state.Objects.currentObject.id : ''"
+              :is-disabled="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : true"
+              :is-loading="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : false"
               :local-text="'Открыть'"
               local-class="style_button"
             />
@@ -60,6 +66,8 @@
           <TooltipStyled :title="'Сгенерировать PDF Технического Задания'">
             <ButtonStyled
               :custom-slot="true"
+              :is-disabled="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : true"
+              :is-loading="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : false"
               local-class="style_button"
               @click-button="state_tech_task_block = !state_tech_task_block"
             >
@@ -172,6 +180,11 @@ export default {
     this.$store.dispatch("getListBroadcastSnippet");
   },
   methods: {
+    callAuthModal() {
+      if (this.$store.getters.stateAuth) return false;
+
+      this.$store.state.listModal[0].isOpen = true;
+    },
     async callback(data) {
       await this.$store.dispatch("Objects/setCurrentObject", data);
     },

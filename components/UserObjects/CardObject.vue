@@ -16,7 +16,7 @@
           <span class="address">{{ object_data.address }}</span>
         </div>
         <div class="share_and_activity">
-          <TooltipStyled :title="'Коллаборация'">
+          <TooltipStyled :title="'Совместная работа'">
             <VMenu :close-on-content-click="false" left offset-y>
               <template #activator="{ on, attrs }">
                 <div style="display: inline-flex; grid-column-gap: 5px" v-bind="attrs" v-on="on">

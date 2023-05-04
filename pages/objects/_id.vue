@@ -5,7 +5,7 @@
       :object-data="object"
       @change-select-object="changeUrl"
     ></ObjectGlobal>
-    <footer-summary></footer-summary>
+    <!--    <footer-summary></footer-summary>-->
   </div>
 </template>
 

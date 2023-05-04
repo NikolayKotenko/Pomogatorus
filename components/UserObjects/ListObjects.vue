@@ -26,7 +26,7 @@
         </div>
       </div>
       <LoginAuth v-else />
-      <div v-if="listObjects.length" class="new_object_wrapper">
+      <div class="new_object_wrapper">
         <!--        <v-divider class="new_obj_divider"></v-divider> -->
         <div class="new_object">
           <div class="details_new_object">
