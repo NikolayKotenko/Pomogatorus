@@ -2,128 +2,76 @@
   <v-container>
     <div class="article-template">
       <template v-if="article">
-        <!--        <div-->
-        <!--          :class='[-->
-        <!--            { showArticleHeader: isShowTitle },-->
-        <!--            {-->
-        <!--              subHeader: $store.state.show_header && isShowTitle && $device.isDesktop,-->
-        <!--            },-->
-        <!--            { subHeaderMobile: $device.isMobile },-->
-        <!--          ]'-->
-        <!--          class='article-template__subHeader'-->
-        <!--        >-->
-        <!--          <h2 class='mainTitleFont'>-->
-        <!--            <div>{{ article.name }}</div>-->
-        <!--            <social-share></social-share>-->
-        <!--          </h2>-->
-        <!--        </div>-->
         <div ref="nav" class="article-template__header">
           <h1 class="article-template__header__title mainTitleFont">
             <div>{{ article.name }}</div>
-            <!--            <social-share></social-share>-->
           </h1>
-          <ArticleInfo :article_data="article" @setView="setView" />
-          <div v-if="!renderArticle" class="article-template__content mainContentFont"
-               v-html="refactored_content"></div>
+          <ArticleInfo :article_data="article" @set-view="setView"/>
+          <div v-if="!renderArticle" class="article-template__content mainContentFont" v-html="refactored_content"/>
         </div>
-
-
       </template>
 
-      <div v-if="$store.state.ArticleModule.refactoring_content || !article" class="hidden-mask"></div>
-      <v-overlay :value="$store.state.ArticleModule.refactoring_content">
-        <v-progress-circular :size="50" color="primary" indeterminate style="margin-top: 20px"></v-progress-circular>
-      </v-overlay>
+      <div v-if="$store.state.ArticleModule.refactoring_content || !article" class="hidden-mask"/>
     </div>
-    <div class="article_info_wrapper__feedback">
-      <ViewsAndLikes :article="article" @update-likes="updateLikes"></ViewsAndLikes>
-      <!--      <div class="icons_wrapper">-->
-      <!--        <div style="padding-right: 1em">-->
-      <!--          <v-tooltip top>-->
-      <!--            <template v-slot:activator='{ on, attrs }'>-->
-      <!--              <div v-bind='attrs' v-on='on'>-->
-      <!--                <v-icon-->
-      <!--                  size="30"-->
-      <!--                  color="#000000"-->
-      <!--                  class="icon_eye">mdi-eye</v-icon>-->
-      <!--                <span>212</span>-->
-      <!--              </div>-->
-      <!--            </template>-->
-      <!--            <span>Кол-во просмотров</span>-->
-      <!--          </v-tooltip>-->
-      <!--        </div>-->
-      <!--        <v-tooltip top>-->
-      <!--          <template v-slot:activator='{ on, attrs }'>-->
-      <!--            <div v-bind='attrs' v-on='on'>-->
-      <!--              <v-icon-->
-      <!--                size="30"-->
-      <!--                color="#000000"-->
-      <!--                class="icon_like">mdi-cards-heart</v-icon>-->
-      <!--              <span>94</span>-->
-      <!--            </div>-->
-      <!--          </template>-->
-      <!--          <span>Понравилось людям</span>-->
-      <!--        </v-tooltip>-->
-      <!--      </div>-->
-      <div>
 
-      </div>
-      <SocialShare>
-
-      </SocialShare>
-    </div>
-    <hr class="article_info_wrapper__divider"></hr>
 
     <div v-if="listArticlesExcludeCurrent.length" class="article_info_wrapper__more_article">
-      <span>
+      <h3>
         Ещё статьи по тегу:
-        <HashTagStyled :text="getFirstTag"></HashTagStyled>
-      </span>
+        <HashTagStyled :text="getFirstTag"/>
+      </h3>
       <div class="article_info_wrapper__more_article__wrapper">
         <ArticleSmallCard
           v-for="(obj, key) in listArticlesExcludeCurrent"
           :key="key"
           :article="obj"
-        >
-        </ArticleSmallCard>
+        />
       </div>
     </div>
+    <Biathlon v-if="! $store.state.ArticleModule.refactoring_content"/>
+    <v-overlay z-index="10" :value="$store.state.ArticleModule.refactoring_content">
+      <v-progress-circular :size="50" color="primary" indeterminate style="margin-top: 20px"/>
+    </v-overlay>
+
     <!-- TODO: DEPRECATED, Теперь у нас есть боковой виджет объекта -->
-    <!--    <footer-summary></footer-summary>-->
+    <!--    <footer-summary></footer-summary> -->
   </v-container>
 </template>
 
 <script>
-import Vue from "vue";
-import ImageLayout from "~/components/frontLayouts/ImageLayout";
-import Question from "~/components/frontLayouts/Question";
-import LoginAuth from "~/components/frontLayouts/LoginAuth";
-import Author from "~/components/Article/Author";
-import ArticleInfo from "~/components/Article/ArticleInfo";
-import SocialShare from "~/components/Article/SocialShare";
-import HashTagStyled from "~/components/Common/HashTagStyled";
-import Request from "~/services/request";
-import Article from "~/components/Article/Article.vue";
-import ArticleSmallCard from "../../components/Article/ArticleSmallCard.vue";
-import ViewsAndLikes from "../../components/Common/ViewsAndLikes.vue";
+import Vue from 'vue'
+import ArticleModule from '../../store/modules/article';
+import constructFilterQuery from '../../utils/constructFilterQuery';
+import ArticleSmallCard from '../../components/Article/ArticleSmallCard.vue';
+import ViewsAndLikes from '../../components/Common/ViewsAndLikes.vue';
+import Biathlon from '../../components/Common/Biathlon.vue';
+import ImageLayout from '~/components/frontLayouts/ImageLayout'
+import Question from '~/components/frontLayouts/Question'
+import LoginAuth from '~/components/frontLayouts/LoginAuth'
+import Author from '~/components/Article/Author'
+import ArticleInfo from '~/components/Article/ArticleInfo'
+import SocialShare from '~/components/Article/SocialShare'
+import HashTagStyled from '~/components/Common/HashTagStyled'
+import Request from '~/services/request'
+import Article from '~/components/Article/Article.vue';
 
-const vuetify_class = require("vuetify");
+const vuetify_class = require('vuetify')
 
 export default {
-  name: "_id.vue",
-  components: { ViewsAndLikes, ArticleSmallCard, Article, ArticleInfo, Author, SocialShare, HashTagStyled },
+  name: '_id.vue',
+  components: { Biathlon, ViewsAndLikes, ArticleSmallCard, Article, ArticleInfo, Author, SocialShare, HashTagStyled },
   async asyncData({ store, params }) {
     try {
-      const article_request = await Request.get(`${store.state.BASE_URL}/entity/articles/${params.id}`, "", true);
-      const article = article_request.data;
-      return { article };
+      const article_request = await Request.get(`${store.state.BASE_URL}/entity/articles/${params.id}`, '', true)
+      const article = article_request.data
+      return { article }
     } catch (error) {
-      console.warn(error);
+      console.warn(error)
     }
   },
   data: () => ({
     params_of_component: {
-      name: ""
+      name: ''
     },
     data_of_components: [],
     coordYNav: null,
@@ -135,113 +83,126 @@ export default {
     return {
       title: `${this.article.name}`,
       meta: [
-        { charset: "utf-8" },
+        { charset: 'utf-8' },
         {
-          name: "viewport",
-          content: "width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1"
+          name: 'viewport',
+          content: 'width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1'
         },
         {
-          hid: "keywords",
-          name: "keywords",
+          hid: 'keywords',
+          name: 'keywords',
           content: `${this.article.seo_keywords}`
         },
         {
-          hid: "description",
-          name: "description",
+          hid: 'description',
+          name: 'description',
           content: `${this.article.seo_description}`
         },
         {
-          hid: "theme-color",
-          name: "theme-color",
-          content: "blue"
+          hid: 'theme-color',
+          name: 'theme-color',
+          content: 'blue'
         }
       ]
-    };
+    }
   },
   jsonld() {
     return [
       {
-        "@context": "https://schema.org",
-        "@type": "Article",
-        name: "Pomogatorus",
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        name: 'Pomogatorus',
         headline: this.article.preview,
-        image: "",
+        image: '',
         author: {
-          "@type": "Organization",
-          name: "Pomogatorus"
+          '@type': 'Organization',
+          name: 'Pomogatorus'
         },
         publisher: {
-          "@type": "Organization",
-          name: "Pomogatorus",
+          '@type': 'Organization',
+          name: 'Pomogatorus',
           logo: {
-            "@type": "ImageObject",
-            url: ""
+            '@type': 'ImageObject',
+            url: ''
           }
         },
         datePublished: this.article.created_at
       }
-    ];
+    ]
   },
-  async mounted() {
-    this.$route.meta.title = this.article?.name;
-
-    if (process.client) {
-      window.addEventListener("scroll", this.scrollWindow);
+  computed: {
+    refactored_content() {
+      return JSON.parse(JSON.parse(this.article.content))
+    },
+    componentLayout() {
+      return this.params_of_component.name === 'questions'
+        ? Vue.extend(Question)
+        : this.params_of_component.name === 'image'
+          ? Vue.extend(ImageLayout)
+          : Vue.extend(LoginAuth)
+    },
+    isShowTitle() {
+      return this.coordYNav <= 0 && this.coordYNav !== null
+    },
+    getFirstTag() {
+      return (this.article._all_public_name_tags.length)
+        ?  this.article._all_public_name_tags[0]
+        : ''
+    },
+    listArticlesExcludeCurrent() {
+      return this.$store.state.ArticleModule.list_filtered_articles.filter((obj)=>{
+        return obj.id !== this.article.id
+      })
+    },
+    getFilterByMainTag(){
+      return '&filter[tag][]='+this.article._all_public_tags[0]?.code;
     }
-    this.initializeContent().then(() => {
-      setTimeout(() => {
-        this.changeIndexQuestion();
-        this.$store.commit("change_refactoring_content", false);
-      });
-      // SCROLL TO AUTH BLOCK IF WE COME FROM EMAIL MESSAGE
-      setTimeout(() => {
-        if (this.$route.hash) {
-          const elem = document.getElementById(this.$route.hash.split("#").pop());
-          const top = window.scrollY + elem.getBoundingClientRect().top - this.heightNav - 54;
-          window.scrollTo(0, top);
-        }
-      }, 200);
-    });
-
-    await this.$store.dispatch("getListArticles", this.getFilterByMainTag);
   },
   watch: {
-    "$store.state.refactoring_content": {
+    '$store.state.refactoring_content': {
       handler(v) {
         if (!v) {
           this.initializeContent().then(() => {
-            this.$store.commit("change_refactoring_content", false);
-          });
+            this.$store.commit('change_refactoring_content', false)
+          })
         }
       }
     }
   },
-  computed: {
-    refactored_content() {
-      return JSON.parse(JSON.parse(this.article.content));
-    },
-    componentLayout() {
-      return this.params_of_component.name === "questions"
-        ? Vue.extend(Question)
-        : this.params_of_component.name === "image"
-          ? Vue.extend(ImageLayout)
-          : Vue.extend(LoginAuth);
-    },
-    isShowTitle() {
-      return this.coordYNav <= 0 && this.coordYNav !== null;
-    },
-    getFirstTag() {
-      return (this.article._all_public_name_tags.length)
-        ? this.article._all_public_name_tags[0]
-        : "";
-    },
-    listArticlesExcludeCurrent() {
-      return this.$store.state.ArticleModule.list_filtered_articles.filter((obj) => {
-        return obj.id !== this.article.id;
-      });
-    },
-    getFilterByMainTag() {
-      return "&filter[tag][]=" + this.article._all_public_tags[0]?.code;
+  async mounted() {
+    this.$route.meta.title = this.article?.name
+
+    if (process.client) {
+      window.addEventListener('scroll', this.scrollWindow)
+    }
+    this.initializeContent().then(() => {
+      setTimeout(() => {
+        this.changeIndexQuestion()
+        this.$store.commit('change_refactoring_content', false)
+      })
+      // SCROLL TO AUTH BLOCK IF WE COME FROM EMAIL MESSAGE
+      setTimeout(() => {
+        if (this.$route.hash) {
+          const elem = document.getElementById(this.$route.hash.split('#').pop())
+          const top = window.scrollY + elem.getBoundingClientRect().top - this.heightNav - 54
+          window.scrollTo(0, top)
+        }
+      }, 200)
+    })
+
+    await this.$store.dispatch('getListArticles', this.getFilterByMainTag)
+  },
+  beforeDestroy() {
+    this.$store.state.ArticleModule.selectedComponent = {}
+    this.$store.state.ArticleModule.countLayout = 0
+    this.$store.state.ArticleModule.count_of_questions = 0
+    this.$store.state.ArticleModule.components_after_request = []
+
+    this.$store.commit('set_answers', [])
+  },
+  destroyed() {
+    if (process.client) {
+      window.removeEventListener('scroll', this.scrollWindow)
     }
   },
   methods: {
@@ -249,219 +210,202 @@ export default {
     scrollWindow() {
       setTimeout(() => {
         if (this.$refs.nav) {
-          this.coordYNav = this.$refs.nav.getBoundingClientRect().y;
-          this.heightNav = this.$refs.nav.getBoundingClientRect().height;
+          this.coordYNav = this.$refs.nav.getBoundingClientRect().y
+          this.heightNav = this.$refs.nav.getBoundingClientRect().height
         }
-      }, 1000);
+      }, 1000)
     },
 
     // CHANGE VIEW OF ARTICLE
     setView(value) {
-      if (value === "normal") {
-        this.renderNormal();
+      if (value === 'normal') {
+        this.renderNormal()
       } else {
-        this.renderFlat();
+        this.renderFlat()
       }
     },
     renderNormal() {
-      this.renderArticle = true;
+      this.renderArticle = true
       this.$nextTick(() => {
-        this.renderArticle = false;
+        this.renderArticle = false
 
-        this.$store.commit("change_refactoring_content", true);
+        this.$store.commit('change_refactoring_content', true)
         this.initializeContent().then(() => {
           setTimeout(() => {
-            this.changeIndexQuestion();
-            this.$store.commit("change_refactoring_content", false);
-          });
-        });
-      });
+            this.changeIndexQuestion()
+            this.$store.commit('change_refactoring_content', false)
+          })
+        })
+      })
     },
     renderFlat() {
-      let components = Array.from(document.getElementsByClassName("article_component"));
+      const components = Array.from(document.getElementsByClassName('article_component'))
 
-      let contentElement = document.getElementsByClassName("article-template__content")[0];
-      contentElement.innerHTML = "";
+      const contentElement = document.getElementsByClassName('article-template__content')[0]
+      contentElement.innerHTML = ''
 
       components.forEach(elem => {
-        contentElement.appendChild(elem);
-      });
+        contentElement.appendChild(elem)
+      })
     },
 
     // RENDER ARTICLE
     changeIndexQuestion() {
-      let questions = [...document.getElementsByClassName("question_wrapper")];
+      const questions = [...document.getElementsByClassName('question_wrapper')]
 
       this.$nextTick(() => {
-        let counter = 1;
+        let counter = 1
 
         questions.forEach((elem) => {
-          let tmpStr = elem.id.match("-(.*)");
-          let id = tmpStr[tmpStr.length - 1];
+          const tmpStr = elem.id.match('-(.*)')
+          const id = tmpStr[tmpStr.length - 1]
 
-          let component = this.data_of_components
+          const component = this.data_of_components
             .filter((elem) => {
-              return elem.data.component.name === "question" || elem.data.component.name === "questions";
+              return elem.data.component.name === 'question' || elem.data.component.name === 'questions'
             })
             .filter((elem) => {
-              return elem.data.index == id;
-            });
+              return elem.data.index == id
+            })
 
 
           if (component.length) {
-            const key_data = `index_${component[0].data.component.name}`;
-            component[0].instance.$data[key_data] = counter;
+            const key_data = `index_${component[0].data.component.name}`
+            component[0].instance.$data[key_data] = counter
 
-            counter++;
+            counter++
           }
-        });
-      });
+        })
+      })
     },
     initializeContent() {
       return new Promise((resolve) => {
         if (JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components))).length) {
-          const questions_data = this.article.questions;
+          const questions_data = this.article.questions
 
-          const arr_of_components = JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components)));
-          const promises = [];
+          const arr_of_components = JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components)))
+          const promises = []
 
           arr_of_components.forEach((elem) => {
-            if (elem.component.name === "questions") {
-              let question = questions_data.filter(question => {
-                return question.id == elem.component.id;
-              })[0];
+            if (elem.component.name === 'questions') {
+              const question = questions_data.filter(question => {
+                return question.id == elem.component.id
+              })[0]
               if (question) {
-                this.$store.commit("changeSelectedComponent", {
+                this.$store.commit('changeSelectedComponent', {
                   data: question,
                   index: elem.index,
                   component: elem.component
-                });
+                })
               }
-            } else if (elem.component.name === "image") {
-              promises.push(this.$store.dispatch("imageFromServer", elem));
-            } else if (elem.component.name === "auth") {
-              promises.push(this.$store.dispatch("getAuth", elem));
+            } else if (elem.component.name === 'image') {
+              promises.push(this.$store.dispatch('imageFromServer', elem))
+            } else if (elem.component.name === 'auth') {
+              promises.push(this.$store.dispatch('getAuth', elem))
             }
-          });
+          })
 
           Promise.all(promises).finally(() => {
-            const arr = [];
+            const arr = []
             this.$store.state.ArticleModule.components_after_request.forEach((elem) => {
-              arr.push(elem);
-            });
+              arr.push(elem)
+            })
             arr.sort((a, b) => {
-              return a.index - b.index;
-            });
+              return a.index - b.index
+            })
 
             this.$nextTick(() => {
               arr.forEach((elem) => {
                 setTimeout(() => {
-                  this.checkTypeComponent(elem);
-                  let data = {};
-                  if (elem.component.name === "image") {
+                  this.checkTypeComponent(elem)
+                  let data = {}
+                  if (elem.component.name === 'image') {
                     const full_url = document
                       .getElementById(`component_wrapper-${elem.index}`)
-                      .getElementsByClassName("inserted_image")[0].src;
-                    let sub_url = full_url.split(".com");
+                      .getElementsByClassName('inserted_image')[0].src
+                    const sub_url = full_url.split('.com')
                     const alt = document
                       .getElementById(`component_wrapper-${elem.index}`)
-                      .getElementsByClassName("inserted_image")[0].alt;
+                      .getElementsByClassName('inserted_image')[0].alt
                     const title = document
                       .getElementById(`component_wrapper-${elem.index}`)
-                      .getElementsByClassName("inserted_image")[0].title;
+                      .getElementsByClassName('inserted_image')[0].title
                     data = Object.assign(
                       {},
                       { name: alt },
                       {
                         full_path: sub_url[1]
                       },
-                      { title: title }
-                    );
-                    this.$store.commit("M_selectedComponent", {});
+                      { title }
+                    )
+                    this.$store.commit('M_selectedComponent', {})
                     // return
-                  } else data = elem.data;
+                  } else data = elem.data
 
-                  this.$store.commit("M_countLayout", elem.index);
-                  this.$store.commit("M_selectedComponent", data);
-                  const countLayout = this.$store.state.ArticleModule.countLayout;
-                  let range = document.createRange();
-                  range.selectNode(document.getElementById(`component_wrapper-${elem.index}`));
-                  range.deleteContents();
-                  range.collapse(false);
-                  this.data_of_components.push(this.getStructureForInstance(elem.component));
-                  this.data_of_components[countLayout - 1].instance.$mount(); // pass nothing
-                  range.insertNode(this.data_of_components[elem.index - 1].instance.$el);
-                  this.$store.commit("M_selectedComponent", {});
-                });
-              });
-            });
-            resolve();
-          });
+                  this.$store.commit('M_countLayout', elem.index)
+                  this.$store.commit('M_selectedComponent', data)
+                  const countLayout = this.$store.state.ArticleModule.countLayout
+                  const range = document.createRange()
+                  range.selectNode(document.getElementById(`component_wrapper-${elem.index}`))
+                  range.deleteContents()
+                  range.collapse(false)
+                  this.data_of_components.push(this.getStructureForInstance(elem.component))
+                  this.data_of_components[countLayout - 1].instance.$mount() // pass nothing
+                  range.insertNode(this.data_of_components[elem.index - 1].instance.$el)
+                  this.$store.commit('M_selectedComponent', {})
+                })
+              })
+            })
+            resolve()
+          })
         }
-      });
+      })
     },
     checkTypeComponent(elem) {
-      this.params_of_component.name = elem.component.name;
-      if (elem.component.name === "questions") {
-        const name = Object.prototype.hasOwnProperty.call(elem.component, "index_question")
-          ? "question"
-          : elem.component.name;
-        this.$store.commit("M_count_of_questions", elem.component[`index_${name}`]);
+      this.params_of_component.name = elem.component.name
+      if (elem.component.name === 'questions') {
+        const name = Object.prototype.hasOwnProperty.call(elem.component, 'index_question')
+          ? 'question'
+          : elem.component.name
+        this.$store.commit('M_count_of_questions', elem.component[`index_${name}`])
       }
     },
     getStructureForInstance(data_component) {
-      Vue.use(vuetify_class);
-      const vuetify = new vuetify_class();
-      const store = this.$store;
-      const router = this.$router;
+      Vue.use(vuetify_class)
+      const vuetify = new vuetify_class()
+      const store = this.$store
+      const router = this.$router
       const instance = new this.componentLayout({
         store,
         vuetify,
         router
-      });
+      })
       const data = new this.Imported_component({
         index: this.$store.state.ArticleModule.countLayout,
         component: data_component
-      });
-      const params = Object.assign({}, { instance: instance }, { data: data });
-      return new this.Constructor_instance(params);
+      })
+      const params = Object.assign({}, { instance }, { data })
+      return new this.Constructor_instance(params)
     },
 
     /* CONSTRUCTORS */
     Imported_component(data) {
-      const { index, component } = data;
+      const { index, component } = data
 
-      this.index = index;
-      this.component = component;
+      this.index = index
+      this.component = component
     },
     Constructor_instance(params) {
-      const { data, instance } = params;
+      const { data, instance } = params
 
-      this.data = data;
-      this.instance = instance;
-    },
-    async updateLikes() {
-      // console.log("check2");
-      // await this.asyncData();
-    }
-  },
-  beforeDestroy() {
-    this.$store.state.ArticleModule.selectedComponent = {};
-    this.$store.state.ArticleModule.countLayout = 0;
-    this.$store.state.ArticleModule.count_of_questions = 0;
-    this.$store.state.ArticleModule.components_after_request = [];
-
-    this.$store.commit("set_answers", []);
-  },
-  destroyed() {
-    if (process.client) {
-      window.removeEventListener("scroll", this.scrollWindow);
+      this.data = data
+      this.instance = instance
     }
   }
-};
+}
 </script>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s;
@@ -481,7 +425,7 @@ export default {
 }
 
 .article-template {
-  margin: 0 auto;
+  margin: 0 0 80px 0;
   display: flex;
   flex-direction: column;
 
@@ -518,7 +462,7 @@ export default {
 
   &__content {
     word-break: normal;
-    max-width: 815px;
+    max-width: 1140px;
 
     h2 {
       font-family: 'Roboto', sans-serif !important;
@@ -552,7 +496,6 @@ export default {
   width: 100%;
   max-width: 815px;
 }
-
 .article_info_wrapper__more_article__wrapper {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
@@ -564,13 +507,11 @@ export default {
 
 
 }
-
 .article_info_wrapper__divider {
   max-width: 815px;
   margin: 1em 0;
 }
-
-.icons_wrapper {
+.icons_wrapper{
   display: flex;
   justify-content: space-between;
 

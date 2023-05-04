@@ -81,38 +81,36 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from "vuex";
-
-import LoginAuth from "../frontLayouts/LoginAuth";
-
-import Request from "../../services/request";
-import ButtonStyled from "../Common/ButtonStyled.vue";
-import ObjectGlobal from "./ObjectGlobal";
-import CardObject from "./CardObject.vue";
+import { mapGetters, mapState } from 'vuex';
+import LoginAuth from '../frontLayouts/LoginAuth';
+import Request from '../../services/request';
+import ButtonStyled from '../Common/ButtonStyled.vue';
+import ObjectGlobal from './ObjectGlobal';
+import CardObject from './CardObject.vue';
 
 export default {
-  name: "ListObjects",
+  name: 'ListObjects',
   components: { ButtonStyled, CardObject, ObjectGlobal, LoginAuth },
   data: () => ({
     object: {},
-    newObjAddress: "",
-    newObjName: "",
+    newObjAddress: '',
+    newObjName: '',
     showDetail: false,
     detailData: {}
   }),
   watch: {
-    "getUserId": {
+    'getUserId': {
       handler(value) {
-        console.log("watch value", value);
-        this.$store.dispatch("Objects/getListObjectsByUserId", value);
+        console.log('watch value', value);
+        this.$store.dispatch('Objects/getListObjectsByUserId', value);
       }
     }
   },
   mounted() {
   },
   computed: {
-    ...mapState("Objects", ["listObjects", "isLoadingObjects", "loading_objects"]),
-    ...mapGetters(["getUserId"]),
+    ...mapState('Objects', ['listObjects', 'isLoadingObjects', 'loading_objects']),
+    ...mapGetters(['getUserId']),
 
     notEmptyObject() {
       return !!Object.keys(this.object).length;
@@ -129,22 +127,22 @@ export default {
   methods: {
     // TODO вот тут - Objects/createNewObject находится общая функция создание объекта можем её  использовать ?
     async createNewObject() {
-      this.$store.commit("Objects/change_loaderObjects", true);
+      this.$store.commit('Objects/change_loaderObjects', true);
 
-      const { data } = await Request.post(this.$store.state.BASE_URL + "/entity/objects", {
+      const { data } = await Request.post(this.$store.state.BASE_URL + '/entity/objects', {
         address: this.newObjAddress,
         name: this.newObjName
       });
-      await this.$store.dispatch("Objects/getListObjectsByUserId", this.getUserId);
+      await this.$store.dispatch('Objects/getListObjectsByUserId', this.getUserId);
 
-      this.newObjAddress = "";
-      this.$store.commit("Objects/change_loaderObjects", false);
+      this.newObjAddress = '';
+      this.$store.commit('Objects/change_loaderObjects', false);
     },
     closeDetailObj() {
       this.showDetail = false;
     },
     closeDetail() {
-      this.$emit("close-detail");
+      this.$emit('close-detail');
     },
     openDetail(data) {
       this.detailData = data;

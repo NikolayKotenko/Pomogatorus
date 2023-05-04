@@ -10,6 +10,7 @@
       <Nuxt class="custom_grid_system main__left_column"/>
       <CurrentObjects v-if="! listExcludedRightColumn"/>
     </v-main>
+
     <!-- КАСКАДНЫЕ МОДАЛКИ -->
     <div
       v-for="(item, index) in listModal"
@@ -34,10 +35,12 @@ import BurgerMenu from '../components/BurgerMenu'
 import VerticalMenu from '../components/VerticalMenu.vue'
 import Request from '@/services/request'
 import Logging from '@/services/logging'
+import Biathlon from "../components/Common/Biathlon.vue";
 
 export default {
   name: "DefaultLayout",
   components: {
+    Biathlon,
     VerticalMenu,
     BurgerMenu,
     Right,
@@ -132,12 +135,12 @@ export default {
       const arrPathExcluded = [
         "search",
         "object",
-        "podborki"
+        "podborki",
       ];
       return arrPathExcluded.some((path) => {
         return this.$route.path.match(path);
       });
-    }
+    },
   },
   methods: {
     async fuckinMiddleware() {

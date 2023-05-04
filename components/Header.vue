@@ -1,53 +1,64 @@
 <template>
-  <v-app-bar id='navbar' app class='header' :class="{isMobile: isMobile}" dark elevate-on-scroll>
+  <v-app-bar
+    id="navbar"
+    app
+    class="header"
+    :class="{isMobile: isMobile}"
+    dark
+    elevate-on-scroll
+  >
     <v-container class="d-flex custom_grid_system">
-      <v-app-bar-nav-icon v-if='isMobile' @click='showDrawer'></v-app-bar-nav-icon>
-      <v-toolbar-title v-if='isMobile'>
-        <router-link :to='getCurrentRoute.path' style='color: unset; text-decoration: unset'>{{ getCurrentRoute.title }}
+      <v-app-bar-nav-icon v-if="isMobile" @click="showDrawer"/>
+      <v-toolbar-title v-if="isMobile">
+        <router-link :to="getCurrentRoute.path" style="color: unset; text-decoration: unset">
+          {{ getCurrentRoute.title }}
         </router-link>
       </v-toolbar-title>
 
       <!-- Desktop -->
-      <template v-if='!isMobile'>
-        <v-toolbar-items class='header_center'>
-          <TooltipStyled v-for='item in $store.getters.menuItems' v-if='item.visible' :key='item.title'>
+      <template v-if="!isMobile">
+        <v-toolbar-items class="header_center">
+          <TooltipStyled v-for="item in $store.getters.menuItems" :key="item.title">
             <v-btn
-              :href='item.path'
-              class='text-capitalize link_btn'
+              v-if="item.visible"
+              :href="item.path"
+              class="text-capitalize link_btn"
               text
             >
-              <span :class='{activeElement: getCurrentRoute.title === item.title}'>{{ item.title }}</span>
+              <span :class="{activeElement: getCurrentRoute.title === item.title}">{{ item.title }}</span>
             </v-btn>
           </TooltipStyled>
         </v-toolbar-items>
       </template>
 
       <!-- Личный кабинет всегда по правую сторону -->
-      <v-toolbar-items class='header_right'>
-        <v-tooltip bottom>
-          <template v-slot:activator='{ on, attrs }'>
+      <v-toolbar-items class="header_right">
+        <TooltipStyled :title="'Личный кабинет'">
+          <template>
             <v-btn
-              :color='listModal[0].isOpen ? "#fafad2" : "white"'
-              class='text-capitalize link_btn'
-              text v-bind='attrs'
-              @click='openModals'
-              v-on='on'
+              :color="listModal[0].isOpen ? '#fafad2' : 'white'"
+              class="text-capitalize link_btn"
+              text
+              @click="openModals"
             >
-              <v-icon>mdi-key-variant</v-icon>
+              <v-icon large>
+                mdi-account
+              </v-icon>
             </v-btn>
           </template>
-          <span>Личный кабинет</span>
-        </v-tooltip>
+        </TooltipStyled>
       </v-toolbar-items>
     </v-container>
   </v-app-bar>
 </template>
 
 <script>
+// eslint-disable-next-line vue/multi-word-component-names,vue/no-reserved-component-names
 import { mapState } from 'vuex'
 import TooltipStyled from './Common/TooltipStyled'
 
 export default {
+  // eslint-disable-next-line vue/multi-word-component-names,vue/no-reserved-component-names
   name: 'Header',
   components: { TooltipStyled },
   data() {
@@ -56,10 +67,12 @@ export default {
     }
   },
   mounted() {
+    // eslint-disable-next-line nuxt/no-env-in-hooks
     if (!process.server) {
       this.onScroll()
     }
   },
+  // eslint-disable-next-line vue/order-in-components
   computed: {
     ...mapState({
       listModal: state => state.listModal,
@@ -86,7 +99,7 @@ export default {
       this.$store.commit('set_drawer', !this.drawer)
     },
     openModals() {
-      // TODO: Продумать логику открывания модалки независимо от index'a
+      // TODO: Продумать логику открывания модалки независимо от индексa
       this.listModal[0].isOpen = !this.listModal[0].isOpen
     },
     setHeader(value) {
@@ -100,7 +113,7 @@ export default {
         let prevScrollpos = window.pageYOffset
         const _this = this
         window.onscroll = function() {
-          let currentScrollPos = window.pageYOffset
+          const currentScrollPos = window.pageYOffset
           if (prevScrollpos > currentScrollPos) {
             document.getElementById('navbar').style.top = '0'
             _this.setHeader(true)
@@ -119,7 +132,7 @@ export default {
 <style lang='scss' scoped>
 .v-btn:not(.v-btn--round).v-size--default {
   padding: 0 !important;
-  min-width: 0px;
+  min-width: 0;
 }
 
 
@@ -164,12 +177,12 @@ export default {
 }
 
 .link_btn {
-  font-weight: lighter;
+  font-weight: 200;
+  //text-transform: uppercase !important;
   @media only screen and (min-width: 400px) {
     font-size: 1.25rem !important;
   }
   line-height: 1.5;
-  letter-spacing: 1px;
 }
 
 .header_title {

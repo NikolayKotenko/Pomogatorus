@@ -101,6 +101,7 @@ export default {
 }
 
 .icons {
+  color: #000000 !important;
   &:hover {
     color: #F6C5A7 !important;
   }

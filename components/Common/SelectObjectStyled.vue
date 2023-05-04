@@ -72,20 +72,20 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import _clone from "../../helpers/deepClone";
-import _deepEqual from "../../helpers/deepCompareObjects";
+import { mapGetters } from 'vuex';
+import _clone from '../../helpers/deepClone';
+import _deepEqual from '../../helpers/deepCompareObjects';
 
 export default {
-  name: "SelectObjectStyled",
+  name: 'SelectObjectStyled',
   props: {
     localClass: {
       type: String,
-      default: ""
+      default: ''
     },
     placeholder: {
       type: String,
-      default: "Выберите объект"
+      default: 'Выберите объект'
     },
     isSolo: {
       type: Boolean,
@@ -98,11 +98,11 @@ export default {
     },
     itemText: {
       type: String,
-      default: ""
+      default: ''
     },
     itemValue: {
       type: String,
-      default: ""
+      default: ''
     },
     items: {
       type: Array,
@@ -130,13 +130,13 @@ export default {
     }
   },
   data: () => ({
-    internalData: "",
+    internalData: '',
     isFocused: false,
-    blockSearch: "",
+    blockSearch: '',
     defaultObject: {}
   }),
   watch: {
-    "open_close_cabinet": {
+    'open_close_cabinet': {
       handler(v) {
         if (v && this.haveTrigger) {
           if (this.$refs.autocomplete) {
@@ -153,11 +153,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["open_close_cabinet"]),
+    ...mapGetters(['open_close_cabinet']),
 
     computedPlaceholder() {
       if (this.isFocused) {
-        return "";
+        return '';
       }
       return this.placeholder;
     },
@@ -166,7 +166,7 @@ export default {
         return this.data;
       },
       set(value) {
-        this.$emit("update-input", value);
+        this.$emit('update-input', value);
       }
     }
   },
@@ -176,7 +176,7 @@ export default {
         if (this.currentData) {
           e.stopPropagation();
           e.preventDefault();
-          this.blockSearch = "";
+          this.blockSearch = '';
         }
       });
     },
@@ -196,7 +196,7 @@ export default {
     resetValues() {
       setTimeout(() => {
         if (_deepEqual(this.defaultObject, this.$store.state.Objects.currentObject)) {
-          this.$store.commit("change_showCabinet", false);
+          this.$store.commit('change_showCabinet', false);
         }
       }, 400);
     }
@@ -205,7 +205,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "@/assets/styles/global.scss";
+@import '@/assets/styles/global.scss';
 
 .v-menu__content {
   &:hover {

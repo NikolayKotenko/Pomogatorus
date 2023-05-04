@@ -1,7 +1,9 @@
 <template>
   <v-card class="object-wrapper">
-    <div :class='{"object-wrapper-top--mobile": isMobile, "object-wrapper-top--mobile--move": isMoving}'
-         class="object-wrapper-top">
+    <div
+      :class="{&quot;object-wrapper-top--mobile&quot;: isMobile, &quot;object-wrapper-top--mobile--move&quot;: isMoving}"
+      class="object-wrapper-top"
+    >
       <div class="object-wrapper-top__selector">
         <div class="object-wrapper-top__selector__title">
           <span>Объект:</span>
@@ -22,43 +24,52 @@
         </div>
       </div>
       <div class="object-wrapper-top__map">
-        <SelectGeo v-if="notEmptyObject" :data="object" :outerCoords="getCoords" @set-new-address="setAddressMap" />
+        <SelectGeo v-if="notEmptyObject" :data="object" :outer-coords="getCoords" @set-new-address="setAddressMap"/>
       </div>
       <div class="object-wrapper-top__share">
-        <v-menu :close-on-content-click="false" left offset-y>
-          <template v-slot:activator="{ on, attrs }">
-            <div style="display: inline-flex; grid-column-gap: 5px" v-bind="attrs" v-on="on">
-              Поделиться
-              <v-icon
-                color="black"
-                v-bind="attrs"
-                v-on="on"
-              >
-                mdi-export-variant
-              </v-icon>
-            </div>
-          </template>
-          <Collaboration></Collaboration>
-        </v-menu>
+        <CopyLinkButton/>
+        <TooltipStyled :title="'Коллаборация'">
+          <VMenu :close-on-content-click="false" left offset-y>
+            <template #activator="{ on, attrs }">
+              <div style="display: inline-flex; grid-column-gap: 5px" v-bind="attrs" v-on="on">
+                <VIcon
+                  class="share"
+                  color="#000000"
+                  size="30"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  mdi-account-group-outline
+                </VIcon>
+              </div>
+            </template>
+            <Collaboration/>
+          </VMenu>
+        </TooltipStyled>
       </div>
     </div>
 
-    <v-card-text ref="scrollParent"
-                 :class='{"object-wrapper-main--mobile": isMobile, "object-wrapper-main--mobile--move": isMoving}'
-                 class="object-wrapper-main"
-                 style="height: 1200px;">
+    <v-card-text
+      ref="scrollParent"
+      :class="{&quot;object-wrapper-main--mobile&quot;: isMobile, &quot;object-wrapper-main--mobile--move&quot;: isMoving}"
+      class="object-wrapper-main"
+      style="height: 1200px;"
+    >
       <div ref="docContent" class="object-wrapper-documents">
         <div class="object-wrapper-documents__img-container">
           <span>Фото объекта</span>
-          <div :class='{"dropzone-empty": ! $store.getters.getMainPhotoObject(object) }'
-               class="list-files-styled-wrapper img-activator">
-            <img v-if="$store.getters.getMainPhotoObject(object)"
-                 :src="$store.state.BASE_URL + $store.getters.getMainPhotoObject(object).full_path"
-                 :title="$store.getters.getMainPhotoObject(object).title_image"
-                 class="img-hover"
-                 height="100%"
-                 style="object-fit: cover"
-                 width="100%"
+          <div
+            :class="{&quot;dropzone-empty&quot;: ! $store.getters.getMainPhotoObject(object) }"
+            class="list-files-styled-wrapper img-activator"
+          >
+            <img
+              v-if="$store.getters.getMainPhotoObject(object)"
+              :src="$store.state.BASE_URL + $store.getters.getMainPhotoObject(object).full_path"
+              :title="$store.getters.getMainPhotoObject(object).title_image"
+              class="img-hover"
+              height="100%"
+              style="object-fit: cover"
+              width="100%"
             >
             <span v-else class="empty-placeholder">Здесь будут фото вашего объекта</span>
           </div>
@@ -71,7 +82,7 @@
             :data="object"
             :id-object="objectData.id"
             @remove-from-global="removeFromGlobal"
-          ></ListFilesStyled>
+          />
         </div>
       </div>
 
@@ -87,7 +98,7 @@
           @focus-out-field="animationSaveBtn"
         />
 
-        <div :class='{"show-more": showMore}' class="more-arrow">
+        <div :class="{'show-more': showMore}" class="more-arrow">
           <img alt="more" src="@/assets/svg/chevron-more.svg" @click="scrollBot">
         </div>
       </div>
@@ -104,7 +115,9 @@
             local-class="style_button"
             @click-button="closeModal"
           >
-            <v-icon color="#5C856BFF">mdi-check</v-icon>
+            <v-icon color="#5C856BFF">
+              mdi-check
+            </v-icon>
           </ButtonStyled>
 
           <ButtonStyled
@@ -123,7 +136,9 @@
           local-text="Отмена"
           @click-button="closeModal"
         >
-          <v-icon color="#AF673DFF">mdi-close</v-icon>
+          <v-icon color="#AF673DFF">
+            mdi-close
+          </v-icon>
         </ButtonStyled>
       </template>
 
@@ -141,9 +156,9 @@
             :custom-slot="true"
             @click-button="closeModal"
           >
-          <span>
-             Скачать PDF
-           </span>
+            <span>
+              Скачать PDF
+            </span>
           </ButtonStyled>
         </div>
 
@@ -158,18 +173,20 @@
 </template>
 
 <script>
-import TabsCustom from "../Common/TabsCustom";
-import SelectObjectStyled from "../Common/SelectObjectStyled";
-import SelectGeo from "../Common/SelectGeo";
-import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
-import ButtonStyled from "../Common/ButtonStyled";
-import ListFilesStyled from "~/components/Common/ListFilesStyled";
-import Vue from "vue";
-import Collaboration from "~/components/Modals/Collaboration";
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex';
+import Vue from 'vue';
+import TabsCustom from '../Common/TabsCustom';
+import SelectObjectStyled from '../Common/SelectObjectStyled';
+import SelectGeo from '../Common/SelectGeo';
+import ButtonStyled from '../Common/ButtonStyled';
+import TooltipStyled from '../Common/TooltipStyled.vue';
+import CopyLinkButton from '../Common/CopyLinkButton.vue';
+import ListFilesStyled from '~/components/Common/ListFilesStyled';
+import Collaboration from '~/components/Modals/Collaboration';
 
 export default {
-  name: "ObjectGlobal",
-  components: { Collaboration, ListFilesStyled, ButtonStyled, SelectGeo, SelectObjectStyled, TabsCustom },
+  name: 'ObjectGlobal',
+  components: { CopyLinkButton, TooltipStyled, Collaboration, ListFilesStyled, ButtonStyled, SelectGeo, SelectObjectStyled, TabsCustom },
   props: {
     objectData: {
       type: Object,
@@ -189,25 +206,13 @@ export default {
     startScroll: 0,
     isMoving: false
   }),
-  mounted() {
-    this.getObjectFromProp();
-
-    if (process.client && this.$refs.scrollParent) {
-      const tabContent = this.$refs.scrollParent;
-      tabContent.addEventListener("scroll", this.scrollWindow);
-      if (this.isMobile) {
-        tabContent.addEventListener("scroll", this.scrollHeader, false);
-      }
-      this.scrollWindow();
-    }
-  },
   watch: {
-    "objectData": {
+    'objectData': {
       handler(v) {
         this.object = v;
       }
     },
-    "getUserId": {
+    'getUserId': {
       handler(oldV, newV) {
         if (oldV !== newV && !this.listObjects.length) {
           this.getListObjectsByUserId(this.getUserId);
@@ -215,15 +220,28 @@ export default {
       }
     }
   },
+  mounted() {
+    this.getObjectFromProp();
+
+    // eslint-disable-next-line nuxt/no-env-in-hooks
+    if (process.client && this.$refs.scrollParent) {
+      const tabContent = this.$refs.scrollParent;
+      tabContent.addEventListener('scroll', this.scrollWindow);
+      if (this.isMobile) {
+        tabContent.addEventListener('scroll', this.scrollHeader, false);
+      }
+      this.scrollWindow();
+    }
+  },
   computed: {
-    ...mapState("Objects", ["isLoading", "listObjects"]),
-    ...mapGetters(["getUserId"]),
+    ...mapState('Objects', ['isLoading', 'listObjects']),
+    ...mapGetters(['getUserId']),
 
     notEmptyObject() {
       return !!Object.keys(this.object).length;
     },
     computedText() {
-      return !!this.object?.name ? "name" : "address";
+      return this.object?.name ? 'name' : 'address';
     },
     getCoords() {
       return this.object?.long && this.object?.lat ? [this.object.lat, this.object.long] : [55.753215, 37.622504];
@@ -236,18 +254,18 @@ export default {
     }
   },
   methods: {
-    ...mapActions("Objects", ["saveObjData", "getListObjectsByUserId"]),
-    ...mapMutations("Tabs", ["setLoadingData"]),
+    ...mapActions('Objects', ['saveObjData', 'getListObjectsByUserId']),
+    ...mapMutations('Tabs', ['setLoadingData']),
 
     scrollBot() {
       this.$refs.scrollParent.scrollTo({
         top: this.scrollHeight + this.minHeightInput + 20,
         left: 0,
-        behavior: "smooth"
+        behavior: 'smooth'
       });
     },
     scrollHeader() {
-      let st = this.$refs.scrollParent.scrollTop;
+      const st = this.$refs.scrollParent.scrollTop;
 
       if (!this.showMore) {
         return;
@@ -279,7 +297,7 @@ export default {
       this.closeModal();
     },
     closeModal() {
-      this.$emit("close-modal");
+      this.$emit('close-modal');
     },
     animationSaveBtn() {
       this.animationBtn = true;
@@ -301,7 +319,7 @@ export default {
       this.updateProperties[data.key] = data.value;
     },
     removeFile(data) {
-      let index = this.object[data.key].findIndex(file => file.id === data.value);
+      const index = this.object[data.key].findIndex(file => file.id === data.value);
 
       if (index !== -1) {
         this.object[data.key].splice(index, 1);
@@ -327,8 +345,8 @@ export default {
         this.setLoadingData(false);
       });
 
-      //Событие изменение селекта прокидываем выше
-      this.$emit("change-select-object", value);
+      // Событие изменение селекта прокидываем выше
+      this.$emit('change-select-object', value);
     },
     setAddressMap(data) {
       this.object.address = data.address;
@@ -341,8 +359,9 @@ export default {
     }
   },
   destroyed() {
+    // eslint-disable-next-line nuxt/no-env-in-hooks
     if (process.client) {
-      window.removeEventListener("scroll", this.scrollWindow);
+      window.removeEventListener('scroll', this.scrollWindow);
     }
   }
 };
