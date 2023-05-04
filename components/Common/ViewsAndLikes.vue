@@ -12,7 +12,7 @@
            @click="setLikesDislikes(stateLike ? null : true)"
       >
         <v-icon :class="{active: stateLike}" class="icons">mdi-thumb-up-outline</v-icon>
-        <span>{{ article?.likes }}</span>
+        <span>{{ getCountLike }}</span>
       </div>
     </TooltipStyled>
 
@@ -22,7 +22,7 @@
         @click="setLikesDislikes(stateDislike ? null : false)"
       >
         <v-icon :class="{active: stateDislike}" class="icons">mdi-thumb-down-outline</v-icon>
-        <span>{{ article?.dislikes }}</span>
+        <span>{{ getCountDisLike }}</span>
       </div>
     </TooltipStyled>
   </div>
@@ -71,6 +71,12 @@ export default {
     }
   },
   computed: {
+    getCountLike(){
+      return (this.article.hasOwnProperty('likes')) ? this.article.likes : 0;
+    },
+    getCountDisLike(){
+      return (this.article.hasOwnProperty('dislikes')) ? this.article.dislikes : 0;
+    },
     stateLike() {
       if (!this.entryLikeDislikeByUser) return false;
 

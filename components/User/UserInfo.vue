@@ -2,9 +2,9 @@
   <div class="modal_wrapper">
     <div class="card_title d-flex justify-space-between align-center mb-4">
       <h3>Настройки профиля</h3>
-      <VIcon large @click="closeDetail">
+      <v-icon large @click="closeDetail">
         mdi-close
-      </VIcon>
+      </v-icon>
     </div>
 
     <div class="card_object flex-grow-1 flex-shrink-1 pa-5">
@@ -14,12 +14,12 @@
           @new-data="setData"
         />
       </div>
-      <LoginAuth v-else/>
+      <LoginAuth v-else />
     </div>
 
     <div class="modal_footer pa-5">
       <Transition mode="out-in" name="fade">
-        <VBtn
+        <v-btn
           v-if="isChanged"
           :disabled="!isValid"
           :loading="isUpdating"
@@ -28,30 +28,30 @@
           @click="saveUser"
         >
           Сохранить
-        </VBtn>
+        </v-btn>
       </Transition>
       <div v-if="isLoggedIn" class="modal_footer__new">
-        <VDivider/>
-        <VBtn
+        <v-divider />
+        <v-btn
           block
           color="primary"
           @click="logout"
         >
           Выйти
-        </VBtn>
+        </v-btn>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState } from "vuex";
 
-import LoginAuth from '../frontLayouts/LoginAuth'
-import UserFields from './UserFields'
+import LoginAuth from "../frontLayouts/LoginAuth";
+import UserFields from "./UserFields";
 
 export default {
-  name: 'UserInfo',
+  name: "UserInfo",
   components: {
     UserFields,
     LoginAuth
@@ -68,33 +68,33 @@ export default {
     }),
 
     isLoggedIn() {
-      return this.userData && Object.keys(this.userData).length
+      return this.userData && Object.keys(this.userData).length;
     }
   },
   methods: {
     closeDetail() {
-      this.$emit('close-detail')
+      this.$emit("close-detail");
     },
     logout() {
-      this.$store.dispatch('logout')
+      this.$store.dispatch("logout");
     },
     setChanged(value) {
-      this.isChanged = value
+      this.isChanged = value;
     },
     setData(value) {
-      this.data = value.data
-      this.data.email_state = this.userData.email_state
-      this.data.telephone_state = this.userData.telephone_state
-      this.isValid = value.isValid
+      this.data = value.data;
+      this.data.email_state = this.userData.email_state;
+      this.data.telephone_state = this.userData.telephone_state;
+      this.isValid = value.isValid;
     },
     saveUser() {
-      this.$store.dispatch('updateUser', { userId: this.userData.id, data: this.data })
+      this.$store.dispatch("updateUser", { userId: this.userData.id, data: this.data });
     }
   }
-}
+};
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity .5s

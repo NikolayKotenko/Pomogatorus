@@ -18,14 +18,14 @@
         <!--        </div> -->
         <div v-if="tagsLength" class="article_info_wrapper__info__left__block">
           <div class="article_info_wrapper__info__left__block__title">
-            <VIcon class="article_info_wrapper__info__left__block__title__icon" size="22">
+            <v-icon class="article_info_wrapper__info__left__block__title__icon" size="22">
               mdi-tag-multiple-outline
-            </VIcon>
+            </v-icon>
             <span> Теги: </span>
           </div>
           <div class="article_info_wrapper__info__left__block__value tags">
             <a v-for="(tag, index) in article_data._all_public_tags" :key="index" :href="'/podborki/' + tag.code">
-              {{ tag.name.trim() + (index === article_data._all_public_tags.length - 1 ? '' : ',') }}
+              {{ tag.name.trim() + (index === article_data._all_public_tags.length - 1 ? "" : ",") }}
             </a>
           </div>
         </div>
@@ -76,30 +76,30 @@
 
 <script>
 
-import TooltipStyled from '../Common/TooltipStyled.vue';
+import TooltipStyled from "../Common/TooltipStyled.vue";
 
 export default {
-  name: 'ArticleInfo',
+  name: "ArticleInfo",
   components: { TooltipStyled },
-  props: ['article_data'],
+  props: ["article_data"],
   data: () => ({
-    articleView: 'normal'
+    articleView: "normal"
   }),
   computed: {
     tagsLength() {
-      if (!this.article_data._all_public_tags) return false
-      return !!this.article_data._all_public_tags.length
+      if (!this.article_data._all_public_tags) return false;
+      return !!this.article_data._all_public_tags.length;
     }
   },
   methods: {
     setView() {
-      this.$emit('set-view', this.articleView)
+      this.$emit("set-view", this.articleView);
     }
   }
-}
+};
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @media only screen and (max-width: 600px) {
   .article_info_wrapper__info {
     flex-direction: column !important;

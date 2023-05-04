@@ -20,12 +20,12 @@
       </div>
     </div>
     <div class="card_object_container__wrapper__footer">
-      <VBtn v-if="selectedObj" color="green lighten-1" min-width="150" outlined small>
+      <v-btn v-if="selectedObj" color="green lighten-1" min-width="150" outlined small>
         Выбран
-      </VBtn>
-      <VBtn v-else color="primary" min-width="150" small @click="setObject">
+      </v-btn>
+      <v-btn v-else color="primary" min-width="150" small @click="setObject">
         Выбрать
-      </VBtn>
+      </v-btn>
     </div>
   </div>
 </template>

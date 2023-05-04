@@ -61,9 +61,9 @@
           hide-details
           placeholder="Введите адресс нового объекта"
         />
-        <VBtn color="primary" right small @click="$store.dispatch('Objects/createNewObject', address)">
+        <v-btn color="primary" right small @click="$store.dispatch('Objects/createNewObject', address)">
           Добавить объект
-        </VBtn>
+        </v-btn>
       </div>
     </v-container>
   </VFooter>

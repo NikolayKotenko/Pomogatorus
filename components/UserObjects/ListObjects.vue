@@ -2,6 +2,7 @@
   <div class="modal_wrapper">
     <template v-if="isLoadingObjects">
       <VProgressCircular
+        v-if="$store.getters.stateAuth"
         :size="50"
         color="primary"
         indeterminate
@@ -26,16 +27,16 @@
         </div>
       </div>
       <LoginAuth v-else />
-      <div class="new_object_wrapper">
+      <div v-if="$store.getters.stateAuth" class="new_object_wrapper">
         <!--        <v-divider class="new_obj_divider"></v-divider> -->
         <div class="new_object">
           <div class="details_new_object">
             <div class="object_name">
               <div class="object_name_title">
-                <VIcon color="#000000" style="margin-right: 10px">
+                <v-icon color="#000000" style="margin-right: 10px">
                   mdi-plus-circle-outline
-                </VIcon>
-                <span>Cоздайте новый объект</span>
+                </v-icon>
+                <span>Создайте новый объект</span>
               </div>
               <VTextField
                 v-model="newObjName"
@@ -61,7 +62,6 @@
           </div>
         </div>
       </div>
-
       <VDialog
         v-if="showDetail"
         v-model="showDetail"
@@ -81,36 +81,37 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex';
-import LoginAuth from '../frontLayouts/LoginAuth';
-import Request from '../../services/request';
-import ButtonStyled from '../Common/ButtonStyled.vue';
-import ObjectGlobal from './ObjectGlobal';
-import CardObject from './CardObject.vue';
+import { mapGetters, mapState } from "vuex";
+import LoginAuth from "../frontLayouts/LoginAuth";
+import Request from "../../services/request";
+import ButtonStyled from "../Common/ButtonStyled.vue";
+import ObjectGlobal from "./ObjectGlobal";
+import CardObject from "./CardObject.vue";
 
 export default {
-  name: 'ListObjects',
+  name: "ListObjects",
   components: { ButtonStyled, CardObject, ObjectGlobal, LoginAuth },
   data: () => ({
     object: {},
-    newObjAddress: '',
-    newObjName: '',
+    newObjAddress: "",
+    newObjName: "",
     showDetail: false,
     detailData: {}
   }),
   watch: {
-    'getUserId': {
+    "getUserId": {
       handler(value) {
-        console.log('watch value', value);
-        this.$store.dispatch('Objects/getListObjectsByUserId', value);
+        console.log("watch value", value);
+        this.$store.dispatch("Objects/getListObjectsByUserId", value);
       }
     }
   },
   mounted() {
+    this.$store.dispatch("Objects/getListObjectsByUserId", this.getUserId);
   },
   computed: {
-    ...mapState('Objects', ['listObjects', 'isLoadingObjects', 'loading_objects']),
-    ...mapGetters(['getUserId']),
+    ...mapState("Objects", ["listObjects", "isLoadingObjects", "loading_objects"]),
+    ...mapGetters(["getUserId"]),
 
     notEmptyObject() {
       return !!Object.keys(this.object).length;
@@ -127,22 +128,22 @@ export default {
   methods: {
     // TODO вот тут - Objects/createNewObject находится общая функция создание объекта можем её  использовать ?
     async createNewObject() {
-      this.$store.commit('Objects/change_loaderObjects', true);
+      this.$store.commit("Objects/change_loaderObjects", true);
 
-      const { data } = await Request.post(this.$store.state.BASE_URL + '/entity/objects', {
+      const { data } = await Request.post(this.$store.state.BASE_URL + "/entity/objects", {
         address: this.newObjAddress,
         name: this.newObjName
       });
-      await this.$store.dispatch('Objects/getListObjectsByUserId', this.getUserId);
+      await this.$store.dispatch("Objects/getListObjectsByUserId", this.getUserId);
 
-      this.newObjAddress = '';
-      this.$store.commit('Objects/change_loaderObjects', false);
+      this.newObjAddress = "";
+      this.$store.commit("Objects/change_loaderObjects", false);
     },
     closeDetailObj() {
       this.showDetail = false;
     },
     closeDetail() {
-      this.$emit('close-detail');
+      this.$emit("close-detail");
     },
     openDetail(data) {
       this.detailData = data;

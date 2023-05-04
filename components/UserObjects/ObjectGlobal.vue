@@ -28,11 +28,11 @@
       </div>
       <div class="object-wrapper-top__share">
         <CopyLinkButton/>
-        <TooltipStyled :title="'Коллаборация'">
-          <VMenu :close-on-content-click="false" left offset-y>
+        <TooltipStyled :title="'Совместная работа'">
+          <v-menu :close-on-content-click="false" left offset-y>
             <template #activator="{ on, attrs }">
               <div style="display: inline-flex; grid-column-gap: 5px" v-bind="attrs" v-on="on">
-                <VIcon
+                <v-icon
                   class="share"
                   color="#000000"
                   size="30"
@@ -40,11 +40,11 @@
                   v-on="on"
                 >
                   mdi-account-group-outline
-                </VIcon>
+                </v-icon>
               </div>
             </template>
             <Collaboration/>
-          </VMenu>
+          </v-menu>
         </TooltipStyled>
       </div>
     </div>
