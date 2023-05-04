@@ -5,10 +5,10 @@
         <div class="current_object__label__container">
           <span>Текущий объект</span>
           <TooltipStyled :title="'Коллаборация'">
-            <VMenu :close-on-content-click="false" left offset-y>
+            <v-menu :close-on-content-click="false" left offset-y>
               <template #activator="{ on, attrs }">
                 <div v-bind="attrs" v-on="on">
-                  <VIcon
+                  <v-icon
                     class="share"
                     color="#ADADAD"
                     size="26"
@@ -16,14 +16,14 @@
                     v-on="on"
                   >
                     mdi-account-group-outline
-                  </VIcon>
+                  </v-icon>
                 </div>
               </template>
-              <Collaboration/>
-            </VMenu>
+              <Collaboration />
+            </v-menu>
           </TooltipStyled>
         </div>
-        <v-divider/>
+        <v-divider />
       </div>
 
       <TooltipStyled :title="$store.getters.stateAuth ?
@@ -71,7 +71,7 @@
       </section>
       <section class="current_object__wrapper_info">
         <span class="current_object__wrapper_info__text">ТЗ объекта: {{ $store.state.Objects.currentObject.name
-        }}</span>
+          }}</span>
         <span class="current_object__wrapper_info__value">7 из 130</span>
         <div class="wrapper_button">
           <TooltipStyled :title="'Перейти к объекту'">
@@ -138,7 +138,7 @@
               >
                 <section slot="pdf-content">
                   <!-- content -->
-                  <pdf-content/>
+                  <pdf-content />
                   <!-- /content -->
                 </section>
               </vue-html2pdf>
@@ -147,7 +147,7 @@
               v-if="alert.state"
               type="error"
             >
-              <span v-html="alert.message"/>
+              <span v-html="alert.message" />
             </v-alert>
           </div>
         </span>
@@ -157,16 +157,16 @@
 </template>
 
 <script>
-import InputStyled from '../Common/InputStyled';
-import SelectStyled from '../Common/SelectStyled';
-import PdfContent from '../PdfReports/PdfContent';
-import SelectObjectStyled from '../Common/SelectObjectStyled';
-import Collaboration from '../Modals/Collaboration.vue';
-import TooltipStyled from '~/components/Common/TooltipStyled';
-import ButtonStyled from '~/components/Common/ButtonStyled';
+import InputStyled from "../Common/InputStyled";
+import SelectStyled from "../Common/SelectStyled";
+import PdfContent from "../PdfReports/PdfContent";
+import SelectObjectStyled from "../Common/SelectObjectStyled";
+import Collaboration from "../Modals/Collaboration.vue";
+import TooltipStyled from "~/components/Common/TooltipStyled";
+import ButtonStyled from "~/components/Common/ButtonStyled";
 
 export default {
-  name: 'CurrentObjects',
+  name: "CurrentObjects",
   // eslint-disable-next-line vue/no-unused-components
   components: { Collaboration, ButtonStyled, TooltipStyled, SelectObjectStyled, InputStyled, SelectStyled, PdfContent },
   data() {
@@ -175,30 +175,30 @@ export default {
       selected_ids_tags: [],
       alert: {
         state: false,
-        message: ''
+        message: ""
       }
     };
   },
   computed: {},
   watch: {
-    '$store.getters.stateAuth': {
+    "$store.getters.stateAuth": {
       handler(state) {
         if (state) {
-          this.$store.dispatch('getListBroadcastSnippet');
+          this.$store.dispatch("getListBroadcastSnippet");
         } else {
-          this.$store.commit('set_list_broadcast_snippet', []);
+          this.$store.commit("set_list_broadcast_snippet", []);
         }
       }
     },
-    '$store.getters.getUserId': {
+    "$store.getters.getUserId": {
       handler(value) {
-        this.$store.dispatch('Objects/getListObjectsByUserId', value);
+        this.$store.dispatch("Objects/getListObjectsByUserId", value);
       }
     }
   },
   mounted() {
-    this.$store.dispatch('getListTags');
-    this.$store.dispatch('getListBroadcastSnippet');
+    this.$store.dispatch("getListTags");
+    this.$store.dispatch("getListBroadcastSnippet");
   },
   methods: {
     callAuthModal() {
@@ -207,15 +207,15 @@ export default {
       this.$store.state.listModal[0].isOpen = true;
     },
     async callback(data) {
-      await this.$store.dispatch('Objects/setCurrentObject', data);
+      await this.$store.dispatch("Objects/setCurrentObject", data);
     },
     async downloadPDF() {
-      const response = await this.$store.dispatch('PdfDataModule/getBodyData', { ids_tags: this.selected_ids_tags });
+      const response = await this.$store.dispatch("PdfDataModule/getBodyData", { ids_tags: this.selected_ids_tags });
       // console.log("WTF", response);
       if (response.codeResponse === 200) {
         this.$refs.html2Pdf.generatePdf();
         this.alert.state = false;
-        this.alert.message = '';
+        this.alert.message = "";
       } else {
         this.alert.state = true;
         this.alert.message = response.message;
@@ -258,10 +258,11 @@ export default {
     &__label {
       font-size: 1.25em;
 
-      &__container{
+      &__container {
         display: flex;
         justify-content: space-between;
       }
+
       hr {
         margin-top: 10px;
         border-color: black;

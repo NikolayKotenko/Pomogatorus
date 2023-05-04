@@ -44,7 +44,6 @@ export default {
     // TODO: Когда появится новый "Безопасный" метод заменить на него по токену
     async getListObjectsByUserId({ commit, dispatch }, idUser) {
       if (!idUser) {
-        commit('setLoadingObjects', false)
         return false
       }
 
