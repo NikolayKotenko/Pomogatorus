@@ -40,7 +40,7 @@
         </div>
       </div>
     </div>
-    <Biathlon />
+    <!--    <Biathlon />-->
   </v-container>
 </template>
 

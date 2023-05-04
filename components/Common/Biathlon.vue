@@ -1,15 +1,15 @@
 <template>
   <div class="biathlon_wrapper">
     <v-footer
+      fixed
+      padless
       style="
       display: flex;
       justify-content: space-between"
-      fixed
-      padless
     >
       <div class="social_buttons">
-        <ViewsAndLikes/>
-        <SocialShare/>
+        <ViewsAndLikes />
+        <SocialShare />
       </div>
       <div class="biathlon">
         <v-sheet
@@ -25,7 +25,7 @@
               :key="n"
               v-slot="{ active, toggle }"
             >
-              <v-radio/>
+              <v-radio />
             </v-slide-item>
           </v-slide-group>
         </v-sheet>
@@ -35,17 +35,23 @@
 </template>
 
 <script>
-import SocialShare from '../Article/SocialShare.vue';
-import ViewsAndLikes from './ViewsAndLikes.vue';
+import SocialShare from "../Article/SocialShare.vue";
+import ViewsAndLikes from "./ViewsAndLikes.vue";
 
 export default {
-  name: 'Biathlon',
-  components: { SocialShare, ViewsAndLikes }
+  name: "Biathlon",
+  components: { SocialShare, ViewsAndLikes },
+  props: {
+    idArticle: {
+      type: Number,
+      default: 0
+    }
+  }
 };
 </script>
 
 <style lang="scss" scoped>
-.biathlon_wrapper{
+.biathlon_wrapper {
   position: sticky;
   width: 100vw;
   margin-left: calc(-50vw + 50%);
@@ -56,10 +62,12 @@ export default {
   justify-content: center;
   align-items: center;
   box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.25);
+
   .social_buttons {
     display: flex;
 
   }
+
   .biathlon {
     width: auto;
   }

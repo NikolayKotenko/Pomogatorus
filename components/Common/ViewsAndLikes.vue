@@ -1,51 +1,90 @@
 <template>
   <div class="views_and_likes_wrapper">
-    <v-tooltip top>
-      <template v-slot:activator="{ on, attrs }">
-          <div
-            class="views_wrapper"
-            v-bind="attrs"
-            v-on="on"
-          >
-            <v-icon>mdi-eye-outline</v-icon>
-            <span>121</span>
-          </div>
-      </template>
-      <span>Кол-во просмотров</span>
-    </v-tooltip>
-    <v-tooltip top>
-      <template v-slot:activator="{ on, attrs }">
-        <div
-          class="likes_wrapper_wrapper"
-          v-bind="attrs"
-          v-on="on"
-        >
-          <v-icon class="icons">mdi-thumb-up-outline</v-icon>
-          <span>91</span>
-        </div>
-      </template>
-      <span>Понравилось</span>
-    </v-tooltip>
-    <v-tooltip top>
-      <template v-slot:activator="{ on, attrs }">
-        <div
-          class="likes_wrapper_wrapper"
-          v-bind="attrs"
-          v-on="on"
-        >
-          <v-icon class="icons">mdi-thumb-down-outline</v-icon>
-          <span>9</span>
-        </div>
-      </template>
-      <span>Не понравилось</span>
-    </v-tooltip>
+    <TooltipStyled :is-top="true" :title="'Кол-во просмотров'">
+      <div class="views_wrapper">
+        <v-icon>mdi-eye-outline</v-icon>
+        <span>121</span>
+      </div>
+    </TooltipStyled>
+
+    <TooltipStyled :is-top="true" :title="'Понравилось'">
+      <div class="likes_wrapper_wrapper"
+           @click="setLikesDislikes(stateLike ? null : true)"
+      >
+        <v-icon :class="{active: stateLike}" class="icons">mdi-thumb-up-outline</v-icon>
+        <span>{{ article.likes }}</span>
+      </div>
+    </TooltipStyled>
+
+    <TooltipStyled :is-top="true" :title="'Не понравилось'">
+      <div
+        class="likes_wrapper_wrapper"
+        @click="setLikesDislikes(stateDislike ? null : false)"
+      >
+        <v-icon :class="{active: stateDislike}" class="icons">mdi-thumb-down-outline</v-icon>
+        <span>{{ article.dislikes }}</span>
+      </div>
+    </TooltipStyled>
   </div>
 </template>
 
 <script>
+import TooltipStyled from "@/components/Common/TooltipStyled";
+import Request from "~/services/request";
+
 export default {
-  name: "ViewsAndLikes"
-}
+  name: "ViewsAndLikes",
+  components: { TooltipStyled },
+  props: {
+    article: {
+      type: Object,
+      default: () => {
+      }
+    }
+  },
+  mounted() {
+  },
+  methods: {
+    async setLikesDislikes(likeOrDislikeOrNull) {
+      if (!this.$store.getters.stateAuth) {
+        this.$store.state.listModal[0].isOpen = true;
+        return false;
+      }
+
+      const response = await Request.post(this.$store.state.BASE_URL + "/m-to-m/users-likes", {
+        id_user: this.$store.getters.getUserId,
+        id_article: this.article.id,
+        likes_or_dislikes: likeOrDislikeOrNull
+      });
+
+      if (response.codeResponse === 409) {
+        const responseUpdate = await Request.put(
+          this.$store.state.BASE_URL + `/m-to-m/users-likes/${response.data[0].id}`, {
+            id_user: this.$store.getters.getUserId,
+            id_article: this.article.id,
+            likes_or_dislikes: likeOrDislikeOrNull
+          });
+      }
+
+      console.log("check1");
+      this.$emit("update-likes");
+    }
+  },
+  computed: {
+    stateLike() {
+      if (!this.entryLikeDislikeByUser) return false;
+      return this.entryLikeDislikeByUser.likes_or_dislikes === true;
+    },
+    stateDislike() {
+      if (!this.entryLikeDislikeByUser) return false;
+      return this.entryLikeDislikeByUser.likes_or_dislikes === false;
+    },
+    entryLikeDislikeByUser() {
+      const entry = this.article.likes_dislikes.filter((obj) => obj.id_user === this.$store.getters.getUserId);
+      return (entry) ? entry[0] : null;
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped>
@@ -56,14 +95,17 @@ export default {
   grid-column-gap: 1em;
 
 }
+
 .views_wrapper, .likes_wrapper, .dislike_wrapper {
   align-items: center;
 }
+
 .icons {
-  &:hover{
+  &:hover {
     color: #F6C5A7 !important;
   }
-  &:active{
+
+  &:active, &.active {
     color: #F79256 !important;
   }
 }
