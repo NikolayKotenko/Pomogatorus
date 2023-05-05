@@ -63,6 +63,7 @@ export default {
     .biathlon_footer {
       display: inline-flex;
       grid-column-gap: 50px;
+      background-color: unset;
     }
     .social_buttons {
       display: flex;
