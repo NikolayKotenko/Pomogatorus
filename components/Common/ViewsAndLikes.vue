@@ -72,10 +72,12 @@ export default {
   },
   computed: {
     getCountLike(){
-      return (this.article.hasOwnProperty('likes')) ? this.article.likes : 0;
+      return 0;
+      // return (this.article.hasOwnProperty('likes')) ? this.article.likes : 0;
     },
     getCountDisLike(){
-      return (this.article.hasOwnProperty('dislikes')) ? this.article.dislikes : 0;
+      return 0;
+      // return (this.article.hasOwnProperty('dislikes')) ? this.article.dislikes : 0;
     },
     stateLike() {
       if (!this.entryLikeDislikeByUser) return false;
