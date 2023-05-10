@@ -72,21 +72,19 @@ export default {
   },
   computed: {
     getCountLike(){
-      return 0;
-      // return (this.article.hasOwnProperty('likes')) ? this.article.likes : 0;
+      if (! this.article) return 0;
+      return (this.article.hasOwnProperty('likes')) ? this.article.likes : 0;
     },
     getCountDisLike(){
-      return 0;
-      // return (this.article.hasOwnProperty('dislikes')) ? this.article.dislikes : 0;
+      if (! this.article) return 0;
+      return (this.article.hasOwnProperty('dislikes')) ? this.article.dislikes : 0;
     },
     stateLike() {
       if (!this.entryLikeDislikeByUser) return false;
-
       return this.entryLikeDislikeByUser.likes_or_dislikes === true;
     },
     stateDislike() {
       if (!this.entryLikeDislikeByUser) return false;
-
       return this.entryLikeDislikeByUser.likes_or_dislikes === false;
     },
     entryLikeDislikeByUser() {

@@ -16,7 +16,7 @@
           <span class="address">{{ object_data.address }}</span>
         </div>
         <div class="share_and_activity">
-          <CopyLinkButton />
+          <CopyLinkButton :id-entry="object_data.id" />
           <TooltipStyled :title="'Совместная работа'">
             <v-menu :close-on-content-click="false" left offset-y>
               <template #activator="{ on, attrs }">
