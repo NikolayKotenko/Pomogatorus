@@ -6,7 +6,7 @@
         padless
       >
         <div class="social_buttons">
-          <ViewsAndLikes/>
+          <ViewsAndLikes :article="article"/>
           <CopyLinkButton/>
           <SocialShare/>
         </div>
@@ -38,7 +38,14 @@ import CopyLinkButton from './CopyLinkButton.vue';
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Biathlon',
-  components: { CopyLinkButton, SocialShare, ViewsAndLikes }
+  components: { CopyLinkButton, SocialShare, ViewsAndLikes },
+  props: {
+    article: {
+      type: Object,
+      default: () => {
+      }
+    }
+  },
 };
 </script>
 

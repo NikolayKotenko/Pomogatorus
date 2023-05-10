@@ -27,7 +27,7 @@
         <SelectGeo v-if="notEmptyObject" :data="object" :outer-coords="getCoords" @set-new-address="setAddressMap"/>
       </div>
       <div class="object-wrapper-top__share">
-        <CopyLinkButton/>
+        <CopyLinkButton :id-entry="object.id"/>
         <TooltipStyled :title="'Совместная работа'">
           <v-menu :close-on-content-click="false" left offset-y>
             <template #activator="{ on, attrs }">

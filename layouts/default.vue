@@ -195,7 +195,7 @@ body {
 
   &__left_column {
     width: 100%;
-    margin: 0 auto;
+    margin: 0 auto 80px auto;
     //margin-left: unset !important;
   }
 }
