@@ -82,7 +82,7 @@ export default {
     return {
       address: "",
       defaultObject: {}
-    };
+    }
   },
   computed: {
     ...mapGetters(["open_close_cabinet"]),
@@ -120,7 +120,7 @@ export default {
       // });
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
