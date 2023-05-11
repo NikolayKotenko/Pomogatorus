@@ -1,7 +1,8 @@
 <template>
   <v-card
-    :href="'/articles/' + article.id"
-    class="article_card img-activator">
+    class="article_card img-activator"
+    @click="linkToArticle"
+  >
     <div class="list_elem_wrapper">
       <div class="list_elem_wrapper__preview_content__short_info__title_info">
         <h2 class="list_elem_wrapper__preview_content__short_info__title_info__title">
@@ -22,7 +23,7 @@
           max-width="300"
         />
       </div>
-      <div class="list_elem_wrapper__preview_content">
+      <div class="list_elem_wrapper__preview_content" @click="linkToArticle">
         <div
           class="list_elem_wrapper__preview_content__short_info"
         >
@@ -33,7 +34,7 @@
             {{ preview }}
           </h4>
         </div>
-        <div class="list_elem_wrapper__preview_content__buttons">
+        <div class="list_elem_wrapper__preview_content__buttons" @click="$event.stopPropagation()">
           <ViewsAndLikes :article="article"></ViewsAndLikes>
           <h4 class="list_elem_wrapper__preview_content__short_info__title_info__time">
             {{ article.updated_at }}
@@ -71,7 +72,11 @@ export default {
       }
     }
   },
-  methods: {}
+  methods: {
+    linkToArticle() {
+      window.location.href = "/articles/" + this.article.id;
+    }
+  }
 };
 </script>
 
