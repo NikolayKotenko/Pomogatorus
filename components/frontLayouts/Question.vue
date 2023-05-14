@@ -253,12 +253,13 @@
 
       <div v-if="question_data.state_attachment_response">
         <template v-if="(answer || detailed_response) && !disableBtn">
-          <ButtonUploadFiles
-            :loading="isSelecting"
-          >
-            <v-icon>mdi-paperclip</v-icon>
-            {{ !!files.length ? 'Добавить еще' : 'Вложить файл' }}
-          </ButtonUploadFiles>
+          <!-- TODO: Зачем нужен был второй аплоадер? -->
+          <!--          <ButtonUploadFiles -->
+          <!--            :loading="isSelecting" -->
+          <!--          > -->
+          <!--            <v-icon>mdi-paperclip</v-icon> -->
+          <!--            {{ !!files.length ? 'Добавить еще' : 'Вложить файл' }} -->
+          <!--          </ButtonUploadFiles> -->
           <input ref="uploader" class="d-none" type="file" @change="onFileChanged">
           <ButtonUploadFiles
             :disabled="(!!uploadedFiles.length && statusFile) || status_name === 'sending'"
@@ -319,9 +320,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-
-import Request from '../../services/request'
+import { mapActions, mapGetters } from 'vuex'
 import Answers from '../../services/answers/answers'
 import CompareArrays from '../../utils/compareArrays'
 import AuthModal from '../Modals/AuthModal'
@@ -459,6 +458,8 @@ export default {
     }
   },
   methods: {
+    ...mapActions('Objects', ['createNewObject']),
+
     /* AGENT PROP */
     getIdElem(event) {
       const child =
@@ -609,21 +610,12 @@ export default {
       }
     },
 
-    // TODO вот тут - Objects/createNewObject находится общая функция создание объекта можем её  использовать ?
     async silentCreateObject() {
-      this.$store.commit('Objects/change_loaderObjects', true)
-
-      const { data } = await Request.post(this.$store.state.BASE_URL + '/entity/objects')
-
       this.isSilentCreated = true
 
-      await this.$store.dispatch('loginByToken')
-
-      await this.$store.dispatch('Objects/setCurrentObject', data)
+      const data = await this.createNewObject()
 
       this.$store.commit('Objects/setListObjects', [data])
-
-      this.$store.commit('Objects/change_loaderObjects', false)
     },
     sendAnswer(dataEnv) {
       this.status_name = 'sending'
