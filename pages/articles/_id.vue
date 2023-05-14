@@ -28,8 +28,12 @@
         />
       </div>
     </div>
-    <Biathlon v-if="! $store.state.ArticleModule.refactoring_content" :questions="computedQuestions" :article="article"/>
-    <v-overlay z-index="10" :value="$store.state.ArticleModule.refactoring_content">
+    <Biathlon
+      v-if="! $store.state.ArticleModule.refactoring_content"
+      :article="article"
+      :questions="computedQuestions"
+    />
+    <v-overlay :value="$store.state.ArticleModule.refactoring_content" z-index="10">
       <v-progress-circular :size="50" color="primary" indeterminate style="margin-top: 20px"/>
     </v-overlay>
 
@@ -391,6 +395,14 @@ export default {
       }
       this.computedQuestions = this.data_of_components.filter(elem => {
         return elem.data.component.name === 'questions'
+      }).sort((a, b) => {
+        if (a.instance.$data.index_questions > b.instance.$data.index_questions) {
+          return -1
+        } else if (a.instance.$data.index_questions < b.instance.$data.index_questions) {
+          return 1
+        } else {
+          return 0
+        }
       })
     },
 

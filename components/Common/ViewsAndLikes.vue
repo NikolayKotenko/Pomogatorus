@@ -99,33 +99,8 @@ export default {
       console.log('check1')
       this.$emit('update-likes')
     }
-  },
-  computed: {
-    getCountLike(){
-      if (! this.article) return 0;
-      return (this.article.hasOwnProperty('likes')) ? this.article.likes : 0;
-    },
-    getCountDisLike(){
-      if (! this.article) return 0;
-      return (this.article.hasOwnProperty('dislikes')) ? this.article.dislikes : 0;
-    },
-    stateLike() {
-      if (!this.entryLikeDislikeByUser) return false;
-      return this.entryLikeDislikeByUser.likes_or_dislikes === true;
-    },
-    stateDislike() {
-      if (!this.entryLikeDislikeByUser) return false;
-      return this.entryLikeDislikeByUser.likes_or_dislikes === false;
-    },
-    entryLikeDislikeByUser() {
-      if (!this.article) return null;
-      if (!this.article.hasOwnProperty("likes_dislikes")) return null;
-
-      const entry = this.article.likes_dislikes.filter((obj) => obj.id_user === this.$store.getters.getUserId);
-      return (entry) ? entry[0] : null;
-    }
   }
-};
+}
 </script>
 
 <style lang='scss' scoped>

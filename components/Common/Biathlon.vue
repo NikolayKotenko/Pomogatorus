@@ -23,7 +23,7 @@
                 <TooltipStyled :nudge-top="-10" :title="getQuestionTitle(item)" is-top>
                   <template>
                     <v-radio-group :value="getAnswer(item)" readonly success>
-                      <v-radio :value="getAnswer(item)" readonly @click="scrollToQuestion(item)"/>
+                      <v-radio :ripple="false" :value="getAnswer(item)" readonly @click="scrollToQuestion(item)"/>
                     </v-radio-group>
                   </template>
                 </TooltipStyled>
@@ -74,7 +74,7 @@ export default {
     },
     getQuestionTitle(item) {
       if (item?.instance?.question_data?.name) {
-        return `Вы не заполнили вопрос номер ${item?.data?.component?.index_questions ? item.data.component.index_questions : ''}, ${item.instance.question_data.name}`
+        return `Вы не заполнили вопрос номер ${item?.instance?.index_questions ? item?.instance?.index_questions : ''}, ${item.instance.question_data.name}`
       }
 
       return ''
@@ -101,14 +101,16 @@ export default {
     display: flex;
     justify-content: center;
   }
-    .biathlon_footer {
-      display: inline-flex;
-      grid-column-gap: 50px;
-      background-color: unset;
-    }
-    .social_buttons {
-      display: flex;
-      width: 350px;
+
+  .biathlon_footer {
+    display: inline-flex;
+    grid-column-gap: 50px;
+    background-color: unset;
+  }
+
+  .social_buttons {
+    display: flex;
+    width: 350px;
 
   }
 
