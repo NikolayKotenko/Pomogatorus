@@ -6,7 +6,7 @@
         padless
       >
         <div class="social_buttons">
-          <ViewsAndLikes/>
+          <ViewsAndLikes :article="article"/>
           <CopyLinkButton/>
           <SocialShare/>
         </div>
@@ -50,6 +50,11 @@ export default {
     questions: {
       type: Array,
       required: true
+    },
+    article: {
+      type: Object,
+      default: () => {
+      }
     }
   },
   methods: {
@@ -96,15 +101,14 @@ export default {
     display: flex;
     justify-content: center;
   }
-
-  .biathlon_footer {
-    display: inline-flex;
-    grid-column-gap: 50px;
-  }
-
-  .social_buttons {
-    display: flex;
-    width: 350px;
+    .biathlon_footer {
+      display: inline-flex;
+      grid-column-gap: 50px;
+      background-color: unset;
+    }
+    .social_buttons {
+      display: flex;
+      width: 350px;
 
   }
 

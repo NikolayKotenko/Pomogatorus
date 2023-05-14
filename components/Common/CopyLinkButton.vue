@@ -28,9 +28,18 @@ import TooltipStyled from './TooltipStyled.vue';
 export default {
   name: 'CopyLinkButton',
   components: { TooltipStyled },
+  props: {
+    idEntry: {
+      type: Number,
+      default: 0
+    }
+  },
   computed: {
     getCurrentUrl() {
-      return 'https://pomogatorus.ru' + this.$route.fullPath;
+      return 'https://pomogatorus.ru' + this.$route.fullPath + this.idEntryProps;
+    },
+    idEntryProps(){
+      return (this.idEntry) ? '/'+this.idEntry : '';
     }
   },
   methods: {

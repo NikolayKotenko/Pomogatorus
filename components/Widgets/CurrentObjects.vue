@@ -4,7 +4,7 @@
       <div class="current_object__label">
         <div class="current_object__label__container">
           <span>Текущий объект</span>
-          <TooltipStyled :title="'Коллаборация'">
+          <TooltipStyled :title="'Совместная работа'">
             <v-menu :close-on-content-click="false" left offset-y>
               <template #activator="{ on, attrs }">
                 <div v-bind="attrs" v-on="on">
