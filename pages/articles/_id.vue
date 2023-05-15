@@ -395,14 +395,6 @@ export default {
       }
       this.computedQuestions = this.data_of_components.filter(elem => {
         return elem.data.component.name === 'questions'
-      }).sort((a, b) => {
-        if (a.instance.$data.index_questions > b.instance.$data.index_questions) {
-          return -1
-        } else if (a.instance.$data.index_questions < b.instance.$data.index_questions) {
-          return 1
-        } else {
-          return 0
-        }
       })
     },
 

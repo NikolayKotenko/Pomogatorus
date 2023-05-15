@@ -17,7 +17,7 @@
               show-arrows
             >
               <v-slide-item
-                v-for="(item, index) in questions"
+                v-for="(item, index) in getSortedQuestions"
                 :key="index"
               >
                 <TooltipStyled :nudge-top="-10" :title="getQuestionTitle(item)" is-top>
@@ -55,6 +55,18 @@ export default {
       type: Object,
       default: () => {
       }
+    }
+  },
+  computed: {
+    getSortedQuestions() {
+      return this.questions.slice().sort((a, b) => {
+        if (a.instance.$data.index_questions < b.instance.$data.index_questions) {
+          return -1
+        } else if (b.instance.$data.index_questions > a.instance.$data.index_questions) {
+          return 1
+        }
+        return 0
+      })
     }
   },
   methods: {
