@@ -52,10 +52,10 @@ export default {
   }),
   computed: {
     getCountLike() {
-      return this.article?.likes ? this.article.likes : 0;
+      return this.computedArticle?.likes ? this.computedArticle.likes : 0;
     },
     getCountDisLike() {
-      return this.article?.dislikes ? this.article.dislikes : 0;
+      return this.computedArticle?.dislikes ? this.computedArticle.dislikes : 0;
     },
     stateLike() {
       if (!this.entryLikeDislikeByUser) return false;
@@ -68,11 +68,22 @@ export default {
       return this.entryLikeDislikeByUser.likes_or_dislikes === false;
     },
     entryLikeDislikeByUser() {
-      if (!this.article) return null;
-      if (!this.article?.likes_dislikes) return null;
+      if (!this.computedArticle) return null;
+      if (!this.computedArticle?.likes_dislikes) return null;
 
-      const entry = this.article.likes_dislikes.filter((obj) => obj.id_user === this.$store.getters.getUserId);
+      const entry = this.computedArticle.likes_dislikes.filter((obj) => obj.id_user === this.$store.getters.getUserId);
       return (entry) ? entry[0] : null;
+    },
+    computedArticle: {
+      get() {
+        if (Object.keys(this.localArticle).length) {
+          return this.localArticle;
+        }
+        return this.article;
+      },
+      set(value) {
+        this.localArticle = value;
+      }
     }
   },
   mounted() {
