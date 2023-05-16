@@ -28,8 +28,12 @@
         />
       </div>
     </div>
-    <Biathlon v-if="! $store.state.ArticleModule.refactoring_content" :article="article"/>
-    <v-overlay z-index="10" :value="$store.state.ArticleModule.refactoring_content">
+    <Biathlon
+      v-if="! $store.state.ArticleModule.refactoring_content"
+      :article="article"
+      :questions="computedQuestions"
+    />
+    <v-overlay :value="$store.state.ArticleModule.refactoring_content" z-index="10">
       <v-progress-circular :size="50" color="primary" indeterminate style="margin-top: 20px"/>
     </v-overlay>
 
@@ -40,30 +44,24 @@
 
 <script>
 import Vue from 'vue'
-import ArticleModule from '../../store/modules/article';
-import constructFilterQuery from '../../utils/constructFilterQuery';
-import ArticleSmallCard from '../../components/Article/ArticleSmallCard.vue';
-import ViewsAndLikes from '../../components/Common/ViewsAndLikes.vue';
-import Biathlon from '../../components/Common/Biathlon.vue';
+import ArticleSmallCard from '../../components/Article/ArticleSmallCard.vue'
+import Biathlon from '../../components/Common/Biathlon.vue'
 import ImageLayout from '~/components/frontLayouts/ImageLayout'
 import Question from '~/components/frontLayouts/Question'
 import LoginAuth from '~/components/frontLayouts/LoginAuth'
-import Author from '~/components/Article/Author'
 import ArticleInfo from '~/components/Article/ArticleInfo'
-import SocialShare from '~/components/Article/SocialShare'
 import HashTagStyled from '~/components/Common/HashTagStyled'
 import Request from '~/services/request'
-import Article from '~/components/Article/Article.vue';
 
-const vuetify_class = require('vuetify')
+const VuetifyClass = require('vuetify')
 
 export default {
   name: '_id.vue',
-  components: { Biathlon, ViewsAndLikes, ArticleSmallCard, Article, ArticleInfo, Author, SocialShare, HashTagStyled },
+  components: { Biathlon, ArticleSmallCard, ArticleInfo, HashTagStyled },
   async asyncData({ store, params }) {
     try {
-      const article_request = await Request.get(`${store.state.BASE_URL}/entity/articles/${params.id}`, '', true)
-      const article = article_request.data
+      const articleRequest = await Request.get(`${store.state.BASE_URL}/entity/articles/${params.id}`, '', true)
+      const article = articleRequest.data
       return { article }
     } catch (error) {
       console.warn(error)
@@ -74,6 +72,7 @@ export default {
       name: ''
     },
     data_of_components: [],
+    computedQuestions: [],
     coordYNav: null,
     heightNav: 70,
 
@@ -134,7 +133,7 @@ export default {
     refactored_content() {
       return JSON.parse(JSON.parse(this.article.content))
     },
-    componentLayout() {
+    ComponentLayout() {
       return this.params_of_component.name === 'questions'
         ? Vue.extend(Question)
         : this.params_of_component.name === 'image'
@@ -146,16 +145,16 @@ export default {
     },
     getFirstTag() {
       return (this.article._all_public_name_tags.length)
-        ?  this.article._all_public_name_tags[0]
+        ? this.article._all_public_name_tags[0]
         : ''
     },
     listArticlesExcludeCurrent() {
-      return this.$store.state.ArticleModule.list_filtered_articles.filter((obj)=>{
+      return this.$store.state.ArticleModule.list_filtered_articles.filter((obj) => {
         return obj.id !== this.article.id
       })
     },
-    getFilterByMainTag(){
-      return '&filter[tag][]='+this.article._all_public_tags[0]?.code;
+    getFilterByMainTag() {
+      return '&filter[tag][]=' + this.article._all_public_tags[0]?.code
     }
   },
   watch: {
@@ -172,6 +171,7 @@ export default {
   async mounted() {
     this.$route.meta.title = this.article?.name
 
+    // eslint-disable-next-line nuxt/no-env-in-hooks
     if (process.client) {
       window.addEventListener('scroll', this.scrollWindow)
     }
@@ -179,6 +179,7 @@ export default {
       setTimeout(() => {
         this.changeIndexQuestion()
         this.$store.commit('change_refactoring_content', false)
+        this.findQuestions()
       })
       // SCROLL TO AUTH BLOCK IF WE COME FROM EMAIL MESSAGE
       setTimeout(() => {
@@ -201,6 +202,7 @@ export default {
     this.$store.commit('set_answers', [])
   },
   destroyed() {
+    // eslint-disable-next-line nuxt/no-env-in-hooks
     if (process.client) {
       window.removeEventListener('scroll', this.scrollWindow)
     }
@@ -270,8 +272,8 @@ export default {
 
 
           if (component.length) {
-            const key_data = `index_${component[0].data.component.name}`
-            component[0].instance.$data[key_data] = counter
+            const keyData = `index_${component[0].data.component.name}`
+            component[0].instance.$data[keyData] = counter
 
             counter++
           }
@@ -281,14 +283,14 @@ export default {
     initializeContent() {
       return new Promise((resolve) => {
         if (JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components))).length) {
-          const questions_data = this.article.questions
+          const questionsData = this.article.questions
 
-          const arr_of_components = JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components)))
+          const arrOfComponents = JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components)))
           const promises = []
 
-          arr_of_components.forEach((elem) => {
+          arrOfComponents.forEach((elem) => {
             if (elem.component.name === 'questions') {
-              const question = questions_data.filter(question => {
+              const question = questionsData.filter(question => {
                 return question.id == elem.component.id
               })[0]
               if (question) {
@@ -320,10 +322,10 @@ export default {
                   this.checkTypeComponent(elem)
                   let data = {}
                   if (elem.component.name === 'image') {
-                    const full_url = document
+                    const fullUrl = document
                       .getElementById(`component_wrapper-${elem.index}`)
                       .getElementsByClassName('inserted_image')[0].src
-                    const sub_url = full_url.split('.com')
+                    const subUrl = fullUrl.split('.com')
                     const alt = document
                       .getElementById(`component_wrapper-${elem.index}`)
                       .getElementsByClassName('inserted_image')[0].alt
@@ -334,7 +336,7 @@ export default {
                       {},
                       { name: alt },
                       {
-                        full_path: sub_url[1]
+                        full_path: subUrl[1]
                       },
                       { title }
                     )
@@ -370,22 +372,30 @@ export default {
         this.$store.commit('M_count_of_questions', elem.component[`index_${name}`])
       }
     },
-    getStructureForInstance(data_component) {
-      Vue.use(vuetify_class)
-      const vuetify = new vuetify_class()
+    getStructureForInstance(dataComponent) {
+      Vue.use(VuetifyClass)
+      const vuetify = new VuetifyClass()
       const store = this.$store
       const router = this.$router
-      const instance = new this.componentLayout({
+      const instance = new this.ComponentLayout({
         store,
         vuetify,
         router
       })
       const data = new this.Imported_component({
         index: this.$store.state.ArticleModule.countLayout,
-        component: data_component
+        component: dataComponent
       })
       const params = Object.assign({}, { instance }, { data })
       return new this.Constructor_instance(params)
+    },
+    findQuestions() {
+      if (!this.data_of_components.length) {
+        return
+      }
+      this.computedQuestions = this.data_of_components.filter(elem => {
+        return elem.data.component.name === 'questions'
+      })
     },
 
     /* CONSTRUCTORS */
@@ -495,6 +505,7 @@ export default {
   width: 100%;
   max-width: 815px;
 }
+
 .article_info_wrapper__more_article__wrapper {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
@@ -506,11 +517,13 @@ export default {
 
 
 }
+
 .article_info_wrapper__divider {
   max-width: 815px;
   margin: 1em 0;
 }
-.icons_wrapper{
+
+.icons_wrapper {
   display: flex;
   justify-content: space-between;
 

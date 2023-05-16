@@ -8,12 +8,15 @@
     </TooltipStyled>
 
     <TooltipStyled :is-top="true" :title="'Понравилось'">
-      <div class="likes_wrapper_wrapper"
-           @click="setLikesDislikes(stateLike ? null : 1)"
+      <div
+        class="likes_wrapper_wrapper"
+        @click="setLikesDislikes(stateLike ? null : 1)"
       >
-        <v-icon :class="{active: stateLike}" class="icons">mdi-thumb-up-outline</v-icon>
+        <v-icon :class="{active: stateLike}" class="icons">
+          mdi-thumb-up-outline
+        </v-icon>
         <span>{{ getCountLike }}</span>
-      </div>
+      </>
     </TooltipStyled>
 
     <TooltipStyled :is-top="true" :title="'Не понравилось'">
@@ -21,7 +24,9 @@
         class="likes_wrapper_wrapper"
         @click="setLikesDislikes(stateDislike ? null : 0)"
       >
-        <v-icon :class="{active: stateDislike}" class="icons">mdi-thumb-down-outline</v-icon>
+        <v-icon :class="{active: stateDislike}" class="icons">
+          mdi-thumb-down-outline
+        </v-icon>
         <span>{{ getCountDisLike }}</span>
       </div>
     </TooltipStyled>
@@ -29,11 +34,11 @@
 </template>
 
 <script>
-import TooltipStyled from "@/components/Common/TooltipStyled";
-import Request from "~/services/request";
+import TooltipStyled from '@/components/Common/TooltipStyled'
+import Request from '~/services/request'
 
 export default {
-  name: "ViewsAndLikes",
+  name: 'ViewsAndLikes',
   components: { TooltipStyled },
   props: {
     article: {
@@ -45,16 +50,53 @@ export default {
   data: () => ({
     localArticle: {}
   }),
+  computed: {
+    getCountLike() {
+      return this.article?.likes ? this.article.likes : 0
+    },
+    getCountDisLike() {
+      return this.article?.dislikes ? this.article.dislikes : 0
+    },
+    stateLike() {
+      if (!this.entryLikeDislikeByUser) return false
+
+      return this.entryLikeDislikeByUser.likes_or_dislikes === true
+    },
+    stateDislike() {
+      if (!this.entryLikeDislikeByUser) return false
+
+      return this.entryLikeDislikeByUser.likes_or_dislikes === false
+    },
+    entryLikeDislikeByUser() {
+      if (!this.article) return null
+      if (!this.article?.likes_dislikes) return null
+
+      const entry = this.article.likes_dislikes.filter((obj) => obj.id_user === this.$store.getters.getUserId)
+      return (entry) ? entry[0] : null
+    }
+  },
   mounted() {
   },
   methods: {
     async setLikesDislikes(likeOrDislikeOrNull) {
-      //Если не авторизован выкидываем модалку авторизации
       if (!this.$store.getters.stateAuth) {
-        this.$store.state.listModal[0].isOpen = true;
-        return false;
+        this.$store.state.listModal[0].isOpen = true
+        return false
       }
 
+      const response = await Request.post(this.$store.state.BASE_URL + '/m-to-m/users-likes', {
+        id_user: this.$store.getters.getUserId,
+        id_article: this.article.id,
+        likes_or_dislikes: likeOrDislikeOrNull
+      })
+
+      if (response.codeResponse === 409) {
+        const responseUpdate = await Request.put(
+          this.$store.state.BASE_URL + `/m-to-m/users-likes/${response.data[0].id}`, {
+            id_user: this.$store.getters.getUserId,
+            id_article: this.article.id,
+            likes_or_dislikes: likeOrDislikeOrNull
+          })
       // Если существует запись, то обновляем
       if (this.entryLikeDislikeByUser) {
         await Request.put(
@@ -81,13 +123,13 @@ export default {
     }
   },
   computed: {
-    getCountLike() {
-      if (!this.computedArticle) return 0;
-      return (this.computedArticle.hasOwnProperty("likes")) ? this.computedArticle.likes : 0;
+    getCountLike(){
+      if (! this.article) return 0;
+      return (this.article.hasOwnProperty('likes')) ? this.article.likes : 0;
     },
-    getCountDisLike() {
-      if (!this.computedArticle) return 0;
-      return (this.computedArticle.hasOwnProperty("dislikes")) ? this.computedArticle.dislikes : 0;
+    getCountDisLike(){
+      if (! this.article) return 0;
+      return (this.article.hasOwnProperty('dislikes')) ? this.article.dislikes : 0;
     },
     stateLike() {
       if (!this.entryLikeDislikeByUser) return false;
@@ -98,28 +140,17 @@ export default {
       return this.entryLikeDislikeByUser.likes_or_dislikes === false;
     },
     entryLikeDislikeByUser() {
-      if (!this.computedArticle) return null;
-      if (!this.computedArticle.hasOwnProperty("likes_dislikes")) return null;
+      if (!this.article) return null;
+      if (!this.article.hasOwnProperty("likes_dislikes")) return null;
 
-      const entry = this.computedArticle.likes_dislikes.filter((obj) => obj.id_user === this.$store.getters.getUserId);
+      const entry = this.article.likes_dislikes.filter((obj) => obj.id_user === this.$store.getters.getUserId);
       return (entry) ? entry[0] : null;
-    },
-    computedArticle: {
-      get() {
-        if (Object.keys(this.localArticle).length) {
-          return this.localArticle;
-        }
-        return this.article;
-      },
-      set(value) {
-        this.localArticle = value;
-      }
     }
   }
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 .views_and_likes_wrapper {
   display: grid;
   align-items: center;

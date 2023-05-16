@@ -71,23 +71,26 @@ export default {
     clearListObjects({ commit }) {
       commit('clearListObjects')
     },
-    async createNewObject({ state, commit, dispatch }, newObjAddress) {
+    async createNewObject({ commit, dispatch, rootState }, payload) {
       commit('change_loaderObjects', true)
 
       const { data } = await Request.post(
         this.state.BASE_URL + '/entity/objects',
         {
-          address: newObjAddress,
+          address: payload.newObjAddress,
+          name: payload.name,
         }
       )
 
       await dispatch('loginByToken', null, { root: true })
 
-      if (state.AuthModule.userData.objects.length < 1) {
+      if (rootState.AuthModule.userData.objects.length === 1) {
         await dispatch('setCurrentObject', data)
       }
 
       commit('change_loaderObjects', false)
+
+      return data
     },
     /* На бэке скрипт обнуляет state_current_object по текущему пользователю
        и выставляет объект который передаем

@@ -26,7 +26,7 @@
           Создайте объект!
         </div>
       </div>
-      <LoginAuth v-else />
+      <LoginAuth v-else/>
       <div v-if="$store.getters.stateAuth" class="new_object_wrapper">
         <!--        <v-divider class="new_obj_divider"></v-divider> -->
         <div class="new_object">
@@ -57,7 +57,7 @@
               :loading="loading_objects"
               :local-text="'Создать объект'"
               local-class="style_button"
-              @click-button="createNewObject"
+              @click-button="onCreateNewObject"
             />
           </div>
         </div>
@@ -81,88 +81,85 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from "vuex";
-import LoginAuth from "../frontLayouts/LoginAuth";
-import Request from "../../services/request";
-import ButtonStyled from "../Common/ButtonStyled.vue";
-import ObjectGlobal from "./ObjectGlobal";
-import CardObject from "./CardObject.vue";
+import { mapActions, mapGetters, mapState } from 'vuex'
+import LoginAuth from '../frontLayouts/LoginAuth'
+import ButtonStyled from '../Common/ButtonStyled.vue'
+import ObjectGlobal from './ObjectGlobal'
+import CardObject from './CardObject.vue'
 
 export default {
-  name: "ListObjects",
+  name: 'ListObjects',
   components: { ButtonStyled, CardObject, ObjectGlobal, LoginAuth },
   data: () => ({
     object: {},
-    newObjAddress: "",
-    newObjName: "",
+    newObjAddress: '',
+    newObjName: '',
     showDetail: false,
     detailData: {}
   }),
   watch: {
-    "getUserId": {
+    'getUserId': {
       handler(value) {
-        console.log("watch value", value);
-        this.$store.dispatch("Objects/getListObjectsByUserId", value);
+        console.log('watch value', value)
+        this.$store.dispatch('Objects/getListObjectsByUserId', value)
       }
     }
   },
   mounted() {
-    this.$store.dispatch("Objects/getListObjectsByUserId", this.getUserId);
+    this.$store.dispatch('Objects/getListObjectsByUserId', this.getUserId)
   },
   computed: {
-    ...mapState("Objects", ["listObjects", "isLoadingObjects", "loading_objects"]),
-    ...mapGetters(["getUserId"]),
+    ...mapState('Objects', ['listObjects', 'isLoadingObjects', 'loading_objects']),
+    ...mapGetters(['getUserId']),
 
     notEmptyObject() {
-      return !!Object.keys(this.object).length;
+      return !!Object.keys(this.object).length
     },
 
     getCoords() {
-      return this.object?.long && this.object?.lat ? [this.object.lat, this.object.long] : [55.753215, 37.622504];
+      return this.object?.long && this.object?.lat ? [this.object.lat, this.object.long] : [55.753215, 37.622504]
     },
 
     isMobile() {
-      return this.$device.isMobile;
+      return this.$device.isMobile
     }
   },
   methods: {
-    // TODO вот тут - Objects/createNewObject находится общая функция создание объекта можем её  использовать ?
-    async createNewObject() {
-      this.$store.commit("Objects/change_loaderObjects", true);
+    ...mapActions('Objects', ['createNewObject', 'getListObjectsByUserId']),
 
-      const { data } = await Request.post(this.$store.state.BASE_URL + "/entity/objects", {
+    async onCreateNewObject() {
+      await this.createNewObject({
         address: this.newObjAddress,
         name: this.newObjName
-      });
-      await this.$store.dispatch("Objects/getListObjectsByUserId", this.getUserId);
+      })
+      this.newObjAddress = ''
 
-      this.newObjAddress = "";
-      this.$store.commit("Objects/change_loaderObjects", false);
+      await this.getListObjectsByUserId(this.getUserId)
     },
     closeDetailObj() {
-      this.showDetail = false;
+      this.showDetail = false
     },
     closeDetail() {
-      this.$emit("close-detail");
+      this.$emit('close-detail')
     },
     openDetail(data) {
-      this.detailData = data;
-      this.showDetail = true;
+      this.detailData = data
+      this.showDetail = true
     },
     setAddressMap(data) {
-      this.object.address = data.address;
-      this.object.lat = data.coords[0];
-      this.object.long = data.coords[1];
+      this.object.address = data.address
+      this.object.lat = data.coords[0]
+      this.object.long = data.coords[1]
 
-      this.updateProperties.address = data.address;
-      this.updateProperties.lat = data.coords[0];
-      this.updateProperties.long = data.coords[1];
+      this.updateProperties.address = data.address
+      this.updateProperties.lat = data.coords[0]
+      this.updateProperties.long = data.coords[1]
     }
   }
-};
+}
 </script>
 
-<style lang="scss">
+<style lang='scss'>
 @import 'assets/styles/userObjects';
 
 .modal_wrapper {
