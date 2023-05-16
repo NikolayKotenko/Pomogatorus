@@ -16,7 +16,7 @@
           mdi-thumb-up-outline
         </v-icon>
         <span>{{ getCountLike }}</span>
-      </>
+      </div>
     </TooltipStyled>
 
     <TooltipStyled :is-top="true" :title="'Не понравилось'">
@@ -34,11 +34,11 @@
 </template>
 
 <script>
-import TooltipStyled from '@/components/Common/TooltipStyled'
-import Request from '~/services/request'
+import TooltipStyled from "@/components/Common/TooltipStyled";
+import Request from "~/services/request";
 
 export default {
-  name: 'ViewsAndLikes',
+  name: "ViewsAndLikes",
   components: { TooltipStyled },
   props: {
     article: {
@@ -52,51 +52,39 @@ export default {
   }),
   computed: {
     getCountLike() {
-      return this.article?.likes ? this.article.likes : 0
+      return this.article?.likes ? this.article.likes : 0;
     },
     getCountDisLike() {
-      return this.article?.dislikes ? this.article.dislikes : 0
+      return this.article?.dislikes ? this.article.dislikes : 0;
     },
     stateLike() {
-      if (!this.entryLikeDislikeByUser) return false
+      if (!this.entryLikeDislikeByUser) return false;
 
-      return this.entryLikeDislikeByUser.likes_or_dislikes === true
+      return this.entryLikeDislikeByUser.likes_or_dislikes === true;
     },
     stateDislike() {
-      if (!this.entryLikeDislikeByUser) return false
+      if (!this.entryLikeDislikeByUser) return false;
 
-      return this.entryLikeDislikeByUser.likes_or_dislikes === false
+      return this.entryLikeDislikeByUser.likes_or_dislikes === false;
     },
     entryLikeDislikeByUser() {
-      if (!this.article) return null
-      if (!this.article?.likes_dislikes) return null
+      if (!this.article) return null;
+      if (!this.article?.likes_dislikes) return null;
 
-      const entry = this.article.likes_dislikes.filter((obj) => obj.id_user === this.$store.getters.getUserId)
-      return (entry) ? entry[0] : null
+      const entry = this.article.likes_dislikes.filter((obj) => obj.id_user === this.$store.getters.getUserId);
+      return (entry) ? entry[0] : null;
     }
   },
   mounted() {
   },
   methods: {
     async setLikesDislikes(likeOrDislikeOrNull) {
+      //Если не авторизован выкидываем модалку авторизации
       if (!this.$store.getters.stateAuth) {
-        this.$store.state.listModal[0].isOpen = true
-        return false
+        this.$store.state.listModal[0].isOpen = true;
+        return false;
       }
 
-      const response = await Request.post(this.$store.state.BASE_URL + '/m-to-m/users-likes', {
-        id_user: this.$store.getters.getUserId,
-        id_article: this.article.id,
-        likes_or_dislikes: likeOrDislikeOrNull
-      })
-
-      if (response.codeResponse === 409) {
-        const responseUpdate = await Request.put(
-          this.$store.state.BASE_URL + `/m-to-m/users-likes/${response.data[0].id}`, {
-            id_user: this.$store.getters.getUserId,
-            id_article: this.article.id,
-            likes_or_dislikes: likeOrDislikeOrNull
-          })
       // Если существует запись, то обновляем
       if (this.entryLikeDislikeByUser) {
         await Request.put(
@@ -121,36 +109,11 @@ export default {
       );
       this.computedArticle = data;
     }
-  },
-  computed: {
-    getCountLike(){
-      if (! this.article) return 0;
-      return (this.article.hasOwnProperty('likes')) ? this.article.likes : 0;
-    },
-    getCountDisLike(){
-      if (! this.article) return 0;
-      return (this.article.hasOwnProperty('dislikes')) ? this.article.dislikes : 0;
-    },
-    stateLike() {
-      if (!this.entryLikeDislikeByUser) return false;
-      return this.entryLikeDislikeByUser.likes_or_dislikes === true;
-    },
-    stateDislike() {
-      if (!this.entryLikeDislikeByUser) return false;
-      return this.entryLikeDislikeByUser.likes_or_dislikes === false;
-    },
-    entryLikeDislikeByUser() {
-      if (!this.article) return null;
-      if (!this.article.hasOwnProperty("likes_dislikes")) return null;
-
-      const entry = this.article.likes_dislikes.filter((obj) => obj.id_user === this.$store.getters.getUserId);
-      return (entry) ? entry[0] : null;
-    }
   }
 };
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .views_and_likes_wrapper {
   display: grid;
   align-items: center;
