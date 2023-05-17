@@ -132,6 +132,8 @@ export default {
       return this.articles_breadcrumbs.concat(this.breadcrumbs);
     },
     listExcludedRightColumn() {
+      if (! this.$device.isDesktop) return true;
+
       const arrPathExcluded = [
         "search",
         "object",

@@ -76,7 +76,8 @@ export default {
     coordYNav: null,
     heightNav: 70,
 
-    renderArticle: false
+    renderArticle: false,
+    debounceTimeout: null
   }),
   head() {
     return {
@@ -193,6 +194,9 @@ export default {
 
     await this.$store.dispatch('getListArticles', this.getFilterByMainTag)
   },
+  created() {
+    if (process.client) window.addEventListener('scroll', this.handleScroll);
+  },
   beforeDestroy() {
     this.$store.state.ArticleModule.selectedComponent = {}
     this.$store.state.ArticleModule.countLayout = 0
@@ -205,6 +209,7 @@ export default {
     // eslint-disable-next-line nuxt/no-env-in-hooks
     if (process.client) {
       window.removeEventListener('scroll', this.scrollWindow)
+      window.removeEventListener('scroll', this.handleScroll);
     }
   },
   methods: {
@@ -410,7 +415,15 @@ export default {
 
       this.data = data
       this.instance = instance
-    }
+    },
+    handleScroll() {
+      if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight - 50) {
+        if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
+        this.debounceTimeout = setTimeout(() => {
+          console.log('WTFAWDASDA')
+        }, 10000);
+      }
+    },
   }
 }
 </script>
