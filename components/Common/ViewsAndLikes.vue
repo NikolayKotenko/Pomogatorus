@@ -3,7 +3,7 @@
     <TooltipStyled :is-top="true" :title="'Кол-во просмотров'">
       <div class="views_wrapper">
         <v-icon>mdi-eye-outline</v-icon>
-        <span>121</span>
+        <span>{{ getViews }}</span>
       </div>
     </TooltipStyled>
 
@@ -45,12 +45,26 @@ export default {
       type: Object,
       default: () => {
       }
+    },
+    viewAction: {
+      type: Boolean,
+      default: false
+    }
+  },
+  watch: {
+    "viewAction": function(newVal, oldVal) {
+      if (!newVal) return false;
+
+      this.setViews();
     }
   },
   data: () => ({
     localArticle: {}
   }),
   computed: {
+    getViews() {
+      return this.computedArticle?.views ? this.computedArticle.views : 0;
+    },
     getCountLike() {
       return this.computedArticle?.likes ? this.computedArticle.likes : 0;
     },
@@ -112,6 +126,26 @@ export default {
           id_article: this.computedArticle.id,
           likes_or_dislikes: likeOrDislikeOrNull
         });
+      }
+
+      // Запрашиваем новые данные с бэка, чтобы обновить computedArticle
+      const { data } = await Request.get(
+        this.$store.state.BASE_URL + "/entity/articles/" + this.computedArticle.id
+      );
+      this.computedArticle = data;
+    },
+    async setViews() {
+      if (!this.$store.getters.stateAuth) return false;
+
+      const response = await Request.post(this.$store.state.BASE_URL + "/entity/views", {
+        id_article: this.computedArticle.id
+      });
+      // Если существует запись, то обновляем
+      if (response.codeResponse === 409) {
+        await Request.put(
+          this.$store.state.BASE_URL + `/entity/views/${response.data.id}`, {
+            id_article: this.computedArticle.id
+          });
       }
 
       // Запрашиваем новые данные с бэка, чтобы обновить computedArticle
