@@ -143,6 +143,11 @@ export default {
   overflow: hidden;
 }
 
+@media screen and (max-width: 800px) {
+  .podborki__wrapper_list {
+    flex-direction: column;
+  }
+}
 @media screen and (max-width: 600px){
   .podborki__wrapper_list__title {
     font-size: 1em

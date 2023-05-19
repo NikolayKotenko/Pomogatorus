@@ -139,6 +139,9 @@ export default {
           })
       })
     },
+    linkToArticle(_, articleId) {
+      window.location.href = "/articles/" + articleId;
+    }
   },
   getters: {},
 }

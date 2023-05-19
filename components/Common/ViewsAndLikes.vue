@@ -1,8 +1,10 @@
 <template>
   <div class="views_and_likes_wrapper">
     <TooltipStyled :is-top="true" :title="'Кол-во просмотров'">
-      <div class="views_wrapper">
-        <v-icon>mdi-eye-outline</v-icon>
+      <div class="views_wrapper"
+           :class="{'animation_pulse': animationViews}"
+      >
+        <v-icon class="icons" :class="{'hover': animationViews}">mdi-eye-outline</v-icon>
         <span>{{ getViews }}</span>
       </div>
     </TooltipStyled>
@@ -54,12 +56,13 @@ export default {
   watch: {
     "viewAction": function(newVal, oldVal) {
       if (!newVal) return false;
-
       this.setViews();
     }
   },
   data: () => ({
-    localArticle: {}
+    localArticle: {},
+    debounceTimeout: null,
+    animationViews: false,
   }),
   computed: {
     getViews() {
@@ -137,6 +140,7 @@ export default {
     async setViews() {
       if (!this.$store.getters.stateAuth) return false;
 
+      this.runAnimationViews();
       const response = await Request.post(this.$store.state.BASE_URL + "/entity/views", {
         id_article: this.computedArticle.id
       });
@@ -153,6 +157,14 @@ export default {
         this.$store.state.BASE_URL + "/entity/articles/" + this.computedArticle.id
       );
       this.computedArticle = data;
+    },
+    runAnimationViews(){
+      this.animationViews = true;
+
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+      this.debounceTimeout = setTimeout(() => {
+        this.animationViews = false;
+      }, 2000);
     }
   }
 };
@@ -171,11 +183,14 @@ export default {
   align-items: center;
 }
 
-.icons {
-  color: #000000 !important;
+.hover{
+  color: #F6C5A7 !important;
+}
+body .icons {
+  color: #000000;
 
   &:hover {
-    color: #F6C5A7 !important;
+    @extend .hover;
   }
 
   &:active, &.active {

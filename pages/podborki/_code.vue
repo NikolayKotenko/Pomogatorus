@@ -40,7 +40,7 @@
         </div>
       </div>
     </div>
-    <Biathlon v-if="! $store.state.ArticleModule.refactoring_content"/>
+<!--    <Biathlon v-if="! $store.state.ArticleModule.refactoring_content"/>-->
     <v-overlay z-index="10" :value="$store.state.ArticleModule.refactoring_content">
       <v-progress-circular :size="50" color="primary" indeterminate style="margin-top: 20px"/>
     </v-overlay>

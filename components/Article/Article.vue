@@ -1,14 +1,13 @@
 <template>
   <v-card
     class="article_card img-activator"
-    @click="linkToArticle"
+    @click="$store.dispatch('linkToArticle', article.id)"
   >
     <div class="list_elem_wrapper">
       <div class="list_elem_wrapper__preview_content__short_info__title_info">
         <h2 class="list_elem_wrapper__preview_content__short_info__title_info__title">
           {{ article.name }}
         </h2>
-
       </div>
       <div class="list_elem_wrapper__tag_container">
         <a v-for="(tag, key) in article._all_tags" :href="'/podborki/'+tag.code">#{{ tag.name }}</a>
@@ -23,7 +22,7 @@
           max-width="300"
         />
       </div>
-      <div class="list_elem_wrapper__preview_content" @click="linkToArticle">
+      <div class="list_elem_wrapper__preview_content" @click="$store.dispatch('linkToArticle', article.id)">
         <div
           class="list_elem_wrapper__preview_content__short_info"
         >
@@ -73,9 +72,6 @@ export default {
     }
   },
   methods: {
-    linkToArticle() {
-      window.location.href = "/articles/" + this.article.id;
-    }
   }
 };
 </script>

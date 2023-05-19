@@ -137,7 +137,6 @@ export default {
       const arrPathExcluded = [
         "search",
         "object",
-        "podborki",
       ];
       return arrPathExcluded.some((path) => {
         return this.$route.path.match(path);

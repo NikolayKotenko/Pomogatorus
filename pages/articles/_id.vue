@@ -420,10 +420,7 @@ export default {
     },
     handleScroll() {
       if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight - 50) {
-        if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
-        this.debounceTimeout = setTimeout(() => {
-          this.localViewAction = true;
-        }, 10000);
+        this.localViewAction = true;
       }
     }
   }

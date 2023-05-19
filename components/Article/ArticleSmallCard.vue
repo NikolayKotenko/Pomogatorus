@@ -1,9 +1,10 @@
 <template>
   <v-card
     :elevation="0"
-    :href="'/articles/' + article.id"
+    @click="$store.dispatch('linkToArticle', article.id)"
     :outlined="false"
-    class="article_small_card">
+    class="article_small_card"
+  >
     <div>
       <h2 class="title">{{ article.name }}</h2>
     </div>
@@ -16,7 +17,7 @@
       />
       <span v-if="! $store.getters.getImageByEClientFilesObj(article.e_client_files)">Фото статьи</span>
     </div>
-    <div class="icons_and_time_wrapper">
+    <div class="icons_and_time_wrapper" @click="$event.stopPropagation()">
       <ViewsAndLikes :article="article"></ViewsAndLikes>
       <h4 class="time">
         {{ article.updated_at }}

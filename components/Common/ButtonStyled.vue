@@ -94,8 +94,8 @@ export default {
   max-width: 200px;
 }
 
-.style_button {
-  background-color: #ffffff !important;
+.v-btn.style_button {
+  background-color: #ffffff;
   color: #000000;
   border: 1px solid rgba(149, 215, 174, 1);
 
@@ -103,15 +103,6 @@ export default {
     background: #95D7AE !important;
     transition: 0.4s;
   }
-}
-
-.animation_save {
-  background: #95D7AE !important;
-  transition-property: transform;
-  transition-duration: 2s;
-  transition-timing-function: ease-out;
-  transition-delay: 0s;
-  transform: scale(1.1);
 }
 
 
