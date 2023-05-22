@@ -1,5 +1,6 @@
 <template>
   <div class="modal_wrapper">
+    <!-- Если загрузка объектов true    -->
     <template v-if="isLoadingObjects">
       <VProgressCircular
         v-if="$store.getters.stateAuth"
@@ -10,8 +11,9 @@
       />
     </template>
 
+    <!-- Если загрузка объектов false    -->
     <template v-else>
-      <div v-if="listObjects.length" class="card_object flex-grow-1 flex-shrink-1">
+      <div v-if="$store.getters['Objects/stateFilledListObjects']" class="card_object flex-grow-1 flex-shrink-1">
         <div v-if="listObjects.length" class="card_object_container">
           <CardObject
             v-for="(object, index) in listObjects"
@@ -26,7 +28,20 @@
           Создайте объект!
         </div>
       </div>
-      <LoginAuth v-else/>
+      <v-sheet
+        v-else
+        class="pa-3"
+        v-for="n in 3"
+        @click="$store.state.listModal[0].isOpen = true;"
+      >
+        <TooltipStyled :title="'Войдите в свою учетную запись чтобы увидеть свои объекты'">
+          <v-skeleton-loader
+            class="mx-auto"
+            type="card"
+          ></v-skeleton-loader>
+        </TooltipStyled>
+      </v-sheet>
+
       <div v-if="$store.getters.stateAuth" class="new_object_wrapper">
         <!--        <v-divider class="new_obj_divider"></v-divider> -->
         <div class="new_object">
@@ -82,14 +97,14 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
-import LoginAuth from '../frontLayouts/LoginAuth'
 import ButtonStyled from '../Common/ButtonStyled.vue'
 import ObjectGlobal from './ObjectGlobal'
 import CardObject from './CardObject.vue'
+import TooltipStyled from "@/components/Common/TooltipStyled";
 
 export default {
   name: 'ListObjects',
-  components: { ButtonStyled, CardObject, ObjectGlobal, LoginAuth },
+  components: {TooltipStyled, ButtonStyled, CardObject, ObjectGlobal },
   data: () => ({
     object: {},
     newObjAddress: '',
@@ -99,15 +114,24 @@ export default {
   }),
   watch: {
     'getUserId': {
-      handler(value) {
+      async handler(value) {
         console.log('watch value', value)
-        this.$store.dispatch('Objects/getListObjectsByUserId', value)
+        const response = await this.$store.dispatch('Objects/getListObjectsByUserId', value)
+
+        console.log('WTF', response)
+        if (response.codeResponse > 400) {
+          this.$store.state.listModal[0].isOpen = true;
+          this.$store.commit('Objects/setLoadingObjects', false)
+        }
       }
     }
   },
-  mounted() {
-    this.$store.dispatch('Objects/getListObjectsByUserId', this.getUserId)
-  },
+  /* TODO
+      - Отдельный геттер во вьюхе который проверяет заполненность массива объектов
+      - На бэке не отдавать список объект при присутвии ключа id_user и отсутствии значения этого юзера!
+      - При моунтеде не чекается бля, надо как то респонс получить и от него вызывать модалку авторизации
+  */
+  async mounted() {},
   computed: {
     ...mapState('Objects', ['listObjects', 'isLoadingObjects', 'loading_objects']),
     ...mapGetters(['getUserId']),

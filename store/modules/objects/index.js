@@ -43,21 +43,19 @@ export default {
     },
     // TODO: Когда появится новый "Безопасный" метод заменить на него по токену
     async getListObjectsByUserId({ commit, dispatch }, idUser) {
-      if (!idUser) {
-        return false
-      }
-
       const query = constructFilterQuery({
-        id_user: idUser,
+        id_user: (idUser) ? idUser : null,
       })
 
-      const { data } = await Request.get(
+      const response = await Request.get(
         this.state.BASE_URL + `/entity/objects${query}`
       )
-      commit('setListObjects', data)
+      commit('setListObjects', response.data)
       dispatch('onloadSetCurrentUserObject')
 
       commit('setLoadingObjects', false)
+
+      return response;
     },
     async saveObjData({ commit }, payload) {
       commit('setLoading', true)
@@ -109,5 +107,8 @@ export default {
     stateObjectSelected(state) {
       return Boolean(Object.keys(state.currentObject).length)
     },
+    stateFilledListObjects(state){
+      return Boolean(state.listObjects.length)
+    }
   },
 }

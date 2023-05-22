@@ -231,6 +231,7 @@ export default {
       this.alertCall(res);
       this.$nextTick(() => {
         this.hasCookie();
+        this.$store.state.listModal[0].isOpen = false;
       });
     },
     async localCreateUser(index_component) {
