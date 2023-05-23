@@ -29,9 +29,9 @@
         </div>
       </div>
       <v-sheet
+        v-for="n in 3"
         v-else
         class="pa-3"
-        v-for="n in 3"
         @click="$store.state.listModal[0].isOpen = true;"
       >
         <TooltipStyled :title="'Войдите в свою учетную запись чтобы увидеть свои объекты'">
@@ -96,34 +96,29 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
-import ButtonStyled from '../Common/ButtonStyled.vue'
-import ObjectGlobal from './ObjectGlobal'
-import CardObject from './CardObject.vue'
+import { mapActions, mapGetters, mapState } from "vuex";
+import ButtonStyled from "../Common/ButtonStyled.vue";
+import ObjectGlobal from "./ObjectGlobal";
+import CardObject from "./CardObject.vue";
 import TooltipStyled from "@/components/Common/TooltipStyled";
 
 export default {
-  name: 'ListObjects',
-  components: {TooltipStyled, ButtonStyled, CardObject, ObjectGlobal },
+  name: "ListObjects",
+  components: { TooltipStyled, ButtonStyled, CardObject, ObjectGlobal },
   data: () => ({
     object: {},
-    newObjAddress: '',
-    newObjName: '',
+    newObjAddress: "",
+    newObjName: "",
     showDetail: false,
-    detailData: {}
+    detailData: {},
+    debounceTimeout: null
   }),
   watch: {
-    'getUserId': {
-      async handler(value) {
-        console.log('watch value', value)
-        const response = await this.$store.dispatch('Objects/getListObjectsByUserId', value)
-
-        console.log('WTF', response)
-        if (response.codeResponse > 400) {
-          this.$store.state.listModal[0].isOpen = true;
-          this.$store.commit('Objects/setLoadingObjects', false)
-        }
-      }
+    "getUserId": {
+      handler(val) {
+        this.localGetListObjects(val);
+      },
+      immediate: true
     }
   },
   /* TODO
@@ -131,59 +126,74 @@ export default {
       - На бэке не отдавать список объект при присутвии ключа id_user и отсутствии значения этого юзера!
       - При моунтеде не чекается бля, надо как то респонс получить и от него вызывать модалку авторизации
   */
-  async mounted() {},
+  async mounted() {
+  },
   computed: {
-    ...mapState('Objects', ['listObjects', 'isLoadingObjects', 'loading_objects']),
-    ...mapGetters(['getUserId']),
+    ...mapState("Objects", ["listObjects", "isLoadingObjects", "loading_objects"]),
+    ...mapState(["userData"]),
+    ...mapGetters(["getUserId"]),
 
     notEmptyObject() {
-      return !!Object.keys(this.object).length
+      return !!Object.keys(this.object).length;
     },
 
     getCoords() {
-      return this.object?.long && this.object?.lat ? [this.object.lat, this.object.long] : [55.753215, 37.622504]
+      return this.object?.long && this.object?.lat ? [this.object.lat, this.object.long] : [55.753215, 37.622504];
     },
 
     isMobile() {
-      return this.$device.isMobile
+      return this.$device.isMobile;
     }
   },
   methods: {
-    ...mapActions('Objects', ['createNewObject', 'getListObjectsByUserId']),
+    ...mapActions("Objects", ["createNewObject", "getListObjectsByUserId"]),
 
     async onCreateNewObject() {
       await this.createNewObject({
         address: this.newObjAddress,
         name: this.newObjName
-      })
-      this.newObjAddress = ''
+      });
+      this.newObjAddress = "";
 
-      await this.getListObjectsByUserId(this.getUserId)
+      await this.getListObjectsByUserId(this.getUserId);
     },
     closeDetailObj() {
-      this.showDetail = false
+      this.showDetail = false;
     },
     closeDetail() {
-      this.$emit('close-detail')
+      this.$emit("close-detail");
     },
     openDetail(data) {
-      this.detailData = data
-      this.showDetail = true
+      this.detailData = data;
+      this.showDetail = true;
     },
     setAddressMap(data) {
-      this.object.address = data.address
-      this.object.lat = data.coords[0]
-      this.object.long = data.coords[1]
+      this.object.address = data.address;
+      this.object.lat = data.coords[0];
+      this.object.long = data.coords[1];
 
-      this.updateProperties.address = data.address
-      this.updateProperties.lat = data.coords[0]
-      this.updateProperties.long = data.coords[1]
+      this.updateProperties.address = data.address;
+      this.updateProperties.lat = data.coords[0];
+      this.updateProperties.long = data.coords[1];
+    },
+    async localGetListObjects(idUser) {
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+      this.debounceTimeout = setTimeout(async () => {
+        console.log("localGetListObjects", idUser);
+        const response = await this.$store.dispatch("Objects/getListObjectsByUserId", idUser);
+
+        console.log("response getListObjectsByUserId", response);
+        if (response.codeResponse > 400) {
+          this.$store.state.listModal[0].isOpen = true;
+          this.$store.commit("Objects/setLoadingObjects", false);
+        }
+      }, 1000);
     }
   }
-}
+};
 </script>
 
-<style lang='scss'>
+<style lang="scss">
 @import 'assets/styles/userObjects';
 
 .modal_wrapper {
