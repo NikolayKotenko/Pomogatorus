@@ -179,7 +179,6 @@ export default {
     async localGetListObjects(idUser) {
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
       this.debounceTimeout = setTimeout(async () => {
-        console.log("localGetListObjects", idUser);
         const response = await this.$store.dispatch("Objects/getListObjectsByUserId", idUser);
 
         console.log("response getListObjectsByUserId", response);
