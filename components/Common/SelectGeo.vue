@@ -39,27 +39,29 @@
             </yandex-map>
           </template>
         </v-card-text>
-        <!--  TODO: Нужна ли кнопка снизу?      -->
-        <!--        <v-card-actions class='d-flex justify-center'>-->
-        <!--          <v-btn-->
-        <!--            color='primary'-->
-        <!--            text-->
-        <!--            @click='closeModal'-->
-        <!--          >-->
-        <!--            Закрыть-->
-        <!--          </v-btn>-->
-        <!--        </v-card-actions>-->
+        <div class="buttons">
+          <ButtonStyled
+            :is-mobile="true"
+            local-text="ОК"
+            local-class="style_button"
+            id='btn'
+          >
+          </ButtonStyled>
+        </div>
       </v-card>
+
     </v-dialog>
   </div>
 </template>
 
 <script>
 import InputStyled from './InputStyled'
+import ButtonStyled from "./ButtonStyled.vue";
 
 export default {
   name: 'SelectGeo',
   components: {
+    ButtonStyled,
     InputStyled
   },
   props: {
@@ -117,7 +119,6 @@ export default {
       return `
         <h2 class='title-address'>Выбран адрес:</h2>
         <h1 class='name-address'>${this.address}</h1>
-        <button id='btn' class='button-address'>ОК</button>
       `
     },
     searchTemplate() {

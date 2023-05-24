@@ -5,10 +5,8 @@
         class="biathlon_footer"
         padless
       >
-        <div class="social_buttons">
+        <div class="likes_buttons">
           <ViewsAndLikes :article="article"/>
-          <CopyLinkButton/>
-          <SocialShare/>
         </div>
         <div class="biathlon">
           <v-sheet class="biathlon_sheet">
@@ -30,6 +28,10 @@
               </v-slide-item>
             </v-slide-group>
           </v-sheet>
+        </div>
+        <div class="share_buttons">
+          <CopyLinkButton/>
+          <SocialShare/>
         </div>
       </v-footer>
     </v-container>
@@ -118,12 +120,16 @@ export default {
     display: inline-flex;
     grid-column-gap: 50px;
     background-color: unset;
+    justify-content: space-between;
+    width: 1116px;
   }
 
-  .social_buttons {
+  .likes_buttons {
     display: flex;
-    width: 350px;
-
+  }
+  .share_buttons {
+    display: flex;
+    text-align: right;
   }
 
   .biathlon {
