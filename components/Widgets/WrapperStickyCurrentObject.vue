@@ -9,17 +9,26 @@ import CurrentObjects from "./CurrentObjects.vue";
 
 export default {
   name: "WrapperStickyCurrentObject",
-  components: {CurrentObjects}
-}
+  components: { CurrentObjects }
+};
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
+@media (min-width: 1233px) {
+  .wrapper_current_object {
+    display: block !important;
+  }
+}
+
 .wrapper_current_object {
+  display: none;
   height: 1px;
   //width: 1px;
   top: 15px;
   position: sticky;
-  .current_local_object{
+
+
+  .current_local_object {
     top: 0;
     //right: -320px;
     position: absolute;
