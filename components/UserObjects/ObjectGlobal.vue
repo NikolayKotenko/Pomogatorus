@@ -116,7 +116,7 @@
             @click-button="closeModal"
           >
             <v-icon color="#5C856BFF">
-              mdi-check
+              mdi-text-box-edit-outline
             </v-icon>
           </ButtonStyled>
 
@@ -125,7 +125,7 @@
             :is-mobile="true"
             @click-button="closeModal"
           >
-            <v-icon>mdi-download</v-icon>
+            <v-icon>mdi-tray-arrow-down</v-icon>
           </ButtonStyled>
         </div>
 
@@ -137,7 +137,7 @@
           @click-button="closeModal"
         >
           <v-icon color="#AF673DFF">
-            mdi-close
+            mdi-window-close
           </v-icon>
         </ButtonStyled>
       </template>

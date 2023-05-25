@@ -18,26 +18,40 @@
       <!-- Desktop -->
       <template v-if="!isMobile">
         <v-toolbar-items class="header_center">
-          <TooltipStyled v-for="item in $store.getters.menuItems" :key="item.title">
+          <div v-for="item in $store.getters.menuItems" :key="item.title">
             <v-btn
               v-if="item.visible"
               :href="item.path"
+              style="margin-right: 2em;"
               class="text-capitalize link_btn"
               text
             >
               <span :class="{activeElement: getCurrentRoute.title === item.title}">{{ item.title }}</span>
             </v-btn>
-          </TooltipStyled>
+          </div>
         </v-toolbar-items>
       </template>
 
       <!-- Личный кабинет всегда по правую сторону -->
       <v-toolbar-items class="header_right">
+        <TooltipStyled :title="'Текущий объект'" v-if="!isMobile">
+          <v-menu :close-on-content-click="false" left offset-y>
+            <template #activator="{ on, attrs }">
+              <div style="display: inline-flex; grid-column-gap: 5px" v-bind="attrs" v-on="on">
+                <v-icon large v-bind="attrs" v-on="on">
+                  mdi-home-edit-outline
+                </v-icon>
+              </div>
+            </template>
+            <CurrentObjects></CurrentObjects>
+          </v-menu>
+        </TooltipStyled>
         <TooltipStyled :title="'Личный кабинет'">
           <template>
             <v-btn
               :color="listModal[0].isOpen ? '#fafad2' : 'white'"
               class="text-capitalize link_btn"
+              style="margin-left: 1em;"
               text
               @click="openModals"
             >
@@ -56,14 +70,16 @@
 // eslint-disable-next-line vue/multi-word-component-names,vue/no-reserved-component-names
 import { mapState } from 'vuex'
 import TooltipStyled from './Common/TooltipStyled'
+import CurrentObjects from "./Widgets/CurrentObjects.vue";
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names,vue/no-reserved-component-names
   name: 'Header',
-  components: { TooltipStyled },
+  components: {CurrentObjects, TooltipStyled },
   data() {
     return {
-      debounceTimeout: null
+      debounceTimeout: null,
+      stateCurrentObject: false,
     }
   },
   mounted() {
@@ -102,6 +118,10 @@ export default {
       // TODO: Продумать логику открывания модалки независимо от индексa
       this.listModal[0].isOpen = !this.listModal[0].isOpen
     },
+    // openObject() {
+    //   this.$emit("open_object", this.$store.state.listObjects.currentObject)
+    //   console.log('work')
+    // },
     setHeader(value) {
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
       this.debounceTimeout = setTimeout(() => {
@@ -168,7 +188,6 @@ export default {
 .header_center {
   flex: 1;
   align-items: center;
-  grid-column-gap: 2em;
 }
 
 .header_right {
@@ -177,7 +196,9 @@ export default {
 }
 
 .link_btn {
-  font-weight: 200;
+  font-weight: 400;
+  text-transform: uppercase !important;
+  letter-spacing: 0;
   //text-transform: uppercase !important;
   @media only screen and (min-width: 400px) {
     font-size: 1.25rem !important;
