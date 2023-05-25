@@ -98,6 +98,11 @@ export default {
       commit('change_changedCookie', true, { root: true })
       await dispatch('Objects/clearListObjects')
     },
+    callModalAuth({ commit, getters }) {
+      if (!getters.stateAuth) {
+        commit('setModalAuth', true)
+      }
+    },
   },
   getters: {
     userIsAgent(state) {

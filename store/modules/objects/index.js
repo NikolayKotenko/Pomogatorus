@@ -36,26 +36,34 @@ export default {
   },
   actions: {
     onloadSetCurrentUserObject({ commit, state }) {
-      const currentObj = state.listObjects.filter((obj) => {
+      let currentObj = null
+
+      //Берем у которого на бэке состояние тру
+      currentObj = state.listObjects.filter((obj) => {
         return obj.m_to_m_users_objects.state_current_object === true
-      })
-      commit('set_currentObject', currentObj[0])
+      })[0]
+      //Если такого нет ни одного то берем первый попавшийся по сортировке
+      if (!currentObj) {
+        currentObj = state.listObjects[0]
+      }
+
+      commit('set_currentObject', currentObj)
     },
     // TODO: Когда появится новый "Безопасный" метод заменить на него по токену
     async getListObjectsByUserId({ commit, dispatch }, idUser) {
       const query = constructFilterQuery({
-        id_user: (idUser) ? idUser : null,
+        id_user: idUser ? idUser : null,
       })
 
       const response = await Request.get(
-        this.state.BASE_URL + `/entity/objects${query}`
+        this.state.BASE_URL + `/entity/objects${query}&sort[updated_at]=desc`
       )
       commit('setListObjects', response.data)
       dispatch('onloadSetCurrentUserObject')
 
       commit('setLoadingObjects', false)
 
-      return response;
+      return response
     },
     async saveObjData({ commit }, payload) {
       commit('setLoading', true)
@@ -107,8 +115,8 @@ export default {
     stateObjectSelected(state) {
       return Boolean(Object.keys(state.currentObject).length)
     },
-    stateFilledListObjects(state){
+    stateFilledListObjects(state) {
       return Boolean(state.listObjects.length)
-    }
+    },
   },
 }

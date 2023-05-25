@@ -200,6 +200,9 @@ const createStore = () => {
         state.list_broadcast_snippet = []
         state.list_broadcast_snippet = payload
       },
+      setModalAuth(state, payload) {
+        state.listModal[0].isOpen = payload
+      },
     },
     actions: {
       // nuxtServerInit({dispatch}) {

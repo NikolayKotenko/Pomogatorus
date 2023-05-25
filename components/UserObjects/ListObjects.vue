@@ -30,11 +30,11 @@
       </div>
       <v-sheet
         v-for="n in 3"
-        v-else
+        v-if="! $store.getters['Objects/stateFilledListObjects'] && ! $store.getters.stateAuth"
         class="pa-3"
-        @click="$store.state.listModal[0].isOpen = true;"
+        @click="$store.dispatch('callModalAuth')"
       >
-        <TooltipStyled :title="'Войдите в свою учетную запись чтобы увидеть свои объекты'">
+        <TooltipStyled :title="'Авторизуйтесь чтобы увидеть свои объекты'">
           <v-skeleton-loader
             class="mx-auto"
             type="card"
@@ -121,11 +121,6 @@ export default {
       immediate: true
     }
   },
-  /* TODO
-      - Отдельный геттер во вьюхе который проверяет заполненность массива объектов
-      - На бэке не отдавать список объект при присутвии ключа id_user и отсутствии значения этого юзера!
-      - При моунтеде не чекается бля, надо как то респонс получить и от него вызывать модалку авторизации
-  */
   async mounted() {
   },
   computed: {
@@ -183,7 +178,7 @@ export default {
 
         console.log("response getListObjectsByUserId", response);
         if (response.codeResponse > 400) {
-          this.$store.state.listModal[0].isOpen = true;
+          await this.$store.dispatch("callModalAuth");
           this.$store.commit("Objects/setLoadingObjects", false);
         }
       }, 1000);

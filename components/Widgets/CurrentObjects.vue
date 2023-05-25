@@ -5,7 +5,7 @@
         <div class="current_object__label__container">
           <span>Текущий объект</span>
           <TooltipStyled :title="'Совместная работа'">
-            <v-menu :close-on-content-click="false" left offset-y>
+            <v-menu :close-on-content-click="false" :disabled="!$store.getters.stateAuth" left offset-y>
               <template #activator="{ on, attrs }">
                 <div v-bind="attrs" v-on="on">
                   <v-icon
@@ -27,7 +27,7 @@
       </div>
 
       <TooltipStyled :title="$store.getters.stateAuth ?
-        'Выбрать объект или создать новый' : 'Для выбора объекта войдите в личный кабинет'"
+        'Выбрать объект или создать новый' : 'Для выбора объекта - авторизуйтесь'"
       >
         <div @click="callAuthModal">
           <SelectObjectStyled
@@ -40,7 +40,7 @@
             :item-text="'address'"
             :item-value="'id'"
             :items="$store.state.Objects.listObjects"
-            :placeholder="$store.getters.stateAuth ? 'Выберите объект' : 'Войдите в учет. запись'"
+            :placeholder="$store.getters.stateAuth ? 'Выберите объект' : 'Авторизуйтесь'"
             title="Выберите объект"
             @update-input="callback"
           />

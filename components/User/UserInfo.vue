@@ -1,7 +1,7 @@
 <template>
   <div class="modal_wrapper">
     <div class="card_title d-flex justify-space-between align-center mb-4">
-      <h3>Настройки профиля</h3>
+      <h3>{{ isLoggedIn ? "Настройки профиля" : "Авторизуйтесь" }}</h3>
       <v-icon large @click="closeDetail">
         mdi-close
       </v-icon>
