@@ -1,158 +1,156 @@
 <template>
-  <div class="wrapper_current_object">
-    <div class="current_object">
-      <div class="current_object__label">
-        <div class="current_object__label__container">
-          <span>Текущий объект</span>
-          <TooltipStyled :title="'Совместная работа'">
-            <v-menu :close-on-content-click="false" left offset-y>
-              <template #activator="{ on, attrs }">
-                <div v-bind="attrs" v-on="on">
-                  <v-icon
-                    class="share"
-                    color="#ADADAD"
-                    size="26"
-                    v-bind="attrs"
-                    v-on="on"
-                  >
-                    mdi-account-group-outline
-                  </v-icon>
-                </div>
-              </template>
-              <Collaboration />
-            </v-menu>
-          </TooltipStyled>
-        </div>
-        <v-divider />
+  <div class="current_object">
+    <div class="current_object__label">
+      <div class="current_object__label__container">
+        <span>Текущий объект</span>
+        <TooltipStyled :title="'Совместная работа'">
+          <v-menu :close-on-content-click="false" left offset-y>
+            <template #activator="{ on, attrs }">
+              <div v-bind="attrs" v-on="on">
+                <v-icon
+                  class="share"
+                  color="#ADADAD"
+                  size="26"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  mdi-account-group-outline
+                </v-icon>
+              </div>
+            </template>
+            <Collaboration />
+          </v-menu>
+        </TooltipStyled>
       </div>
+      <v-divider />
+    </div>
 
-      <TooltipStyled :title="$store.getters.stateAuth ?
-        'Выбрать объект или создать новый' : 'Для выбора объекта войдите в личный кабинет'"
-      >
-        <div @click="callAuthModal">
-          <SelectObjectStyled
-            :custom-style="true"
-            :data="$store.state.Objects.currentObject"
-            :have-trigger="true"
+    <TooltipStyled :title="$store.getters.stateAuth ?
+      'Выбрать объект или создать новый' : 'Для выбора объекта войдите в личный кабинет'"
+    >
+      <div @click="callAuthModal">
+        <SelectObjectStyled
+          :custom-style="true"
+          :data="$store.state.Objects.currentObject"
+          :have-trigger="true"
+          :is-disabled="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : true"
+          :is-loading="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : false"
+          :is-solo="true"
+          :item-text="'address'"
+          :item-value="'id'"
+          :items="$store.state.Objects.listObjects"
+          :placeholder="$store.getters.stateAuth ? 'Выберите объект' : 'Войдите в учет. запись'"
+          title="Выберите объект"
+          @update-input="callback"
+        />
+      </div>
+    </TooltipStyled>
+
+    <TooltipStyled :title="'Фотография объекта'">
+      <v-img class="current_object__image">
+        <v-icon class="current_object__image__icon" x-large>
+          mdi-map-marker-outline
+        </v-icon>
+      </v-img>
+    </TooltipStyled>
+
+    <!-- Циклом параметры по булеву "транслировать в сниппет" -->
+    <section
+      v-for="(obj, key) in $store.state.list_broadcast_snippet"
+      :key="key"
+      class="current_object__wrapper_info"
+    >
+      <span class="current_object__wrapper_info__text">{{ obj.name }}:</span>
+      <span class="current_object__wrapper_info__value">{{ $store.state.Objects.currentObject[obj.code] }}</span>
+    </section>
+
+    <section class="current_object__wrapper_info">
+      <span class="current_object__wrapper_info__text">Параметры объекта:</span>
+      <span class="current_object__wrapper_info__value">13 из 22</span>
+    </section>
+    <section class="current_object__wrapper_info">
+      <span class="current_object__wrapper_info__text">ТЗ объекта: {{ $store.state.Objects.currentObject.name
+        }}</span>
+      <span class="current_object__wrapper_info__value">7 из 130</span>
+      <div class="wrapper_button">
+        <TooltipStyled :title="'Перейти к объекту'">
+          <ButtonStyled
+            :href="$store.getters['Objects/stateObjectSelected'] ? '/objects/'+$store.state.Objects.currentObject.id : ''"
             :is-disabled="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : true"
             :is-loading="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : false"
-            :is-solo="true"
-            :item-text="'address'"
-            :item-value="'id'"
-            :items="$store.state.Objects.listObjects"
-            :placeholder="$store.getters.stateAuth ? 'Выберите объект' : 'Войдите в учет. запись'"
-            title="Выберите объект"
-            @update-input="callback"
+            :local-text="'Открыть'"
+            local-class="style_button"
+          />
+        </TooltipStyled>
+        <TooltipStyled :title="'Сгенерировать PDF Технического Задания'">
+          <ButtonStyled
+            :custom-slot="true"
+            :is-disabled="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : true"
+            :is-loading="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : false"
+            local-class="style_button"
+            @click-button="state_tech_task_block = !state_tech_task_block"
+          >
+            <span>{{ state_tech_task_block ? "Скрыть&nbsp; ТЗ" : "Создать ТЗ" }}</span>
+            <v-icon>{{ state_tech_task_block ? "mdi-chevron-up" : "mdi-chevron-down" }}</v-icon>
+          </ButtonStyled>
+        </TooltipStyled>
+      </div>
+
+      <span v-show="state_tech_task_block" class="current_object__wrapper_info__hide_block">
+        <div v-if="$store.state.list_tags.length">
+          <v-checkbox
+            v-for="(tag, key) in $store.state.list_tags"
+            :key="key"
+            v-model="selected_ids_tags"
+            :disabled="!$store.getters['Objects/stateObjectSelected']"
+            :label="tag.name"
+            :value="tag.id"
+            class="current_object__wrapper_info__hide_block__checkbox"
+            hide-details
           />
         </div>
-      </TooltipStyled>
-
-      <TooltipStyled :title="'Фотография объекта'">
-        <v-img class="current_object__image">
-          <v-icon class="current_object__image__icon" x-large>
-            mdi-map-marker-outline
-          </v-icon>
-        </v-img>
-      </TooltipStyled>
-
-      <!-- Циклом параметры по булеву "транслировать в сниппет" -->
-      <section
-        v-for="(obj, key) in $store.state.list_broadcast_snippet"
-        :key="key"
-        class="current_object__wrapper_info"
-      >
-        <span class="current_object__wrapper_info__text">{{ obj.name }}:</span>
-        <span class="current_object__wrapper_info__value">{{ $store.state.Objects.currentObject[obj.code] }}</span>
-      </section>
-
-      <section class="current_object__wrapper_info">
-        <span class="current_object__wrapper_info__text">Параметры объекта:</span>
-        <span class="current_object__wrapper_info__value">13 из 22</span>
-      </section>
-      <section class="current_object__wrapper_info">
-        <span class="current_object__wrapper_info__text">ТЗ объекта: {{ $store.state.Objects.currentObject.name
-          }}</span>
-        <span class="current_object__wrapper_info__value">7 из 130</span>
-        <div class="wrapper_button">
-          <TooltipStyled :title="'Перейти к объекту'">
-            <ButtonStyled
-              :href="$store.getters['Objects/stateObjectSelected'] ? '/objects/'+$store.state.Objects.currentObject.id : ''"
-              :is-disabled="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : true"
-              :is-loading="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : false"
-              :local-text="'Открыть'"
-              local-class="style_button"
-            />
-          </TooltipStyled>
-          <TooltipStyled :title="'Сгенерировать PDF Технического Задания'">
+        <div>
+          <TooltipStyled
+            :title="$store.getters['Objects/stateObjectSelected']
+              ? 'Техническое задание по инженерным системам'
+              : 'Выберите ваш объект для формирования документа'"
+          >
             <ButtonStyled
               :custom-slot="true"
-              :is-disabled="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : true"
-              :is-loading="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : false"
-              local-class="style_button"
-              @click-button="state_tech_task_block = !state_tech_task_block"
+              :is-disabled="!$store.getters['Objects/stateObjectSelected']"
+              local-class="style_button downloadPDF"
+              @click-button="downloadPDF()"
             >
-              <span>{{ state_tech_task_block ? "Скрыть&nbsp; ТЗ" : "Создать ТЗ" }}</span>
-              <v-icon>{{ state_tech_task_block ? "mdi-chevron-up" : "mdi-chevron-down" }}</v-icon>
+              <span>Скачать PDF</span>
             </ButtonStyled>
           </TooltipStyled>
+          <!-- Генерация пдф -->
+          <client-only>
+            <vue-html2pdf
+              ref="html2Pdf"
+              :enable-download="true"
+              :html-to-pdf-options="$store.getters['PdfDataModule/htmlToPdfOptions']('Техническое задание')"
+              :manual-pagination="true"
+              :pdf-quality="2"
+              :show-layout="false"
+              pdf-content-width="100%"
+            >
+              <section slot="pdf-content">
+                <!-- content -->
+                <pdf-content />
+                <!-- /content -->
+              </section>
+            </vue-html2pdf>
+          </client-only>
+          <v-alert
+            v-if="alert.state"
+            type="error"
+          >
+            <span v-html="alert.message" />
+          </v-alert>
         </div>
-
-        <span v-show="state_tech_task_block" class="current_object__wrapper_info__hide_block">
-          <div v-if="$store.state.list_tags.length">
-            <v-checkbox
-              v-for="(tag, key) in $store.state.list_tags"
-              :key="key"
-              v-model="selected_ids_tags"
-              :disabled="!$store.getters['Objects/stateObjectSelected']"
-              :label="tag.name"
-              :value="tag.id"
-              class="current_object__wrapper_info__hide_block__checkbox"
-              hide-details
-            />
-          </div>
-          <div>
-            <TooltipStyled
-              :title="$store.getters['Objects/stateObjectSelected']
-                ? 'Техническое задание по инженерным системам'
-                : 'Выберите ваш объект для формирования документа'"
-            >
-              <ButtonStyled
-                :custom-slot="true"
-                :is-disabled="!$store.getters['Objects/stateObjectSelected']"
-                local-class="style_button downloadPDF"
-                @click-button="downloadPDF()"
-              >
-                <span>Скачать PDF</span>
-              </ButtonStyled>
-            </TooltipStyled>
-            <!-- Генерация пдф -->
-            <client-only>
-              <vue-html2pdf
-                ref="html2Pdf"
-                :enable-download="true"
-                :html-to-pdf-options="$store.getters['PdfDataModule/htmlToPdfOptions']('Техническое задание')"
-                :manual-pagination="true"
-                :pdf-quality="2"
-                :show-layout="false"
-                pdf-content-width="100%"
-              >
-                <section slot="pdf-content">
-                  <!-- content -->
-                  <pdf-content />
-                  <!-- /content -->
-                </section>
-              </vue-html2pdf>
-            </client-only>
-            <v-alert
-              v-if="alert.state"
-              type="error"
-            >
-              <span v-html="alert.message" />
-            </v-alert>
-          </div>
-        </span>
-      </section>
-    </div>
+      </span>
+    </section>
   </div>
 </template>
 
@@ -228,114 +226,107 @@ export default {
 <style lang="scss" scoped>
 @import "@/assets/styles/global.scss";
 
-.wrapper_current_object {
-  height: 1px;
-  //width: 1px;
-  top: 15px;
-  position: sticky;
+.current_object {
+  height: auto;
+  max-height: 768px;
+  width: 290px;
+  min-width: 290px;
+  //max-height: 500px;
+  display: flex;
+  flex-direction: column;
+  align-self: baseline;
+  grid-row-gap: 1em;
+  padding: 20px !important;
+  transition: all 0.4s ease-in-out !important;
+  background: white;
+  overflow-y: overlay;
 
-  .current_object {
-    top: 0;
-    //right: -320px;
-    position: absolute;
-    overflow-y: overlay;
-    height: auto;
-    max-height: 768px;
-    width: 290px;
-    //max-height: 500px;
-    display: flex;
-    flex-direction: column;
-    align-self: baseline;
-    grid-row-gap: 1em;
-    padding: 20px !important;
-    transition: all 0.4s ease-in-out !important;
 
-    &:hover {
-      @extend .border-hover;
-      @extend .background-hover;
+  &:hover {
+    @extend .border-hover;
+    @extend .background-hover;
+  }
+
+  &__label {
+    font-size: 1.25em;
+
+    &__container {
+      display: flex;
+      justify-content: space-between;
     }
 
-    &__label {
-      font-size: 1.25em;
-
-      &__container {
-        display: flex;
-        justify-content: space-between;
-      }
-
-      hr {
-        margin-top: 10px;
-        border-color: black;
-      }
+    hr {
+      margin-top: 10px;
+      border-color: black;
     }
+  }
 
-    &__image {
+  &__image {
+    width: 100%;
+    height: 150px;
+    background: rgba(196, 196, 196, 0.5);
+    border-radius: 5px;
+
+    &__icon {
+      position: absolute;
+      margin: auto;
       width: 100%;
-      height: 150px;
-      background: rgba(196, 196, 196, 0.5);
-      border-radius: 5px;
+      height: 100%;
+    }
+  }
 
-      &__icon {
-        position: absolute;
-        margin: auto;
-        width: 100%;
-        height: 100%;
-      }
+  &__wrapper_info {
+    &__text {
+      font-style: normal;
+      //font-weight: 300;
+      font-size: 16px;
+      line-height: 16px;
+      //color: #37392E;
     }
 
-    &__wrapper_info {
-      &__text {
-        font-style: normal;
-        //font-weight: 300;
-        font-size: 16px;
-        line-height: 16px;
-        //color: #37392E;
-      }
+    &__value {
+    }
 
-      &__value {
-      }
+    &__info {
+      display: grid;
+    }
 
-      &__info {
-        display: grid;
-      }
+    &__icon_wrapper {
+      text-align: center;
+    }
 
-      &__icon_wrapper {
-        text-align: center;
-      }
+    &__hide_block {
+      display: grid;
+      //grid-row-gap: 5px;
 
-      &__hide_block {
-        display: grid;
-        //grid-row-gap: 5px;
+      &__checkbox {
+        margin: unset;
+        padding: unset;
 
-        &__checkbox {
-          margin: unset;
-          padding: unset;
-
-          label {
-            height: 100% !important;
-          }
+        label {
+          height: 100% !important;
         }
       }
     }
+  }
 
-    .wrapper_button {
-      margin: 1em 0;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-column-gap: 1em;
-      font-size: 14px;
+  .wrapper_button {
+    margin: 1em 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 1em;
+    font-size: 14px;
 
-      .style_button {
-        min-width: unset !important;
-        width: 100%;
-      }
-    }
-
-    .downloadPDF {
-      margin-top: 10px;
+    .style_button {
+      min-width: unset !important;
       width: 100%;
-      max-width: unset;
     }
+  }
+
+  .downloadPDF {
+    margin-top: 10px;
+    width: 100%;
+    max-width: unset;
   }
 }
 </style>

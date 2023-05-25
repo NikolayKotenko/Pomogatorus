@@ -277,10 +277,9 @@
                   class="dashedButton"
                   disabled
                   outlined
-                  rounded
                 >
-                  <v-icon>mdi-paperclip</v-icon>
-                  Добавить файл
+                  <v-icon large>mdi-cloud-upload</v-icon>
+                  Загрузить файлы
                 </v-btn>
               </div>
             </template>
@@ -956,9 +955,16 @@ export default {
 }
 
 .dashedButton {
-  border-style: dashed !important;
+  border: 0.5px dashed #B3B3B3;
+  border-radius: 5px;
+  color: #B3B3B3;
+  font-weight: 400;
+  font-size: 1em;
+  text-transform: unset !important;
+  letter-spacing: 0;
   width: 100%;
-  text-transform: uppercase;
+  height: 50px !important;
   display: grid;
+
 }
 </style>

@@ -14,7 +14,7 @@
       <div ref="dropzoneTemplate" class="dropzone-custom-content">
         <!--<div v-if='isDropzoneNotEmpty' class='separator'></div>-->
         <div class="dropzone-label">
-          <v-icon color="#B3B3B3" large>mdi-cloud-upload</v-icon>
+          <v-icon color="#857885" large>mdi-cloud-upload</v-icon>
           <span>{{ ExternalPlaceholder }}</span>
         </div>
       </div>
@@ -62,16 +62,14 @@ export default {
 
 <style lang="scss" scoped>
 .styleUploadFiles {
-  //border-radius: 5px;
-  //border: dashed 6px #000000;
-  //color: #000000;
-  //min-width: 815px;
+  border: 0.5px dashed #857885;
+  border-radius: 5px;
+  color: #857885;
+  font-weight: 400;
+  font-size: 1em;
+  text-transform: unset !important;
+  width: 100%;
+  height: auto;
 
-  background-image: repeating-linear-gradient(-1deg, #b3b3b3, #b3b3b3 9px, transparent 0, transparent 22px, #b3b3b3 0), repeating-linear-gradient(89deg, #b3b3b3, #b3b3b3 9px, transparent 0, transparent 22px, #b3b3b3 0), repeating-linear-gradient(179deg, #b3b3b3, #b3b3b3 9px, transparent 0, transparent 22px, #b3b3b3 0), repeating-linear-gradient(269deg, #b3b3b3, #b3b3b3 9px, transparent 0, transparent 22px, #b3b3b3 0);
-  background-size: 2px 100%, 100% 2px, 2px 100%, 100% 2px;
-  background-position: 0 0, 0 0, 100% 0, 0 100%;
-  background-repeat: no-repeat;
-  margin: 0 0 10px 0;
-  padding: 10px;
 }
 </style>

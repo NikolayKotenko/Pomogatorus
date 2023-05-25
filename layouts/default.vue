@@ -8,7 +8,7 @@
     <v-main id="main_content" class="main">
       <VerticalMenu class="fixed_left_menu"/>
       <Nuxt class="custom_grid_system main__left_column"/>
-      <CurrentObjects v-if="! listExcludedRightColumn"/>
+      <WrapperStickyCurrentObject v-if="! listExcludedRightColumn && $device.isDesktop"/>
     </v-main>
 
     <!-- КАСКАДНЫЕ МОДАЛКИ -->
@@ -36,10 +36,12 @@ import VerticalMenu from '../components/VerticalMenu.vue'
 import Request from '@/services/request'
 import Logging from '@/services/logging'
 import Biathlon from "../components/Common/Biathlon.vue";
+import WrapperStickyCurrentObject from "../components/Widgets/WrapperStickyCurrentObject.vue";
 
 export default {
   name: "DefaultLayout",
   components: {
+    WrapperStickyCurrentObject,
     Biathlon,
     VerticalMenu,
     BurgerMenu,
