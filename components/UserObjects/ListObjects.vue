@@ -38,7 +38,7 @@
           <v-skeleton-loader
             class="mx-auto"
             type="card"
-          ></v-skeleton-loader>
+          />
         </TooltipStyled>
       </v-sheet>
 
@@ -63,6 +63,7 @@
                 no-resize
                 row-height="1"
                 solo
+                @keyup.enter="onCreateNewObject"
               />
             </div>
           </div>
@@ -96,25 +97,25 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from "vuex";
-import ButtonStyled from "../Common/ButtonStyled.vue";
-import ObjectGlobal from "./ObjectGlobal";
-import CardObject from "./CardObject.vue";
-import TooltipStyled from "@/components/Common/TooltipStyled";
+import { mapActions, mapGetters, mapState } from 'vuex';
+import ButtonStyled from '../Common/ButtonStyled.vue';
+import ObjectGlobal from './ObjectGlobal';
+import CardObject from './CardObject.vue';
+import TooltipStyled from '@/components/Common/TooltipStyled';
 
 export default {
-  name: "ListObjects",
+  name: 'ListObjects',
   components: { TooltipStyled, ButtonStyled, CardObject, ObjectGlobal },
   data: () => ({
     object: {},
-    newObjAddress: "",
-    newObjName: "",
+    newObjAddress: '',
+    newObjName: '',
     showDetail: false,
     detailData: {},
     debounceTimeout: null
   }),
   watch: {
-    "getUserId": {
+    'getUserId': {
       handler(val) {
         this.localGetListObjects(val);
       },
@@ -124,9 +125,9 @@ export default {
   async mounted() {
   },
   computed: {
-    ...mapState("Objects", ["listObjects", "isLoadingObjects", "loading_objects"]),
-    ...mapState(["userData"]),
-    ...mapGetters(["getUserId"]),
+    ...mapState('Objects', ['listObjects', 'isLoadingObjects', 'loading_objects']),
+    ...mapState(['userData']),
+    ...mapGetters(['getUserId']),
 
     notEmptyObject() {
       return !!Object.keys(this.object).length;
@@ -141,14 +142,14 @@ export default {
     }
   },
   methods: {
-    ...mapActions("Objects", ["createNewObject", "getListObjectsByUserId"]),
+    ...mapActions('Objects', ['createNewObject', 'getListObjectsByUserId']),
 
     async onCreateNewObject() {
       await this.createNewObject({
         address: this.newObjAddress,
         name: this.newObjName
       });
-      this.newObjAddress = "";
+      this.newObjAddress = '';
 
       await this.getListObjectsByUserId(this.getUserId);
     },
@@ -156,7 +157,7 @@ export default {
       this.showDetail = false;
     },
     closeDetail() {
-      this.$emit("close-detail");
+      this.$emit('close-detail');
     },
     openDetail(data) {
       this.detailData = data;
@@ -174,12 +175,12 @@ export default {
     async localGetListObjects(idUser) {
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
       this.debounceTimeout = setTimeout(async () => {
-        const response = await this.$store.dispatch("Objects/getListObjectsByUserId", idUser);
+        const response = await this.$store.dispatch('Objects/getListObjectsByUserId', idUser);
 
-        console.log("response getListObjectsByUserId", response);
+        console.log('response getListObjectsByUserId', response);
         if (response.codeResponse > 400) {
-          await this.$store.dispatch("callModalAuth");
-          this.$store.commit("Objects/setLoadingObjects", false);
+          await this.$store.dispatch('callModalAuth');
+          this.$store.commit('Objects/setLoadingObjects', false);
         }
       }, 1000);
     }
@@ -268,7 +269,9 @@ export default {
 }
 
 .new_object_wrapper {
-  position: sticky;
+  position: fixed;
+  width: 100%;
+  max-width: 1140px;
   bottom: 0;
   padding-bottom: 20px;
   margin-top: 10px;

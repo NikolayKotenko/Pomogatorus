@@ -1,62 +1,67 @@
 <template>
-  <div class='geo-select-wrap'>
+  <div class="geo-select-wrap">
     <InputStyled
-      :data='data.address'
-      :is-readonly='true'
-      :placeholder='"Выберите адрес"'
-      :prepend-icon-inner='"mdi-map-marker-outline"'
-      @on-click='openModal'
+      :data="data.address"
+      :is-readonly="true"
+      :placeholder="&quot;Выберите адрес&quot;"
+      :prepend-icon-inner="&quot;mdi-map-marker-outline&quot;"
+      @on-click="openModal"
     />
 
     <v-dialog
-      v-model='isOpenMap'
-      width='1080'
+      v-model="isOpenMap"
+      width="1080"
     >
-      <v-card class='map-container'>
-        <v-card-title class='d-flex justify-end'>
-          <v-icon @click='closeModal'>mdi-close</v-icon>
-        </v-card-title>
+      <v-card class="map-container">
+        <!--        <v-card-title class="d-flex justify-end"> -->
+        <!--          <v-icon @click="closeModal"> -->
+        <!--            mdi-close -->
+        <!--          </v-icon> -->
+        <!--        </v-card-title> -->
         <v-card-text>
-          <template v-if='drawMap'>
+          <template v-if="drawMap">
             <yandex-map
-              :behaviors='behaviors'
-              :controls='controls'
-              :coords='coords'
-              :detailed-controls='detailedControls'
-              :zoom='zoom'
-              @balloonopen='bindListener'
-              @click='onClickMap'
-              @touch='onClickMap'
-              @map-was-initialized='onMapInit'
+              :behaviors="behaviors"
+              :controls="controls"
+              :coords="coords"
+              :detailed-controls="detailedControls"
+              :zoom="zoom"
+              @balloonopen="bindListener"
+              @click="onClickMap"
+              @touch="onClickMap"
+              @map-was-initialized="onMapInit"
             >
               <ymap-marker
-                :balloon-template='balloonTemplate'
-                :coords='coords'
-                hint-content='Выбранный адрес'
-                marker-id='123'
-                marker-type='placemark'
+                :balloon-template="balloonTemplate"
+                :coords="coords"
+                hint-content="Выбранный адрес"
+                marker-id="123"
+                marker-type="placemark"
               />
             </yandex-map>
           </template>
         </v-card-text>
         <div class="buttons">
           <ButtonStyled
-            :is-mobile="true"
-            local-text="ОК"
+            id="btn"
+            local-text="Сохранить изменения"
             local-class="style_button"
-            id='btn'
-          >
-          </ButtonStyled>
+          />
+          <div @click="closeModal">
+            <ButtonStyled
+              local-text="Отмена"
+              local-class="style_close"
+            />
+          </div>
         </div>
       </v-card>
-
     </v-dialog>
   </div>
 </template>
 
 <script>
 import InputStyled from './InputStyled'
-import ButtonStyled from "./ButtonStyled.vue";
+import ButtonStyled from './ButtonStyled.vue';
 
 export default {
   name: 'SelectGeo',
@@ -100,20 +105,6 @@ export default {
       address: ''
     }
   },
-  mounted() {
-    this.coords = this.outerCoords
-
-    if (this.data?.address) {
-      this.address = this.data.address
-    }
-  },
-  watch: {
-    'outerCoords': {
-      handler(v) {
-        this.coords = v
-      }
-    }
-  },
   computed: {
     balloonTemplate() {
       return `
@@ -143,6 +134,20 @@ export default {
 
     isMobile() {
       return this.$device.isMobile
+    }
+  },
+  watch: {
+    'outerCoords': {
+      handler(v) {
+        this.coords = v
+      }
+    }
+  },
+  mounted() {
+    this.coords = this.outerCoords
+
+    if (this.data?.address) {
+      this.address = this.data.address
     }
   },
   methods: {
@@ -195,7 +200,7 @@ export default {
       const self = this
 
       /* CUSTOM SUGGEST LIST */
-      let suggestTemplate = ymaps.templateLayoutFactory.createClass(this.suggestTemplate, {
+      const suggestTemplate = ymaps.templateLayoutFactory.createClass(this.suggestTemplate, {
         build: function() {
           suggestTemplate.superclass.build.call(this)
 
@@ -213,7 +218,7 @@ export default {
       })
 
       /* CUSTOM SEARCH */
-      let template = ymaps.templateLayoutFactory.createClass(this.searchTemplate, {
+      const template = ymaps.templateLayoutFactory.createClass(this.searchTemplate, {
         build: function() {
           template.superclass.build.call(this)
           this.searchCallback = ymaps.util.bind(this.searchCb, this)
@@ -222,7 +227,7 @@ export default {
           searchElem.addEventListener('click', self.showSuggest)
           searchElem.addEventListener('touchstart', self.showSuggest)
           searchElem.addEventListener('submit', this.searchCallback)
-          let input = document.getElementById('map_search')
+          const input = document.getElementById('map_search')
           self.suggestInstance = new ymaps.SuggestView(input, {
             layout: suggestTemplate
           })
@@ -242,12 +247,12 @@ export default {
           template.superclass.clear.call(this)
         },
         searchCb: function(e) {
-          var map = this.getData().control.getMap()
+          const map = this.getData().control.getMap()
           e.preventDefault()
 
-          var ctrl = this.getData().control
+          const ctrl = this.getData().control
 
-          let input = document.getElementById('map_search')
+          const input = document.getElementById('map_search')
           ctrl.search(input.value).then(function(value) {
             // For debug
             // console.log(value.geoObjects.get(0).geometry.getCoordinates())

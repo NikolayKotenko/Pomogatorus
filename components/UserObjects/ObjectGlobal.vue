@@ -116,7 +116,7 @@
             @click-button="closeModal"
           >
             <v-icon color="#5C856BFF">
-              mdi-text-box-edit-outline
+              mdi-content-save-outline
             </v-icon>
           </ButtonStyled>
 
