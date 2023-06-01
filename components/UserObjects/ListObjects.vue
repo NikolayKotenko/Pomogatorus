@@ -271,7 +271,7 @@ export default {
 .new_object_wrapper {
   position: fixed;
   width: 100%;
-  max-width: 1140px;
+  max-width: inherit;
   bottom: 0;
   padding-bottom: 20px;
   margin-top: 10px;

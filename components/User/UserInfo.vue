@@ -18,25 +18,50 @@
     </div>
 
     <div class="save_logout_btn">
-      <div @click="saveUser">
-        <ButtonStyled
-          :local-text="'Сохранить изменения'"
-          local-class="style_button"
-          :disabled="!isValid"
-          :loading="isUpdating"
-        />
-      </div>
-      <div
-        v-if="isLoggedIn"
-        @click="logout"
-      >
-        <ButtonStyled
-          :local-text="'Выйти'"
-          local-class="style_close"
+      <template v-if="isMobile">
+        <div @click="saveUser">
+          <ButtonStyled
+            :custom-slot="true"
+            :is-mobile="true"
+            local-class="style_button"
+            :disabled="!isValid"
+            :loading="isUpdating"
+          >
+            <v-icon>mdi-content-save-outline</v-icon>
+          </ButtonStyled>
+        </div>
+        <div
+          v-if="isLoggedIn"
+          @click="logout"
         >
-          Выйти
-        </ButtonStyled>
-      </div>
+          <ButtonStyled
+            :custom-slot="true"
+            :is-mobile="true"
+            local-class="style_close"
+          >
+            <v-icon>mdi-exit-to-app</v-icon>
+          </ButtonStyled>
+        </div>
+      </template>
+      <template v-else>
+        <div @click="saveUser">
+          <ButtonStyled
+            :local-text="'Сохранить изменения'"
+            local-class="style_button"
+            :disabled="!isValid"
+            :loading="isUpdating"
+          />
+        </div>
+        <div
+          v-if="isLoggedIn"
+          @click="logout"
+        >
+          <ButtonStyled
+            :local-text="'Выйти'"
+            local-class="style_close"
+          />
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -68,6 +93,9 @@ export default {
 
     isLoggedIn() {
       return this.userData && Object.keys(this.userData).length;
+    },
+    isMobile() {
+      return this.$device.isMobile
     }
   },
   methods: {

@@ -6,55 +6,43 @@
         :data="form.first_name"
         :class="'styleTextField'"
         :is-outlined="true"
-        :placeholder="'Введите имя'"
-        @update-input="setData"
+        :is-label="'Введите имя'"
+        @update-input="setFirstNameData"
       />
 
-      <VTextField
-        v-model="form.middle_name"
-        class="mb-4"
-        color="#95D7AE"
-        dense
-        outlined
-        hide-details
-        label="Введите фамилию"
-
-        @change="setData"
+      <InputStyled
+        :data="form.middle_name"
+        :class="'styleTextField'"
+        :is-outlined="true"
+        :is-label="'Введите фамилию'"
+        @update-input="setMiddleNameData"
       />
 
-      <VTextField
-        v-model="form.last_name"
-        class="mb-4"
-        color="#95D7AE"
-        dense
-        outlined
-        hide-details
-        label="Введите отчество"
-
-        @change="setData"
+      <InputStyled
+        :data="form.last_name"
+        :class="'styleTextField'"
+        :is-outlined="true"
+        :is-label="'Введите отчество'"
+        @update-input="setLastNameData"
       />
 
-      <VTextField
-        v-model="form.email"
+      <InputStyled
+        :data="form.email"
         :rules="emailRules"
-        class="mb-4"
+        :class="'styleTextField'"
+        :is-outlined="true"
+        :is-label="'Введите email'"
         color="#95D7AE"
-        dense
-        outlined
-        hide-details
-        label="Введите email"
-        @change="setData"
+        @update-input="setEmailData"
       />
 
       <VTextField
         v-model="form.telephone"
-        v-mask="'+7 (###) ###-##-##'"
-        class="mb-4"
+        v-mask="mask"
+        label="Введите телефон"
         color="#95D7AE"
         dense
         outlined
-        hide-details
-        label="Введите телефон"
         @change="setData"
       />
     </template>
@@ -67,45 +55,44 @@
             :data="form.first_name"
             :class="'styleTextField'"
             :is-outlined="true"
-            :placeholder="'Введите имя'"
-            @update-input="setData"
+            :is-label="'Введите имя'"
+            @update-input="setFirstNameData"
           />
         </VCol>
         <VCol>
-          <VTextField
-            v-model="form.middle_name"
-            label="Введите фамилию"
-            color="#95D7AE"
-            dense
-            outlined
-            @change="setData"
+          <InputStyled
+            :data="form.middle_name"
+            :class="'styleTextField'"
+            :is-outlined="true"
+            :is-label="'Введите фамилию'"
+            @update-input="setMiddleNameData"
           />
         </VCol>
         <VCol>
-          <VTextField
-            v-model="form.last_name"
-            label="Введите отчество"
-            color="#95D7AE"
-            dense
-            outlined
-            @change="setData"
+          <InputStyled
+            :data="form.last_name"
+            :class="'styleTextField'"
+            :is-outlined="true"
+            :is-label="'Введите отчество'"
+            @update-input="setLastNameData"
           />
         </VCol>
       </VRow>
 
       <VRow>
         <VCol>
-          <VTextField
-            v-model="form.email"
+          <InputStyled
+            :data="form.email"
             :rules="emailRules"
-            label="Введите email"
+            :class="'styleTextField'"
+            :is-outlined="true"
+            :is-label="'Введите email'"
             color="#95D7AE"
-            dense
-            outlined
-            @change="setData"
+            @update-input="setEmailData"
           />
         </VCol>
         <VCol>
+          <!--          TODO: Разобраться с маской телефона. После использовать компонент "InputStyled" -->
           <VTextField
             v-model="form.telephone"
             v-mask="mask"
@@ -184,7 +171,7 @@ export default {
       {
         text: 'Маркетинг и продажи',
         key: 'marketing_and_sales',
-        icon: 'mdi-cog-transfer',
+        icon: 'mdi-shopping',
       },
     ],
     emailRules: [
@@ -231,7 +218,27 @@ export default {
         }
       }
     },
-    setData() {
+    setFirstNameData(name){
+      this.form.first_name = name;
+      this.$emit('new-data', { data: this.form, isValid: this.isFormValid })
+    },
+    setMiddleNameData(name){
+      this.form.middle_name = name;
+      this.$emit('new-data', { data: this.form, isValid: this.isFormValid })
+    },
+    setLastNameData(name){
+      this.form.last_name = name;
+      this.$emit('new-data', { data: this.form, isValid: this.isFormValid })
+    },
+    setEmailData(name){
+      this.form.email = name;
+      this.$emit('new-data', { data: this.form, isValid: this.isFormValid })
+    },
+    setTelephoneData(name){
+      this.form.telephone = name;
+      this.$emit('new-data', { data: this.form, isValid: this.isFormValid })
+    },
+    setData(data) {
       this.$emit('new-data', { data: this.form, isValid: this.isFormValid })
     }
   }

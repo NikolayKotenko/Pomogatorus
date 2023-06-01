@@ -41,19 +41,45 @@
             </yandex-map>
           </template>
         </v-card-text>
-        <div class="buttons">
-          <ButtonStyled
-            id="btn"
-            local-text="Сохранить изменения"
-            local-class="style_button"
-          />
-          <div @click="closeModal">
+        <template v-if="isMobile">
+          <div class="buttons">
             <ButtonStyled
-              local-text="Отмена"
-              local-class="style_close"
-            />
+              id="btn"
+              :custom-slot="true"
+              :is-mobile="true"
+              local-class="style_button"
+            >
+              <v-icon>mdi-content-save-outline</v-icon>
+            </ButtonStyled>
+            <div @click="closeModal">
+              <ButtonStyled
+                :custom-slot="true"
+                :is-mobile="true"
+                local-class="style_close"
+              >
+                <v-icon>
+                  mdi-window-close
+                </v-icon>
+              </ButtonStyled>
+            </div>
           </div>
-        </div>
+        </template>
+
+        <template v-else>
+          <div class="buttons">
+            <ButtonStyled
+              id="btn"
+              local-text="Сохранить изменения"
+              local-class="style_button"
+            />
+            <div @click="closeModal">
+              <ButtonStyled
+                local-text="Отмена"
+                local-class="style_close"
+              />
+            </div>
+          </div>
+        </template>
       </v-card>
     </v-dialog>
   </div>
