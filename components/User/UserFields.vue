@@ -2,16 +2,12 @@
   <VForm v-model="isFormValid">
     <!--  MOBILE  -->
     <template v-if="isMobile">
-      <VTextField
-        v-model="form.first_name"
-        class="mb-4"
-        color="#95D7AE"
-        dense
-        outlined
-        hide-details
-        label="Введите имя"
-
-        @change="setData"
+      <InputStyled
+        :data="form.first_name"
+        :class="'styleTextField'"
+        :is-outlined="true"
+        :placeholder="'Введите имя'"
+        @update-input="setData"
       />
 
       <VTextField
@@ -67,13 +63,12 @@
     <template v-else>
       <VRow>
         <VCol>
-          <VTextField
-            v-model="form.first_name"
-            label="Введите имя"
-            color="#95D7AE"
-            dense
-            outlined
-            @change="setData"
+          <InputStyled
+            :data="form.first_name"
+            :class="'styleTextField'"
+            :is-outlined="true"
+            :placeholder="'Введите имя'"
+            @update-input="setData"
           />
         </VCol>
         <VCol>
@@ -113,7 +108,7 @@
         <VCol>
           <VTextField
             v-model="form.telephone"
-            v-mask="'+7 (###) ###-##-##'"
+            v-mask="mask"
             label="Введите телефон"
             color="#95D7AE"
             dense
@@ -150,9 +145,12 @@
 
 <script>
 import { mapState } from 'vuex'
+import VueMask from 'v-mask';
+import InputStyled from '../Common/InputStyled.vue';
 
 export default {
   name: 'UserFields',
+  components: { InputStyled },
   data: () => ({
     isFormValid: false,
     form: {
@@ -163,8 +161,10 @@ export default {
       telephone: '',
       home_owner: '',
       installation_engineering_systems: '',
-      selling_engineering_equipment: ''
+      selling_engineering_equipment: '',
+      marketing_and_sales: '',
     },
+    mask: '+7 (###) ###-##-##',
     types: [
       {
         text: 'Собственник дома',
@@ -180,10 +180,18 @@ export default {
         text: 'Занимаюсь продажей инженерного оборудования',
         key: 'selling_engineering_equipment',
         icon: 'mdi-cog-transfer',
-      }
+      },
+      {
+        text: 'Маркетинг и продажи',
+        key: 'marketing_and_sales',
+        icon: 'mdi-cog-transfer',
+      },
     ],
     emailRules: [
       v => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Введите корректный email'
+    ],
+    telephoneRules: [
+      v => !v || this.form  || 'Введите корректный email'
     ]
   }),
   watch: {

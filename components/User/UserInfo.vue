@@ -20,7 +20,6 @@
     <div class="save_logout_btn">
       <div @click="saveUser">
         <ButtonStyled
-          v-if="isChanged"
           :local-text="'Сохранить изменения'"
           local-class="style_button"
           :disabled="!isValid"
