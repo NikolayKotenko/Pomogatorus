@@ -1,14 +1,14 @@
 <template>
   <v-app-bar
     id="navbar"
+    :class="{isMobile: isMobile}"
     app
     class="header"
-    :class="{isMobile: isMobile}"
     dark
     elevate-on-scroll
   >
     <v-container class="d-flex custom_grid_system">
-      <v-app-bar-nav-icon v-if="isMobile" @click="showDrawer"/>
+      <v-app-bar-nav-icon v-if="isMobile" @click="showDrawer" />
       <v-toolbar-title v-if="isMobile">
         <router-link :to="getCurrentRoute.path" style="color: unset; text-decoration: unset">
           {{ getCurrentRoute.title }}
@@ -22,8 +22,8 @@
             <v-btn
               v-if="item.visible"
               :href="item.path"
-              style="margin-right: 2em;"
               class="text-capitalize link_btn"
+              style="margin-right: 2em;"
               text
             >
               <span :class="{activeElement: getCurrentRoute.title === item.title}">{{ item.title }}</span>
@@ -34,13 +34,20 @@
 
       <!-- Личный кабинет всегда по правую сторону -->
       <v-toolbar-items class="header_right">
-        <TooltipStyled :title="'Текущий объект'" v-if="!isMobile">
+        <TooltipStyled v-if="!isMobile" :title="'Текущий объект'">
           <v-menu :close-on-content-click="false" left offset-y>
             <template #activator="{ on, attrs }">
               <div style="display: inline-flex; grid-column-gap: 5px" v-bind="attrs" v-on="on">
-                <v-icon large v-bind="attrs" v-on="on">
-                  mdi-home-edit-outline
-                </v-icon>
+                <v-badge
+                  :content="$store.getters['Objects/getCountObject']"
+                  :value="$store.getters['Objects/getCountObject']"
+                  bordered
+                  overlap
+                >
+                  <v-icon large v-bind="attrs" v-on="on">
+                    mdi-home-edit-outline
+                  </v-icon>
+                </v-badge>
               </div>
             </template>
             <CurrentObjects></CurrentObjects>
@@ -68,24 +75,24 @@
 
 <script>
 // eslint-disable-next-line vue/multi-word-component-names,vue/no-reserved-component-names
-import { mapState } from 'vuex'
-import TooltipStyled from './Common/TooltipStyled'
+import { mapState } from "vuex";
+import TooltipStyled from "./Common/TooltipStyled";
 import CurrentObjects from "./Widgets/CurrentObjects.vue";
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names,vue/no-reserved-component-names
-  name: 'Header',
-  components: {CurrentObjects, TooltipStyled },
+  name: "Header",
+  components: { CurrentObjects, TooltipStyled },
   data() {
     return {
       debounceTimeout: null,
-      stateCurrentObject: false,
-    }
+      stateCurrentObject: false
+    };
   },
   mounted() {
     // eslint-disable-next-line nuxt/no-env-in-hooks
     if (!process.server) {
-      this.onScroll()
+      this.onScroll();
     }
   },
   // eslint-disable-next-line vue/order-in-components
@@ -96,67 +103,67 @@ export default {
     }),
 
     isMobile() {
-      return this.$device.isMobile
+      return this.$device.isMobile;
     },
     getCurrentRoute() {
       if (this.listModal[0].isOpen) {
         return {
-          path: '',
-          title: 'Личный кабинет'
-        }
+          path: "",
+          title: "Личный кабинет"
+        };
       }
       return this.$store.getters.menuItems.find((elem) => {
-        return this.$route.path.match(elem.path)
-      })
+        return this.$route.path.match(elem.path);
+      });
     }
   },
   methods: {
     showDrawer() {
-      this.$store.commit('set_drawer', !this.drawer)
+      this.$store.commit("set_drawer", !this.drawer);
     },
     openModals() {
       // TODO: Продумать логику открывания модалки независимо от индексa
-      this.listModal[0].isOpen = !this.listModal[0].isOpen
+      this.listModal[0].isOpen = !this.listModal[0].isOpen;
     },
     // openObject() {
     //   this.$emit("open_object", this.$store.state.listObjects.currentObject)
     //   console.log('work')
     // },
     setHeader(value) {
-      if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
       this.debounceTimeout = setTimeout(() => {
-        this.$store.commit('change_show_header', value)
-      })
+        this.$store.commit("change_show_header", value);
+      });
     },
     onScroll() {
       if (this.$device.isDesktop) {
-        let prevScrollpos = window.pageYOffset
-        const _this = this
+        let prevScrollpos = window.pageYOffset;
+        const _this = this;
         window.onscroll = function() {
-          const currentScrollPos = window.pageYOffset
+          const currentScrollPos = window.pageYOffset;
           if (prevScrollpos > currentScrollPos) {
-            document.getElementById('navbar').style.top = '0'
-            _this.setHeader(true)
+            document.getElementById("navbar").style.top = "0";
+            _this.setHeader(true);
           } else {
-            document.getElementById('navbar').style.top = '-70px'
-            _this.setHeader(false)
+            document.getElementById("navbar").style.top = "-70px";
+            _this.setHeader(false);
           }
-          prevScrollpos = currentScrollPos
-        }
+          prevScrollpos = currentScrollPos;
+        };
       }
     }
   }
-}
+};
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .v-btn:not(.v-btn--round).v-size--default {
   padding: 0 !important;
   min-width: 0;
 }
 
 
-.theme--dark.v-app-bar.v-toolbar.v-sheet{
+.theme--dark.v-app-bar.v-toolbar.v-sheet {
   background: #37392E;
 }
 
@@ -168,11 +175,13 @@ export default {
   top: 0;
   z-index: 999;
   transition: all 0.4s ease-in-out;
-  height: 64px!important;
-  &.isMobile{
-    height: 56px!important;
+  height: 64px !important;
+
+  &.isMobile {
+    height: 56px !important;
   }
-  .v-breadcrumbs{
+
+  .v-breadcrumbs {
     padding-left: 15px;
   }
 
@@ -215,7 +224,7 @@ export default {
   font-weight: lighter !important;
 }
 
-.custom_grid_system{
+.custom_grid_system {
   align-items: center;
   padding-left: 10px;
 }

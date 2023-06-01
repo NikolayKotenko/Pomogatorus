@@ -118,5 +118,8 @@ export default {
     stateFilledListObjects(state) {
       return Boolean(state.listObjects.length)
     },
+    getCountObject(state) {
+      return state.listObjects.length
+    },
   },
 }
