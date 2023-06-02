@@ -63,6 +63,7 @@
                 no-resize
                 row-height="1"
                 solo
+                @keyup.enter="onCreateNewObject"
               />
             </div>
           </div>
@@ -271,7 +272,7 @@ export default {
   position: sticky;
   bottom: 0;
   padding-bottom: 20px;
-  margin-top: 10px;
+  margin-top: auto;
   background: white;
   box-shadow: none;
 }
