@@ -6,7 +6,11 @@
     contenteditable="false"
   >
     <v-container>
-      <v-tabs v-model="tab">
+      <v-tabs
+
+        v-model="tab"
+        color="#000000"
+      >
         <v-tab :key="0">
           Авторизация
         </v-tab>
@@ -66,18 +70,12 @@
                 </v-tooltip>
               </template>
             </v-text-field>
-            <v-btn
+            <ButtonStyled
+              :local-text="'Войти'"
+              local-class="style_button"
               :loading="loading"
-              block
-              class="btn-auth"
-              color="blue darken-1"
-              elevation="2"
-              large
-              rounded
               type="submit"
-            >
-              Войти
-            </v-btn>
+            />
           </v-form>
         </v-tab-item>
         <!-- Регистрация -->
@@ -101,22 +99,16 @@
             <v-text-field
               v-model="name"
               name="name"
-              placeholder="Как к вам обращаться ?"
+              placeholder="Как к вам обращаться?"
               single-line
               type="text"
             />
-            <v-btn
+            <ButtonStyled
+              :local-text="'Зарегистрироваться'"
+              local-class="style_button"
               :loading="loading"
-              block
-              class="btn-auth"
-              color="blue darken-0"
-              elevation="2"
-              large
-              rounded
               type="submit"
-            >
-              Зарегестрироваться
-            </v-btn>
+            />
           </v-form>
         </v-tab-item>
       </v-tabs>
@@ -127,7 +119,7 @@
         dismissible
         @input="alert.state = false"
       >
-        <span v-html="alert.message" />
+        <span v-html="alert.message"/>
       </v-alert>
     </v-container>
   </v-container>
@@ -139,31 +131,33 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters } from 'vuex';
 
-import Request from "../../services/request";
-import Logging from "@/services/logging";
+import Request from '../../services/request';
+import ButtonStyled from '../Common/ButtonStyled.vue';
+import Logging from '@/services/logging';
 
 export default {
-  name: "LoginAuth",
+  name: 'LoginAuth',
+  components: { ButtonStyled },
   data() {
     return {
       tab: 0,
       valid: false,
       loading: false,
       emailRules: [
-        (v) => !!v || "Обязательное для заполнение поле",
-        (v) => /.+@.+/.test(v) || "E-mail должен быть валидным."
+        (v) => !!v || 'Обязательное для заполнение поле',
+        (v) => /.+@.+/.test(v) || 'E-mail должен быть валидным.'
       ],
-      passRules: [(v) => !!v || "Обязательное для заполнение поле", (v) => v.length === 4 || "Необходимо 4 символа"],
+      passRules: [(v) => !!v || 'Обязательное для заполнение поле', (v) => v.length === 4 || 'Необходимо 4 символа'],
       passStateEye: false,
-      email_user: "",
-      password: "",
-      name: "",
+      email_user: '',
+      password: '',
+      name: '',
       alert: {
         state: false,
-        type: "info",
-        message: ""
+        type: 'info',
+        message: ''
       },
 
       // inserted_component
@@ -180,16 +174,16 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["stateAuth"]),
-    ...mapGetters(["getNameUser"])
+    ...mapGetters(['stateAuth']),
+    ...mapGetters(['getNameUser'])
   },
   watch: {
-    "$store.getters.stateAuth": {
+    '$store.getters.stateAuth': {
       handler() {
         this.hasCookie();
       }
     },
-    "$store.state.changedCookie": {
+    '$store.state.changedCookie': {
       handler() {
         this.hasCookie();
       }
@@ -207,14 +201,14 @@ export default {
       this.alert.state = true;
       this.alert.message = Logging.getMessage(response);
       this.alert.type = Logging.checkExistErr(response)
-        ? "error"
+        ? 'error'
         : Request.getAccessTokenInCookies()
-          ? "success"
-          : "warning";
+          ? 'success'
+          : 'warning';
       this.loading = false;
 
-      if (this.alert.type === "success") {
-        this.$emit("close-modal");
+      if (this.alert.type === 'success') {
+        this.$emit('close-modal');
       }
     },
 
@@ -222,7 +216,7 @@ export default {
       if (this.valid === false) return false;
 
       this.loading = true;
-      const res = await this.$store.dispatch("loginUser", {
+      const res = await this.$store.dispatch('loginUser', {
         email: this.email_user,
         password: this.password,
         id_dom_elem: index_component,
@@ -239,7 +233,7 @@ export default {
 
       this.loading = true;
       // Пытаемся создать пользователя
-      const res = await this.$store.dispatch("createUserByEmail", {
+      const res = await this.$store.dispatch('createUserByEmail', {
         email: this.email_user,
         name: this.name,
         id_dom_elem: index_component,
@@ -255,14 +249,14 @@ export default {
 
       this.loading = true;
       // Пытаемся создать пользователя
-      const res = await this.$store.dispatch("resendUserPass", {
+      const res = await this.$store.dispatch('resendUserPass', {
         email: this.email_user,
         name: this.name,
         id_dom_elem: index_component,
         full_url: window.location.href
       });
       if (res.codeResponse === 404) {
-        this.email_user = "";
+        this.email_user = '';
         this.$refs.email_user.validate(true);
       }
       if (res.codeResponse === 200 || res.codeResponse === 409) {
@@ -277,7 +271,7 @@ export default {
     deleteQuestion() {
       const elem = document.getElementById(`component_wrapper-${this.index_component}`);
       elem.remove();
-      this.$store.dispatch("deleteComponent", this.index_component);
+      this.$store.dispatch('deleteComponent', this.index_component);
     }
   }
 };
@@ -291,10 +285,7 @@ form.login {
     margin: auto;
   }
 
-  .v-tab {
-    font-size: 1em;
-    text-transform: none !important;
-  }
+
 }
 
 .showBorder {
@@ -310,7 +301,7 @@ form.login {
 </style>
 
 <style lang="scss">
-$yellowBackground: rgb(255, 235, 153);
+$yellowBackground: rgb(255, 244, 203);
 
 @media only screen and (max-width: 375px) {
   .v-slide-group__prev {
@@ -319,10 +310,10 @@ $yellowBackground: rgb(255, 235, 153);
 }
 
 .auth_container {
-  border-radius: 10px;
-  border: 1px solid lightgrey;
-  background: $yellowBackground;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
   max-width: 500px;
+  background: $yellowBackground;
 
   .v-tabs > .v-tabs-bar {
     background: $yellowBackground;
@@ -355,5 +346,12 @@ $yellowBackground: rgb(255, 235, 153);
   button {
     margin-top: 10px;
   }
+}
+
+.v-tab {
+  font-size: 1em;
+  text-transform: none !important;
+  letter-spacing: 0;
+  font-weight: 400;
 }
 </style>

@@ -37,6 +37,7 @@
         </VListItemTitle>
       </VListItemContent>
     </template>
+    <template v-if="" #item="data"/>
   </VCombobox>
 </template>
 

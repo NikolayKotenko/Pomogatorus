@@ -1,6 +1,6 @@
 <template>
-  <div class="modal_wrapper">
-    <div class="card_title d-flex justify-space-between align-center mb-4">
+  <div class="user_info_wrapper">
+    <div class="user_info_title">
       <h3>{{ isLoggedIn ? "Настройки профиля" : "Авторизуйтесь" }}</h3>
       <v-icon large @click="closeDetail">
         mdi-close
@@ -14,45 +14,44 @@
           @new-data="setData"
         />
       </div>
-      <LoginAuth v-else />
+      <LoginAuth v-else/>
     </div>
 
-    <div class="modal_footer pa-5">
-      <Transition mode="out-in" name="fade">
-        <v-btn
-          v-if="isChanged"
+    <div class="save_logout_btn">
+      <div @click="saveUser">
+        <ButtonStyled
+          :local-text="'Сохранить изменения'"
+          local-class="style_button"
           :disabled="!isValid"
           :loading="isUpdating"
-          class="mb-2"
-          color="success"
-          @click="saveUser"
-        >
-          Сохранить
-        </v-btn>
-      </Transition>
-      <div v-if="isLoggedIn" class="modal_footer__new">
-        <v-divider />
-        <v-btn
-          block
-          color="primary"
-          @click="logout"
+        />
+      </div>
+      <div
+        v-if="isLoggedIn"
+        @click="logout"
+      >
+        <ButtonStyled
+          :local-text="'Выйти'"
+          local-class="style_close"
         >
           Выйти
-        </v-btn>
+        </ButtonStyled>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex';
 
-import LoginAuth from "../frontLayouts/LoginAuth";
-import UserFields from "./UserFields";
+import LoginAuth from '../frontLayouts/LoginAuth';
+import ButtonStyled from '../Common/ButtonStyled.vue';
+import UserFields from './UserFields';
 
 export default {
-  name: "UserInfo",
+  name: 'UserInfo',
   components: {
+    ButtonStyled,
     UserFields,
     LoginAuth
   },
@@ -73,10 +72,10 @@ export default {
   },
   methods: {
     closeDetail() {
-      this.$emit("close-detail");
+      this.$emit('close-detail');
     },
     logout() {
-      this.$store.dispatch("logout");
+      this.$store.dispatch('logout');
     },
     setChanged(value) {
       this.isChanged = value;
@@ -88,13 +87,33 @@ export default {
       this.isValid = value.isValid;
     },
     saveUser() {
-      this.$store.dispatch("updateUser", { userId: this.userData.id, data: this.data });
+      this.$store.dispatch('updateUser', { userId: this.userData.id, data: this.data });
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.user_info_wrapper {
+  height: 100%;
+  padding: 20px 30px;
+  display: flex;
+  flex-direction: column;
+
+  .user_info_title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .save_logout_btn {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+  }
+}
+
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity .5s
