@@ -11,17 +11,37 @@
 
         <div class="object-wrapper-top__selector__select">
           <SelectObjectStyled
+            v-if="stateSelectEditNameObject"
             :custom-style="true"
             :data="object"
             :is-solo="true"
-            :item-text="computedText"
+            :item-text="'name'"
             :item-value="'id'"
             :items="listObjects"
             :placeholder="'Выберите объект'"
             title="Выберите объект"
             @update-input="callback"
           />
+          <InputStyled
+            v-else
+            :data="object.name"
+            :is-outlined="true"
+            :placeholder="'Введите наименование объекта'"
+            @update-input="setNameField"
+          ></InputStyled>
         </div>
+        <TooltipStyled
+          :title="stateSelectEditNameObject
+          ? 'Режим редактирования наименования объекта'
+          : 'Режим выбора объекта'"
+        >
+          <v-icon
+            @click="stateSelectEditNameObject = !stateSelectEditNameObject"
+            :color="! stateSelectEditNameObject ? 'green' : ''"
+          >
+            mdi-lead-pencil
+          </v-icon>
+        </TooltipStyled>
       </div>
       <div class="object-wrapper-top__map">
         <SelectGeo v-if="notEmptyObject" :data="object" :outer-coords="getCoords" @set-new-address="setAddressMap"/>
@@ -183,10 +203,11 @@ import TooltipStyled from '../Common/TooltipStyled.vue';
 import CopyLinkButton from '../Common/CopyLinkButton.vue';
 import ListFilesStyled from '~/components/Common/ListFilesStyled';
 import Collaboration from '~/components/Modals/Collaboration';
+import InputStyled from "~/components/Common/InputStyled";
 
 export default {
   name: 'ObjectGlobal',
-  components: { CopyLinkButton, TooltipStyled, Collaboration, ListFilesStyled, ButtonStyled, SelectGeo, SelectObjectStyled, TabsCustom },
+  components: { InputStyled, CopyLinkButton, TooltipStyled, Collaboration, ListFilesStyled, ButtonStyled, SelectGeo, SelectObjectStyled, TabsCustom },
   props: {
     objectData: {
       type: Object,
@@ -204,11 +225,14 @@ export default {
     animationBtn: false,
     debounceTimeout: null,
     startScroll: 0,
-    isMoving: false
+    isMoving: false,
+    stateSelectEditNameObject: true,
   }),
   watch: {
     'objectData': {
       handler(v) {
+        if (!v) return false;
+
         this.object = v;
       }
     },
@@ -239,9 +263,6 @@ export default {
 
     notEmptyObject() {
       return !!Object.keys(this.object).length;
-    },
-    computedText() {
-      return this.object?.name ? 'name' : 'address';
     },
     getCoords() {
       return this.object?.long && this.object?.lat ? [this.object.lat, this.object.long] : [55.753215, 37.622504];
@@ -294,6 +315,10 @@ export default {
     },
     async onSave() {
       await this.saveObjData({ id: this.object.id, keys: this.updateProperties });
+      //Для обновления списка который прокидываем в SelectObjectStyled
+      await this.getListObjectsByUserId(this.getUserId);
+      //Для переключения режима редактирования выбора того же селекта
+      this.stateSelectEditNameObject = true;
       this.closeModal();
     },
     closeModal() {
@@ -305,6 +330,10 @@ export default {
       this.debounceTimeout = setTimeout(() => {
         this.animationBtn = false;
       }, 2000);
+    },
+    setNameField(name) {
+      this.object.name = name;
+      this.updateProperties.name = name;
     },
     setField(data) {
       this.object[data.key] = data.value;
@@ -334,6 +363,8 @@ export default {
       this.object = this.objectData;
     },
     async callback(value) {
+      if (! value) return false;
+
       this.setLoadingData(true);
       this.object = value;
 

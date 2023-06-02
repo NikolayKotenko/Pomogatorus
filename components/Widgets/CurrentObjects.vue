@@ -36,7 +36,7 @@
           :is-disabled="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : true"
           :is-loading="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : false"
           :is-solo="true"
-          :item-text="'address'"
+          :item-text="'name'"
           :item-value="'id'"
           :items="$store.state.Objects.listObjects"
           :placeholder="$store.getters.stateAuth ? 'Выберите объект' : 'Авторизуйтесь'"

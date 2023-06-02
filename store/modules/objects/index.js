@@ -102,6 +102,8 @@ export default {
        и выставляет объект который передаем
      */
     async setCurrentObject({ commit, state }, object) {
+      if (!object) return false
+
       const response = await Request.put(
         this.state.BASE_URL +
           `/m-to-m/set-current-object/${object.m_to_m_users_objects.id}`,

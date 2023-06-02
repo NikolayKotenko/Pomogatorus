@@ -17,9 +17,8 @@
             maxWidth: 250
           }"
     :multiple="false"
-    :no-filter="currentData && customStyle"
     :placeholder="computedPlaceholder"
-    :search-input="blockSearch"
+    :search-input.sync="blockSearch"
     :solo="isSolo"
     dense
     hide-details
@@ -38,7 +37,7 @@
           v-bind="data.attrs"
           @click="data.select; focusOn()"
         >
-          {{ data.item.name }}
+           {{ (visibleSelectedItem) ? data.item.name : "" }}
         </span>
       </template>
       <template v-else>
@@ -56,7 +55,8 @@
       </template>
     </template>
     <template v-slot:item="{ item }">
-      {{ item.name }}
+      <span class="wrapper_selected_items" @click="setVisibleSelectedItem(true)"
+            v-html="getLintWords(item.name)"></span>
     </template>
     <template v-slot:no-data>
       <v-card class="wrapper_add_new_object" elevation="8">
@@ -72,20 +72,19 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-import _clone from '../../helpers/deepClone';
-import _deepEqual from '../../helpers/deepCompareObjects';
+import { mapGetters } from "vuex";
+import _clone from "../../helpers/deepClone";
 
 export default {
-  name: 'SelectObjectStyled',
+  name: "SelectObjectStyled",
   props: {
     localClass: {
       type: String,
-      default: ''
+      default: ""
     },
     placeholder: {
       type: String,
-      default: 'Выберите объект'
+      default: "Выберите объект"
     },
     isSolo: {
       type: Boolean,
@@ -98,11 +97,11 @@ export default {
     },
     itemText: {
       type: String,
-      default: ''
+      default: ""
     },
     itemValue: {
       type: String,
-      default: ''
+      default: ""
     },
     items: {
       type: Array,
@@ -130,13 +129,14 @@ export default {
     }
   },
   data: () => ({
-    internalData: '',
+    internalData: "",
     isFocused: false,
-    blockSearch: '',
+    visibleSelectedItem: true,
+    blockSearch: "",
     defaultObject: {}
   }),
   watch: {
-    'open_close_cabinet': {
+    "open_close_cabinet": {
       handler(v) {
         if (v && this.haveTrigger) {
           if (this.$refs.autocomplete) {
@@ -153,11 +153,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['open_close_cabinet']),
+    ...mapGetters(["open_close_cabinet"]),
 
     computedPlaceholder() {
       if (this.isFocused) {
-        return '';
+        return "";
       }
       return this.placeholder;
     },
@@ -166,7 +166,7 @@ export default {
         return this.data;
       },
       set(value) {
-        this.$emit('update-input', value);
+        this.$emit("update-input", value);
       }
     }
   },
@@ -176,7 +176,8 @@ export default {
         if (this.currentData) {
           e.stopPropagation();
           e.preventDefault();
-          this.blockSearch = '';
+          // this.blockSearch = '';
+          this.setVisibleSelectedItem(false);
         }
       });
     },
@@ -194,11 +195,33 @@ export default {
       this.currentData = null;
     },
     resetValues() {
-      setTimeout(() => {
-        if (_deepEqual(this.defaultObject, this.$store.state.Objects.currentObject)) {
-          this.$store.commit('change_showCabinet', false);
-        }
-      }, 400);
+      // setTimeout(() => {
+      //   if (_deepEqual(this.defaultObject, this.$store.state.Objects.currentObject)) {
+      //     this.$store.commit("change_showCabinet", false);
+      //   }
+      // }, 400);
+    },
+    setVisibleSelectedItem(value) {
+      this.visibleSelectedItem = value;
+
+      if (value) {
+        this.blockSearch = "";
+      }
+    },
+    getLintWords(string) {
+      if (!string) return string;
+      if (!this.blockSearch) return string;
+
+      const haystackString = string.toLowerCase();
+      const needleString = this.blockSearch.toLowerCase();
+      const resMatch = haystackString.match(needleString);
+      if (!resMatch) return string;
+
+      return this.highlightSearchTerm(haystackString, needleString);
+    },
+    highlightSearchTerm(string, substring) {
+      const regex = new RegExp(`(${substring})`, "ig");
+      return string.replace(regex, "<b>$1</b>");
     }
   }
 };
@@ -244,6 +267,20 @@ export default {
 }
 </style>
 <style lang="scss" scoped>
+
+.wrapper_selected_items {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  padding: 10px 16px 10px 16px;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+  max-height: 40px;
+}
 
 .v-list {
   padding-bottom: unset;
