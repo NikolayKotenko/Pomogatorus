@@ -30,21 +30,14 @@
     @input.native.stop.prevent="stopInput($event)"
   >
     <template v-slot:selection="data">
-      <template v-if="currentData">
-        <span
-          :class='{"scrolling-item": data.item[itemText] && data.item[itemText].length > 24}'
-          class="selected-item"
-          v-bind="data.attrs"
-          @click="data.select; focusOn()"
-        >
-           {{ (visibleSelectedItem) ? data.item.name : "" }}
-        </span>
-      </template>
-      <template v-else>
-        <span>
-          {{ computedPlaceholder }}
-        </span>
-      </template>
+      <span
+        :class='{"scrolling-item": data.item[itemText] && data.item[itemText].length > 24}'
+        class="selected-item"
+        v-bind="data.attrs"
+        @click="data.select; focusOn()"
+      >
+         {{ (visibleSelectedItem) ? data.item.name : "" }}
+      </span>
     </template>
     <template v-slot:append>
       <template v-if="!isFocused">
@@ -55,8 +48,11 @@
       </template>
     </template>
     <template v-slot:item="{ item }">
-      <span class="wrapper_selected_items" @click="setVisibleSelectedItem(true)"
-            v-html="getLintWords(item.name)"></span>
+      <span :class="item.name"
+            class="wrapper_selected_items"
+            @click="setVisibleSelectedItem(true)"
+            v-html="getLintWords(item.name)"
+      ></span>
     </template>
     <template v-slot:no-data>
       <v-card class="wrapper_add_new_object" elevation="8">
@@ -202,11 +198,8 @@ export default {
       // }, 400);
     },
     setVisibleSelectedItem(value) {
+      // console.log("setVisibleSelectedItem", value);
       this.visibleSelectedItem = value;
-
-      if (value) {
-        this.blockSearch = "";
-      }
     },
     getLintWords(string) {
       if (!string) return string;

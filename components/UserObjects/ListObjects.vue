@@ -42,7 +42,7 @@
         </TooltipStyled>
       </v-sheet>
 
-      <div v-if="$store.getters.stateAuth" class="new_object_wrapper">
+      <div v-if="$store.getters.stateAuth" class="new_object_wrapper custom_grid_system">
         <!--        <v-divider class="new_obj_divider"></v-divider> -->
         <div class="new_object">
           <div class="details_new_object">
@@ -55,6 +55,7 @@
               </div>
               <VTextField
                 v-model="newObjName"
+                :loading="loading_objects"
                 auto-grow
                 class="text_field"
                 dense
@@ -69,8 +70,8 @@
           </div>
           <div class="new_object_button">
             <ButtonStyled
-              :disabled="!newObjName"
-              :loading="loading_objects"
+              :is-disabled="!newObjName"
+              :is-loading="loading_objects"
               :local-text="'Создать объект'"
               local-class="style_button"
               @click-button="onCreateNewObject"
@@ -97,25 +98,25 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
-import ButtonStyled from '../Common/ButtonStyled.vue';
-import ObjectGlobal from './ObjectGlobal';
-import CardObject from './CardObject.vue';
-import TooltipStyled from '@/components/Common/TooltipStyled';
+import { mapActions, mapGetters, mapState } from "vuex";
+import ButtonStyled from "../Common/ButtonStyled.vue";
+import ObjectGlobal from "./ObjectGlobal";
+import CardObject from "./CardObject.vue";
+import TooltipStyled from "@/components/Common/TooltipStyled";
 
 export default {
-  name: 'ListObjects',
+  name: "ListObjects",
   components: { TooltipStyled, ButtonStyled, CardObject, ObjectGlobal },
   data: () => ({
     object: {},
-    newObjAddress: '',
-    newObjName: '',
+    newObjAddress: "",
+    newObjName: "",
     showDetail: false,
     detailData: {},
     debounceTimeout: null
   }),
   watch: {
-    'getUserId': {
+    "getUserId": {
       handler(val) {
         this.localGetListObjects(val);
       },
@@ -125,9 +126,9 @@ export default {
   async mounted() {
   },
   computed: {
-    ...mapState('Objects', ['listObjects', 'isLoadingObjects', 'loading_objects']),
-    ...mapState(['userData']),
-    ...mapGetters(['getUserId']),
+    ...mapState("Objects", ["listObjects", "isLoadingObjects", "loading_objects"]),
+    ...mapState(["userData"]),
+    ...mapGetters(["getUserId"]),
 
     notEmptyObject() {
       return !!Object.keys(this.object).length;
@@ -142,14 +143,14 @@ export default {
     }
   },
   methods: {
-    ...mapActions('Objects', ['createNewObject', 'getListObjectsByUserId']),
+    ...mapActions("Objects", ["createNewObject", "getListObjectsByUserId"]),
 
     async onCreateNewObject() {
       await this.createNewObject({
         address: this.newObjAddress,
         name: this.newObjName
       });
-      this.newObjAddress = '';
+      this.newObjAddress = "";
 
       await this.getListObjectsByUserId(this.getUserId);
     },
@@ -157,7 +158,7 @@ export default {
       this.showDetail = false;
     },
     closeDetail() {
-      this.$emit('close-detail');
+      this.$emit("close-detail");
     },
     openDetail(data) {
       this.detailData = data;
@@ -175,12 +176,12 @@ export default {
     async localGetListObjects(idUser) {
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
       this.debounceTimeout = setTimeout(async () => {
-        const response = await this.$store.dispatch('Objects/getListObjectsByUserId', idUser);
+        const response = await this.$store.dispatch("Objects/getListObjectsByUserId", idUser);
 
-        console.log('response getListObjectsByUserId', response);
+        console.log("response getListObjectsByUserId", response);
         if (response.codeResponse > 400) {
-          await this.$store.dispatch('callModalAuth');
-          this.$store.commit('Objects/setLoadingObjects', false);
+          await this.$store.dispatch("callModalAuth");
+          this.$store.commit("Objects/setLoadingObjects", false);
         }
       }, 1000);
     }
@@ -208,6 +209,10 @@ export default {
   display: flex;
   flex-direction: column;
   row-gap: 25px;
+
+  &_container {
+    padding-bottom: 90px;
+  }
 }
 
 .card_object_new {
