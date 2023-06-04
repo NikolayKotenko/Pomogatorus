@@ -7,49 +7,45 @@
       </v-icon>
     </div>
 
-    <div class="card_object flex-grow-1 flex-shrink-1 pa-5">
+    <div class="card_object flex-grow-1 flex-shrink-1 pt-5 pb-5">
       <div v-if="isLoggedIn" class="card_object_container">
         <UserFields
           @is-changed="setChanged"
           @new-data="setData"
         />
       </div>
-      <LoginAuth v-else/>
+      <LoginAuth v-else />
     </div>
 
     <div class="save_logout_btn">
-      <div @click="saveUser">
-        <ButtonStyled
-          :local-text="'Сохранить изменения'"
-          local-class="style_button"
-          :disabled="!isValid"
-          :loading="isUpdating"
-        />
-      </div>
-      <div
+      <ButtonStyled
+        :disabled="!isValid"
+        :loading="isUpdating"
+        :local-text="'Сохранить'"
+        local-class="style_button saveLogoutBtn"
+        @click-button="saveUser"
+      />
+      <ButtonStyled
         v-if="isLoggedIn"
-        @click="logout"
+        :local-text="'Выйти'"
+        local-class="style_close saveLogoutBtn"
+        @click-button="logout"
       >
-        <ButtonStyled
-          :local-text="'Выйти'"
-          local-class="style_close"
-        >
-          Выйти
-        </ButtonStyled>
-      </div>
+        Выйти
+      </ButtonStyled>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState } from "vuex";
 
-import LoginAuth from '../frontLayouts/LoginAuth';
-import ButtonStyled from '../Common/ButtonStyled.vue';
-import UserFields from './UserFields';
+import LoginAuth from "../frontLayouts/LoginAuth";
+import ButtonStyled from "../Common/ButtonStyled.vue";
+import UserFields from "./UserFields";
 
 export default {
-  name: 'UserInfo',
+  name: "UserInfo",
   components: {
     ButtonStyled,
     UserFields,
@@ -72,10 +68,10 @@ export default {
   },
   methods: {
     closeDetail() {
-      this.$emit('close-detail');
+      this.$emit("close-detail");
     },
     logout() {
-      this.$store.dispatch('logout');
+      this.$store.dispatch("logout");
     },
     setChanged(value) {
       this.isChanged = value;
@@ -87,7 +83,7 @@ export default {
       this.isValid = value.isValid;
     },
     saveUser() {
-      this.$store.dispatch('updateUser', { userId: this.userData.id, data: this.data });
+      this.$store.dispatch("updateUser", { userId: this.userData.id, data: this.data });
     }
   }
 };
@@ -107,9 +103,23 @@ export default {
   }
 
   .save_logout_btn {
-    display: flex;
-    justify-content: space-between;
-    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 1em;
+
+    padding: 0 30px 5px 30px;
+    margin-top: 5px;
+    background: white;
+    box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.25);
+
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+
+    .saveLogoutBtn {
+      width: 100%;
+    }
   }
 }
 
