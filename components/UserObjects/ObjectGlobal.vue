@@ -143,7 +143,7 @@
           <ButtonStyled
             :custom-slot="true"
             :is-mobile="true"
-            @click-button="closeModal"
+            @click-button="stateTagsTechBlock = true;"
           >
             <v-icon>mdi-tray-arrow-down</v-icon>
           </ButtonStyled>
@@ -160,6 +160,22 @@
             mdi-window-close
           </v-icon>
         </ButtonStyled>
+
+        <v-dialog
+          v-model="stateTagsTechBlock"
+          width="1080"
+        >
+          <v-card>
+            <v-card-title class="d-flex justify-end">
+              <v-icon @click="stateTagsTechBlock = false;">
+                mdi-close
+              </v-icon>
+            </v-card-title>
+            <v-card-text>
+              <TagsTechBlock></TagsTechBlock>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
       </template>
 
       <template v-else>
@@ -204,10 +220,11 @@ import CopyLinkButton from '../Common/CopyLinkButton.vue';
 import ListFilesStyled from '~/components/Common/ListFilesStyled';
 import Collaboration from '~/components/Modals/Collaboration';
 import InputStyled from "~/components/Common/InputStyled";
+import TagsTechBlock from "~/components/Widgets/TagsTechBlock";
 
 export default {
   name: 'ObjectGlobal',
-  components: { InputStyled, CopyLinkButton, TooltipStyled, Collaboration, ListFilesStyled, ButtonStyled, SelectGeo, SelectObjectStyled, TabsCustom },
+  components: { TagsTechBlock, InputStyled, CopyLinkButton, TooltipStyled, Collaboration, ListFilesStyled, ButtonStyled, SelectGeo, SelectObjectStyled, TabsCustom },
   props: {
     objectData: {
       type: Object,
@@ -227,6 +244,7 @@ export default {
     startScroll: 0,
     isMoving: false,
     stateSelectEditNameObject: true,
+    stateTagsTechBlock: false,
   }),
   watch: {
     'objectData': {

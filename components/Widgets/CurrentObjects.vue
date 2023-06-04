@@ -95,61 +95,7 @@
           </ButtonStyled>
         </TooltipStyled>
       </div>
-
-      <span v-show="state_tech_task_block" class="current_object__wrapper_info__hide_block">
-        <div v-if="$store.state.list_tags.length">
-          <v-checkbox
-            v-for="(tag, key) in $store.state.list_tags"
-            :key="key"
-            v-model="selected_ids_tags"
-            :disabled="!$store.getters['Objects/stateObjectSelected']"
-            :label="tag.name"
-            :value="tag.id"
-            class="current_object__wrapper_info__hide_block__checkbox"
-            hide-details
-          />
-        </div>
-        <div>
-          <TooltipStyled
-            :title="$store.getters['Objects/stateObjectSelected']
-              ? 'Техническое задание по инженерным системам'
-              : 'Выберите ваш объект для формирования документа'"
-          >
-            <ButtonStyled
-              :custom-slot="true"
-              :is-disabled="!$store.getters['Objects/stateObjectSelected']"
-              local-class="style_button downloadPDF"
-              @click-button="downloadPDF()"
-            >
-              <span>Скачать PDF</span>
-            </ButtonStyled>
-          </TooltipStyled>
-          <!-- Генерация пдф -->
-          <client-only>
-            <vue-html2pdf
-              ref="html2Pdf"
-              :enable-download="true"
-              :html-to-pdf-options="$store.getters['PdfDataModule/htmlToPdfOptions']('Техническое задание')"
-              :manual-pagination="true"
-              :pdf-quality="2"
-              :show-layout="false"
-              pdf-content-width="100%"
-            >
-              <section slot="pdf-content">
-                <!-- content -->
-                <pdf-content />
-                <!-- /content -->
-              </section>
-            </vue-html2pdf>
-          </client-only>
-          <v-alert
-            v-if="alert.state"
-            type="error"
-          >
-            <span v-html="alert.message" />
-          </v-alert>
-        </div>
-      </span>
+      <TagsTechBlock v-if="state_tech_task_block"></TagsTechBlock>
     </section>
   </div>
 </template>
@@ -162,15 +108,24 @@ import SelectObjectStyled from "../Common/SelectObjectStyled";
 import Collaboration from "../Modals/Collaboration.vue";
 import TooltipStyled from "~/components/Common/TooltipStyled";
 import ButtonStyled from "~/components/Common/ButtonStyled";
+import TagsTechBlock from "~/components/Widgets/TagsTechBlock";
 
 export default {
   name: "CurrentObjects",
   // eslint-disable-next-line vue/no-unused-components
-  components: { Collaboration, ButtonStyled, TooltipStyled, SelectObjectStyled, InputStyled, SelectStyled, PdfContent },
+  components: {
+    TagsTechBlock,
+    Collaboration,
+    ButtonStyled,
+    TooltipStyled,
+    SelectObjectStyled,
+    InputStyled,
+    SelectStyled,
+    PdfContent
+  },
   data() {
     return {
       state_tech_task_block: false,
-      selected_ids_tags: [],
       alert: {
         state: false,
         message: ""
@@ -195,7 +150,6 @@ export default {
     }
   },
   mounted() {
-    this.$store.dispatch("getListTags");
     this.$store.dispatch("getListBroadcastSnippet");
   },
   methods: {
@@ -206,18 +160,6 @@ export default {
     },
     async callback(data) {
       await this.$store.dispatch("Objects/setCurrentObject", data);
-    },
-    async downloadPDF() {
-      const response = await this.$store.dispatch("PdfDataModule/getBodyData", { ids_tags: this.selected_ids_tags });
-      // console.log("WTF", response);
-      if (response.codeResponse === 200) {
-        this.$refs.html2Pdf.generatePdf();
-        this.alert.state = false;
-        this.alert.message = "";
-      } else {
-        this.alert.state = true;
-        this.alert.message = response.message;
-      }
     }
   }
 };
@@ -295,19 +237,6 @@ export default {
       text-align: center;
     }
 
-    &__hide_block {
-      display: grid;
-      //grid-row-gap: 5px;
-
-      &__checkbox {
-        margin: unset;
-        padding: unset;
-
-        label {
-          height: 100% !important;
-        }
-      }
-    }
   }
 
   .wrapper_button {
@@ -321,12 +250,6 @@ export default {
       min-width: unset !important;
       width: 100%;
     }
-  }
-
-  .downloadPDF {
-    margin-top: 10px;
-    width: 100%;
-    max-width: unset;
   }
 }
 </style>
