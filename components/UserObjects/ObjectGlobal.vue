@@ -135,7 +135,7 @@
             local-class="style_button"
             @click-button="closeModal"
           >
-            <v-icon color="#5C856BFF">
+            <v-icon>
               mdi-content-save-outline
             </v-icon>
           </ButtonStyled>
@@ -156,7 +156,7 @@
           local-text="Отмена"
           @click-button="closeModal"
         >
-          <v-icon color="#AF673DFF">
+          <v-icon>
             mdi-window-close
           </v-icon>
         </ButtonStyled>

@@ -1,15 +1,16 @@
 <template>
   <v-container class="card_invite_user">
     <v-avatar color="primary" size="50">
-      <span class="white--text text-h5">CJ</span>
+      <span class="white--text text-h5">И</span>
     </v-avatar>
     <div class="user_info">
       <section class="main_info">
-        <span class="name">{{ lastName + ' ' + name }}</span>
+        <span class="name">{{ getValueField(userObject.middle_name) + ' ' + getValueField(userObject.first_name) }}</span>
         <section class="wrapper_role_email">
           <span class="role">Собственник</span>
-          <v-icon>mdi-circle-small</v-icon>
-          <span class="mail">{{ userEmail }}</span>
+        </section>
+        <section class="wrapper_role_email">
+          <span class="mail">{{ getValueField(userObject.email) }}</span>
         </section>
       </section>
       <section class="wrapper_user_specialization">
@@ -54,6 +55,13 @@ import ButtonStyled from './ButtonStyled.vue';
 export default {
   name: 'CardInviteUser',
   components: { ButtonStyled, SelectStyled },
+  props: {
+    userObject: {
+      type: Object,
+      default: () => {
+      }
+    }
+  },
   data() {
     return {
       userAccess: [
@@ -62,19 +70,19 @@ export default {
         { access: 'Может комментировать',value: 3 },
         { access: 'Может смотреть',value: 4 },
       ],
-      lastName: 'Иванов',
-      name: 'Иван',
-      userEmail: 'emailcheito@ffd.kz',
 
     }
   },
   computed: {
     SearchStyled() {
       return SearchStyled
-    }
+    },
   },
-  methods: {
 
+  methods: {
+    getValueField(str) {
+      return (str) || ''
+    }
   }
 };
 </script>
@@ -88,9 +96,10 @@ $orange-color: #F79256;
   grid-column-gap: 1em;
   align-items: center;
   width: 100%;
-
+  max-width: 850px;
   border-radius: 5px;
   transition: all 0.4s ease-in-out;
+  cursor: default;
   &:hover {
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
   }
@@ -118,6 +127,7 @@ $orange-color: #F79256;
         .mail {
           color: $grey-color;
           font-size: 0.88em;
+
         }
       }
 
@@ -125,7 +135,7 @@ $orange-color: #F79256;
     .wrapper_user_specialization {
       color: $grey-color;
       font-size: 0.88em;
-      margin-left: 3em;
+      margin-left: 2em;
 
       .type {
         color: $orange-color;
@@ -141,7 +151,7 @@ $orange-color: #F79256;
       .access_style{
         color: $grey-color !important;
         font-size: 0.88em;
-        width: 230px;
+        width: 200px;
       }
     }
     .invite_right{

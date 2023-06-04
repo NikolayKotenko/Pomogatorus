@@ -1,26 +1,26 @@
 <template>
   <v-text-field
+    v-model="currentData"
     class="styleTextField"
     :filled="isFilled"
     :outlined="isOutlined"
-    v-model='currentData'
-    :append-icon='appendIcon'
-    :autofocus='isAutofocus'
-    :disabled='isDisabled'
-    :flat='isFlat'
-    :loading='isLoading'
-    :placeholder='computedPlaceholder'
-    :prepend-inner-icon='prependIconInner'
-    :readonly='isReadonly'
-    :solo='isSolo'
+    :append-icon="appendIcon"
+    :autofocus="isAutofocus"
+    :disabled="isDisabled"
+    :flat="isFlat"
+    :loading="isLoading"
+    :placeholder="computedPlaceholder"
+    :label="isLabel"
+    :prepend-inner-icon="prependIconInner"
+    :readonly="isReadonly"
+    :solo="isSolo"
     :rounded="isRounded"
     dense
     hide-details
-    @click='onClick'
-    @focus='isFocused = true'
-    @focusout='isFocused = false'
-  >
-  </v-text-field>
+    @click="onClick"
+    @focus="isFocused = true"
+    @focusout="isFocused = false"
+  />
 </template>
 
 <script>
@@ -34,6 +34,10 @@ export default {
     placeholder: {
       type: String,
       default: ''
+    },
+    isLabel: {
+      type: String,
+      default:''
     },
     isSolo: {
       type: Boolean,
@@ -130,6 +134,7 @@ export default {
 
 .styleTextField {
   border-radius: 5px;
+  margin-bottom: 1em !important;
   &.primary--text {
     color: #95D7AE !important;
   }

@@ -37,16 +37,26 @@
         </VListItemTitle>
       </VListItemContent>
     </template>
-    <template v-if="" #item="data"/>
+    <template v-if="isCustomSearchSelections" #item="data">
+      <div
+        class="search_user_invite"
+        @click="stopInput($event)"
+      >
+        <CardInviteUser
+          :user-object="data.item"
+        />
+      </div>
+    </template>
   </VCombobox>
 </template>
 
 <script>
+import CardInviteUser from './CardInviteUser.vue';
 import HashTagStyled from '~/components/Common/HashTagStyled'
 
 export default {
   name: 'SearchStyled',
-  components: { HashTagStyled },
+  components: { CardInviteUser, HashTagStyled },
   props: {
     isClass: {
       type: String,
@@ -115,6 +125,10 @@ export default {
     isCustomTemplateSelections: {
       type: Boolean,
       default: false
+    },
+    isCustomSearchSelections: {
+      type: Boolean,
+      default: false
     }
   },
   data: () => ({
@@ -174,7 +188,13 @@ export default {
     },
     genHighlight(text) {
       return `<span class='v-list-item__mask'>${text}</span>`
-    }
+    },
+    stopInput(e) {
+      console.log('1', e);
+      e.stopPropagation();
+      e.preventDefault();
+      console.log('2', e);
+    },
   }
 }
 </script>
@@ -182,6 +202,11 @@ export default {
 <style lang='scss' scoped>
 .v-text-field--rounded {
   border-radius: 5px !important;
+}
+.search_user_invite{
+  width: 100%;
+  max-width: 850px;
+  cursor: default;
 }
 </style>
 
@@ -193,6 +218,9 @@ export default {
 //.v-input__slot {
 //  min-height: 60px !important;
 //}
+.v-ripple__container {
+  display:none !important;
+}
 
 .styleSearch {
   &.primary--text {

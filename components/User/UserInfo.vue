@@ -18,34 +18,63 @@
     </div>
 
     <div class="save_logout_btn">
-      <ButtonStyled
-        :disabled="!isValid"
-        :loading="isUpdating"
-        :local-text="'Сохранить'"
-        local-class="style_button saveLogoutBtn"
-        @click-button="saveUser"
-      />
-      <ButtonStyled
-        v-if="isLoggedIn"
-        :local-text="'Выйти'"
-        local-class="style_close saveLogoutBtn"
-        @click-button="logout"
-      >
-        Выйти
-      </ButtonStyled>
+      <template v-if="isMobile">
+        <div @click="saveUser">
+          <ButtonStyled
+            :custom-slot="true"
+            :is-mobile="true"
+            local-class="style_button"
+            :disabled="!isValid"
+            :loading="isUpdating"
+          >
+            <v-icon>mdi-content-save-outline</v-icon>
+          </ButtonStyled>
+        </div>
+        <div
+          v-if="isLoggedIn"
+          @click="logout"
+        >
+          <ButtonStyled
+            :custom-slot="true"
+            :is-mobile="true"
+            local-class="style_close"
+          >
+            <v-icon>mdi-exit-to-app</v-icon>
+          </ButtonStyled>
+        </div>
+      </template>
+      <template v-else>
+        <div @click="saveUser">
+          <ButtonStyled
+            :local-text="'Сохранить изменения'"
+            local-class="style_button"
+            :disabled="!isValid"
+            :loading="isUpdating"
+          />
+        </div>
+        <div
+          v-if="isLoggedIn"
+          @click="logout"
+        >
+          <ButtonStyled
+            :local-text="'Выйти'"
+            local-class="style_close"
+          />
+        </div>
+      </template>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex';
 
-import LoginAuth from "../frontLayouts/LoginAuth";
-import ButtonStyled from "../Common/ButtonStyled.vue";
-import UserFields from "./UserFields";
+import LoginAuth from '../frontLayouts/LoginAuth';
+import ButtonStyled from '../Common/ButtonStyled.vue';
+import UserFields from './UserFields';
 
 export default {
-  name: "UserInfo",
+  name: 'UserInfo',
   components: {
     ButtonStyled,
     UserFields,
@@ -64,14 +93,17 @@ export default {
 
     isLoggedIn() {
       return this.userData && Object.keys(this.userData).length;
+    },
+    isMobile() {
+      return this.$device.isMobile
     }
   },
   methods: {
     closeDetail() {
-      this.$emit("close-detail");
+      this.$emit('close-detail');
     },
     logout() {
-      this.$store.dispatch("logout");
+      this.$store.dispatch('logout');
     },
     setChanged(value) {
       this.isChanged = value;
@@ -83,7 +115,7 @@ export default {
       this.isValid = value.isValid;
     },
     saveUser() {
-      this.$store.dispatch("updateUser", { userId: this.userData.id, data: this.data });
+      this.$store.dispatch('updateUser', { userId: this.userData.id, data: this.data });
     }
   }
 };
