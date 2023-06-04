@@ -63,6 +63,7 @@
                 no-resize
                 row-height="1"
                 solo
+                clearable
                 @keyup.enter="onCreateNewObject"
               />
             </div>

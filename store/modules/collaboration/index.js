@@ -5,17 +5,47 @@ export default {
   state: {
     stateBlock: false,
     isLoading: false,
-    listUsers: [],
+    listSearchedUsers: [],
+    listTetheredUsers: [],
   },
   mutations: {
     setLoading(state, payload) {
       state.isLoading = payload
     },
-    setList(state, payload) {
-      state.listUsers = payload
+    setSearchedListUsers(state, payload) {
+      state.listSearchedUsers = []
+      state.listSearchedUsers = payload
+    },
+    setTetheredListUsers(state, payload) {
+      state.listTetheredUsers = []
+      state.listTetheredUsers = payload
     },
   },
   actions: {
+    async getListTetheredUsers({ commit }, idObject) {
+      commit('setLoading', true)
+
+      const response = await Request.get(
+        this.state.BASE_URL +
+          '/users/get-list-users?filter[id_object]=' +
+          idObject
+      )
+      commit('setTetheredListUsers', response.data)
+      commit('setLoading', false)
+      return response
+    },
+    async getListSearchedUsers({ commit }, searchPhrase) {
+      commit('setLoading', true)
+
+      const response = await Request.get(
+        this.state.BASE_URL +
+          '/users/get-list-users?filter[searchPhrase]=' +
+          searchPhrase
+      )
+      commit('setSearchedListUsers', response.data)
+      commit('setLoading', false)
+      return response
+    },
     async saveObjData({ commit }, payload) {
       commit('setLoading', true)
 
@@ -26,5 +56,20 @@ export default {
       commit('setLoading', false)
     },
   },
-  getters: {},
+  getters: {
+    getFilteredListByRoleExperts(state) {
+      return state.listTetheredUsers.filter((user) => {
+        return user.groups.some((elem) => {
+          return elem.code === 'experts'
+        })
+      })
+    },
+    getFilteredListByRoleUsers(state) {
+      return state.listTetheredUsers.filter((user) => {
+        return user.groups.some((elem) => {
+          return elem.code === 'polzovateli'
+        })
+      })
+    },
+  },
 }
