@@ -21,7 +21,10 @@ app.use(cookieParser())
 app.post('/auth/login', function (request, response) {
   // console.log('request.body', request.body)
 
-  if (!request.body) return response.status(400).send({ message: 'Пустой request.body', codeResponse: 400 })
+  if (!request.body)
+    return response
+      .status(400)
+      .send({ message: 'Пустой request.body', codeResponse: 400 })
 
   axios
     .post(getUrl(request, response) + '/auth/login', request.body)
@@ -52,7 +55,7 @@ app.post('/auth/login', function (request, response) {
     })
     .catch((err) => {
       // response.sendStatus(400);
-      response.send(err)
+      response.send(err.response.data)
     })
 })
 // REFRESH
@@ -63,7 +66,9 @@ app.post('/auth/refresh', function (request, response) {
 
   // return response.send(request.cookies);
   if (!request.cookies?.refreshToken)
-    return response.status(400).send({ message: 'Пустая кука refreshToken', codeResponse: 400 })
+    return response
+      .status(400)
+      .send({ message: 'Пустая кука refreshToken', codeResponse: 400 })
 
   const config = {
     headers: { Cookie: request.headers.cookie },
@@ -171,7 +176,9 @@ function getUrl(req, res) {
   const url = req.originalUrl
   const port = process.env.PORT || PORT
   const fullUrl = `${protocol}://${host}:${port}${url}`
-  return fullUrl.includes('pomogatorus') ? 'https://api.agregatorus.com' : 'https://api-test.agregatorus.com'
+  return fullUrl.includes('pomogatorus')
+    ? 'https://api.agregatorus.com'
+    : 'https://api-test.agregatorus.com'
 }
 
 function parseCookies(cookieHeader) {
@@ -220,13 +227,27 @@ function parseJwt(token) {
 
 function timeConverter(UNIX_timestamp) {
   var a = new Date(UNIX_timestamp * 1000)
-  var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  var months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ]
   var year = a.getFullYear()
   var month = months[a.getMonth()]
   var date = a.getDate()
   var hour = a.getHours()
   var min = a.getMinutes()
   var sec = a.getSeconds()
-  var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec
+  var time =
+    date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec
   return time
 }
