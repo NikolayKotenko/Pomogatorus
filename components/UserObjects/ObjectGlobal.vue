@@ -36,8 +36,8 @@
           : 'Режим выбора объекта'"
         >
           <v-icon
-            @click="stateSelectEditNameObject = !stateSelectEditNameObject"
-            :color="! stateSelectEditNameObject ? 'green' : ''"
+            @click="setStateSelectedEditName()"
+            :color="stateSelectEditNameObject ? '' : 'green'"
           >
             mdi-lead-pencil
           </v-icon>
@@ -334,6 +334,12 @@ export default {
     setNameField(name) {
       this.object.name = name;
       this.updateProperties.name = name;
+    },
+    setStateSelectedEditName(){
+      if (! this.stateSelectEditNameObject){
+        this.onSave();
+      }
+      this.stateSelectEditNameObject = !this.stateSelectEditNameObject
     },
     setField(data) {
       this.object[data.key] = data.value;
