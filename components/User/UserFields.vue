@@ -3,35 +3,35 @@
     <!--  MOBILE  -->
     <template v-if="isMobile">
       <InputStyled
-        :data="form.first_name"
         :class="'styleTextField'"
+        :data="form.first_name"
+        :is-label="'Имя'"
         :is-outlined="true"
-        :is-label="'Введите имя'"
         @update-input="setFirstNameData"
       />
 
       <InputStyled
-        :data="form.middle_name"
         :class="'styleTextField'"
+        :data="form.middle_name"
+        :is-label="'Фамилия'"
         :is-outlined="true"
-        :is-label="'Введите фамилию'"
         @update-input="setMiddleNameData"
       />
 
       <InputStyled
-        :data="form.last_name"
         :class="'styleTextField'"
+        :data="form.last_name"
+        :is-label="'Отчество'"
         :is-outlined="true"
-        :is-label="'Введите отчество'"
         @update-input="setLastNameData"
       />
 
       <InputStyled
-        :data="form.email"
-        :rules="emailRules"
         :class="'styleTextField'"
+        :data="form.email"
+        :is-label="'Email'"
         :is-outlined="true"
-        :is-label="'Введите email'"
+        :rules="emailRules"
         color="#95D7AE"
         @update-input="setEmailData"
       />
@@ -39,9 +39,9 @@
       <VTextField
         v-model="form.telephone"
         v-mask="mask"
-        label="Введите телефон"
         color="#95D7AE"
         dense
+        label="Телефон"
         outlined
         @change="setData"
       />
@@ -52,28 +52,28 @@
       <VRow>
         <VCol>
           <InputStyled
-            :data="form.first_name"
             :class="'styleTextField'"
+            :data="form.first_name"
+            :is-label="'Имя'"
             :is-outlined="true"
-            :is-label="'Введите имя'"
             @update-input="setFirstNameData"
           />
         </VCol>
         <VCol>
           <InputStyled
-            :data="form.middle_name"
             :class="'styleTextField'"
+            :data="form.middle_name"
+            :is-label="'Фамилия'"
             :is-outlined="true"
-            :is-label="'Введите фамилию'"
             @update-input="setMiddleNameData"
           />
         </VCol>
         <VCol>
           <InputStyled
-            :data="form.last_name"
             :class="'styleTextField'"
+            :data="form.last_name"
+            :is-label="'Отчество'"
             :is-outlined="true"
-            :is-label="'Введите отчество'"
             @update-input="setLastNameData"
           />
         </VCol>
@@ -82,11 +82,11 @@
       <VRow>
         <VCol>
           <InputStyled
-            :data="form.email"
-            :rules="emailRules"
             :class="'styleTextField'"
+            :data="form.email"
+            :is-label="'Email'"
             :is-outlined="true"
-            :is-label="'Введите email'"
+            :rules="emailRules"
             color="#95D7AE"
             @update-input="setEmailData"
           />
@@ -96,9 +96,9 @@
           <VTextField
             v-model="form.telephone"
             v-mask="mask"
-            label="Введите телефон"
             color="#95D7AE"
             dense
+            label="Телефон"
             outlined
             @change="setData"
           />
@@ -127,65 +127,64 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import VueMask from 'v-mask';
-import InputStyled from '../Common/InputStyled.vue';
+import { mapState } from "vuex";
+import InputStyled from "../Common/InputStyled.vue";
 
 export default {
-  name: 'UserFields',
+  name: "UserFields",
   components: { InputStyled },
   data: () => ({
     isFormValid: false,
     form: {
-      first_name: '',
-      middle_name: '',
-      last_name: '',
-      email: '',
-      telephone: '',
-      home_owner: '',
-      installation_engineering_systems: '',
-      selling_engineering_equipment: '',
-      marketing_and_sales: '',
+      first_name: "",
+      middle_name: "",
+      last_name: "",
+      email: "",
+      telephone: "",
+      home_owner: "",
+      installation_engineering_systems: "",
+      selling_engineering_equipment: "",
+      marketing_and_sales: ""
     },
-    mask: '+7 (###) ###-##-##',
+    mask: "+7 (###) ###-##-##",
     types: [
       {
-        text: 'Собственник дома',
-        key: 'home_owner',
-        icon: 'mdi-home-account',
+        text: "Собственник дома",
+        key: "home_owner",
+        icon: "mdi-home-account"
       },
       {
-        text: 'Профессионально занимаюсь монтажом инженерных систем',
-        key: 'installation_engineering_systems',
-        icon: 'mdi-account-hard-hat',
+        text: "Профессионально занимаюсь монтажом инженерных систем",
+        key: "installation_engineering_systems",
+        icon: "mdi-account-hard-hat"
       },
       {
-        text: 'Занимаюсь продажей инженерного оборудования',
-        key: 'selling_engineering_equipment',
-        icon: 'mdi-cog-transfer',
+        text: "Занимаюсь продажей инженерного оборудования",
+        key: "selling_engineering_equipment",
+        icon: "mdi-cog-transfer"
       },
       {
-        text: 'Маркетинг и продажи',
-        key: 'marketing_and_sales',
-        icon: 'mdi-shopping',
-      },
+        text: "Маркетинг и продажи",
+        key: "marketing_and_sales",
+        icon: "mdi-shopping"
+      }
     ],
     emailRules: [
-      v => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Введите корректный email'
+      v => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || "Введите корректный email"
     ],
     telephoneRules: [
-      v => !v || this.form  || 'Введите корректный email'
+      v => !v || this.form || "Введите корректный email"
     ]
   }),
   watch: {
-    'isChanged': {
+    "isChanged": {
       handler(v) {
-        this.$emit('is-changed', v)
+        this.$emit("is-changed", v);
       }
     }
   },
   mounted() {
-    this.getUserInfo()
+    this.getUserInfo();
   },
   computed: {
     ...mapState({
@@ -194,51 +193,51 @@ export default {
     }),
 
     isMobile() {
-      return !!this.$device.isMobile
+      return !!this.$device.isMobile;
     },
     isChanged() {
-      const result = []
+      const result = [];
 
       for (const key in this.form) {
-        result.push(this.form[key] == this.defaultUserData[key])
+        result.push(this.form[key] == this.defaultUserData[key]);
       }
 
-      return result.includes(false)
+      return result.includes(false);
     }
   },
   methods: {
     getUserInfo() {
       if (this.userData && Object.keys(this.userData).length) {
         for (const key in this.form) {
-          this.form[key] = this.userData[key]
+          this.form[key] = this.userData[key];
         }
       }
     },
-    setFirstNameData(name){
+    setFirstNameData(name) {
       this.form.first_name = name;
-      this.$emit('new-data', { data: this.form, isValid: this.isFormValid })
+      this.$emit("new-data", { data: this.form, isValid: this.isFormValid });
     },
-    setMiddleNameData(name){
+    setMiddleNameData(name) {
       this.form.middle_name = name;
-      this.$emit('new-data', { data: this.form, isValid: this.isFormValid })
+      this.$emit("new-data", { data: this.form, isValid: this.isFormValid });
     },
-    setLastNameData(name){
+    setLastNameData(name) {
       this.form.last_name = name;
-      this.$emit('new-data', { data: this.form, isValid: this.isFormValid })
+      this.$emit("new-data", { data: this.form, isValid: this.isFormValid });
     },
-    setEmailData(name){
+    setEmailData(name) {
       this.form.email = name;
-      this.$emit('new-data', { data: this.form, isValid: this.isFormValid })
+      this.$emit("new-data", { data: this.form, isValid: this.isFormValid });
     },
-    setTelephoneData(name){
+    setTelephoneData(name) {
       this.form.telephone = name;
-      this.$emit('new-data', { data: this.form, isValid: this.isFormValid })
+      this.$emit("new-data", { data: this.form, isValid: this.isFormValid });
     },
     setData(data) {
-      this.$emit('new-data', { data: this.form, isValid: this.isFormValid })
+      this.$emit("new-data", { data: this.form, isValid: this.isFormValid });
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

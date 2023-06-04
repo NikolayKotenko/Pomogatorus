@@ -7,7 +7,7 @@
       </v-icon>
     </div>
 
-    <div class="card_object flex-grow-1 flex-shrink-1 pt-5 pb-5">
+    <div class="card_object pt-5 pb-5">
       <div v-if="isLoggedIn" class="card_object_container">
         <UserFields
           @is-changed="setChanged"
@@ -19,62 +19,54 @@
 
     <div class="save_logout_btn">
       <template v-if="isMobile">
-        <div @click="saveUser">
-          <ButtonStyled
-            :custom-slot="true"
-            :is-mobile="true"
-            local-class="style_button"
-            :disabled="!isValid"
-            :loading="isUpdating"
-          >
-            <v-icon>mdi-content-save-outline</v-icon>
-          </ButtonStyled>
-        </div>
-        <div
-          v-if="isLoggedIn"
-          @click="logout"
+        <ButtonStyled
+          :custom-slot="true"
+          :disabled="!isValid"
+          :is-mobile="true"
+          :loading="isUpdating"
+          local-class="style_button"
+          @click-button="saveUser"
         >
-          <ButtonStyled
-            :custom-slot="true"
-            :is-mobile="true"
-            local-class="style_close"
-          >
-            <v-icon>mdi-exit-to-app</v-icon>
-          </ButtonStyled>
-        </div>
+          <v-icon>mdi-content-save-outline</v-icon>
+        </ButtonStyled>
+        <ButtonStyled
+          v-if="isLoggedIn"
+          :custom-slot="true"
+          :is-mobile="true"
+          local-class="style_close"
+          @click-button="logout"
+        >
+          <v-icon>mdi-exit-to-app</v-icon>
+        </ButtonStyled>
       </template>
       <template v-else>
-        <div @click="saveUser">
-          <ButtonStyled
-            :local-text="'Сохранить изменения'"
-            local-class="style_button"
-            :disabled="!isValid"
-            :loading="isUpdating"
-          />
-        </div>
-        <div
+        <ButtonStyled
+          :disabled="!isValid"
+          :loading="isUpdating"
+          :local-text="'Сохранить'"
+          local-class="style_button saveLogoutBtn"
+          @click-button="saveUser"
+        />
+        <ButtonStyled
           v-if="isLoggedIn"
-          @click="logout"
-        >
-          <ButtonStyled
-            :local-text="'Выйти'"
-            local-class="style_close"
-          />
-        </div>
+          :local-text="'Выйти'"
+          local-class="style_close saveLogoutBtn"
+          @click-button="logout"
+        />
       </template>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState } from "vuex";
 
-import LoginAuth from '../frontLayouts/LoginAuth';
-import ButtonStyled from '../Common/ButtonStyled.vue';
-import UserFields from './UserFields';
+import LoginAuth from "../frontLayouts/LoginAuth";
+import ButtonStyled from "../Common/ButtonStyled.vue";
+import UserFields from "./UserFields";
 
 export default {
-  name: 'UserInfo',
+  name: "UserInfo",
   components: {
     ButtonStyled,
     UserFields,
@@ -95,15 +87,15 @@ export default {
       return this.userData && Object.keys(this.userData).length;
     },
     isMobile() {
-      return this.$device.isMobile
+      return this.$device.isMobile;
     }
   },
   methods: {
     closeDetail() {
-      this.$emit('close-detail');
+      this.$emit("close-detail");
     },
     logout() {
-      this.$store.dispatch('logout');
+      this.$store.dispatch("logout");
     },
     setChanged(value) {
       this.isChanged = value;
@@ -115,7 +107,7 @@ export default {
       this.isValid = value.isValid;
     },
     saveUser() {
-      this.$store.dispatch('updateUser', { userId: this.userData.id, data: this.data });
+      this.$store.dispatch("updateUser", { userId: this.userData.id, data: this.data });
     }
   }
 };
