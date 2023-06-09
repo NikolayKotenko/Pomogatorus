@@ -1,9 +1,14 @@
 <template>
   <div
-    :class='{"input-file-padding": (type === "fail" && dropzone_uploaded.length > 2)}'
-    class="tab-content__input">
-    <div :class='{"custom-fields-padding": (type === "fail" && dropzone_uploaded.length > 2)}' class="custom-fields">
-      <template v-if='type === "cislo"'>
+    :class="{'input-file-padding': (type === 'fail' && dropzone_uploaded.length > 2)}"
+    class="tab-content__input"
+  >
+    <div
+      ref="customField"
+      :class="{'custom-fields-padding': (type === 'fail' && dropzone_uploaded.length > 2)}"
+      class="custom-fields"
+    >
+      <template v-if="type === 'cislo'">
         <v-text-field
           v-model="currentData"
           :append-icon="appendIcon"
@@ -25,7 +30,7 @@
         />
       </template>
 
-      <template v-else-if='type === "stroka"'>
+      <template v-else-if="type === 'stroka'">
         <v-textarea
           v-model="currentData"
           :append-icon="appendIcon"
@@ -49,7 +54,6 @@
           :type="typeData"
           auto-grow
           dense
-          hide-details
           row-height="25"
           @click="onClick"
           @focus="focusStart"
@@ -57,8 +61,15 @@
         />
       </template>
 
-      <template v-else-if='type === "fail"'>
-        <div :class='{"dropzone-column": isDropzoneNotEmpty}' class="dropzone-files">
+      <template v-else-if="type === 'fail'">
+        <div
+          :class="{'dropzone-column': isDropzoneNotEmpty}"
+          class="dropzone-files"
+          @dragenter="onDragEnter"
+          @dragleave="onDragLeave"
+          @dragover="checkDrop"
+          @drop.prevent="onDrop"
+        >
           <v-autocomplete
             v-model="sortedDropzone"
             :append-icon="appendIcon"
@@ -80,59 +91,74 @@
             @focus="focusStart"
             @focusout="focusEnd"
           >
-            <template v-slot:selection="data">
+            <template #selection="data">
               <div class="uploaded-image" v-bind="data.attrs">
                 <div v-if="data.item.type === 'text/plain'" class="img-activator">
                   <a :href="$store.state.BASE_URL + data.item.full_path" class="img-container" target="_blank">
-                    <img :src="require(`~/assets/images/txt_doc_type.png`)" class="img-hover"
-                         style="object-fit: contain;" />
+                    <img
+                      :src="require(`~/assets/images/txt_doc_type.png`)"
+                      class="img-hover"
+                      style="object-fit: contain;"
+                    >
                   </a>
                 </div>
                 <div v-else-if="data.item.type === 'application/pdf'" class="img-activator">
                   <a :href="$store.state.BASE_URL + data.item.full_path" class="img-container" target="_blank">
-                    <img :src="require(`~/assets/svg/pdf_icon.svg`)" class="img-hover" style="object-fit: contain;" />
+                    <img :src="require(`~/assets/svg/pdf_icon.svg`)" class="img-hover" style="object-fit: contain;">
                   </a>
                 </div>
 
                 <!-- КОСТЫЛЬ, чтобы передать массив изображений для нашей либы просмотрщика фоток -->
                 <template v-else>
-                  <viewer v-if="data.index === 0" :images="onlyImages" :options="viewOptions"
-                          class="uploaded-image__image-container">
-                    <div v-for="(image, index) in onlyImages" :key="index"
-                         class="uploaded-image__image-container__block img-activator">
-                      <img :alt="image.alt_image"
-                           :src="$store.state.BASE_URL + image.full_path"
-                           class="list-files-img img-hover">
-
-                      <div class="uploaded-image__image-container__block__name">
-                        {{ image.filename }}
-                      </div>
-
-                      <v-tooltip top>
-                        <template v-slot:activator="{ on, attrs }">
-                          <div class="uploaded-image__image-container__block__remove" v-bind="attrs" v-on="on">
-                            <v-icon color="#000000" @click="onRemoveFile(image.id)">mdi-trash-can</v-icon>
-                          </div>
-                        </template>
-                        <span>Удалить файл</span>
-                      </v-tooltip>
-
-                      <v-overlay
-                        :absolute="true"
-                        :value="getLoadingImg(image.id)"
-                        :z-index="2"
+                  <ViewerStyled
+                    v-if="data.index === 0"
+                    :images="onlyImages"
+                    :options="viewOptions"
+                  >
+                    <div class="uploaded-image__image-container">
+                      <div
+                        v-for="(image, index) in onlyImages"
+                        :key="index"
+                        class="uploaded-image__image-container__block img-activator"
                       >
-                        <v-progress-circular
-                          v-if="getLoadingImg(image.id)"
-                          :indeterminate="true"
-                          :size="30"
-                          color="#95D7AE"
-                          style="margin: auto"
-                          width="4"
-                        ></v-progress-circular>
-                      </v-overlay>
+                        <img
+                          :alt="image.alt_image"
+                          :src="$store.state.BASE_URL + image.full_path"
+                          class="list-files-img img-hover"
+                        >
+
+                        <div class="uploaded-image__image-container__block__name">
+                          {{ image.filename }}
+                        </div>
+
+                        <v-tooltip top>
+                          <template #activator="{ on, attrs }">
+                            <div class="uploaded-image__image-container__block__remove" v-bind="attrs" v-on="on">
+                              <v-icon color="#000000" @click="onRemoveFile(image.id)">
+                                mdi-trash-can
+                              </v-icon>
+                            </div>
+                          </template>
+                          <span>Удалить файл</span>
+                        </v-tooltip>
+
+                        <v-overlay
+                          :absolute="true"
+                          :value="getLoadingImg(image.id)"
+                          :z-index="2"
+                        >
+                          <v-progress-circular
+                            v-if="getLoadingImg(image.id)"
+                            :indeterminate="true"
+                            :size="30"
+                            color="#95D7AE"
+                            style="margin: auto"
+                            width="4"
+                          />
+                        </v-overlay>
+                      </div>
                     </div>
-                  </viewer>
+                  </ViewerStyled>
                 </template>
 
                 <template v-if="data.item.type === 'text/plain' || data.item.type === 'application/pdf'">
@@ -141,9 +167,11 @@
                   </div>
 
                   <v-tooltip top>
-                    <template v-slot:activator="{ on, attrs }">
+                    <template #activator="{ on, attrs }">
                       <div class="uploaded-image__remove" v-bind="attrs" v-on="on">
-                        <v-icon color="#000000" @click="onRemoveFile(data.item.id)">mdi-trash-can</v-icon>
+                        <v-icon color="#000000" @click="onRemoveFile(data.item.id)">
+                          mdi-trash-can
+                        </v-icon>
                       </div>
                     </template>
                     <span>Удалить файл</span>
@@ -161,7 +189,7 @@
                       color="#95D7AE"
                       style="margin: auto"
                       width="4"
-                    ></v-progress-circular>
+                    />
                   </v-overlay>
                 </template>
               </div>
@@ -170,25 +198,27 @@
           <dropzone
             id="dropzone"
             ref="dropzone"
-            :destroyDropzone="true"
+            :destroy-dropzone="true"
             :include-styling="false"
             :options="$store.getters.optionsDropzone"
-            :useCustomSlot="true"
+            :use-custom-slot="true"
             @vdropzone-success="successData"
             @vdropzone-sending="sendingData"
           >
             <div ref="dropzoneTemplate" class="dropzone-custom-content">
-              <!--              <div v-if='isDropzoneNotEmpty' class='separator'></div>-->
-              <div class="dropzone-label">
-                <v-icon color="#B3B3B3" large>mdi-cloud-upload</v-icon>
-                <span>{{ computedLabel }}</span>
+              <!--              <div v-if='isDropzoneNotEmpty' class='separator'></div> -->
+              <div :class="{'animated': dragging}" class="dropzone-label">
+                <v-icon :color="dragging ? 'blue' : '#B3B3B3'" large>
+                  mdi-cloud-upload
+                </v-icon>
+                <span :style="dragging ? 'color: #2196F3 ' : ''">{{ computedLabel }}</span>
               </div>
             </div>
           </dropzone>
         </div>
       </template>
 
-      <template v-else-if='type === "vybor-iz-spravocnika"'>
+      <template v-else-if="type === 'vybor-iz-spravocnika'">
         <v-select
           v-model="currentData"
           :append-icon="appendIcon"
@@ -213,14 +243,13 @@
           :rules="currentRules"
           :solo="isSolo"
           dense
-          hide-details
           item-text="value"
           item-value="name"
           @click="onClick"
           @focus="focusStart"
           @focusout="focusEnd"
         >
-          <template v-slot:append>
+          <template #append>
             <template v-if="!isFocused">
               <v-icon>mdi-chevron-down</v-icon>
             </template>
@@ -228,7 +257,7 @@
               <v-icon>mdi-minus</v-icon>
             </template>
           </template>
-          <template v-slot:no-data>
+          <template #no-data>
             <v-list-item>
               <v-list-item-content>
                 <v-list-item-title>Не найдено заполненных параметров справочника</v-list-item-title>
@@ -242,22 +271,19 @@
 </template>
 
 <script>
-import Dropzone from "nuxt-dropzone";
-import "nuxt-dropzone/dropzone.css";
-import { mapActions, mapState } from "vuex";
-import _clone from "@/helpers/deepClone";
-
-import Vue from "vue";
-import VueViewer from "v-viewer";
-import "viewerjs/dist/viewer.css";
-
-Vue.use(VueViewer);
+import Dropzone from 'nuxt-dropzone'
+import 'nuxt-dropzone/dropzone.css'
+import { mapActions, mapState } from 'vuex'
+import generateUUID from '../../utils/generateUUID'
+import ViewerStyled from './ViewerStyled'
+import _clone from '@/helpers/deepClone'
 
 export default {
+  name: 'CustomField',
   components: {
+    ViewerStyled,
     Dropzone
   },
-  name: "CustomField",
   props: {
     type: {
       type: String,
@@ -274,15 +300,15 @@ export default {
 
     placeholder: {
       type: String,
-      default: ""
+      default: ''
     },
     label: {
       type: String,
-      default: ""
+      default: ''
     },
     codeProperty: {
       type: String,
-      default: ""
+      default: ''
     },
     isSolo: {
       type: Boolean,
@@ -290,7 +316,7 @@ export default {
     },
     data: {
       type: [String, Array, Number],
-      default: ""
+      default: ''
     },
     isDisabled: {
       type: Boolean,
@@ -310,11 +336,11 @@ export default {
     },
     appendIcon: {
       type: String,
-      default: ""
+      default: ''
     },
     prependIconInner: {
       type: String,
-      default: ""
+      default: ''
     },
     isFlat: {
       type: Boolean,
@@ -322,7 +348,7 @@ export default {
     },
     rowsCount: {
       type: String,
-      default: "1"
+      default: '1'
     },
     multiLine: {
       type: Boolean,
@@ -330,11 +356,11 @@ export default {
     },
     prependIcon: {
       type: String,
-      default: ""
+      default: ''
     },
     typeData: {
       type: String,
-      default: "text"
+      default: 'text'
     },
     isRequired: {
       type: Boolean,
@@ -346,11 +372,11 @@ export default {
     },
     itemText: {
       type: String,
-      default: ""
+      default: ''
     },
     itemValue: {
       type: String,
-      default: ""
+      default: ''
     },
     currentRules: {
       type: Array,
@@ -374,157 +400,223 @@ export default {
   },
   data() {
     return {
-      internalData: "",
+      internalData: '',
       isFocused: false,
       dzData: [],
       dropzone_uploaded: [],
       loadedImages: [],
       viewOptions: {
-        "movable": false,
-        "zoomable": true,
-        "rotatable": false,
-        "scalable": false
-      }
-    };
-  },
-  mounted() {
-    this.checkDropZoneFiles();
+        'movable': false,
+        'zoomable': true,
+        'rotatable': false,
+        'scalable': false
+      },
+      dragging: false
+    }
   },
   watch: {
-    "deletedFile": {
+    'deletedFile': {
       handler(newV, oldV) {
         if (newV !== oldV) {
-          let index = this.dropzone_uploaded.findIndex(elem => elem.id === newV);
+          const index = this.dropzone_uploaded.findIndex(elem => elem.id === newV)
           if (index !== -1) {
-            this.dropzone_uploaded.splice(index, 1);
+            this.dropzone_uploaded.splice(index, 1)
           }
+        }
+      }
+    },
+    'dragging': {
+      handler(v) {
+        if (v) {
+          this.$refs.customField.style.setProperty(
+            '--border-color',
+            '#2196F3'
+          )
+        } else {
+          this.$refs.customField.style.setProperty(
+            '--border-color',
+            '#B3B3B3'
+          )
         }
       }
     }
   },
+  mounted() {
+    this.checkDropZoneFiles()
+  },
   computed: {
-    ...mapState("Tabs", ["inputTypes"]),
+    ...mapState('Tabs', ['inputTypes']),
 
     isDropzoneNotEmpty() {
-      return !!this.dropzone_uploaded.length;
+      return !!this.dropzone_uploaded.length
     },
     computedLabel() {
-      return this.isDropzoneNotEmpty ? "Загрузить еще" : "Загрузить файлы";
+      return this.isDropzoneNotEmpty ? 'Загрузить еще' : 'Загрузить файлы'
     },
 
     currentData: {
       get() {
         if (this.data) {
-          return this.data;
+          return this.data
         }
-        return this.internalData;
+        return this.internalData
       },
       set(value) {
         if (!this.data) {
-          this.internalData = value;
+          this.internalData = value
         }
-        this.$emit("update-field", value);
+        this.$emit('update-field', value)
       }
     },
     onlyImages() {
-      return this.dropzone_uploaded.filter(elem => elem.type === "image/jpeg" || elem.type === "image/png").sort((a, b) => {
+      return this.dropzone_uploaded.filter(elem => elem.type === 'image/jpeg' || elem.type === 'image/png').sort((a, b) => {
         if (parseInt(a.id) > parseInt(b.id)) {
-          return -1;
+          return -1
         } else {
-          return 1;
+          return 1
         }
-      });
+      })
     },
     sortedDropzone() {
-      return this.dropzone_uploaded.sort((a, b) => {
-        if (a.type === "image/jpeg" || a.type === "image/png") {
-          return -1;
+      const dropzoneFiles = this.dropzone_uploaded.slice()
+      return dropzoneFiles.sort((a, b) => {
+        if (a.type === 'image/jpeg' || a.type === 'image/png') {
+          return -1
         } else {
-          return 1;
+          return 1
         }
-      });
+      })
     }
   },
   methods: {
-    ...mapActions("Tabs", ["removeFile"]),
+    ...mapActions('Tabs', ['removeFile']),
+    ...mapActions(['addFile']),
 
     onClick() {
-      this.$emit("on-click");
+      this.$emit('on-click')
     },
     focusStart() {
-      this.isFocused = true;
-      this.$emit("focus-in");
+      this.isFocused = true
+      this.$emit('focus-in')
     },
     focusEnd() {
-      this.isFocused = false;
-      this.$emit("focus-out");
+      this.isFocused = false
+      this.$emit('focus-out')
     },
 
     /* DROPZONE */
     checkDropZoneFiles() {
-      if (this.type === "fail" && Array.isArray(this.data) && this.data.length) {
-        this.getDropzoneData();
+      if (this.type === 'fail' && Array.isArray(this.data) && this.data.length) {
+        this.getDropzoneData()
       }
     },
     getDropzoneData() {
       this.$nextTick(() => {
 
         this.dropzone_uploaded = this.data.map(file => {
-          return _clone(file);
-        });
+          return _clone(file)
+        })
         this.dzData = this.data.map(file => {
-          return _clone(file);
-        });
+          return _clone(file)
+        })
 
         this.dropzone_uploaded.forEach(file => {
-          this.$refs.dropzone.manuallyAddFile(file, this.$store.state.BASE_URL + file.full_path);
-        });
-      });
+          this.$refs.dropzone.manuallyAddFile(file, this.$store.state.BASE_URL + file.full_path)
+        })
+      })
     },
     forceDropzone() {
       if (!this.isDropzoneNotEmpty) {
-        this.$refs.dropzoneTemplate.click();
+        this.$refs.dropzoneTemplate.click()
       }
     },
     sendingData(file, xhr, formData) {
-      formData.append("uuid", file.upload.uuid);
-      formData.append("id_object", parseInt(this.idObject));
-      formData.append("id_object_property", parseInt(this.idProperty));
+      formData.append('uuid', file.upload.uuid)
+      formData.append('id_object', parseInt(this.idObject))
+      formData.append('id_object_property', parseInt(this.idProperty))
 
-      if (this.codeProperty === "osnovnoe-foto-obekta") {
-        formData.append("main_photo_object", true);
+      if (this.codeProperty === 'osnovnoe-foto-obekta') {
+        formData.append('main_photo_object', true)
       }
     },
     successData(file, response) {
-      console.log("successData", response);
-      const formatObj = Object.assign({}, response.data);
-      this.dzData.push(formatObj);
-      this.dropzone_uploaded.push(formatObj);
+      console.log('successData', response)
+      const formatObj = Object.assign({}, response.data)
+      this.dzData.push(formatObj)
+      this.dropzone_uploaded.push(formatObj)
 
-      this.$emit("uploaded-file", { data: formatObj, index: this.dropzone_uploaded.length - 1 });
+      this.$emit('uploaded-file', { data: formatObj, index: this.dropzone_uploaded.length - 1 })
     },
     async onRemoveFile(id) {
-      this.loadedImages.push(id);
+      this.loadedImages.push(id)
 
       await this.removeFile(id)
         .then(() => {
-          let index = this.dropzone_uploaded.findIndex(elem => elem.id === id);
+          const index = this.dropzone_uploaded.findIndex(elem => elem.id === id)
           if (index !== -1) {
-            this.dropzone_uploaded.splice(index, 1);
-            this.$emit("remove-file", id);
+            this.dropzone_uploaded.splice(index, 1)
+            this.$emit('remove-file', id)
           }
         })
         .finally(() => {
-          let index = this.dropzone_uploaded.findIndex(elem => elem.id === id);
+          const index = this.dropzone_uploaded.findIndex(elem => elem.id === id)
           if (index !== -1) {
-            this.loadedImages.splice(index, 1);
+            this.loadedImages.splice(index, 1)
           }
-        });
+        })
     },
     getLoadingImg(id) {
-      return this.loadedImages.includes(id);
+      return this.loadedImages.includes(id)
+    },
+    // TODO: Если еще будем работать с дропзоной - всю эту логику надо закинуть в миксин или отдельный компонент для дропзоны
+    async onDrop(e) {
+      e.preventDefault()
+
+      const files = e.target.files || e.dataTransfer.files
+
+      if (files.length) {
+        for (const file of files) {
+          const data = await this.addFile({
+            uuid: generateUUID(),
+            id_object: parseInt(this.idObject),
+            id_object_property: parseInt(this.idProperty),
+            codeProperty: this.codeProperty,
+            file
+          })
+
+          if (data) {
+            const formatObj = Object.assign({}, data.data)
+            this.dzData.push(formatObj)
+            this.dropzone_uploaded.push(formatObj)
+            this.$refs.dropzone.manuallyAddFile(formatObj, this.$store.state.BASE_URL + formatObj.full_path)
+
+            this.$emit('uploaded-file', { data: formatObj, index: this.dropzone_uploaded.length - 1 })
+          }
+        }
+
+        this.dragging = false
+      }
+    },
+    checkDrop(e) {
+      if (e) {
+        e.preventDefault()
+      }
+    },
+    onDragEnter(e) {
+      this.dragging = true
+    },
+    onDragLeave(e) {
+      if (!this.dragging) {
+        this.dragging = true
+      }
+
+      if (e.currentTarget.contains(e.relatedTarget)) {
+        return
+      }
+
+      this.dragging = false
     }
   }
-};
+}
 </script>
 

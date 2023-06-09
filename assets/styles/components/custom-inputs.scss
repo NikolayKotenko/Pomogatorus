@@ -1,4 +1,6 @@
 .custom-fields {
+  --border-color: #b3b3b3;
+
   input::-webkit-outer-spin-button,
   input::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -14,7 +16,7 @@
     .dz-message {
       //height: 100%;
       cursor: pointer;
-      background-image: repeating-linear-gradient(-1deg, #b3b3b3, #b3b3b3 9px, transparent 9px, transparent 22px, #b3b3b3 22px), repeating-linear-gradient(89deg, #b3b3b3, #b3b3b3 9px, transparent 9px, transparent 22px, #b3b3b3 22px), repeating-linear-gradient(179deg, #b3b3b3, #b3b3b3 9px, transparent 9px, transparent 22px, #b3b3b3 22px), repeating-linear-gradient(269deg, #b3b3b3, #b3b3b3 9px, transparent 9px, transparent 22px, #b3b3b3 22px);
+      background-image: repeating-linear-gradient(-1deg, var(--border-color), var(--border-color) 9px, transparent 9px, transparent 22px, var(--border-color) 22px), repeating-linear-gradient(89deg, var(--border-color), var(--border-color) 9px, transparent 9px, transparent 22px, var(--border-color) 22px), repeating-linear-gradient(179deg, var(--border-color), var(--border-color) 9px, transparent 9px, transparent 22px, var(--border-color) 22px), repeating-linear-gradient(269deg, var(--border-color), var(--border-color) 9px, transparent 9px, transparent 22px, var(--border-color) 22px);
       background-size: 2px 100%, 100% 2px, 2px 100%, 100% 2px;
       background-position: 0 0, 0 0, 100% 0, 0 100%;
       background-repeat: no-repeat;
@@ -34,7 +36,7 @@
 
       span {
         font-size: 18px;
-        color: #B3B3B3;
+        color: var(--border-color);
       }
     }
 
@@ -114,7 +116,7 @@
       align-items: center;
       justify-content: center;
       //width: 100%;
-      background-image: repeating-linear-gradient(-1deg, #b3b3b3, #b3b3b3 13px, transparent 9px, transparent 22px, #b3b3b3 22px), repeating-linear-gradient(89deg, #b3b3b3, #b3b3b3 9px, transparent 9px, transparent 22px, #b3b3b3 22px), repeating-linear-gradient(179deg, #b3b3b3, #b3b3b3 9px, transparent 9px, transparent 22px, #b3b3b3 22px), repeating-linear-gradient(269deg, #b3b3b3, #b3b3b3 9px, transparent 9px, transparent 22px, #b3b3b3 22px);
+      background-image: repeating-linear-gradient(-1deg, var(--border-color), var(--border-color) 13px, transparent 9px, transparent 22px, var(--border-color) 22px), repeating-linear-gradient(89deg, var(--border-color), var(--border-color) 9px, transparent 9px, transparent 22px, var(--border-color) 22px), repeating-linear-gradient(179deg, var(--border-color), var(--border-color) 9px, transparent 9px, transparent 22px, var(--border-color) 22px), repeating-linear-gradient(269deg, var(--border-color), var(--border-color) 9px, transparent 9px, transparent 22px, var(--border-color) 22px);
       background-size: 2px 100%, 0% 2px, 2px 100%, 100% 2px;
       background-position: 0 0, 0 0, 100% 0, 0 100%;
       background-repeat: no-repeat;
@@ -134,14 +136,14 @@
     .separator {
       width: 100%;
       height: 1px;
-      background-image: repeating-linear-gradient(20deg, #b3b3b3, #b3b3b3 7px, transparent 7px, transparent 19px, #b3b3b3 19px), repeating-linear-gradient(110deg, #b3b3b3, #b3b3b3 7px, transparent 7px, transparent 19px, #b3b3b3 19px), repeating-linear-gradient(200deg, #b3b3b3, #b3b3b3 7px, transparent 7px, transparent 19px, #b3b3b3 19px), repeating-linear-gradient(290deg, #b3b3b3, #b3b3b3 7px, transparent 7px, transparent 19px, #b3b3b3 19px);
+      background-image: repeating-linear-gradient(20deg, var(--border-color), var(--border-color) 7px, transparent 7px, transparent 19px, var(--border-color) 19px), repeating-linear-gradient(110deg, var(--border-color), var(--border-color) 7px, transparent 7px, transparent 19px, var(--border-color) 19px), repeating-linear-gradient(200deg, var(--border-color), var(--border-color) 7px, transparent 7px, transparent 19px, var(--border-color) 19px), repeating-linear-gradient(290deg, var(--border-color), var(--border-color) 7px, transparent 7px, transparent 19px, var(--border-color) 19px);
       background-size: 2px 100%, 100% 2px, 2px 100%, 100% 2px;
       background-position: 0 0, 0 0, 100% 0, 0 100%;
       background-repeat: no-repeat;
     }
 
     .v-select__slot {
-      background-image: repeating-linear-gradient(-1deg, #b3b3b3, #b3b3b3 9px, transparent 9px, transparent 22px, #b3b3b3 22px), repeating-linear-gradient(89deg, #b3b3b3, #b3b3b3 9px, transparent 9px, transparent 22px, #b3b3b3 22px), repeating-linear-gradient(179deg, #b3b3b3, #b3b3b3 9px, transparent 9px, transparent 22px, #b3b3b3 22px), repeating-linear-gradient(269deg, #b3b3b3, #b3b3b3 9px, transparent 9px, transparent 22px, #b3b3b3 22px);
+      background-image: repeating-linear-gradient(-1deg, var(--border-color), var(--border-color) 9px, transparent 9px, transparent 22px, var(--border-color) 22px), repeating-linear-gradient(89deg, var(--border-color), var(--border-color) 9px, transparent 9px, transparent 22px, var(--border-color) 22px), repeating-linear-gradient(179deg, var(--border-color), var(--border-color) 9px, transparent 9px, transparent 22px, var(--border-color) 22px), repeating-linear-gradient(269deg, var(--border-color), var(--border-color) 9px, transparent 9px, transparent 22px, var(--border-color) 22px);
       background-size: 2px 100%, 100% 2px, 2px 100%, 100% 2px;
       background-position: 0 0, 0 0, 100% 0, 0 100%;
       background-repeat: no-repeat;

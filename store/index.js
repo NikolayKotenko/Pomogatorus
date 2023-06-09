@@ -231,6 +231,13 @@ const createStore = () => {
             Request.ConstructFilterQuery(objFilter)
         )
       },
+      async addFile({ state }, data) {
+        if (data.codeProperty === 'osnovnoe-foto-obekta') {
+          data.main_photo_object = true
+        }
+
+        return await Request.post(state.BASE_URL + '/entity/files', data, true)
+      },
     },
     modules: {
       AuthModule,

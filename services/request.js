@@ -13,7 +13,7 @@ export default class Request {
 
     if (formData) {
       options = {
-        method: method, // *GET, POST, PUT, DELETE, etc.
+        method, // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, *cors, same-origin
         cache: 'default', // *default, no-cache, reload, force-cache, only-if-cached
         credentials: 'include', // include, *same-origin, omit
@@ -26,7 +26,7 @@ export default class Request {
       }
     } else {
       options = {
-        method: method, // *GET, POST, PUT, DELETE, etc.
+        method, // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, *cors, same-origin
         cache: 'default', // *default, no-cache, reload, force-cache, only-if-cached
         credentials: 'include', // include, *same-origin, omit
@@ -40,21 +40,19 @@ export default class Request {
       }
     }
 
-    if ('GET' === method) {
+    if (method === 'GET') {
       if (params !== null) {
         url += '?' + new URLSearchParams(params).toString()
       }
-    } else if ('PUT' === method) {
+    } else if (method === 'PUT') {
       if (params !== null) {
         url += '?' + new URLSearchParams(params).toString()
       }
+    } else if (formData) {
+      // console.log(Request.bodyFormData(params))
+      options.body = Request.bodyFormData(params) // for formData e.g Files to server
     } else {
-      if (formData) {
-        // console.log(Request.bodyFormData(params))
-        options.body = Request.bodyFormData(params) // for formData e.g Files to server
-      } else {
-        options.body = JSON.stringify(params) // body data type must match "Content-Type" header
-      }
+      options.body = JSON.stringify(params) // body data type must match "Content-Type" header
     }
 
     // console.log('options.body');
@@ -87,7 +85,7 @@ export default class Request {
   }
 
   static bodyFormData(paramBody) {
-    let bodyFormData = new FormData()
+    const bodyFormData = new FormData()
 
     for (const [key, value] of Object.entries(paramBody)) {
       // console.log(`${key}: ${value}`)
@@ -102,11 +100,11 @@ export default class Request {
     if (process.client) {
       if (!document.cookie) return list
 
-      document.cookie.split(`;`).forEach(function (cookie) {
-        let [name, ...rest] = cookie.split(`=`)
+      document.cookie.split(';').forEach(function (cookie) {
+        let [name, ...rest] = cookie.split('=')
         name = name?.trim()
         if (!name) return
-        const value = rest.join(`=`).trim()
+        const value = rest.join('=').trim()
         if (!value) return
         list[name] = decodeURIComponent(value)
       })
@@ -114,17 +112,20 @@ export default class Request {
 
     return list
   }
+
   static getAccessTokenInCookies = () => {
     // if (process.env.NODE_ENV === 'development') return '666777'
 
     // console.log('this.parseCookies()', this.parseCookies())
     const checkExist = this.parseCookies()
-    return checkExist.hasOwnProperty('accessToken') ? checkExist.accessToken : null
+    return checkExist.hasOwnProperty('accessToken')
+      ? checkExist.accessToken
+      : null
   }
 
   static ConstructFilterQuery(arrNameParam = []) {
     let result = ''
-    for (let [key, value] of Object.entries(arrNameParam)) {
+    for (const [key, value] of Object.entries(arrNameParam)) {
       result += 'filter[' + key + ']=' + value + '&'
     }
     result = result.slice(0, -1)

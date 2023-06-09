@@ -1,6 +1,6 @@
 <template>
   <v-container
-    :class='{"dropzone-empty": !isDropzoneNotEmpty}'
+    :class="{'dropzone-empty': !isDropzoneNotEmpty}"
     class="list-files-styled files-dashed-border"
   >
     <div v-if="isDropzoneNotEmpty" class="dropzone-files">
@@ -40,55 +40,55 @@
 
             <!-- КОСТЫЛЬ, чтобы передать массив изображений для нашей либы просмотрщика фоток -->
             <template v-else>
-              <!-- TODO: вынести в отедльный компонент, если понадобиться хоть еще где-то -->
-              <viewer
+              <ViewerStyled
                 v-if="data.index === 0"
                 :images="onlyImages"
                 :options="viewOptions"
-                class="uploaded-image__image-container"
               >
-                <div
-                  v-for="(image, index) in onlyImages"
-                  :key="index"
-                  class="uploaded-image__image-container__block img-activator"
-                >
-                  <img
-                    :alt="image.alt_image"
-                    :src="$store.state.BASE_URL + image.full_path"
-                    class="list-files-img img-hover"
+                <div class="uploaded-image__image-container">
+                  <div
+                    v-for="(image, index) in onlyImages"
+                    :key="index"
+                    class="uploaded-image__image-container__block img-activator"
                   >
+                    <img
+                      :alt="image.alt_image"
+                      :src="$store.state.BASE_URL + image.full_path"
+                      class="list-files-img img-hover"
+                    >
 
-                  <div class="uploaded-image__image-container__block__name">
-                    {{ image.filename }}
+                    <div class="uploaded-image__image-container__block__name">
+                      {{ image.filename }}
+                    </div>
+
+                    <v-tooltip top>
+                      <template #activator="{ on, attrs }">
+                        <div class="uploaded-image__image-container__block__remove" v-bind="attrs" v-on="on">
+                          <v-icon color="#000000" @click="onRemoveFile(image.id)">
+                            mdi-trash-can
+                          </v-icon>
+                        </div>
+                      </template>
+                      <span>Удалить файл</span>
+                    </v-tooltip>
+
+                    <v-overlay
+                      :absolute="true"
+                      :value="getLoadingImg(image.id)"
+                      :z-index="2"
+                    >
+                      <v-progress-circular
+                        v-if="getLoadingImg(image.id)"
+                        :indeterminate="true"
+                        :size="30"
+                        color="#95D7AE"
+                        style="margin: auto"
+                        width="4"
+                      />
+                    </v-overlay>
                   </div>
-
-                  <v-tooltip top>
-                    <template #activator="{ on, attrs }">
-                      <div class="uploaded-image__image-container__block__remove" v-bind="attrs" v-on="on">
-                        <v-icon color="#000000" @click="onRemoveFile(image.id)">
-                          mdi-trash-can
-                        </v-icon>
-                      </div>
-                    </template>
-                    <span>Удалить файл</span>
-                  </v-tooltip>
-
-                  <v-overlay
-                    :absolute="true"
-                    :value="getLoadingImg(image.id)"
-                    :z-index="2"
-                  >
-                    <v-progress-circular
-                      v-if="getLoadingImg(image.id)"
-                      :indeterminate="true"
-                      :size="30"
-                      color="#95D7AE"
-                      style="margin: auto"
-                      width="4"
-                    />
-                  </v-overlay>
                 </div>
-              </viewer>
+              </ViewerStyled>
             </template>
 
             <template v-if="data.item.type === 'text/plain' || data.item.type === 'application/pdf'">
@@ -131,20 +131,17 @@
 </template>
 
 <script>
-import Dropzone from 'nuxt-dropzone';
-import 'nuxt-dropzone/dropzone.css';
-import { mapActions, mapState } from 'vuex';
-import Vue from 'vue';
-import VueViewer from 'v-viewer';
-import 'viewerjs/dist/viewer.css';
+import 'nuxt-dropzone/dropzone.css'
+import { mapActions, mapState } from 'vuex'
+import Vue from 'vue'
+import VueViewer from 'v-viewer'
+import 'viewerjs/dist/viewer.css'
 
-Vue.use(VueViewer);
+Vue.use(VueViewer)
 
 export default {
   name: 'ListFilesStyled',
-  components: {
-    Dropzone
-  },
+  components: {},
   props: {
     idObject: {
       type: [Number, String],
@@ -198,87 +195,87 @@ export default {
         'rotatable': false,
         'scalable': false
       }
-    };
+    }
   },
   computed: {
     ...mapState('Tabs', ['allTabData']),
 
     getFilesTabs() {
       if (!this.allTabData || !this.allTabData.length) {
-        return [];
+        return []
       }
 
       return this.allTabData.filter(tab => {
-        return (tab.d_property_objects) ? (tab.d_property_objects.code === 'fail') : [];
-      });
+        return (tab.d_property_objects) ? (tab.d_property_objects.code === 'fail') : []
+      })
     },
     getFilesFromObject() {
       if (!this.data || !Object.keys(this.data).length) {
-        return [];
+        return []
       }
 
-      const result = [];
+      const result = []
       this.getFilesTabs.forEach(tab => {
         if (this.data[tab.code] && Object.keys(this.data[tab.code]).length) {
           this.data[tab.code].forEach(file => {
-            result.push(file);
-            this.fileCodes[file.id] = tab.code;
-          });
+            result.push(file)
+            this.fileCodes[file.id] = tab.code
+          })
         }
-      });
-      return result;
+      })
+      return result
     },
     isDropzoneNotEmpty() {
-      if (!this.getFilesFromObject.length) return false;
+      if (!this.getFilesFromObject.length) return false
 
       return this.getFilesFromObject.some((object) => {
-        return object.main_photo_object === false;
-      });
+        return object.main_photo_object === false
+      })
     },
 
     onlyImages() {
       return this.getFilesFromObject.filter(elem => elem.type === 'image/jpeg' || elem.type === 'image/png').sort((a, b) => {
         if (parseInt(a.id) > parseInt(b.id)) {
-          return -1;
+          return -1
         } else {
-          return 1;
+          return 1
         }
-      });
+      })
     },
     sortedDropzone() {
       return this.getFilesFromObject.sort((a, b) => {
         if (a.type === 'image/jpeg' || a.type === 'image/png') {
-          return -1;
+          return -1
         } else {
-          return 1;
+          return 1
         }
-      });
+      })
     }
   },
   methods: {
     ...mapActions('Tabs', ['removeFile']),
 
     async onRemoveFile(id) {
-      this.loadedImages.push(id);
+      this.loadedImages.push(id)
 
       await this.removeFile(id)
         .then(() => {
-          const code = this.fileCodes[id];
-          this.$emit('remove-from-global', { key: code, value: id });
+          const code = this.fileCodes[id]
+          this.$emit('remove-from-global', { key: code, value: id })
         })
         .finally(() => {
-          const index = this.loadedImages.findIndex(elem => elem === id);
+          const index = this.loadedImages.findIndex(elem => elem === id)
           if (index !== -1) {
-            this.loadedImages.splice(index, 1);
+            this.loadedImages.splice(index, 1)
           }
-        });
+        })
     },
     getLoadingImg(id) {
-      return this.loadedImages.includes(id);
+      return this.loadedImages.includes(id)
     }
   }
-};
+}
 </script>
 
-<style lang="scss">
+<style lang='scss'>
 </style>
