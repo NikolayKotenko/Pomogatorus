@@ -696,7 +696,7 @@ export default {
           /* Fix default scroll by hash on page */
           this.createAnchorToAuth()
         })
-        this.$refs.authModal.openModal()
+        this.$store.commit('setModalAuth', true)
       } else if (!this.$store.state.Objects.currentObject || !Object.keys(this.$store.state.Objects.currentObject).length) {
         if (!Array.isArray(this.$store.state.AuthModule.userData.objects) || this.$store.state.AuthModule.userData.objects.length < 1) {
           await this.silentCreateObject()
