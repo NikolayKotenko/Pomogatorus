@@ -14,12 +14,14 @@
           @new-data="setData"
         />
       </div>
-      <LoginAuth v-else />
+      <LoginAuth v-else/>
     </div>
 
     <div class="save_logout_btn">
       <template v-if="isMobile">
         <ButtonStyled
+          v-if="isLoggedIn"
+          class="mobile_save_btn"
           :custom-slot="true"
           :disabled="!isValid"
           :is-mobile="true"
@@ -41,6 +43,7 @@
       </template>
       <template v-else>
         <ButtonStyled
+          v-if="isLoggedIn"
           :disabled="!isValid"
           :loading="isUpdating"
           :local-text="'Сохранить'"
@@ -59,14 +62,14 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex';
 
-import LoginAuth from "../frontLayouts/LoginAuth";
-import ButtonStyled from "../Common/ButtonStyled.vue";
-import UserFields from "./UserFields";
+import LoginAuth from '../frontLayouts/LoginAuth';
+import ButtonStyled from '../Common/ButtonStyled.vue';
+import UserFields from './UserFields';
 
 export default {
-  name: "UserInfo",
+  name: 'UserInfo',
   components: {
     ButtonStyled,
     UserFields,
@@ -92,10 +95,10 @@ export default {
   },
   methods: {
     closeDetail() {
-      this.$emit("close-detail");
+      this.$emit('close-detail');
     },
     logout() {
-      this.$store.dispatch("logout");
+      this.$store.dispatch('logout');
     },
     setChanged(value) {
       this.isChanged = value;
@@ -107,8 +110,9 @@ export default {
       this.isValid = value.isValid;
     },
     saveUser() {
-      this.$store.dispatch("updateUser", { userId: this.userData.id, data: this.data });
-    }
+      this.$store.dispatch('updateUser', { userId: this.userData.id, data: this.data });
+      this.closeDetail();
+    },
   }
 };
 </script>
@@ -131,7 +135,7 @@ export default {
     grid-template-columns: 1fr 1fr;
     grid-column-gap: 1em;
 
-    padding: 0 30px 5px 30px;
+    padding: 0 30px 30px 30px;
     margin-top: 5px;
     background: white;
     box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.25);
@@ -141,12 +145,16 @@ export default {
     bottom: 0;
     width: 100%;
 
-    .saveLogoutBtn {
-      width: 100%;
+    .mobile_save_btn{
+      max-width: 64px;
     }
   }
 }
-
+.close{
+  max-height: 45px;
+  max-width: 200px;
+  z-index: 999;
+}
 
 .fade-enter-active,
 .fade-leave-active {

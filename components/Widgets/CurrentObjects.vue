@@ -18,15 +18,16 @@
                 </v-icon>
               </div>
             </template>
-            <Collaboration />
+            <Collaboration/>
           </v-menu>
         </TooltipStyled>
       </div>
-      <v-divider />
+      <v-divider/>
     </div>
 
-    <TooltipStyled :title="$store.getters.stateAuth ?
-      'Выбрать объект или создать новый' : 'Для выбора объекта - авторизуйтесь'"
+    <TooltipStyled
+      :title="$store.getters.stateAuth ?
+        'Выбрать объект или создать новый' : 'Для выбора объекта - авторизуйтесь'"
     >
       <div @click="callAuthModal">
         <SelectObjectStyled
@@ -70,7 +71,7 @@
     </section>
     <section class="current_object__wrapper_info">
       <span class="current_object__wrapper_info__text">ТЗ объекта: {{ $store.state.Objects.currentObject.name
-        }}</span>
+      }}</span>
       <span class="current_object__wrapper_info__value">7 из 130</span>
       <div class="wrapper_button">
         <TooltipStyled :title="'Перейти к объекту'">
@@ -95,23 +96,23 @@
           </ButtonStyled>
         </TooltipStyled>
       </div>
-      <TagsTechBlock v-if="state_tech_task_block"></TagsTechBlock>
+      <TagsTechBlock v-if="state_tech_task_block"/>
     </section>
   </div>
 </template>
 
 <script>
-import InputStyled from "../Common/InputStyled";
-import SelectStyled from "../Common/SelectStyled";
-import PdfContent from "../PdfReports/PdfContent";
-import SelectObjectStyled from "../Common/SelectObjectStyled";
-import Collaboration from "../Modals/Collaboration.vue";
-import TooltipStyled from "~/components/Common/TooltipStyled";
-import ButtonStyled from "~/components/Common/ButtonStyled";
-import TagsTechBlock from "~/components/Widgets/TagsTechBlock";
+import InputStyled from '../Common/InputStyled';
+import SelectStyled from '../Common/SelectStyled';
+import PdfContent from '../PdfReports/PdfContent';
+import SelectObjectStyled from '../Common/SelectObjectStyled';
+import Collaboration from '../Modals/Collaboration.vue';
+import TooltipStyled from '~/components/Common/TooltipStyled';
+import ButtonStyled from '~/components/Common/ButtonStyled';
+import TagsTechBlock from '~/components/Widgets/TagsTechBlock';
 
 export default {
-  name: "CurrentObjects",
+  name: 'CurrentObjects',
   // eslint-disable-next-line vue/no-unused-components
   components: {
     TagsTechBlock,
@@ -119,38 +120,35 @@ export default {
     ButtonStyled,
     TooltipStyled,
     SelectObjectStyled,
-    InputStyled,
-    SelectStyled,
-    PdfContent
   },
   data() {
     return {
       state_tech_task_block: false,
       alert: {
         state: false,
-        message: ""
+        message: ''
       }
     };
   },
   computed: {},
   watch: {
-    "$store.getters.stateAuth": {
+    '$store.getters.stateAuth': {
       handler(state) {
         if (state) {
-          this.$store.dispatch("getListBroadcastSnippet");
+          this.$store.dispatch('getListBroadcastSnippet');
         } else {
-          this.$store.commit("set_list_broadcast_snippet", []);
+          this.$store.commit('set_list_broadcast_snippet', []);
         }
       }
     },
-    "$store.getters.getUserId": {
+    '$store.getters.getUserId': {
       handler(value) {
-        this.$store.dispatch("Objects/getListObjectsByUserId", value);
+        this.$store.dispatch('Objects/getListObjectsByUserId', value);
       }
     }
   },
   mounted() {
-    this.$store.dispatch("getListBroadcastSnippet");
+    this.$store.dispatch('getListBroadcastSnippet');
   },
   methods: {
     callAuthModal() {
@@ -159,7 +157,7 @@ export default {
       this.$store.state.listModal[0].isOpen = true;
     },
     async callback(data) {
-      await this.$store.dispatch("Objects/setCurrentObject", data);
+      await this.$store.dispatch('Objects/setCurrentObject', data);
     }
   }
 };
@@ -183,9 +181,7 @@ export default {
   background: white;
   overflow-y: overlay;
 
-
   &:hover {
-    @extend .border-hover;
     @extend .background-hover;
   }
 

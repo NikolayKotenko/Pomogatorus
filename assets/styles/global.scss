@@ -27,6 +27,10 @@ $main-color: red;
 
 $max-width: 1140px;
 
+.background-hover-for-cards{
+  box-shadow: 0px 5px 20px 7px rgba(34, 60, 80, 0.2) !important;
+}
+
 .border-hover{
   outline: 1px solid #FFDB58;
   border-radius: 5px;

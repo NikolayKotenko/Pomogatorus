@@ -1,25 +1,25 @@
 <template>
   <!-- Мобилка (гамбургер) -->
   <v-navigation-drawer
-    v-model='drawer'
+    v-model="drawer"
     absolute
     app
     temporary
   >
-    <v-list style='margin-top: 48px;'>
-      <v-list-item-group class='header_center'>
-        <v-list-item v-for='item in $store.getters.menuItems'
-                     v-if='item.visible'
-                     :key='item.title'
-                     :class='{activeItem: getCurrentRoute(item.path)}'
-                     :href='item.path'
-                     class='text-capitalize link_btn menuItem'
-                     text
+    <v-list style="margin-top: 48px;">
+      <v-list-item-group class="header_center">
+        <v-list-item
+          v-for="item in $store.getters.menuItems"
+          v-if="item.visible"
+          :key="item.title"
+          :class="{activeItem: getCurrentRoute(item.path)}"
+          :href="item.path"
+          class="text-capitalize link_btn menuItem"
+          text
         >
-          <v-list-item-icon class='menuIcon' dark left>
-            <v-icon :color='getCurrentRoute(item.path) ? "#fafad2" : ""'>{{ item.icon }}</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title :class='{activeElement: getCurrentRoute(item.path)}'>{{ item.title }}</v-list-item-title>
+          <v-list-item-title :class="{activeElement: getCurrentRoute(item.path)}">
+            {{ item.title }}
+          </v-list-item-title>
         </v-list-item>
       </v-list-item-group>
     </v-list>
@@ -50,11 +50,10 @@ export default {
 
 <style lang='scss' scoped>
 .menuItem {
-  padding: 0 10px !important;
+  padding-left: 40px;
 }
 
 .menuIcon {
-  margin-right: 44px !important;
   margin-bottom: unset;
   margin-top: unset;
   align-self: center;

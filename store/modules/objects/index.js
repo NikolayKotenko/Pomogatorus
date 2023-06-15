@@ -38,11 +38,11 @@ export default {
     onloadSetCurrentUserObject({ commit, state }) {
       let currentObj = null
 
-      //Берем у которого на бэке состояние тру
+      // Берем у которого на бэке состояние тру
       currentObj = state.listObjects.filter((obj) => {
         return obj.m_to_m_users_objects.state_current_object === true
       })[0]
-      //Если такого нет ни одного то берем первый попавшийся по сортировке
+      // Если такого нет ни одного то берем первый попавшийся по сортировке
       if (!currentObj) {
         currentObj = state.listObjects[0]
       }
@@ -52,7 +52,7 @@ export default {
     // TODO: Когда появится новый "Безопасный" метод заменить на него по токену
     async getListObjectsByUserId({ commit, dispatch }, idUser) {
       const query = constructFilterQuery({
-        id_user: idUser ? idUser : null,
+        id_user: idUser || null,
       })
 
       const response = await Request.get(
@@ -122,6 +122,11 @@ export default {
     },
     getCountObject(state) {
       return state.listObjects.length
+    },
+    getIdCurrentObject(state) {
+      return Object.keys(state.currentObject).length
+        ? state.currentObject.id
+        : null
     },
   },
 }

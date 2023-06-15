@@ -1,12 +1,14 @@
 <template>
   <v-card
     :elevation="0"
-    @click="$store.dispatch('linkToArticle', article.id)"
     :outlined="false"
     class="article_small_card"
+    @click="$store.dispatch('linkToArticle', article.id)"
   >
     <div>
-      <h2 class="title">{{ article.name }}</h2>
+      <h2 class="title">
+        {{ article.name }}
+      </h2>
     </div>
     <div class="img_wrapper">
       <v-img
@@ -18,7 +20,7 @@
       <span v-if="! $store.getters.getImageByEClientFilesObj(article.e_client_files)">Фото статьи</span>
     </div>
     <div class="icons_and_time_wrapper" @click="$event.stopPropagation()">
-      <ViewsAndLikes :article="article"></ViewsAndLikes>
+      <ViewsAndLikes :article="article"/>
       <h4 class="time">
         {{ article.updated_at }}
       </h4>
@@ -27,10 +29,10 @@
 </template>
 
 <script>
-import ViewsAndLikes from "../Common/ViewsAndLikes.vue";
+import ViewsAndLikes from '../Common/ViewsAndLikes.vue';
 
 export default {
-  name: "ArticleSmallCard",
+  name: 'ArticleSmallCard',
   components: { ViewsAndLikes },
   props: {
     article: {
@@ -52,7 +54,7 @@ export default {
   max-width: 270px;
 
   &:hover {
-    transform: scale(1.05);
+
     box-shadow: 0px 5px 20px 7px rgba(34, 60, 80, 0.2) !important;
     opacity: 1;
   }

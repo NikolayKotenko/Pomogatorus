@@ -8,7 +8,7 @@
     elevate-on-scroll
   >
     <v-container class="d-flex custom_grid_system">
-      <v-app-bar-nav-icon v-if="isMobile" @click="showDrawer" />
+      <v-app-bar-nav-icon v-if="isMobile" @click="showDrawer"/>
       <v-toolbar-title v-if="isMobile">
         <router-link :to="getCurrentRoute.path" style="color: unset; text-decoration: unset">
           {{ getCurrentRoute.title }}
@@ -50,7 +50,7 @@
                 </v-badge>
               </div>
             </template>
-            <CurrentObjects></CurrentObjects>
+            <CurrentObjects/>
           </v-menu>
         </TooltipStyled>
         <TooltipStyled :title="'Личный кабинет'">
@@ -75,13 +75,13 @@
 
 <script>
 // eslint-disable-next-line vue/multi-word-component-names,vue/no-reserved-component-names
-import { mapState } from "vuex";
-import TooltipStyled from "./Common/TooltipStyled";
-import CurrentObjects from "./Widgets/CurrentObjects.vue";
+import { mapState } from 'vuex';
+import TooltipStyled from './Common/TooltipStyled';
+import CurrentObjects from './Widgets/CurrentObjects.vue';
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names,vue/no-reserved-component-names
-  name: "Header",
+  name: 'Header',
   components: { CurrentObjects, TooltipStyled },
   data() {
     return {
@@ -108,8 +108,8 @@ export default {
     getCurrentRoute() {
       if (this.listModal[0].isOpen) {
         return {
-          path: "",
-          title: "Личный кабинет"
+          path: '',
+          title: 'Личный кабинет'
         };
       }
       return this.$store.getters.menuItems.find((elem) => {
@@ -119,7 +119,7 @@ export default {
   },
   methods: {
     showDrawer() {
-      this.$store.commit("set_drawer", !this.drawer);
+      this.$store.commit('set_drawer', !this.drawer);
     },
     openModals() {
       // TODO: Продумать логику открывания модалки независимо от индексa
@@ -132,7 +132,7 @@ export default {
     setHeader(value) {
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
       this.debounceTimeout = setTimeout(() => {
-        this.$store.commit("change_show_header", value);
+        this.$store.commit('change_show_header', value);
       });
     },
     onScroll() {
@@ -142,10 +142,10 @@ export default {
         window.onscroll = function() {
           const currentScrollPos = window.pageYOffset;
           if (prevScrollpos > currentScrollPos) {
-            document.getElementById("navbar").style.top = "0";
+            document.getElementById('navbar').style.top = '0';
             _this.setHeader(true);
           } else {
-            document.getElementById("navbar").style.top = "-70px";
+            document.getElementById('navbar').style.top = '-70px';
             _this.setHeader(false);
           }
           prevScrollpos = currentScrollPos;
