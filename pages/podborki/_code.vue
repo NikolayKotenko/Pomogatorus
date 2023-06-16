@@ -27,9 +27,9 @@
           />
         </div>
       </div>
-      <div v-if="$store.state.PopularSelectionsModule.article.length">
+      <div v-if="$store.state.PopularSelectionsModule.article.length" class="more_article">
         <h3 class="text_tag_article">
-          Статьи по тегу
+          Ещё статьи по тегу
         </h3>
         <div v-for="(article, index) in $store.state.PopularSelectionsModule.article">
           <ArticleSmallCard
@@ -54,6 +54,8 @@ import Article from '../../components/Article/Article';
 import Request from '../../services/request';
 import ArticleSmallCard from '../../components/Article/ArticleSmallCard.vue';
 import Biathlon from '../../components/Common/Biathlon.vue';
+import article from '../../store/modules/article';
+import podborki from './index.vue';
 import HashTagStyled from '~/components/Common/HashTagStyled';
 
 export default {
@@ -62,8 +64,6 @@ export default {
     Biathlon,
     ArticleSmallCard,
     Question,
-    LoginAuth,
-    Article,
     HashTagStyled
   },
   async asyncData({ store, params }) {
@@ -81,7 +81,8 @@ export default {
     },
     data_of_components: [],
     coordYNav: null,
-    heightNav: 70
+    heightNav: 70,
+    localViewAction: false
   }),
   head() {
     return {
@@ -171,6 +172,15 @@ export default {
   .auth_container {
     margin-right: auto !important;
     margin: unset;
+  }
+}
+@media only screen and (max-width: 768px){
+  .text_tag_article {
+    padding-left: 8px;
+  }
+  .more_article {
+    display: grid;
+    justify-content: center;
   }
 }
 </style>

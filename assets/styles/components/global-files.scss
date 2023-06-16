@@ -110,3 +110,9 @@ $width-image: 263px;
     color: #000000;
   }
 }
+@media only screen and (max-width: 768px){
+  .empty-placeholder {
+    font-size: 1em !important;
+    padding: 0 2em;
+  }
+}

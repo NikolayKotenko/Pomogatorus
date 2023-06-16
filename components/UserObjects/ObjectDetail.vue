@@ -34,7 +34,6 @@
       <ButtonStyled
         local-class="style_button"
         local-text="Скачать PDF"
-        @click-button=""
       />
       <ButtonStyled
         local-class="style_close"
@@ -52,7 +51,8 @@ import ButtonStyled from '../Common/ButtonStyled.vue'
 
 export default {
   name: 'ObjectDetail',
-  components: { InputStyled, ButtonStyled },
+  components: { ButtonStyled },
+  // eslint-disable-next-line vue/prop-name-casing
   props: ['object_data'],
   data: () => ({
     paramsDetail: [

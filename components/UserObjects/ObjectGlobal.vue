@@ -28,16 +28,16 @@
             :is-outlined="true"
             :placeholder="'Введите наименование объекта'"
             @update-input="setNameField"
-          ></InputStyled>
+          />
         </div>
         <TooltipStyled
           :title="stateSelectEditNameObject
-          ? 'Режим редактирования наименования объекта'
-          : 'Режим выбора объекта'"
+            ? 'Режим редактирования наименования объекта'
+            : 'Режим выбора объекта'"
         >
           <v-icon
-            @click="setStateSelectedEditName()"
             :color="stateSelectEditNameObject ? '' : 'green'"
+            @click="setStateSelectedEditName()"
           >
             mdi-lead-pencil
           </v-icon>
@@ -172,7 +172,7 @@
               </v-icon>
             </v-card-title>
             <v-card-text>
-              <TagsTechBlock></TagsTechBlock>
+              <TagsTechBlock/>
             </v-card-text>
           </v-card>
         </v-dialog>
@@ -200,7 +200,7 @@
 
         <ButtonStyled
           local-class="style_close"
-          local-text="Отмена"
+          local-text="Закрыть"
           @click-button="closeModal"
         />
       </template>
@@ -219,8 +219,8 @@ import TooltipStyled from '../Common/TooltipStyled.vue';
 import CopyLinkButton from '../Common/CopyLinkButton.vue';
 import ListFilesStyled from '~/components/Common/ListFilesStyled';
 import Collaboration from '~/components/Modals/Collaboration';
-import InputStyled from "~/components/Common/InputStyled";
-import TagsTechBlock from "~/components/Widgets/TagsTechBlock";
+import InputStyled from '~/components/Common/InputStyled';
+import TagsTechBlock from '~/components/Widgets/TagsTechBlock';
 
 export default {
   name: 'ObjectGlobal',
@@ -333,9 +333,9 @@ export default {
     },
     async onSave() {
       await this.saveObjData({ id: this.object.id, keys: this.updateProperties });
-      //Для обновления списка который прокидываем в SelectObjectStyled
+      // Для обновления списка который прокидываем в SelectObjectStyled
       await this.getListObjectsByUserId(this.getUserId);
-      //Для переключения режима редактирования выбора того же селекта
+      // Для переключения режима редактирования выбора того же селекта
       this.stateSelectEditNameObject = true;
       this.closeModal();
     },

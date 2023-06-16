@@ -3,6 +3,7 @@
     v-if="stateAuthBlock"
     :id="`component_wrapper-${index_component}`"
     class="auth_container custom_grid_system"
+    :class="{isMobile}"
     contenteditable="false"
   >
     <v-container>
@@ -71,6 +72,17 @@
               </template>
             </v-text-field>
             <ButtonStyled
+              v-if="isMobile"
+              :is-mobile="true"
+              :custom-slot="true"
+              :loading="loading"
+              local-class="style_button"
+              type="submit"
+            >
+              <v-icon>mdi-login</v-icon>
+            </ButtonStyled>
+            <ButtonStyled
+              v-if="!isMobile"
               :loading="loading"
               :local-text="'Войти'"
               local-class="style_button"
@@ -104,6 +116,17 @@
               type="text"
             />
             <ButtonStyled
+              v-if="isMobile"
+              :is-mobile="true"
+              :custom-slot="true"
+              :loading="loading"
+              local-class="style_button"
+              type="submit"
+            >
+              <v-icon>mdi-account-check-outline</v-icon>
+            </ButtonStyled>
+            <ButtonStyled
+              v-if="!isMobile"
               :loading="loading"
               :local-text="'Зарегистрироваться'"
               local-class="style_button"
@@ -119,7 +142,7 @@
         dismissible
         @input="alert.state = false"
       >
-        <span v-html="alert.message" />
+        <span v-html="alert.message"/>
       </v-alert>
     </v-container>
   </v-container>
@@ -131,14 +154,14 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters } from 'vuex';
 
-import Request from "../../services/request";
-import ButtonStyled from "../Common/ButtonStyled.vue";
-import Logging from "@/services/logging";
+import Request from '../../services/request';
+import ButtonStyled from '../Common/ButtonStyled.vue';
+import Logging from '@/services/logging';
 
 export default {
-  name: "LoginAuth",
+  name: 'LoginAuth',
   components: { ButtonStyled },
   data() {
     return {
@@ -146,18 +169,18 @@ export default {
       valid: false,
       loading: false,
       emailRules: [
-        (v) => !!v || "Обязательное для заполнение поле",
-        (v) => /.+@.+/.test(v) || "E-mail должен быть валидным."
+        (v) => !!v || 'Обязательное для заполнение поле',
+        (v) => /.+@.+/.test(v) || 'E-mail должен быть валидным.'
       ],
-      passRules: [(v) => !!v || "Обязательное для заполнение поле", (v) => v.length === 4 || "Необходимо 4 символа"],
+      passRules: [(v) => !!v || 'Обязательное для заполнение поле', (v) => v.length === 4 || 'Необходимо 4 символа'],
       passStateEye: false,
-      email_user: "",
-      password: "",
-      name: "",
+      email_user: '',
+      password: '',
+      name: '',
       alert: {
         state: false,
-        type: "info",
-        message: ""
+        type: 'info',
+        message: ''
       },
 
       // inserted_component
@@ -174,16 +197,19 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["stateAuth"]),
-    ...mapGetters(["getNameUser"])
+    ...mapGetters(['stateAuth']),
+    ...mapGetters(['getNameUser']),
+    isMobile() {
+      return this.$device.isMobile;
+    }
   },
   watch: {
-    "$store.getters.stateAuth": {
+    '$store.getters.stateAuth': {
       handler() {
         this.hasCookie();
       }
     },
-    "$store.state.changedCookie": {
+    '$store.state.changedCookie': {
       handler() {
         this.hasCookie();
       }
@@ -201,14 +227,14 @@ export default {
       this.alert.state = true;
       this.alert.message = Logging.getMessage(response);
       this.alert.type = Logging.checkExistErr(response)
-        ? "error"
+        ? 'error'
         : Request.getAccessTokenInCookies()
-          ? "success"
-          : "warning";
+          ? 'success'
+          : 'warning';
       this.loading = false;
 
-      if (this.alert.type === "success") {
-        this.$emit("close-modal");
+      if (this.alert.type === 'success') {
+        this.$emit('close-modal');
       }
     },
 
@@ -216,13 +242,13 @@ export default {
       if (this.valid === false) return false;
 
       this.loading = true;
-      const res = await this.$store.dispatch("loginUser", {
+      const res = await this.$store.dispatch('loginUser', {
         email: this.email_user,
         password: this.password,
         id_dom_elem: index_component,
         full_url: window.location.href
       });
-      console.log("localLoginUser", res);
+      console.log('localLoginUser', res);
       this.alertCall(res);
       if (res.codeResponse >= 400) return false;
 
@@ -236,7 +262,7 @@ export default {
 
       this.loading = true;
       // Пытаемся создать пользователя
-      const res = await this.$store.dispatch("createUserByEmail", {
+      const res = await this.$store.dispatch('createUserByEmail', {
         email: this.email_user,
         name: this.name,
         id_dom_elem: index_component,
@@ -252,14 +278,14 @@ export default {
 
       this.loading = true;
       // Пытаемся создать пользователя
-      const res = await this.$store.dispatch("resendUserPass", {
+      const res = await this.$store.dispatch('resendUserPass', {
         email: this.email_user,
         name: this.name,
         id_dom_elem: index_component,
         full_url: window.location.href
       });
       if (res.codeResponse === 404) {
-        this.email_user = "";
+        this.email_user = '';
         this.$refs.email_user.validate(true);
       }
       if (res.codeResponse === 200 || res.codeResponse === 409) {
@@ -274,7 +300,7 @@ export default {
     deleteQuestion() {
       const elem = document.getElementById(`component_wrapper-${this.index_component}`);
       elem.remove();
-      this.$store.dispatch("deleteComponent", this.index_component);
+      this.$store.dispatch('deleteComponent', this.index_component);
     }
   }
 };
@@ -317,6 +343,10 @@ $yellowBackground: rgb(255, 244, 203);
   border-radius: 5px;
   max-width: 500px;
   background: $yellowBackground;
+
+  &.isMobile {
+    height: 100%;
+  }
 
   .v-tabs > .v-tabs-bar {
     background: $yellowBackground;

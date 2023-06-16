@@ -6,19 +6,19 @@
           <h1 class="article-template__header__title mainTitleFont">
             <div>{{ article.name }}</div>
           </h1>
-          <ArticleInfo :article_data="article" @set-view="setView" />
-          <div v-if="!renderArticle" class="article-template__content mainContentFont" v-html="refactored_content" />
+          <ArticleInfo :article_data="article" @set-view="setView"/>
+          <div v-if="!renderArticle" class="article-template__content mainContentFont" v-html="refactored_content"/>
         </div>
       </template>
 
-      <div v-if="$store.state.ArticleModule.refactoring_content || !article" class="hidden-mask" />
+      <div v-if="$store.state.ArticleModule.refactoring_content || !article" class="hidden-mask"/>
     </div>
 
 
     <div v-if="listArticlesExcludeCurrent.length" class="article_info_wrapper__more_article">
       <h3>
         Ещё статьи по тегу:
-        <HashTagStyled :text="getFirstTag" />
+        <HashTagStyled :text="getFirstTag"/>
       </h3>
       <div class="article_info_wrapper__more_article__wrapper">
         <ArticleSmallCard
@@ -35,7 +35,7 @@
       :view-action="localViewAction"
     />
     <v-overlay :value="$store.state.ArticleModule.refactoring_content" z-index="10">
-      <v-progress-circular :size="50" color="primary" indeterminate style="margin-top: 20px" />
+      <v-progress-circular :size="50" color="primary" indeterminate style="margin-top: 20px"/>
     </v-overlay>
 
     <!-- TODO: DEPRECATED, Теперь у нас есть боковой виджет объекта -->
@@ -44,24 +44,24 @@
 </template>
 
 <script>
-import Vue from "vue";
-import ArticleSmallCard from "../../components/Article/ArticleSmallCard.vue";
-import Biathlon from "../../components/Common/Biathlon.vue";
-import ImageLayout from "~/components/frontLayouts/ImageLayout";
-import Question from "~/components/frontLayouts/Question";
-import LoginAuth from "~/components/frontLayouts/LoginAuth";
-import ArticleInfo from "~/components/Article/ArticleInfo";
-import HashTagStyled from "~/components/Common/HashTagStyled";
-import Request from "~/services/request";
+import Vue from 'vue';
+import ArticleSmallCard from '../../components/Article/ArticleSmallCard.vue';
+import Biathlon from '../../components/Common/Biathlon.vue';
+import ImageLayout from '~/components/frontLayouts/ImageLayout';
+import Question from '~/components/frontLayouts/Question';
+import LoginAuth from '~/components/frontLayouts/LoginAuth';
+import ArticleInfo from '~/components/Article/ArticleInfo';
+import HashTagStyled from '~/components/Common/HashTagStyled';
+import Request from '~/services/request';
 
-const VuetifyClass = require("vuetify");
+const VuetifyClass = require('vuetify');
 
 export default {
-  name: "_id.vue",
+  name: '_id.vue',
   components: { Biathlon, ArticleSmallCard, ArticleInfo, HashTagStyled },
   async asyncData({ store, params }) {
     try {
-      const articleRequest = await Request.get(`${store.state.BASE_URL}/entity/articles/${params.id}`, "", true);
+      const articleRequest = await Request.get(`${store.state.BASE_URL}/entity/articles/${params.id}`, '', true);
       const article = articleRequest.data;
       return { article };
     } catch (error) {
@@ -70,7 +70,7 @@ export default {
   },
   data: () => ({
     params_of_component: {
-      name: ""
+      name: ''
     },
     data_of_components: [],
     computedQuestions: [],
@@ -85,25 +85,25 @@ export default {
     return {
       title: `${this.article.name}`,
       meta: [
-        { charset: "utf-8" },
+        { charset: 'utf-8' },
         {
-          name: "viewport",
-          content: "width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1"
+          name: 'viewport',
+          content: 'width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1'
         },
         {
-          hid: "keywords",
-          name: "keywords",
+          hid: 'keywords',
+          name: 'keywords',
           content: `${this.article.seo_keywords}`
         },
         {
-          hid: "description",
-          name: "description",
+          hid: 'description',
+          name: 'description',
           content: `${this.article.seo_description}`
         },
         {
-          hid: "theme-color",
-          name: "theme-color",
-          content: "blue"
+          hid: 'theme-color',
+          name: 'theme-color',
+          content: 'blue'
         }
       ]
     };
@@ -111,21 +111,21 @@ export default {
   jsonld() {
     return [
       {
-        "@context": "https://schema.org",
-        "@type": "Article",
-        name: "Pomogatorus",
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        name: 'Pomogatorus',
         headline: this.article.preview,
-        image: "",
+        image: '',
         author: {
-          "@type": "Organization",
-          name: "Pomogatorus"
+          '@type': 'Organization',
+          name: 'Pomogatorus'
         },
         publisher: {
-          "@type": "Organization",
-          name: "Pomogatorus",
+          '@type': 'Organization',
+          name: 'Pomogatorus',
           logo: {
-            "@type": "ImageObject",
-            url: ""
+            '@type': 'ImageObject',
+            url: ''
           }
         },
         datePublished: this.article.created_at
@@ -137,9 +137,9 @@ export default {
       return JSON.parse(JSON.parse(this.article.content));
     },
     ComponentLayout() {
-      return this.params_of_component.name === "questions"
+      return this.params_of_component.name === 'questions'
         ? Vue.extend(Question)
-        : this.params_of_component.name === "image"
+        : this.params_of_component.name === 'image'
           ? Vue.extend(ImageLayout)
           : Vue.extend(LoginAuth);
     },
@@ -149,7 +149,7 @@ export default {
     getFirstTag() {
       return (this.article._all_public_name_tags.length)
         ? this.article._all_public_name_tags[0]
-        : "";
+        : '';
     },
     listArticlesExcludeCurrent() {
       return this.$store.state.ArticleModule.list_filtered_articles.filter((obj) => {
@@ -157,15 +157,15 @@ export default {
       });
     },
     getFilterByMainTag() {
-      return "&filter[tag][]=" + this.article._all_public_tags[0]?.code;
+      return '&filter[tag][]=' + this.article._all_public_tags[0]?.code;
     }
   },
   watch: {
-    "$store.state.refactoring_content": {
+    '$store.state.refactoring_content': {
       handler(v) {
         if (!v) {
           this.initializeContent().then(() => {
-            this.$store.commit("change_refactoring_content", false);
+            this.$store.commit('change_refactoring_content', false);
           });
         }
       }
@@ -176,28 +176,29 @@ export default {
 
     // eslint-disable-next-line nuxt/no-env-in-hooks
     if (process.client) {
-      window.addEventListener("scroll", this.scrollWindow);
+      window.addEventListener('scroll', this.scrollWindow);
     }
     this.initializeContent().then(() => {
       setTimeout(() => {
         this.changeIndexQuestion();
-        this.$store.commit("change_refactoring_content", false);
+        this.$store.commit('change_refactoring_content', false);
         this.findQuestions();
       });
       // SCROLL TO AUTH BLOCK IF WE COME FROM EMAIL MESSAGE
       setTimeout(() => {
         if (this.$route.hash) {
-          const elem = document.getElementById(this.$route.hash.split("#").pop());
+          const elem = document.getElementById(this.$route.hash.split('#').pop());
           const top = window.scrollY + elem.getBoundingClientRect().top - this.heightNav - 54;
           window.scrollTo(0, top);
         }
       }, 200);
     });
 
-    await this.$store.dispatch("getListArticles", this.getFilterByMainTag);
+    await this.$store.dispatch('getListArticles', this.getFilterByMainTag);
   },
   created() {
-    if (process.client) window.addEventListener("scroll", this.handleScroll);
+    // eslint-disable-next-line nuxt/no-globals-in-created
+    if (process.client) window.addEventListener('scroll', this.handleScroll);
   },
   beforeDestroy() {
     this.$store.state.ArticleModule.selectedComponent = {};
@@ -205,13 +206,13 @@ export default {
     this.$store.state.ArticleModule.count_of_questions = 0;
     this.$store.state.ArticleModule.components_after_request = [];
 
-    this.$store.commit("set_answers", []);
+    this.$store.commit('set_answers', []);
   },
   destroyed() {
     // eslint-disable-next-line nuxt/no-env-in-hooks
     if (process.client) {
-      window.removeEventListener("scroll", this.scrollWindow);
-      window.removeEventListener("scroll", this.handleScroll);
+      window.removeEventListener('scroll', this.scrollWindow);
+      window.removeEventListener('scroll', this.handleScroll);
     }
   },
   methods: {
@@ -227,7 +228,7 @@ export default {
 
     // CHANGE VIEW OF ARTICLE
     setView(value) {
-      if (value === "normal") {
+      if (value === 'normal') {
         this.renderNormal();
       } else {
         this.renderFlat();
@@ -238,20 +239,20 @@ export default {
       this.$nextTick(() => {
         this.renderArticle = false;
 
-        this.$store.commit("change_refactoring_content", true);
+        this.$store.commit('change_refactoring_content', true);
         this.initializeContent().then(() => {
           setTimeout(() => {
             this.changeIndexQuestion();
-            this.$store.commit("change_refactoring_content", false);
+            this.$store.commit('change_refactoring_content', false);
           });
         });
       });
     },
     renderFlat() {
-      const components = Array.from(document.getElementsByClassName("article_component"));
+      const components = Array.from(document.getElementsByClassName('article_component'));
 
-      const contentElement = document.getElementsByClassName("article-template__content")[0];
-      contentElement.innerHTML = "";
+      const contentElement = document.getElementsByClassName('article-template__content')[0];
+      contentElement.innerHTML = '';
 
       components.forEach(elem => {
         contentElement.appendChild(elem);
@@ -260,21 +261,21 @@ export default {
 
     // RENDER ARTICLE
     changeIndexQuestion() {
-      const questions = [...document.getElementsByClassName("question_wrapper")];
+      const questions = [...document.getElementsByClassName('question_wrapper')];
 
       this.$nextTick(() => {
         let counter = 1;
 
         questions.forEach((elem) => {
-          const tmpStr = elem.id.match("-(.*)");
+          const tmpStr = elem.id.match('-(.*)');
           const id = tmpStr[tmpStr.length - 1];
 
           const component = this.data_of_components
             .filter((elem) => {
-              return elem.data.component.name === "question" || elem.data.component.name === "questions";
+              return elem.data.component.name === 'question' || elem.data.component.name === 'questions';
             })
             .filter((elem) => {
-              return elem.data.index == id;
+              return elem.data.index === id;
             });
 
 
@@ -296,21 +297,21 @@ export default {
           const promises = [];
 
           arrOfComponents.forEach((elem) => {
-            if (elem.component.name === "questions") {
+            if (elem.component.name === 'questions') {
               const question = questionsData.filter(question => {
-                return question.id == elem.component.id;
+                return question.id === elem.component.id;
               })[0];
               if (question) {
-                this.$store.commit("changeSelectedComponent", {
+                this.$store.commit('changeSelectedComponent', {
                   data: question,
                   index: elem.index,
                   component: elem.component
                 });
               }
-            } else if (elem.component.name === "image") {
-              promises.push(this.$store.dispatch("imageFromServer", elem));
-            } else if (elem.component.name === "auth") {
-              promises.push(this.$store.dispatch("getAuth", elem));
+            } else if (elem.component.name === 'image') {
+              promises.push(this.$store.dispatch('imageFromServer', elem));
+            } else if (elem.component.name === 'auth') {
+              promises.push(this.$store.dispatch('getAuth', elem));
             }
           });
 
@@ -328,17 +329,17 @@ export default {
                 setTimeout(() => {
                   this.checkTypeComponent(elem);
                   let data = {};
-                  if (elem.component.name === "image") {
+                  if (elem.component.name === 'image') {
                     const fullUrl = document
                       .getElementById(`component_wrapper-${elem.index}`)
-                      .getElementsByClassName("inserted_image")[0].src;
-                    const subUrl = fullUrl.split(".com");
+                      .getElementsByClassName('inserted_image')[0].src;
+                    const subUrl = fullUrl.split('.com');
                     const alt = document
                       .getElementById(`component_wrapper-${elem.index}`)
-                      .getElementsByClassName("inserted_image")[0].alt;
+                      .getElementsByClassName('inserted_image')[0].alt;
                     const title = document
                       .getElementById(`component_wrapper-${elem.index}`)
-                      .getElementsByClassName("inserted_image")[0].title;
+                      .getElementsByClassName('inserted_image')[0].title;
                     data = Object.assign(
                       {},
                       { name: alt },
@@ -347,12 +348,12 @@ export default {
                       },
                       { title }
                     );
-                    this.$store.commit("M_selectedComponent", {});
+                    this.$store.commit('M_selectedComponent', {});
                     // return
                   } else data = elem.data;
 
-                  this.$store.commit("M_countLayout", elem.index);
-                  this.$store.commit("M_selectedComponent", data);
+                  this.$store.commit('M_countLayout', elem.index);
+                  this.$store.commit('M_selectedComponent', data);
                   const countLayout = this.$store.state.ArticleModule.countLayout;
                   const range = document.createRange();
                   range.selectNode(document.getElementById(`component_wrapper-${elem.index}`));
@@ -361,7 +362,7 @@ export default {
                   this.data_of_components.push(this.getStructureForInstance(elem.component));
                   this.data_of_components[countLayout - 1].instance.$mount(); // pass nothing
                   range.insertNode(this.data_of_components[elem.index - 1].instance.$el);
-                  this.$store.commit("M_selectedComponent", {});
+                  this.$store.commit('M_selectedComponent', {});
                 });
               });
             });
@@ -372,11 +373,11 @@ export default {
     },
     checkTypeComponent(elem) {
       this.params_of_component.name = elem.component.name;
-      if (elem.component.name === "questions") {
-        const name = Object.prototype.hasOwnProperty.call(elem.component, "index_question")
-          ? "question"
+      if (elem.component.name === 'questions') {
+        const name = Object.prototype.hasOwnProperty.call(elem.component, 'index_question')
+          ? 'question'
           : elem.component.name;
-        this.$store.commit("M_count_of_questions", elem.component[`index_${name}`]);
+        this.$store.commit('M_count_of_questions', elem.component[`index_${name}`]);
       }
     },
     getStructureForInstance(dataComponent) {
@@ -401,7 +402,7 @@ export default {
         return;
       }
       this.computedQuestions = this.data_of_components.filter(elem => {
-        return elem.data.component.name === "questions";
+        return elem.data.component.name === 'questions';
       });
     },
 
