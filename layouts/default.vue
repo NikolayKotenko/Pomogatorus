@@ -33,13 +33,13 @@ import CurrentObjects from '../components/Widgets/CurrentObjects'
 
 import BurgerMenu from '../components/BurgerMenu'
 import VerticalMenu from '../components/VerticalMenu.vue'
+import Biathlon from '../components/Common/Biathlon.vue'
+import WrapperStickyCurrentObject from '../components/Widgets/WrapperStickyCurrentObject.vue'
 import Request from '@/services/request'
 import Logging from '@/services/logging'
-import Biathlon from "../components/Common/Biathlon.vue";
-import WrapperStickyCurrentObject from "../components/Widgets/WrapperStickyCurrentObject.vue";
 
 export default {
-  name: "DefaultLayout",
+  name: 'DefaultLayout',
   components: {
     WrapperStickyCurrentObject,
     Biathlon,
@@ -70,59 +70,59 @@ export default {
   },
   async fetch() {
     const options = {
-      method: "GET",
+      method: 'GET',
       url: `${this.$store.state.BASE_URL}/entity/articles/`
-    };
+    }
     try {
-      const articles_request = await this.$axios(options);
+      const articles_request = await this.$axios(options)
       this.articles_breadcrumbs = articles_request.data.data.map((elem) => {
         return {
           url: `https://pomogatorus.ru/articles/${elem.id}`,
           text: elem.preview
-        };
-      });
+        }
+      })
     } catch (error) {
-      console.warn(error.response.data.message);
+      console.warn(error.response.data.message)
     }
   },
   jsonld() {
     const items = this.computedBreadcrumbs.map((item, index) => ({
-      "@type": "ListItem",
+      '@type': 'ListItem',
       position: index + 1,
       item: {
-        "@id": item.url,
+        '@id': item.url,
         name: item.text
       }
-    }));
+    }))
     return [
       {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
         itemListElement: items
       },
       {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        name: "Pomogatorus",
-        logo: "",
-        url: "https://pomogatorus.ru",
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: 'Pomogatorus',
+        logo: '',
+        url: 'https://pomogatorus.ru',
         address: {
-          "@type": "PostalAddress",
-          addressLocality: "Chelyabinsk",
-          addressRegion: "Chelyabinsk region",
-          postalCode: "454000",
-          addressCountry: "Russia"
+          '@type': 'PostalAddress',
+          addressLocality: 'Chelyabinsk',
+          addressRegion: 'Chelyabinsk region',
+          postalCode: '454000',
+          addressCountry: 'Russia'
         },
-        sameAs: ["https://www.instagram.com/pomogatorus_official/"]
+        sameAs: ['https://www.instagram.com/pomogatorus_official/']
       }
-    ];
+    ]
   },
   mounted() {
-    this.fuckinMiddleware();
+    this.fuckinMiddleware()
     window.onNuxtReady((app) => {
       // console.log('Nuxt ready!')
-      this.loadComponent = true;
-    });
+      this.loadComponent = true
+    })
   },
   computed: {
     ...mapState({
@@ -130,49 +130,49 @@ export default {
     }),
 
     computedBreadcrumbs() {
-      if (!this.articles_breadcrumbs || !this.articles_breadcrumbs.length) return this.breadcrumbs;
-      return this.articles_breadcrumbs.concat(this.breadcrumbs);
+      if (!this.articles_breadcrumbs || !this.articles_breadcrumbs.length) return this.breadcrumbs
+      return this.articles_breadcrumbs.concat(this.breadcrumbs)
     },
     listExcludedRightColumn() {
-      if (! this.$device.isDesktop) return true;
+      if (!this.$device.isDesktop) return true
 
       const arrPathExcluded = [
-        "search",
-        "object",
-      ];
+        'search',
+        'object'
+      ]
       return arrPathExcluded.some((path) => {
-        return this.$route.path.match(path);
-      });
-    },
+        return this.$route.path.match(path)
+      })
+    }
   },
   methods: {
     async fuckinMiddleware() {
       if (this.$route.query.userEmail) {
-        await this.$store.dispatch("loginUser", {
+        await this.$store.dispatch('loginUser', {
           userEmail: this.$route.query.userEmail
-        });
+        })
       } else {
         if (Request.getAccessTokenInCookies() && this.$route.query.agent) {
-          this.$store.commit("change_agent_utm", this.$route.query.agent);
-          const wtf = Request.get(this.$store.state.BASE_URL + "/entity/articles", this.$route.query);
+          this.$store.commit('change_agent_utm', this.$route.query.agent)
+          const wtf = Request.get(this.$store.state.BASE_URL + '/entity/articles', this.$route.query)
         }
         if (!Request.getAccessTokenInCookies()) {
-          const refreshResponse = await this.$store.dispatch("refreshTokens");
+          const refreshResponse = await this.$store.dispatch('refreshTokens')
 
-          if (Logging.checkExistErr(refreshResponse)) console.log(refreshResponse.message);
+          if (Logging.checkExistErr(refreshResponse)) console.log(refreshResponse.message)
           // return redirect('/login')
         } else {
-          await this.$store.dispatch("loginByToken");
+          await this.$store.dispatch('loginByToken')
         }
       }
 
-      this.$store.commit("change_refactoring_content", false);
+      this.$store.commit('change_refactoring_content', false)
     }
   }
-};
+}
 </script>
 
-<style lang="scss">
+<style lang='scss'>
 @import 'assets/styles/style';
 
 body {

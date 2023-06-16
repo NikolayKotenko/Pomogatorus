@@ -278,7 +278,9 @@
                   disabled
                   outlined
                 >
-                  <v-icon large>mdi-cloud-upload</v-icon>
+                  <v-icon large>
+                    mdi-cloud-upload
+                  </v-icon>
                   Загрузить файлы
                 </v-btn>
               </div>

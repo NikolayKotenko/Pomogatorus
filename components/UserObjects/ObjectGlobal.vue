@@ -1,7 +1,7 @@
 <template>
   <v-card class="object-wrapper">
     <div
-      :class="{&quot;object-wrapper-top--mobile&quot;: isMobile, &quot;object-wrapper-top--mobile--move&quot;: isMoving}"
+      :class="{'object-wrapper-top--mobile': isMobile, 'object-wrapper-top--mobile--move': isMoving}"
       class="object-wrapper-top"
     >
       <div class="object-wrapper-top__selector">
@@ -28,16 +28,16 @@
             :is-outlined="true"
             :placeholder="'Введите наименование объекта'"
             @update-input="setNameField"
-          ></InputStyled>
+          />
         </div>
         <TooltipStyled
           :title="stateSelectEditNameObject
-          ? 'Режим редактирования наименования объекта'
-          : 'Режим выбора объекта'"
+            ? 'Режим редактирования наименования объекта'
+            : 'Режим выбора объекта'"
         >
           <v-icon
-            @click="setStateSelectedEditName()"
             :color="stateSelectEditNameObject ? '' : 'green'"
+            @click="setStateSelectedEditName()"
           >
             mdi-lead-pencil
           </v-icon>
@@ -71,7 +71,7 @@
 
     <v-card-text
       ref="scrollParent"
-      :class="{&quot;object-wrapper-main--mobile&quot;: isMobile, &quot;object-wrapper-main--mobile--move&quot;: isMoving}"
+      :class="{'object-wrapper-main--mobile': isMobile, 'object-wrapper-main--mobile--move': isMoving}"
       class="object-wrapper-main"
       style="height: 1200px;"
     >
@@ -79,7 +79,7 @@
         <div class="object-wrapper-documents__img-container">
           <span>Фото объекта</span>
           <div
-            :class="{&quot;dropzone-empty&quot;: ! $store.getters.getMainPhotoObject(object) }"
+            :class="{'dropzone-empty': ! $store.getters.getMainPhotoObject(object) }"
             class="list-files-styled-wrapper img-activator"
           >
             <img
@@ -172,7 +172,7 @@
               </v-icon>
             </v-card-title>
             <v-card-text>
-              <TagsTechBlock></TagsTechBlock>
+              <TagsTechBlock/>
             </v-card-text>
           </v-card>
         </v-dialog>
@@ -209,22 +209,33 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapMutations, mapState } from 'vuex';
-import Vue from 'vue';
-import TabsCustom from '../Common/TabsCustom';
-import SelectObjectStyled from '../Common/SelectObjectStyled';
-import SelectGeo from '../Common/SelectGeo';
-import ButtonStyled from '../Common/ButtonStyled';
-import TooltipStyled from '../Common/TooltipStyled.vue';
-import CopyLinkButton from '../Common/CopyLinkButton.vue';
-import ListFilesStyled from '~/components/Common/ListFilesStyled';
-import Collaboration from '~/components/Modals/Collaboration';
-import InputStyled from "~/components/Common/InputStyled";
-import TagsTechBlock from "~/components/Widgets/TagsTechBlock";
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
+import Vue from 'vue'
+import TabsCustom from '../Common/TabsCustom'
+import SelectObjectStyled from '../Common/SelectObjectStyled'
+import SelectGeo from '../Common/SelectGeo'
+import ButtonStyled from '../Common/ButtonStyled'
+import TooltipStyled from '../Common/TooltipStyled.vue'
+import CopyLinkButton from '../Common/CopyLinkButton.vue'
+import ListFilesStyled from '~/components/Common/ListFilesStyled'
+import Collaboration from '~/components/Modals/Collaboration'
+import InputStyled from '~/components/Common/InputStyled'
+import TagsTechBlock from '~/components/Widgets/TagsTechBlock'
 
 export default {
   name: 'ObjectGlobal',
-  components: { TagsTechBlock, InputStyled, CopyLinkButton, TooltipStyled, Collaboration, ListFilesStyled, ButtonStyled, SelectGeo, SelectObjectStyled, TabsCustom },
+  components: {
+    TagsTechBlock,
+    InputStyled,
+    CopyLinkButton,
+    TooltipStyled,
+    Collaboration,
+    ListFilesStyled,
+    ButtonStyled,
+    SelectGeo,
+    SelectObjectStyled,
+    TabsCustom
+  },
   props: {
     objectData: {
       type: Object,
@@ -244,35 +255,35 @@ export default {
     startScroll: 0,
     isMoving: false,
     stateSelectEditNameObject: true,
-    stateTagsTechBlock: false,
+    stateTagsTechBlock: false
   }),
   watch: {
     'objectData': {
       handler(v) {
-        if (!v) return false;
+        if (!v) return false
 
-        this.object = v;
+        this.object = v
       }
     },
     'getUserId': {
       handler(oldV, newV) {
         if (oldV !== newV && !this.listObjects.length) {
-          this.getListObjectsByUserId(this.getUserId);
+          this.getListObjectsByUserId(this.getUserId)
         }
       }
     }
   },
   mounted() {
-    this.getObjectFromProp();
+    this.getObjectFromProp()
 
     // eslint-disable-next-line nuxt/no-env-in-hooks
     if (process.client && this.$refs.scrollParent) {
-      const tabContent = this.$refs.scrollParent;
-      tabContent.addEventListener('scroll', this.scrollWindow);
+      const tabContent = this.$refs.scrollParent
+      tabContent.addEventListener('scroll', this.scrollWindow)
       if (this.isMobile) {
-        tabContent.addEventListener('scroll', this.scrollHeader, false);
+        tabContent.addEventListener('scroll', this.scrollHeader, false)
       }
-      this.scrollWindow();
+      this.scrollWindow()
     }
   },
   computed: {
@@ -280,16 +291,16 @@ export default {
     ...mapGetters(['getUserId']),
 
     notEmptyObject() {
-      return !!Object.keys(this.object).length;
+      return !!Object.keys(this.object).length
     },
     getCoords() {
-      return this.object?.long && this.object?.lat ? [this.object.lat, this.object.long] : [55.753215, 37.622504];
+      return this.object?.long && this.object?.lat ? [this.object.lat, this.object.long] : [55.753215, 37.622504]
     },
     showMore() {
-      return ((this.parentHeight + this.scrollHeight + this.minHeightInput) <= this.maxScroll);
+      return ((this.parentHeight + this.scrollHeight + this.minHeightInput) <= this.maxScroll)
     },
     isMobile() {
-      return this.$device.isMobile;
+      return this.$device.isMobile
     }
   },
   methods: {
@@ -301,123 +312,123 @@ export default {
         top: this.scrollHeight + this.minHeightInput + 20,
         left: 0,
         behavior: 'smooth'
-      });
+      })
     },
     scrollHeader() {
-      const st = this.$refs.scrollParent.scrollTop;
+      const st = this.$refs.scrollParent.scrollTop
 
       if (!this.showMore) {
-        return;
+        return
       }
 
       if (st > this.startScroll) {
         // console.log('down')
-        this.isMoving = true;
+        this.isMoving = true
       } else if (st < this.startScroll) {
         // console.log('up')
-        this.isMoving = false;
+        this.isMoving = false
       }
-      this.startScroll = st <= 0 ? 0 : st; // For Mobile or negative scrolling
+      this.startScroll = st <= 0 ? 0 : st // For Mobile or negative scrolling
     },
     scrollWindow() {
       setTimeout(() => {
         if (this.$refs.scrollParent) {
-          this.maxScroll = this.$refs.scrollParent.scrollHeight;
-          this.scrollHeight = this.$refs.scrollParent.scrollTop;
-          this.parentHeight = this.$refs.scrollParent.offsetHeight;
+          this.maxScroll = this.$refs.scrollParent.scrollHeight
+          this.scrollHeight = this.$refs.scrollParent.scrollTop
+          this.parentHeight = this.$refs.scrollParent.offsetHeight
         }
-      }, 400);
+      }, 400)
     },
     changeTab() {
-      this.scrollWindow();
+      this.scrollWindow()
     },
     async onSave() {
-      await this.saveObjData({ id: this.object.id, keys: this.updateProperties });
-      //Для обновления списка который прокидываем в SelectObjectStyled
-      await this.getListObjectsByUserId(this.getUserId);
-      //Для переключения режима редактирования выбора того же селекта
-      this.stateSelectEditNameObject = true;
-      this.closeModal();
+      await this.saveObjData({ id: this.object.id, keys: this.updateProperties })
+      // Для обновления списка который прокидываем в SelectObjectStyled
+      await this.getListObjectsByUserId(this.getUserId)
+      // Для переключения режима редактирования выбора того же селекта
+      this.stateSelectEditNameObject = true
+      this.closeModal()
     },
     closeModal() {
-      this.$emit('close-modal');
+      this.$emit('close-modal')
     },
     animationSaveBtn() {
-      this.animationBtn = true;
-      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+      this.animationBtn = true
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
       this.debounceTimeout = setTimeout(() => {
-        this.animationBtn = false;
-      }, 2000);
+        this.animationBtn = false
+      }, 2000)
     },
     setNameField(name) {
-      this.object.name = name;
-      this.updateProperties.name = name;
+      this.object.name = name
+      this.updateProperties.name = name
     },
-    setStateSelectedEditName(){
-      if (! this.stateSelectEditNameObject){
-        this.onSave();
+    setStateSelectedEditName() {
+      if (!this.stateSelectEditNameObject) {
+        this.onSave()
       }
       this.stateSelectEditNameObject = !this.stateSelectEditNameObject
     },
     setField(data) {
-      this.object[data.key] = data.value;
-      this.updateProperties[data.key] = data.value;
+      this.object[data.key] = data.value
+      this.updateProperties[data.key] = data.value
     },
     setFileField(data) {
       if (!this.object[data.key]) {
-        Vue.set(this.object, data.key, [data.value]);
+        Vue.set(this.object, data.key, [data.value])
       } else {
-        this.object[data.key].push(data.value);
+        this.object[data.key].push(data.value)
       }
-      this.updateProperties[data.key] = data.value;
+      this.updateProperties[data.key] = data.value
     },
     removeFile(data) {
-      const index = this.object[data.key].findIndex(file => file.id === data.value);
+      const index = this.object[data.key].findIndex(file => file.id === data.value)
 
       if (index !== -1) {
-        this.object[data.key].splice(index, 1);
+        this.object[data.key].splice(index, 1)
       }
     },
     removeFromGlobal(data) {
-      this.removeFile(data);
+      this.removeFile(data)
 
-      this.deletedFile = data.value;
+      this.deletedFile = data.value
     },
     getObjectFromProp() {
-      this.object = this.objectData;
+      this.object = this.objectData
     },
     async callback(value) {
-      if (! value) return false;
+      if (!value) return false
 
-      this.setLoadingData(true);
-      this.object = value;
+      this.setLoadingData(true)
+      this.object = value
 
       // Не нужно выставлять текущий объект
       // await this.$store.dispatch("Objects/setCurrentObject", value);
 
       // TODO: Отрефакторить, но завтра сдаваться
       this.$nextTick(() => {
-        this.setLoadingData(false);
-      });
+        this.setLoadingData(false)
+      })
 
       // Событие изменение селекта прокидываем выше
-      this.$emit('change-select-object', value);
+      this.$emit('change-select-object', value)
     },
     setAddressMap(data) {
-      this.object.address = data.address;
-      this.object.lat = data.coords[0];
-      this.object.long = data.coords[1];
+      this.object.address = data.address
+      this.object.lat = data.coords[0]
+      this.object.long = data.coords[1]
 
-      this.updateProperties.address = data.address;
-      this.updateProperties.lat = data.coords[0];
-      this.updateProperties.long = data.coords[1];
+      this.updateProperties.address = data.address
+      this.updateProperties.lat = data.coords[0]
+      this.updateProperties.long = data.coords[1]
     }
   },
   destroyed() {
     // eslint-disable-next-line nuxt/no-env-in-hooks
     if (process.client) {
-      window.removeEventListener('scroll', this.scrollWindow);
+      window.removeEventListener('scroll', this.scrollWindow)
     }
   }
-};
+}
 </script>

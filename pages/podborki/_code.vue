@@ -40,21 +40,25 @@
         </div>
       </div>
     </div>
-<!--    <Biathlon v-if="! $store.state.ArticleModule.refactoring_content"/>-->
-    <v-overlay z-index="10" :value="$store.state.ArticleModule.refactoring_content">
+    <Biathlon
+      v-if="! $store.state.ArticleModule.refactoring_content"
+      :questions="$store.state.PopularSelectionsModule.questions"
+      is-collection
+    />
+    <v-overlay :value="$store.state.ArticleModule.refactoring_content" z-index="10">
       <v-progress-circular :size="50" color="primary" indeterminate style="margin-top: 20px"/>
     </v-overlay>
   </v-container>
 </template>
 
 <script>
-import Question from '../../components/frontLayouts/Question';
-import LoginAuth from '../../components/frontLayouts/LoginAuth';
-import Article from '../../components/Article/Article';
-import Request from '../../services/request';
-import ArticleSmallCard from '../../components/Article/ArticleSmallCard.vue';
-import Biathlon from '../../components/Common/Biathlon.vue';
-import HashTagStyled from '~/components/Common/HashTagStyled';
+import Question from '../../components/frontLayouts/Question'
+import LoginAuth from '../../components/frontLayouts/LoginAuth'
+import Article from '../../components/Article/Article'
+import Request from '../../services/request'
+import ArticleSmallCard from '../../components/Article/ArticleSmallCard.vue'
+import Biathlon from '../../components/Common/Biathlon.vue'
+import HashTagStyled from '~/components/Common/HashTagStyled'
 
 export default {
   name: '_code.vue',
@@ -68,11 +72,11 @@ export default {
   },
   async asyncData({ store, params }) {
     try {
-      const request = await Request.get(`${store.state.BASE_URL}/dictionary/tags-by-code/${params.code}`, '', true);
-      const main_tag = request.data;
-      return { main_tag };
+      const request = await Request.get(`${store.state.BASE_URL}/dictionary/tags-by-code/${params.code}`, '', true)
+      const main_tag = request.data
+      return { main_tag }
     } catch (error) {
-      console.warn(error.response.data.message);
+      console.warn(error.response.data.message)
     }
   },
   data: () => ({
@@ -108,22 +112,22 @@ export default {
           content: 'blue'
         }
       ]
-    };
+    }
   },
   computed: {},
   watch: {},
   created() {
   },
   async mounted() {
-    this.$route.meta.title = this.main_tag?.name;
-    await this.$store.dispatch('PopularSelectionsModule/getArticlesInfo', this.$route.params.code);
-    await this.$store.dispatch('PopularSelectionsModule/getQuestionsInfo', this.$route.params.code);
+    this.$route.meta.title = this.main_tag?.name
+    await this.$store.dispatch('PopularSelectionsModule/getArticlesInfo', this.$route.params.code)
+    await this.$store.dispatch('PopularSelectionsModule/getQuestionsInfo', this.$route.params.code)
   },
   methods: {}
-};
+}
 </script>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 @import '@/assets/styles/lists';
 
 .podborki_detail {

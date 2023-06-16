@@ -131,6 +131,7 @@ export default {
   .likes_buttons {
     display: flex;
   }
+
   .share_buttons {
     display: flex;
     text-align: right;

@@ -3,8 +3,8 @@
     <InputStyled
       :data="data.address"
       :is-readonly="true"
-      :placeholder="&quot;Выберите адрес&quot;"
-      :prepend-icon-inner="&quot;mdi-map-marker-outline&quot;"
+      :placeholder="'Выберите адрес'"
+      :prepend-icon-inner="'mdi-map-marker-outline'"
       @on-click="openModal"
     />
 
@@ -18,7 +18,7 @@
         <!--            mdi-close -->
         <!--          </v-icon> -->
         <!--        </v-card-title> -->
-        <v-card-text>
+        <v-card-text class="px-0">
           <template v-if="drawMap">
             <yandex-map
               :behaviors="behaviors"
@@ -69,13 +69,13 @@
           <div class="buttons">
             <ButtonStyled
               id="btn"
-              local-text="Сохранить изменения"
               local-class="style_button"
+              local-text="Сохранить изменения"
             />
             <div @click="closeModal">
               <ButtonStyled
-                local-text="Отмена"
                 local-class="style_close"
+                local-text="Отмена"
               />
             </div>
           </div>
@@ -87,7 +87,7 @@
 
 <script>
 import InputStyled from './InputStyled'
-import ButtonStyled from './ButtonStyled.vue';
+import ButtonStyled from './ButtonStyled.vue'
 
 export default {
   name: 'SelectGeo',
@@ -328,6 +328,11 @@ export default {
       this.isOpenMap = true
     },
     closeModal() {
+      this.coords = this.outerCoords
+      if (this.data?.address) {
+        this.address = this.data.address
+      }
+      this.map.balloon.open(this.coords, this.balloonTemplate)
       this.isOpenMap = false
     }
   }
