@@ -5,34 +5,71 @@
         class="biathlon_footer"
         padless
       >
-        <div class="likes_buttons">
-          <ViewsAndLikes :article="article" :view-action="viewAction"/>
-        </div>
-        <div class="biathlon">
-          <v-sheet class="biathlon_sheet">
-            <v-slide-group
-              multiple
-              show-arrows
-            >
-              <v-slide-item
-                v-for="(item, index) in getSortedQuestions"
-                :key="index"
+        <!-- Mobile -->
+        <template v-if="isMobile">
+          <div class="biathlon">
+            <v-sheet class="biathlon_sheet">
+              <v-slide-group
+                multiple
+                show-arrows
               >
-                <TooltipStyled :nudge-top="-10" :title="getQuestionTitle(item)" is-top>
-                  <template>
-                    <v-radio-group :value="getAnswer(item)" readonly success>
-                      <v-radio :ripple="false" :value="getAnswer(item)" readonly @click="scrollToQuestion(item)"/>
-                    </v-radio-group>
-                  </template>
-                </TooltipStyled>
-              </v-slide-item>
-            </v-slide-group>
-          </v-sheet>
-        </div>
-        <div class="share_buttons">
-          <CopyLinkButton/>
-          <SocialShare/>
-        </div>
+                <v-slide-item
+                  v-for="(item, index) in getSortedQuestions"
+                  :key="index"
+                >
+                  <TooltipStyled :nudge-top="-10" :title="getQuestionTitle(item)" is-top>
+                    <template>
+                      <v-radio-group :value="getAnswer(item)" readonly success>
+                        <v-radio :ripple="false" :value="getAnswer(item)" readonly @click="scrollToQuestion(item)"/>
+                      </v-radio-group>
+                    </template>
+                  </TooltipStyled>
+                </v-slide-item>
+              </v-slide-group>
+            </v-sheet>
+          </div>
+          <div class="likes_and_share">
+            <div class="likes_buttons">
+              <ViewsAndLikes :article="article" :view-action="viewAction"/>
+            </div>
+            <div class="share_buttons">
+              <CopyLinkButton/>
+              <SocialShare/>
+            </div>
+          </div>
+        </template>
+
+        <!-- Desktop -->
+        <template v-else>
+          <div class="likes_buttons">
+            <ViewsAndLikes :article="article" :view-action="viewAction"/>
+          </div>
+          <div class="biathlon">
+            <v-sheet class="biathlon_sheet">
+              <v-slide-group
+                multiple
+                show-arrows
+              >
+                <v-slide-item
+                  v-for="(item, index) in getSortedQuestions"
+                  :key="index"
+                >
+                  <TooltipStyled :nudge-top="-10" :title="getQuestionTitle(item)" is-top>
+                    <template>
+                      <v-radio-group :value="getAnswer(item)" readonly success>
+                        <v-radio :ripple="false" :value="getAnswer(item)" readonly @click="scrollToQuestion(item)"/>
+                      </v-radio-group>
+                    </template>
+                  </TooltipStyled>
+                </v-slide-item>
+              </v-slide-group>
+            </v-sheet>
+          </div>
+          <div class="share_buttons">
+            <CopyLinkButton/>
+            <SocialShare/>
+          </div>
+        </template>
       </v-footer>
     </v-container>
   </div>
@@ -73,6 +110,9 @@ export default {
         }
         return 0
       })
+    },
+    isMobile() {
+      return this.$device.isMobile
     }
   },
   methods: {
@@ -114,6 +154,9 @@ export default {
   justify-content: center;
   align-items: center;
   box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.25);
+  @media only screen and (max-width: 800px){
+    height: 120px;
+  }
 
   .biathlon_container {
     display: flex;
@@ -126,8 +169,17 @@ export default {
     background-color: unset;
     justify-content: space-between;
     width: 1116px;
+    @media only screen and (max-width: 767px){
+      display: grid;
+      justify-content: center;
+    }
   }
-
+  .likes_and_share{
+    display: flex;
+    justify-content: center;
+    grid-column-gap: 50px;
+    padding-bottom: 10px;
+  }
   .likes_buttons {
     display: flex;
   }
@@ -139,6 +191,8 @@ export default {
 
   .biathlon {
     width: auto;
+    display: flex;
+    justify-content: center;
 
     .biathlon_sheet {
       max-width: 400px;

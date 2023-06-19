@@ -8,22 +8,22 @@
         :is-rounded="true"
         :is-outlined="false"
         :is-custom-search-selections="true"
+        :is-hide-selected="true"
         :is-loading="$store.state.CollaborationModule.isLoading"
-        :is-items="$store.state.CollaborationModule.listSearchedUsers"
+        :is-items="$store.state.CollaborationModule.listMembers"
         :is-clearable="true"
         :is-item-text="'email'"
         :is-item-value="'id'"
         @update-search-input="localGetListUsers"
       />
     </section>
-
-    <span class="category_user">Приглашенные эксперты</span><hr>
+    <span class="category_user">Эксперты</span><hr>
     <CardInviteUser
       v-for="(item, index) in $store.getters['CollaborationModule/getFilteredListByRoleExperts']"
       :key="index"
       :user-object="item"
     />
-    <span class="category_user">Приглашенные пользователи</span><hr>
+    <span class="category_user">Пользователи</span><hr>
     <CardInviteUser
       v-for="(item) in $store.getters['CollaborationModule/getFilteredListByRoleUsers']"
       :key="item.id"
@@ -52,14 +52,14 @@ export default {
     }
   },
   async mounted() {
-    await this.$store.dispatch('CollaborationModule/getListTetheredUsers');
+    await this.$store.dispatch('CollaborationModule/getListMembers', { id_object: this.$store.getters['Objects/getIdCurrentObject'] });
   },
   methods:{
-    localGetListUsers(){
+    localGetListUsers(phrase){
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
 
       this.debounceTimeout = setTimeout(async () => {
-        await this.$store.dispatch('CollaborationModule/getListSearchedUsers')
+        await this.$store.dispatch('CollaborationModule/getListMembers', { searchPhrase: phrase })
       }, 2000);
     },
 
@@ -86,6 +86,11 @@ export default {
     width: 100%;
     grid-column-gap: 1em;
     margin-bottom: 2em;
+    background-color: #FFFFFF;
+    position: sticky;
+
+    top: 0;
+    z-index: 9;
 
 
     .invite_input{

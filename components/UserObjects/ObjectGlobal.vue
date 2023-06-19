@@ -200,7 +200,7 @@
 
         <ButtonStyled
           local-class="style_close"
-          local-text="Отмена"
+          local-text="Закрыть"
           @click-button="closeModal"
         />
       </template>

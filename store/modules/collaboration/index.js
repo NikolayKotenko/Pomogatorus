@@ -5,44 +5,29 @@ export default {
   state: {
     stateBlock: false,
     isLoading: false,
-    listSearchedUsers: [],
-    listTetheredUsers: [],
+    listMembers: [],
   },
   mutations: {
     setLoading(state, payload) {
       state.isLoading = payload
     },
-    setSearchedListUsers(state, payload) {
-      state.listSearchedUsers = []
-      state.listSearchedUsers = payload
-    },
-    setTetheredListUsers(state, payload) {
-      state.listTetheredUsers = []
-      state.listTetheredUsers = payload
+    setMembersList(state, payload) {
+      state.listMembers = []
+      state.listMembers = payload
     },
   },
   actions: {
-    async getListTetheredUsers({ commit }, idObject) {
+    async getListMembers({ commit }, Obj) {
       commit('setLoading', true)
 
-      const response = await Request.get(
-        this.state.BASE_URL +
-          '/users/get-list-users?filter[id_object]=' +
-          idObject
-      )
-      commit('setTetheredListUsers', response.data)
-      commit('setLoading', false)
-      return response
-    },
-    async getListSearchedUsers({ commit }, searchPhrase) {
-      commit('setLoading', true)
+      const query = Request.ConstructFilterQuery(Obj)
+      // query = ?filter[id_object]=2
+      // query = ?filter[searchPhrase]=sdfsdfsdfs
 
       const response = await Request.get(
-        this.state.BASE_URL +
-          '/users/get-list-users?filter[searchPhrase]=' +
-          searchPhrase
+        this.state.BASE_URL + '/users/get-list-users' + query
       )
-      commit('setSearchedListUsers', response.data)
+      commit('setMembersList', response.data)
       commit('setLoading', false)
       return response
     },
@@ -58,14 +43,14 @@ export default {
   },
   getters: {
     getFilteredListByRoleExperts(state) {
-      return state.listTetheredUsers.filter((user) => {
+      return state.listMembers.filter((user) => {
         return user.groups.some((elem) => {
           return elem.code === 'experts'
         })
       })
     },
     getFilteredListByRoleUsers(state) {
-      return state.listTetheredUsers.filter((user) => {
+      return state.listMembers.filter((user) => {
         return user.groups.some((elem) => {
           return elem.code === 'polzovateli'
         })

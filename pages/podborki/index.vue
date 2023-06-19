@@ -19,7 +19,6 @@
       :key="key"
       class="podborki__wrapper_list"
       :href="$route.path + '/' + item.code"
-      hover
     >
       <v-img
         v-if="$store.getters.getImageByEClientFilesObj(item.e_client_files)"
@@ -29,7 +28,7 @@
       <div class="empty_placeholder">
         <span>Фото подборки</span>
       </div>
-      <div>
+      <div class="main_info">
         <HashTagStyled
           class="podborki__wrapper_list__title"
           :text="item.name"
@@ -54,6 +53,7 @@ import HashTagStyled from '../../components/Common/HashTagStyled.vue';
 import SearchStyled from '@/components/Common/SearchStyled.vue';
 
 export default {
+  // eslint-disable-next-line vue/multi-word-component-names
   name: 'index.vue',
   components: { SearchStyled, HashTagStyled },
   data: () => ({
@@ -112,6 +112,7 @@ export default {
     flex-wrap: wrap;
     &:hover {
       background-color: #FFF4CB;
+      box-shadow: 0px 5px 20px 7px rgba(34, 60, 80, 0.2) !important;
     }
 
     &__img {
@@ -147,12 +148,17 @@ export default {
   .podborki__wrapper_list {
     flex-direction: column;
   }
+  .main_info {
+    padding: 0 10px;
+  }
+
 }
 @media screen and (max-width: 600px){
   .podborki__wrapper_list__title {
     font-size: 1em
   };
   .podborki__wrapper_list__compilation_info{
+    display: grid;
     font-size: 0.8em;
   }
 }
