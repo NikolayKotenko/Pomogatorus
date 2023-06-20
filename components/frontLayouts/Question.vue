@@ -42,8 +42,8 @@
           <InputStyled
             :data="answer"
             :full-sinc-prop="true"
-            :is-disabled="(check_status && status_question.type === &quot;sending&quot;)"
-            :placeholder="&quot;Введите ответ&quot;"
+            :is-disabled="(check_status && status_question.type === 'sending')"
+            :placeholder="'Введите ответ'"
             is-solo
             @update-input="textAnswer"
           />
@@ -52,8 +52,8 @@
           <TextAreaStyled
             :data="answer"
             :full-sinc-prop="true"
-            :is-disabled="(check_status && status_question.type === &quot;sending&quot;)"
-            :placeholder="&quot;Введите ответ&quot;"
+            :is-disabled="(check_status && status_question.type === 'sending')"
+            :placeholder="'Введите ответ'"
             is-solo
             @update-input="textAnswer"
           />
@@ -199,42 +199,44 @@
           <small v-if="rangeError" style="color: lightcoral"> Неккоректные значения </small>
         </template>
         <template v-else-if="question_data.id_type_answer == '7'">
-          <span>Укажите число в диапозоне от {{ value_type_answer[0].answer }} и до {{ value_type_answer[1].answer
-          }}</span>
-          <v-range-slider
-            v-model="answer"
-            :disabled="(check_status && status_question.type === 'sending')"
-            :max="max"
-            :min="min"
-            class="align-center"
-            hide-details
-            type="number"
-            @change="changeAnswer()"
-          >
-            <template #prepend>
-              <v-text-field
-                :value="answer[0]"
-                class="mt-0 pt-0"
-                hide-details
-                single-line
-                style="width: 60px"
-                type="number"
-                @change="$set(answer, 0, $event)"
-              />
-            </template>
-            <template #append>
-              <v-text-field
-                :value="answer[1]"
-                class="mt-0 pt-0"
-                hide-details
-                single-line
-                style="width: 60px"
-                type="number"
-                @change="$set(answer, 1, $event)"
-              />
-            </template>
-          </v-range-slider>
-          <small v-if="rangeError" style="color: lightcoral"> Неккоректные значения </small>
+          <template v-if="answerIsArray">
+            <span>Укажите число в диапозоне от {{ value_type_answer[0].answer }} и до {{ value_type_answer[1].answer
+            }}</span>
+            <v-range-slider
+              v-model="answer"
+              :disabled="(check_status && status_question.type === 'sending')"
+              :max="max"
+              :min="min"
+              class="align-center"
+              hide-details
+              type="number"
+              @change="changeAnswer()"
+            >
+              <template #prepend>
+                <v-text-field
+                  :value="answer[0]"
+                  class="mt-0 pt-0"
+                  hide-details
+                  single-line
+                  style="width: 60px"
+                  type="number"
+                  @change="$set(answer, 0, $event)"
+                />
+              </template>
+              <template #append>
+                <v-text-field
+                  :value="answer[1]"
+                  class="mt-0 pt-0"
+                  hide-details
+                  single-line
+                  style="width: 60px"
+                  type="number"
+                  @change="$set(answer, 1, $event)"
+                />
+              </template>
+            </v-range-slider>
+            <small v-if="rangeError" style="color: lightcoral"> Неккоректные значения </small>
+          </template>
         </template>
 
         <!-- DETAILED RESPONSE -->
@@ -243,7 +245,7 @@
           :data="detailed_response"
           :full-sinc-prop="true"
           :is-flat="true"
-          :placeholder="&quot;Развернутый ответ&quot;"
+          :placeholder="'Развернутый ответ'"
           class="py-2"
 
           is-solo
@@ -401,7 +403,10 @@ export default {
         if (v && !this.$store.state.listModal[0].isOpen && !this.isSilentCreated) {
           this.check_status = false
           this.$nextTick(() => {
-            this.answer = null
+            // чтобы в слайдере не затерлось на null, т.к. там нужен массив
+            if (this.question_data.id_type_answer != '7') {
+              this.answer = null
+            }
             this.detailed_response = ''
           })
         }
@@ -456,6 +461,9 @@ export default {
     },
     disableBtn() {
       return !this.stateAuth
+    },
+    answerIsArray() {
+      return this.answer?.length === 2
     }
   },
   methods: {
@@ -692,25 +700,29 @@ export default {
     },
     async changeAnswer(dataEnv) {
       this.check_status = true
-      if (!this.stateAuth) {
-        this.status_name = 'warning'
-        this.$nextTick(() => {
-          /* Fix default scroll by hash on page */
-          this.createAnchorToAuth()
-        })
-        this.$store.commit('setModalAuth', true)
-      } else if (!this.$store.state.Objects.currentObject || !Object.keys(this.$store.state.Objects.currentObject).length) {
-        if (!Array.isArray(this.$store.state.AuthModule.userData.objects) || this.$store.state.AuthModule.userData.objects.length < 1) {
-          await this.silentCreateObject()
-          this.check_status = true
-          this.sendAnswer(dataEnv)
+      const rangeAnswer = this.answer.join('')
+
+      if (rangeAnswer !== ('' + this.min + this.max)) {
+        if (!this.stateAuth) {
+          this.status_name = 'warning'
+          this.$nextTick(() => {
+            /* Fix default scroll by hash on page */
+            this.createAnchorToAuth()
+          })
+          this.$store.commit('setModalAuth', true)
+        } else if (!this.$store.state.Objects.currentObject || !Object.keys(this.$store.state.Objects.currentObject).length) {
+          if (!Array.isArray(this.$store.state.AuthModule.userData.objects) || this.$store.state.AuthModule.userData.objects.length < 1) {
+            await this.silentCreateObject()
+            this.check_status = true
+            this.sendAnswer(dataEnv)
+          } else {
+            this.check_status = false
+            this.$store.commit('set_idQuestionWhenModal', this.question_data.id)
+            this.$store.commit('change_showCabinet', true)
+          }
         } else {
-          this.check_status = false
-          this.$store.commit('set_idQuestionWhenModal', this.question_data.id)
-          this.$store.commit('change_showCabinet', true)
+          this.sendAnswer(dataEnv)
         }
-      } else {
-        this.sendAnswer(dataEnv)
       }
     },
     createAnchorToAuth() {
@@ -786,11 +798,13 @@ export default {
           this.value_type_answer = []
         }
         if (this.value_type_answer.length) {
-          this.min = this.value_type_answer[0].answer
-          this.max = this.value_type_answer[1].answer
-          this.answer = []
-          this.answer.push(this.min)
-          this.answer.push(this.max)
+          this.$nextTick(() => {
+            this.min = this.value_type_answer[0].answer
+            this.max = this.value_type_answer[1].answer
+            this.answer = []
+            this.answer.push(this.min)
+            this.answer.push(this.max)
+          })
         }
       } else {
         let parsed = null

@@ -10,14 +10,10 @@
 
     <v-dialog
       v-model="isOpenMap"
+      :fullscreen="isSmallScreen"
       width="1080"
     >
       <v-card class="map-container">
-        <!--        <v-card-title class="d-flex justify-end"> -->
-        <!--          <v-icon @click="closeModal"> -->
-        <!--            mdi-close -->
-        <!--          </v-icon> -->
-        <!--        </v-card-title> -->
         <v-card-text class="px-0">
           <template v-if="drawMap">
             <yandex-map
@@ -127,6 +123,7 @@ export default {
         }
       },
       suggestInstance: null,
+      isSmallScreen: false,
 
       address: ''
     }
@@ -134,8 +131,10 @@ export default {
   computed: {
     balloonTemplate() {
       return `
+      <div class='balloon-wrapper'>
         <h2 class='title-address'>Выбран адрес:</h2>
         <h1 class='name-address'>${this.address}</h1>
+      </div>
       `
     },
     searchTemplate() {
@@ -175,6 +174,14 @@ export default {
     if (this.data?.address) {
       this.address = this.data.address
     }
+
+    this.$nextTick(() => {
+      window.addEventListener('resize', this.getWidth)
+      this.getWidth()
+    })
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.getWidth)
   },
   methods: {
     onMapInit(map) {
@@ -215,7 +222,10 @@ export default {
       await this.$axios.get(`https://geocode-maps.yandex.ru/1.x/?format=json&apikey=${this.$config.myPublicVariable}&geocode=${this.coords[1]},${this.coords[0]}&lang=ru_RU&results=1`).then(res => {
         this.address = res.data.response.GeoObjectCollection.featureMember[0].GeoObject.metaDataProperty.GeocoderMetaData.text
         this.map.setCenter(this.coords)
-        this.map.balloon.open(this.coords, this.balloonTemplate)
+        this.map.balloon.open(this.coords, this.balloonTemplate, {
+          maxWidth: 200,
+          minHeight: 70
+        })
       })
     },
     onClickMap(e) {
@@ -255,7 +265,8 @@ export default {
           searchElem.addEventListener('submit', this.searchCallback)
           const input = document.getElementById('map_search')
           self.suggestInstance = new ymaps.SuggestView(input, {
-            layout: suggestTemplate
+            layout: suggestTemplate,
+            results: self.isMobile ? 4 : 5
           })
 
           self.suggestInstance.events.add('select', this.searchCallback)
@@ -267,8 +278,10 @@ export default {
         },
         clear: function() {
           const icon = document.querySelector('#map_icon')
-          icon.removeEventListener('submit', () => {
-          })
+          if (icon) {
+            icon.removeEventListener('submit', () => {
+            })
+          }
 
           template.superclass.clear.call(this)
         },
@@ -334,7 +347,12 @@ export default {
       }
       this.map.balloon.open(this.coords, this.balloonTemplate)
       this.isOpenMap = false
+    },
+    getWidth() {
+      if (process.client) {
+        this.isSmallScreen = window.innerWidth <= 375
+      }
     }
-  }
+  },
 }
 </script>

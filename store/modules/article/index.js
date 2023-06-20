@@ -1,5 +1,5 @@
 import Request from '../../../services/request'
-import constructFilterQuery from "../../../utils/constructFilterQuery";
+import constructFilterQuery from '../../../utils/constructFilterQuery'
 
 export default {
   state: {
@@ -12,13 +12,14 @@ export default {
     refactoring_content: true,
     list_filtered_articles: [],
     answers: [],
+    totalImages: [],
   },
   mutations: {
     set_answers(state, payload) {
       state.answers = payload
     },
     add_answers(state, payload) {
-      let index = state.answers.findIndex((elem) => elem.id === payload.id)
+      const index = state.answers.findIndex((elem) => elem.id === payload.id)
 
       if (index !== -1) {
         state.answers.splice(index, 1, payload)
@@ -27,12 +28,12 @@ export default {
       }
     },
     set_files_answer(state, payload) {
-      let current = state.answers.find((elem) => elem.id === payload.id)
+      const current = state.answers.find((elem) => elem.id === payload.id)
       if (current) {
         current.files = payload.files
       }
     },
-    set_list_filtered_articles(state, payload){
+    set_list_filtered_articles(state, payload) {
       state.list_filtered_articles = []
       state.list_filtered_articles = payload
     },
@@ -48,7 +49,7 @@ export default {
     },
     // CONTENT
     changeSelectedComponent(state, { data, index, component }) {
-      const obj = Object.assign({}, { data, index: index, component })
+      const obj = Object.assign({}, { data, index, component })
       state.components_after_request.push(obj)
     },
     M_count_of_questions(state, data) {
@@ -60,23 +61,33 @@ export default {
     M_selectedComponent(state, data) {
       state.selectedComponent = data
     },
+    add_total_image(state, data) {
+      state.totalImages.push(data)
+    },
+    clear_total_image(state) {
+      state.totalImages = []
+    },
   },
   actions: {
     async req_list_articles({ commit }) {
       try {
         const query = 'filter[activity]=true'
-        const { data } = await Request.get(`${this.state.BASE_URL}/entity/articles?${query}`)
+        const { data } = await Request.get(
+          `${this.state.BASE_URL}/entity/articles?${query}`
+        )
         return data
       } catch (error) {
         console.warn(error.response.data.message)
       }
     },
     async getListArticles({ commit }, extQueryString) {
-      const query1 = constructFilterQuery({'activity': true})
-      const query = query1 + extQueryString;
+      const query1 = constructFilterQuery({ activity: true })
+      const query = query1 + extQueryString
 
-      const response = await Request.get(`${this.state.BASE_URL}/entity/articles${query}`)
-      commit ('set_list_filtered_articles', response.data)
+      const response = await Request.get(
+        `${this.state.BASE_URL}/entity/articles${query}`
+      )
+      commit('set_list_filtered_articles', response.data)
       return response
     },
 
@@ -115,6 +126,7 @@ export default {
           index,
           component,
         })
+        commit('add_total_image', component)
         state.loadingModalList = false
         resolve()
       })
@@ -123,7 +135,9 @@ export default {
       return new Promise((resolve, reject) => {
         const { index, component } = params
 
-        Request.get(`${this.state.BASE_URL}/entity/${component.name}/${component.id}`)
+        Request.get(
+          `${this.state.BASE_URL}/entity/${component.name}/${component.id}`
+        )
           .then((response) => {
             const data = response.data
             // console.log('uploaded COMPONENT')
@@ -140,8 +154,8 @@ export default {
       })
     },
     linkToArticle(_, articleId) {
-      window.location.href = "/articles/" + articleId;
-    }
+      window.location.href = '/articles/' + articleId
+    },
   },
   getters: {},
 }

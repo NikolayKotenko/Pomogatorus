@@ -174,6 +174,9 @@ export default {
   async mounted() {
     this.$route.meta.title = this.article?.name
 
+    // Чистим массив всех фотографий из статьи
+    this.$store.commit('clear_total_image')
+
     // eslint-disable-next-line nuxt/no-env-in-hooks
     if (process.client) {
       window.addEventListener('scroll', this.scrollWindow)
@@ -344,7 +347,8 @@ export default {
                       {},
                       { name: alt },
                       {
-                        full_path: subUrl[1]
+                        full_path: subUrl[1],
+                        index_image: elem.component.index_image
                       },
                       { title }
                     )

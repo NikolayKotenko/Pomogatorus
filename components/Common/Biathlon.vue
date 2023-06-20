@@ -118,7 +118,14 @@ export default {
   methods: {
     getAnswer(item) {
       if (item?.instance?.answer) {
-        return true
+        // Проверка на ответ в слайдере (диапозоне чисел)
+        if (Array.isArray(item?.instance?.answer)) {
+          if (parseInt(item?.instance?.min) !== parseInt(item?.instance?.answer[0]) || parseInt(item?.instance?.max) !== parseInt(item?.instance?.answer[1])) {
+            return true
+          }
+        } else {
+          return true
+        }
       }
     },
     scrollToQuestion(item) {
@@ -154,7 +161,7 @@ export default {
   justify-content: center;
   align-items: center;
   box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.25);
-  @media only screen and (max-width: 800px){
+  @media only screen and (max-width: 800px) {
     height: 120px;
   }
 
@@ -169,17 +176,19 @@ export default {
     background-color: unset;
     justify-content: space-between;
     width: 1116px;
-    @media only screen and (max-width: 767px){
+    @media only screen and (max-width: 767px) {
       display: grid;
       justify-content: center;
     }
   }
-  .likes_and_share{
+
+  .likes_and_share {
     display: flex;
     justify-content: center;
     grid-column-gap: 50px;
     padding-bottom: 10px;
   }
+
   .likes_buttons {
     display: flex;
   }
