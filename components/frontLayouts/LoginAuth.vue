@@ -200,7 +200,7 @@ export default {
     ...mapGetters(['stateAuth']),
     ...mapGetters(['getNameUser']),
     isMobile() {
-      return this.$device.isMobile;
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
     }
   },
   watch: {

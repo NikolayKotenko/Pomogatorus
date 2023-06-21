@@ -98,10 +98,18 @@ export default {
     viewAction: {
       type: Boolean,
       default: false
+    },
+    isCollection: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
     getSortedQuestions() {
+      if (this.isCollection){
+        return this.questions
+      }
+
       return this.questions.slice().sort((a, b) => {
         if (a.instance.$data.index_questions < b.instance.$data.index_questions) {
           return -1
@@ -117,11 +125,21 @@ export default {
   },
   methods: {
     getAnswer(item) {
+      if (this.isCollection){
+        if (item?.answer){
+          return true
+        }
+
+      }
+
       if (item?.instance?.answer) {
         return true
       }
     },
     scrollToQuestion(item) {
+      if (this.isCollection){
+        return this.questions
+      }
       const elem = document.getElementById(`component_wrapper-${item?.data?.index}`)
       const heightNav = 70
 
@@ -129,13 +147,19 @@ export default {
         const top = window.scrollY + elem.getBoundingClientRect().top - heightNav
         window.scrollTo({ top, left: 0, behavior: 'smooth' })
       }
+      console.log('work')
     },
     getQuestionTitle(item) {
+      console.log(item)
+      if (this.isCollection){
+        return `Вы не заполнили вопрос номер ${item.name}`
+      }
       if (item?.instance?.question_data?.name) {
         return `Вы не заполнили вопрос номер ${item?.instance?.index_questions ? item?.instance?.index_questions : ''}, ${item.instance.question_data.name}`
       }
 
       return ''
+
     }
   }
 }

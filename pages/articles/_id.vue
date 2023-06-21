@@ -299,7 +299,7 @@ export default {
           arrOfComponents.forEach((elem) => {
             if (elem.component.name === 'questions') {
               const question = questionsData.filter(question => {
-                return question.id === elem.component.id;
+                return parseInt(question.id) === parseInt(elem.component.id);
               })[0];
               if (question) {
                 this.$store.commit('changeSelectedComponent', {

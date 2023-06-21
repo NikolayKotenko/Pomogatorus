@@ -24,6 +24,7 @@
             :props-data="question"
             :props-index="index + 1"
             class="question_card"
+            @answer="setAnswer"
           />
         </div>
       </div>
@@ -40,7 +41,12 @@
         </div>
       </div>
     </div>
-<!--    <Biathlon v-if="! $store.state.ArticleModule.refactoring_content"/>-->
+    <Biathlon
+      v-if="! $store.state.ArticleModule.refactoring_content"
+      :questions="$store.state.PopularSelectionsModule.questions"
+      is-collection
+      :view-action="localViewAction"
+    />
     <v-overlay z-index="10" :value="$store.state.ArticleModule.refactoring_content">
       <v-progress-circular :size="50" color="primary" indeterminate style="margin-top: 20px"/>
     </v-overlay>
@@ -80,6 +86,7 @@ export default {
       name: ''
     },
     data_of_components: [],
+    computedQuestions: [],
     coordYNav: null,
     heightNav: 70,
     localViewAction: false
@@ -111,7 +118,14 @@ export default {
       ]
     };
   },
-  computed: {},
+  computed: {
+    podborki() {
+      return podborki
+    },
+    article() {
+      return article
+    }
+  },
   watch: {},
   created() {
   },
@@ -119,8 +133,26 @@ export default {
     this.$route.meta.title = this.main_tag?.name;
     await this.$store.dispatch('PopularSelectionsModule/getArticlesInfo', this.$route.params.code);
     await this.$store.dispatch('PopularSelectionsModule/getQuestionsInfo', this.$route.params.code);
+    this.findQuestions();
   },
-  methods: {}
+
+  methods: {
+    findQuestions() {
+      if (!this.data_of_components.length) {
+        return;
+      }
+      this.computedQuestions = this.data_of_components.filter(elem => {
+        return elem.data.component.name === 'questions';
+      });
+
+    },
+    setAnswer(data) {
+      this.$store.commit('PopularSelectionsModule/setAnswer', {
+        answer: data.answer, id: data.id
+      })
+
+    }
+  }
 };
 </script>
 
