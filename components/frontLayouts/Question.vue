@@ -525,6 +525,7 @@ export default {
           } else {
             this.uploadedFiles = [...this.files]
             this.status_name = 'success'
+
           }
         })
         .catch((error) => {
@@ -651,6 +652,7 @@ export default {
               this.status_name = 'error'
             } else {
               this.status_name = 'success'
+              this.$emit('answer', { answer: this.answer, id: this.question_data.id })
               this.id_answer = result.data.id
             }
           } catch (e) {
@@ -676,6 +678,7 @@ export default {
             } else {
               this.status_name = 'success'
               this.id_answer = result.data.id
+              this.$emit('answer', { answer: this.answer, id: this.question_data.id })
             }
           } catch (e) {
             this.status_name = 'error'
