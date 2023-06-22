@@ -700,30 +700,30 @@ export default {
     },
     async changeAnswer(dataEnv) {
       this.check_status = true
-      const rangeAnswer = this.answer.join('')
+      // const rangeAnswer = this.answer.join('')
 
-      if (rangeAnswer !== ('' + this.min + this.max)) {
-        if (!this.stateAuth) {
-          this.status_name = 'warning'
-          this.$nextTick(() => {
-            /* Fix default scroll by hash on page */
-            this.createAnchorToAuth()
-          })
-          this.$store.commit('setModalAuth', true)
-        } else if (!this.$store.state.Objects.currentObject || !Object.keys(this.$store.state.Objects.currentObject).length) {
-          if (!Array.isArray(this.$store.state.AuthModule.userData.objects) || this.$store.state.AuthModule.userData.objects.length < 1) {
-            await this.silentCreateObject()
-            this.check_status = true
-            this.sendAnswer(dataEnv)
-          } else {
-            this.check_status = false
-            this.$store.commit('set_idQuestionWhenModal', this.question_data.id)
-            this.$store.commit('change_showCabinet', true)
-          }
-        } else {
+      // if (rangeAnswer !== ('' + this.min + this.max)) {
+      if (!this.stateAuth) {
+        this.status_name = 'warning'
+        this.$nextTick(() => {
+          /* Fix default scroll by hash on page */
+          this.createAnchorToAuth()
+        })
+        this.$store.commit('setModalAuth', true)
+      } else if (!this.$store.state.Objects.currentObject || !Object.keys(this.$store.state.Objects.currentObject).length) {
+        if (!Array.isArray(this.$store.state.AuthModule.userData.objects) || this.$store.state.AuthModule.userData.objects.length < 1) {
+          await this.silentCreateObject()
+          this.check_status = true
           this.sendAnswer(dataEnv)
+        } else {
+          this.check_status = false
+          this.$store.commit('set_idQuestionWhenModal', this.question_data.id)
+          this.$store.commit('change_showCabinet', true)
         }
+      } else {
+        this.sendAnswer(dataEnv)
       }
+      // }
     },
     createAnchorToAuth() {
       document.querySelectorAll('#authAnchor').forEach((anchor) => {
