@@ -102,9 +102,6 @@
 </template>
 
 <script>
-import InputStyled from '../Common/InputStyled';
-import SelectStyled from '../Common/SelectStyled';
-import PdfContent from '../PdfReports/PdfContent';
 import SelectObjectStyled from '../Common/SelectObjectStyled';
 import Collaboration from '../Modals/Collaboration.vue';
 import TooltipStyled from '~/components/Common/TooltipStyled';
@@ -127,7 +124,7 @@ export default {
       alert: {
         state: false,
         message: ''
-      }
+      },
     };
   },
   computed: {},
@@ -180,6 +177,12 @@ export default {
   transition: all 0.4s ease-in-out !important;
   background: white;
   overflow-y: overlay;
+  @media only screen and (max-width: 1600px) {
+    display: none;
+  }
+  @media only screen and (max-width: 768px){
+    display: block;
+  }
 
   &:hover {
     @extend .background-hover;

@@ -2,7 +2,7 @@
   <v-alert
     outlined
     text
-    type='warning'
+    type="warning"
   >
     Функционал в разработке
   </v-alert>
@@ -16,6 +16,7 @@ export default {
 
 <style lang='scss' scoped>
 .v-alert {
+
   min-height: 100px !important;
   display: flex !important;
   align-items: center !important;

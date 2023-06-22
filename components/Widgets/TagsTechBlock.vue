@@ -40,49 +40,50 @@
         >
           <section slot="pdf-content">
             <!-- content -->
-            <pdf-content />
+            <pdf-content/>
             <!-- /content -->
           </section>
         </vue-html2pdf>
       </client-only>
       <v-alert
         v-if="alert.state"
+        style="margin-top: 1em !important;"
         type="error"
       >
-        <span v-html="alert.message" />
+        <span v-html="alert.message"/>
       </v-alert>
     </div>
-</span>
+  </span>
 </template>
 
 <script>
-import TooltipStyled from "~/components/Common/TooltipStyled";
-import PdfContent from "~/components/PdfReports/PdfContent";
-import ButtonStyled from "~/components/Common/ButtonStyled";
+import TooltipStyled from '~/components/Common/TooltipStyled';
+import PdfContent from '~/components/PdfReports/PdfContent';
+import ButtonStyled from '~/components/Common/ButtonStyled';
 
 export default {
-  name: "TagsTechBlock",
+  name: 'TagsTechBlock',
   components: { TooltipStyled, PdfContent, ButtonStyled },
   data() {
     return {
       selected_ids_tags: [],
       alert: {
         state: false,
-        message: ""
+        message: ''
       }
     };
   },
   mounted() {
-    this.$store.dispatch("getListTags");
+    this.$store.dispatch('getListTags');
   },
   methods: {
     async downloadPDF() {
-      const response = await this.$store.dispatch("PdfDataModule/getBodyData", { ids_tags: this.selected_ids_tags });
+      const response = await this.$store.dispatch('PdfDataModule/getBodyData', { ids_tags: this.selected_ids_tags });
       // console.log("WTF", response);
       if (response.codeResponse === 200) {
         this.$refs.html2Pdf.generatePdf();
         this.alert.state = false;
-        this.alert.message = "";
+        this.alert.message = '';
       } else {
         this.alert.state = true;
         this.alert.message = response.message;

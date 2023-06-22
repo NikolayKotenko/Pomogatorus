@@ -34,7 +34,7 @@
 
       <!-- Личный кабинет всегда по правую сторону -->
       <v-toolbar-items class="header_right">
-        <TooltipStyled v-if="!isMobile" :title="'Текущий объект'">
+        <TooltipStyled :title="'Текущий объект'" class="current_object_btn">
           <v-menu :close-on-content-click="false" left offset-y>
             <template #activator="{ on, attrs }">
               <div style="display: inline-flex; grid-column-gap: 5px" v-bind="attrs" v-on="on">

@@ -159,7 +159,7 @@ export default {
     getQuestionTitle(item) {
       console.log(item)
       if (this.isCollection){
-        return `Вы не заполнили вопрос номер ${item.name}`
+        return `Вы не заполнили вопрос номер ${item.name ? item.name : ''}, ${item.name}`
       }
       if (item?.instance?.question_data?.name) {
         return `Вы не заполнили вопрос номер ${item?.instance?.index_questions ? item?.instance?.index_questions : ''}, ${item.instance.question_data.name}`
