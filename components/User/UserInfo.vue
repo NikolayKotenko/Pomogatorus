@@ -50,6 +50,9 @@
           local-class="style_button saveLogoutBtn"
           @click-button="saveUser"
         />
+        <!--        <v-alert type="error"> -->
+        <!--          <span>Уже уходите?</span> -->
+        <!--        </v-alert> -->
         <ButtonStyled
           v-if="isLoggedIn"
           :local-text="'Выйти'"
