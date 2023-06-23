@@ -255,20 +255,16 @@
 
       <div v-if="question_data.state_attachment_response">
         <template v-if="(answer || detailed_response) && !disableBtn">
-          <!-- TODO: Зачем нужен был второй аплоадер? -->
+          <!--          <input ref="uploader" class="d-none" type="file" @change="onFileChanged"> -->
           <!--          <ButtonUploadFiles -->
-          <!--            :loading="isSelecting" -->
+          <!--            :disabled="(!!uploadedFiles.length && statusFile) || status_name === 'sending'" -->
+          <!--            :loading="status_name === 'sending'" -->
           <!--          > -->
-          <!--            <v-icon>mdi-paperclip</v-icon> -->
-          <!--            {{ !!files.length ? 'Добавить еще' : 'Вложить файл' }} -->
+          <!--            Загрузить файл -->
           <!--          </ButtonUploadFiles> -->
-          <input ref="uploader" class="d-none" type="file" @change="onFileChanged">
-          <ButtonUploadFiles
-            :disabled="(!!uploadedFiles.length && statusFile) || status_name === 'sending'"
-            :loading="status_name === 'sending'"
-          >
-            Загрузить файл
-          </ButtonUploadFiles>
+          <div class="custom-fields">
+            <DropzoneInput/>
+          </div>
         </template>
         <template v-else>
           <v-tooltip bottom>
@@ -331,11 +327,12 @@ import InputStyled from '../Common/InputStyled'
 import TextAreaStyled from '../Common/TextAreaStyled'
 import ButtonUploadFiles from '../Common/ButtonUploadFiles.vue'
 import TooltipStyled from '../Common/TooltipStyled.vue'
+import DropzoneInput from '../Common/DropzoneInput'
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Question',
-  components: { TooltipStyled, TextAreaStyled, InputStyled, AuthModal, ButtonUploadFiles },
+  components: { DropzoneInput, TooltipStyled, TextAreaStyled, InputStyled, AuthModal, ButtonUploadFiles },
   props: {
     propsData: {
       type: Object,
@@ -703,9 +700,14 @@ export default {
     },
     async changeAnswer(dataEnv) {
       this.check_status = true
-      // const rangeAnswer = this.answer.join('')
 
-      // if (rangeAnswer !== ('' + this.min + this.max)) {
+      if (Array.isArray(this.answer)) {
+        const rangeAnswer = this.answer.join('')
+        if (rangeAnswer === ('' + this.min + this.max)) {
+          return
+        }
+      }
+
       if (!this.stateAuth) {
         this.status_name = 'warning'
         this.$nextTick(() => {
@@ -726,7 +728,6 @@ export default {
       } else {
         this.sendAnswer(dataEnv)
       }
-      // }
     },
     createAnchorToAuth() {
       document.querySelectorAll('#authAnchor').forEach((anchor) => {

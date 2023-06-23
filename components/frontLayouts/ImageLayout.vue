@@ -1,40 +1,19 @@
 <template>
   <div :id="`component_wrapper-${index_component}`" class="image_wrapper" contenteditable="false">
-    <!--    <ViewerStyled :images="image_arr" @click="onClick"> -->
-    <!--      <div v-for="(image, index) in image_arr" :key="index"> -->
-
     <img :alt="altName" :src="srcPath" :title="titleName" class="main_img inserted_image" @click="onClick">
-
-
-    <!--    <ViewerStyled ref="viewer" :images="image_arr"> -->
-    <!--      <img -->
-    <!--        v-for="(image, index) in image_arr" -->
-    <!--        :key="index" -->
-    <!--        :alt="altName" -->
-    <!--        :src="srcPath" -->
-    <!--        :title="titleName" -->
-    <!--        class="main_img inserted_image" -->
-    <!--      > -->
-    <!--    </ViewerStyled> -->
-    <!--      </div> -->
-    <!--    </ViewerStyled> -->
   </div>
 </template>
 
 <script>
-import ViewerStyled from '../Common/ViewerStyled'
-
 export default {
   name: 'ImageLayout',
-  components: { ViewerStyled },
   data: () => ({
     width: 0,
     height: 0,
     x: 0,
     y: 0,
     index_component: null,
-    data_image: null,
-    image_arr: []
+    data_image: null
   }),
   computed: {
     srcPath() {
@@ -45,9 +24,6 @@ export default {
     },
     titleName() {
       return this.data_image?.title
-    },
-    totalImages() {
-      return this.$store.state.ArticleModule.totalImages
     }
   },
   mounted() {
@@ -56,7 +32,6 @@ export default {
   methods: {
     getData() {
       this.data_image = this.$store.state.ArticleModule.selectedComponent
-      this.image_arr.push(this.data_image)
       this.index_component = this.$store.state.ArticleModule.countLayout
       this.getHeightOfControls()
       this.getWidthOfControls()
@@ -93,13 +68,7 @@ export default {
       })
     },
     onClick() {
-      // console.log(this.$refs.viewer)
-      this.$refs.viewer.$viewerApi({
-        images: this.totalImages.sort(elem => elem.index_image).map(elem => this.$store.state.BASE_URL + elem.src),
-        options: {
-          initialViewIndex: this.data_image.index_image - 1
-        }
-      })
+      this.$store.commit('set_index_image', this.data_image.index_image - 1)
     }
   }
 }
@@ -116,6 +85,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 }
 
 .inserted_image {

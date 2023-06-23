@@ -13,6 +13,7 @@ export default {
     list_filtered_articles: [],
     answers: [],
     totalImages: [],
+    indexImage: 0,
   },
   mutations: {
     set_answers(state, payload) {
@@ -66,6 +67,13 @@ export default {
     },
     clear_total_image(state) {
       state.totalImages = []
+    },
+    set_index_image(state, payload) {
+      if (state.indexImage === payload) {
+        state.indexImage = -1
+      } else {
+        state.indexImage = payload
+      }
     },
   },
   actions: {

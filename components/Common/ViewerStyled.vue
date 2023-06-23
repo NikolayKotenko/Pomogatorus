@@ -1,8 +1,10 @@
 <template>
   <viewer
+    ref="viewer"
     :class="customClass"
     :images="images"
-    :options="options"
+    :options="computedOptions"
+    @inited="inited"
   >
     <div @click="onClick">
       <slot/>
@@ -40,15 +42,31 @@ export default {
       default: ''
     }
   },
+  data: () => ({
+    indexImage: 0
+  }),
+  computed: {
+    computedOptions() {
+      return Object.assign({}, this.options, { initialViewIndex: this.indexImage })
+    }
+  },
   methods: {
+    inited(viewer) {
+      this.$viewer = viewer
+    },
+    open(index) {
+      this.indexImage = index
+      setTimeout(() => {
+        this.$viewer.show()
+        this.onClick()
+      }, 0)
+    },
     onClick() {
       const self = this
       const height = 100
 
       setTimeout(() => {
         const viewerElement = document.querySelector('.viewer-container')
-
-        console.log(viewerElement)
 
         if (viewerElement) {
           viewerElement.classList.add('blur-background')

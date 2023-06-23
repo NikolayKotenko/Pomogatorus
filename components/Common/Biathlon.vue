@@ -106,7 +106,7 @@ export default {
   },
   computed: {
     getSortedQuestions() {
-      if (this.isCollection){
+      if (this.isCollection) {
         return this.questions
       }
 
@@ -125,8 +125,8 @@ export default {
   },
   methods: {
     getAnswer(item) {
-      if (this.isCollection){
-        if (item?.answer){
+      if (this.isCollection) {
+        if (item?.answer) {
           return true
         }
 
@@ -144,7 +144,7 @@ export default {
       }
     },
     scrollToQuestion(item) {
-      if (this.isCollection){
+      if (this.isCollection) {
         return this.questions
       }
       const elem = document.getElementById(`component_wrapper-${item?.data?.index}`)
@@ -157,8 +157,7 @@ export default {
       console.log('work')
     },
     getQuestionTitle(item) {
-      console.log(item)
-      if (this.isCollection){
+      if (this.isCollection) {
         return `Вы не заполнили вопрос номер ${item.name ? item.name : ''}, ${item.name}`
       }
       if (item?.instance?.question_data?.name) {
