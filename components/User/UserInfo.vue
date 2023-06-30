@@ -35,23 +35,21 @@
       <!-- Услуги -->
       <v-tab-item :key="1">
         {{ servicesData }}
-        <v-autocomplete
-          v-model="$store.state.UserSettings.selectedServices"
+        <v-combobox
+          v-model="servicesData"
           :item-text="'name'"
           :item-value="'id'"
           :items="$store.state.UserSettings.listServices"
-          chips
           class="pt-5"
           clearable
-          deletable-chips
-          filled
           label="Выберите услуги"
-          multiple
           outlined
+          multiple
           placeholder="Выберите услуги"
+          small-chips
           return-object
           solo
-        ></v-autocomplete>
+        ></v-combobox>
       </v-tab-item>
     </v-tabs>
 
@@ -124,7 +122,6 @@ export default {
   }),
   async mounted() {
     await this.$store.dispatch("UserSettings/getListServices");
-    await this.$store.dispatch("UserSettings/setSelectedServicesAction", this.servicesData);
   },
   computed: {
     ...mapState({
