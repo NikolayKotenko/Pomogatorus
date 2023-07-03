@@ -34,7 +34,6 @@
 
       <!-- Услуги -->
       <v-tab-item :key="1">
-        {{ servicesData }}
         <v-combobox
           v-model="servicesData"
           :item-text="'name'"
@@ -58,7 +57,6 @@
         <ButtonStyled
           v-if="isLoggedIn"
           :custom-slot="true"
-          :disabled="!isValid"
           :is-mobile="true"
           :loading="isUpdating"
           class="mobile_save_btn"
@@ -80,7 +78,6 @@
       <template v-else>
         <ButtonStyled
           v-if="isLoggedIn"
-          :disabled="!isValid"
           :loading="isUpdating"
           :local-text="'Сохранить'"
           local-class="style_button saveLogoutBtn"
@@ -116,7 +113,9 @@ export default {
   },
   data: () => ({
     isChanged: false,
-    data: {},
+    data: {
+      services: [],
+    },
     isValid: false,
     tab: 0
   }),
@@ -135,9 +134,14 @@ export default {
     isMobile() {
       return this.$device.isMobile;
     },
-    servicesData() {
-      return this.userData.services;
-    }
+    servicesData:{
+      get() {
+        return this.userData.services;
+      },
+      set(value) {
+        this.$store.dispatch('UserSettings/setSelectedServicesAction', value)
+      }
+    },
   },
   methods: {
     closeDetail() {
@@ -155,14 +159,10 @@ export default {
       this.data.telephone_state = this.userData.telephone_state;
       this.isValid = value.isValid;
     },
-    saveUser() {
-      this.$store.dispatch("UserSettings/updateUser", { userId: this.userData.id, data: this.data });
+    async saveUser() {
+      await this.$store.dispatch("UserSettings/updateUser", { userId: this.userData.id, data: this.data });
       this.closeDetail();
     },
-    async localSetSelectedServices(obj) {
-      console.log("localSetSelectedServices", obj);
-      // await this.$store.dispatch("UserSettings/setSelectedServices", obj);
-    }
   }
 };
 </script>
