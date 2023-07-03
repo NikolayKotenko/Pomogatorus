@@ -21,14 +21,14 @@ export default {
     },
   },
   actions: {
-    async updateUser({ commit, getters }, payload) {
+    async updateUser({ commit }, payload) {
       const { userId, data } = payload
 
       commit('setIsUpdating', true)
 
       await Request.put(
         `${this.state.BASE_URL}/users/update-user-data/${userId}`,
-        {services: getters.idsServices}, { ...data }
+        { ...data }
       )
         .then((response) => {
           commit('set_user_data', response.data, { root: true })
@@ -50,6 +50,9 @@ export default {
       commit('setSelectedServices', obj)
     },
 
+    async deleteEntriesServicesByUser({rootGetters}){
+      const response = await Request.delete(`${this.state.BASE_URL}/m-to-m/delete-all-services-by-user/${rootGetters.getUserId}`)
+    },
     async setTetherUsersServices({ commit, rootGetters }, arr) {
 
       for (const obj of arr) {
@@ -57,24 +60,12 @@ export default {
           id_user: rootGetters.getUserId,
           id_services: obj.id,
         }
-        const responsePost = await Request.post(
+        const response = await Request.post(
           `${this.state.BASE_URL}/m-to-m/users-services`,
           objMToMUsersServices
         )
-        console.log('responsePost', responsePost)
-        if (responsePost.codeResponse >= 400) {
-          const responsePut = await Request.put(
-            `${this.state.BASE_URL}/m-to-m/users-services/${responsePost.data.id}`,
-            objMToMUsersServices
-          )
-          console.log('responsePut', responsePut)
-        }
       }
     },
   },
-  getters:{
-    idsServices(state){
-      return state.selectedServices.map((elem) => {return elem.id} )
-    }
-  }
+  getters:{}
 }

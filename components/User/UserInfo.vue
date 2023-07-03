@@ -113,9 +113,7 @@ export default {
   },
   data: () => ({
     isChanged: false,
-    data: {
-      services: [],
-    },
+    data: {},
     isValid: false,
     tab: 0
   }),
@@ -160,6 +158,8 @@ export default {
       this.isValid = value.isValid;
     },
     async saveUser() {
+      await this.$store.dispatch('UserSettings/deleteEntriesServicesByUser');
+      await this.$store.dispatch('UserSettings/setTetherUsersServices', this.$store.state.UserSettings.selectedServices)
       await this.$store.dispatch("UserSettings/updateUser", { userId: this.userData.id, data: this.data });
       this.closeDetail();
     },
