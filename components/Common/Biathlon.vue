@@ -77,7 +77,6 @@
 
 <script>
 import SocialShare from '../Article/SocialShare.vue'
-import question from '../frontLayouts/Question.vue';
 import ViewsAndLikes from './ViewsAndLikes.vue'
 import CopyLinkButton from './CopyLinkButton.vue'
 import TooltipStyled from './TooltipStyled'

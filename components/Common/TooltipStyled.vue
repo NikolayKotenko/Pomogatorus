@@ -15,7 +15,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: 'Функционал в разработке'
+      default: ''
     },
     isTop: {
       type: Boolean,

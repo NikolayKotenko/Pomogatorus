@@ -47,21 +47,26 @@
       </div>
     </TooltipStyled>
 
-    <TooltipStyled :title="'Фотография объекта'">
-      <v-img class="current_object__image">
-        <v-icon class="current_object__image__icon" x-large>
-          mdi-map-marker-outline
-        </v-icon>
-      </v-img>
-      <!--      <div class="current_object__image"> -->
-      <!--        <VImg -->
-      <!--          :src="$store.getters['Objects/getFirstPhotoObject']" -->
-      <!--          height="100%" -->
-      <!--        > -->
-      <!--        &lt;!&ndash;        <span v-else class="empty_placeholder">Фото объекта</span> &ndash;&gt; -->
-      <!--        </VImg> -->
-      <!--        <span/> -->
-      <!--      </div> -->
+    <TooltipStyled :title="$store.getters['Objects/getFirstPhotoObject']['filename'] || 'Фото объекта'">
+      <!--      <v-img class="current_object__image"> -->
+      <!--        <v-icon class="current_object__image__icon" x-large> -->
+      <!--          mdi-map-marker-outline -->
+      <!--        </v-icon> -->
+      <!--      </v-img> -->
+      <div class="current_object__image">
+        <VImg
+          v-if="$store.getters['Objects/getFirstPhotoObject']['full_path']"
+          :src="$store.state.BASE_URL + $store.getters['Objects/getFirstPhotoObject']['full_path']"
+          height="100%"
+        />
+        <div v-else>
+          <v-img class="current_object__image">
+            <v-icon class="current_object__image__icon" x-large>
+              mdi-map-marker-outline
+            </v-icon>
+          </v-img>
+        </div>
+      </div>
     </TooltipStyled>
 
     <!-- Циклом параметры по булеву "транслировать в сниппет" -->
@@ -197,12 +202,7 @@ export default {
   transition: all 0.4s ease-in-out !important;
   background: white;
   overflow-y: overlay;
-  @media only screen and (max-width: 1600px) {
-    display: none;
-  }
-  @media only screen and (max-width: 768px){
-    display: block;
-  }
+
 
   &:hover {
     @extend .background-hover;
