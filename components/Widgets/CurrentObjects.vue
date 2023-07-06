@@ -53,6 +53,15 @@
           mdi-map-marker-outline
         </v-icon>
       </v-img>
+      <!--      <div class="current_object__image"> -->
+      <!--        <VImg -->
+      <!--          :src="$store.getters['Objects/getFirstPhotoObject']" -->
+      <!--          height="100%" -->
+      <!--        > -->
+      <!--        &lt;!&ndash;        <span v-else class="empty_placeholder">Фото объекта</span> &ndash;&gt; -->
+      <!--        </VImg> -->
+      <!--        <span/> -->
+      <!--      </div> -->
     </TooltipStyled>
 
     <!-- Циклом параметры по булеву "транслировать в сниппет" -->
@@ -118,6 +127,8 @@ export default {
     TooltipStyled,
     SelectObjectStyled,
   },
+  // eslint-disable-next-line vue/prop-name-casing
+  props: ['object_data'],
   data() {
     return {
       state_tech_task_block: false,
@@ -127,7 +138,16 @@ export default {
       },
     };
   },
-  computed: {},
+  computed: {
+    stateCurrentObject() {
+      return this.object_data.id === this.$store.state.Objects.currentObject?.id;
+    },
+    stateFilledImageObject() {
+      if (!this.object_data?.('osnovnoe-foto-obekta')) return false;
+
+      return this.object_data['osnovnoe-foto-obekta'].length;
+    },
+  },
   watch: {
     '$store.getters.stateAuth': {
       handler(state) {

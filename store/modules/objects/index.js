@@ -128,5 +128,13 @@ export default {
         ? state.currentObject.id
         : null
     },
+    getFirstPhotoObject: (state) => (obj) => {
+      if (!obj?.('osnovnoe-foto-obekta')) return null
+
+      const firstImage = obj['osnovnoe-foto-obekta'].filter((item) => {
+        return item.main_photo_object === true
+      })
+      return firstImage ? firstImage[0] : null
+    },
   },
 }
