@@ -1,11 +1,11 @@
 <template>
   <div class="card_obj">
     <div class="img">
-      <VImg
+      <v-img
         v-if="stateFilledImageObject"
         :class="{'empty_placeholder': ! stateFilledImageObject }"
-        class="img"
         :src="$store.getters.getImageMainPhotoObjects(object_data['osnovnoe-foto-obekta'][0])"
+        class="img"
         height="100%"
       />
       <span v-else class="empty_placeholder">Фото объекта</span>
@@ -17,7 +17,7 @@
           <span class="address">{{ object_data.address }}</span>
         </div>
         <div class="share_and_activity">
-          <CopyLinkButton :id-entry="object_data.id"/>
+          <CopyLinkButton :id-entry="object_data.id" />
           <TooltipStyled :title="'Совместная работа'">
             <v-menu :close-on-content-click="false" left offset-y>
               <template #activator="{ on, attrs }">
@@ -33,7 +33,7 @@
                   </v-icon>
                 </div>
               </template>
-              <Collaboration/>
+              <Collaboration />
             </v-menu>
           </TooltipStyled>
 
@@ -84,18 +84,17 @@
 </template>
 
 <script>
-import ButtonStyled from '../Common/ButtonStyled.vue';
-import Collaboration from '../Modals/Collaboration.vue';
-import TooltipStyled from '../Common/TooltipStyled.vue';
-import CopyLinkButton from '../Common/CopyLinkButton.vue';
-import ObjectDetail from './ObjectDetail.vue';
+import ButtonStyled from "../Common/ButtonStyled.vue";
+import Collaboration from "../Modals/Collaboration.vue";
+import TooltipStyled from "../Common/TooltipStyled.vue";
+import CopyLinkButton from "../Common/CopyLinkButton.vue";
 
 
 export default {
-  name: 'CardObject',
-  components: { CopyLinkButton, TooltipStyled, Collaboration, ButtonStyled, },
+  name: "CardObject",
+  components: { CopyLinkButton, TooltipStyled, Collaboration, ButtonStyled },
   // eslint-disable-next-line vue/prop-name-casing
-  props: ['object_data'],
+  props: ["object_data"],
   data: () => ({
     showDetailObj: false
   }),
@@ -104,9 +103,9 @@ export default {
       return this.object_data.id === this.$store.state.Objects.currentObject?.id;
     },
     stateFilledImageObject() {
-      if (!this.object_data.hasOwnProperty('osnovnoe-foto-obekta')) return false;
+      if (!this.object_data.hasOwnProperty("osnovnoe-foto-obekta")) return false;
 
-      return this.object_data['osnovnoe-foto-obekta'].length;
+      return this.object_data["osnovnoe-foto-obekta"].length;
     },
     selectedObj() {
       if (!this.$store.state.Objects.currentObject) return false;
@@ -123,20 +122,20 @@ export default {
   },
   watch: {},
   mounted() {
-    this.$store.dispatch('getListBroadcastSnippet');
+    this.$store.dispatch("getListBroadcastSnippet");
   },
   methods: {
     async setObject() {
-      await this.$store.dispatch('Objects/setCurrentObject', this.object_data);
+      await this.$store.dispatch("Objects/setCurrentObject", this.object_data);
     },
     openDetailCard() {
-      this.$emit('open-detail', this.object_data);
+      this.$emit("open-detail", this.object_data);
       // this.$store.state.Objects.modalCurrentObject = this.object_data
       // this.$store.state.listModal[1].isOpen = true
     },
     async closeDetail() {
       this.showDetailObj = false;
-      await this.$store.dispatch('loginByToken');
+      await this.$store.dispatch("loginByToken");
     }
   }
 };
@@ -261,15 +260,17 @@ export default {
   .img {
     margin-right: 0 !important;
   }
-  .header{
+  .header {
     display: grid !important;
     justify-content: center !important;
   }
   .name_and_address {
     justify-content: center;
+
     .name {
       font-size: 1.2em;
     }
+
     .address {
       font-size: 1em;
     }

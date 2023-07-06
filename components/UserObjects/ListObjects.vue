@@ -31,6 +31,7 @@
       <v-sheet
         v-for="n in 3"
         v-if="! $store.getters['Objects/stateFilledListObjects'] && ! $store.getters.stateAuth"
+        :key="n"
         class="pa-3"
         @click="$store.dispatch('callModalAuth')"
       >
@@ -100,27 +101,27 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
-import ButtonStyled from '../Common/ButtonStyled.vue'
-import ObjectGlobal from './ObjectGlobal'
-import CardObject from './CardObject.vue'
-import TooltipStyled from '@/components/Common/TooltipStyled'
+import { mapActions, mapGetters, mapState } from "vuex";
+import ButtonStyled from "../Common/ButtonStyled.vue";
+import ObjectGlobal from "./ObjectGlobal";
+import CardObject from "./CardObject.vue";
+import TooltipStyled from "@/components/Common/TooltipStyled";
 
 export default {
-  name: 'ListObjects',
+  name: "ListObjects",
   components: { TooltipStyled, ButtonStyled, CardObject, ObjectGlobal },
   data: () => ({
     object: {},
-    newObjAddress: '',
-    newObjName: '',
+    newObjAddress: "",
+    newObjName: "",
     showDetail: false,
     detailData: {},
     debounceTimeout: null
   }),
   watch: {
-    'getUserId': {
+    "getUserId": {
       handler(val) {
-        this.localGetListObjects(val)
+        this.localGetListObjects(val);
       },
       immediate: true
     }
@@ -128,70 +129,70 @@ export default {
   async mounted() {
   },
   computed: {
-    ...mapState('Objects', ['listObjects', 'isLoadingObjects', 'loading_objects']),
-    ...mapState(['userData']),
-    ...mapGetters(['getUserId']),
+    ...mapState("Objects", ["listObjects", "isLoadingObjects", "loading_objects"]),
+    ...mapState(["userData"]),
+    ...mapGetters(["getUserId"]),
 
     notEmptyObject() {
-      return !!Object.keys(this.object).length
+      return !!Object.keys(this.object).length;
     },
 
     getCoords() {
-      return this.object?.long && this.object?.lat ? [this.object.lat, this.object.long] : [55.753215, 37.622504]
+      return this.object?.long && this.object?.lat ? [this.object.lat, this.object.long] : [55.753215, 37.622504];
     },
 
     isMobile() {
-      return this.$device.isMobile
+      return this.$device.isMobile;
     }
   },
   methods: {
-    ...mapActions('Objects', ['createNewObject', 'getListObjectsByUserId']),
+    ...mapActions("Objects", ["createNewObject", "getListObjectsByUserId"]),
 
     async onCreateNewObject() {
       await this.createNewObject({
         address: this.newObjAddress,
         name: this.newObjName
-      })
-      this.newObjAddress = ''
+      });
+      this.newObjAddress = "";
 
-      await this.getListObjectsByUserId(this.getUserId)
+      await this.getListObjectsByUserId(this.getUserId);
     },
     closeDetailObj() {
-      this.showDetail = false
+      this.showDetail = false;
     },
     closeDetail() {
-      this.$emit('close-detail')
+      this.$emit("close-detail");
     },
     openDetail(data) {
-      this.detailData = data
-      this.showDetail = true
+      this.detailData = data;
+      this.showDetail = true;
     },
     setAddressMap(data) {
-      this.object.address = data.address
-      this.object.lat = data.coords[0]
-      this.object.long = data.coords[1]
+      this.object.address = data.address;
+      this.object.lat = data.coords[0];
+      this.object.long = data.coords[1];
 
-      this.updateProperties.address = data.address
-      this.updateProperties.lat = data.coords[0]
-      this.updateProperties.long = data.coords[1]
+      this.updateProperties.address = data.address;
+      this.updateProperties.lat = data.coords[0];
+      this.updateProperties.long = data.coords[1];
     },
     async localGetListObjects(idUser) {
-      if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
       this.debounceTimeout = setTimeout(async () => {
-        const response = await this.$store.dispatch('Objects/getListObjectsByUserId', idUser);
+        const response = await this.$store.dispatch("Objects/getListObjectsByUserId", idUser);
 
-        console.log('response getListObjectsByUserId', response);
+        console.log("response getListObjectsByUserId", response);
         if (response.codeResponse > 400) {
-          await this.$store.dispatch('callModalAuth');
-          this.$store.commit('Objects/setLoadingObjects', false);
+          await this.$store.dispatch("callModalAuth");
+          this.$store.commit("Objects/setLoadingObjects", false);
         }
-      }, 1000)
+      }, 1000);
     }
   }
-}
+};
 </script>
 
-<style lang='scss'>
+<style lang="scss">
 @import 'assets/styles/userObjects';
 
 .modal_wrapper {
@@ -284,7 +285,7 @@ export default {
   margin-top: auto;
   background: white;
   box-shadow: none;
-  @media only screen and (max-width: 415px){
+  @media only screen and (max-width: 415px) {
     padding-right: 20px;
   }
 }
