@@ -1,5 +1,5 @@
-import Request from '@/services/request'
 import _clone from '../../../helpers/deepClone'
+import Request from '@/services/request'
 
 export default {
   namespaced: true,
@@ -50,11 +50,12 @@ export default {
       commit('setSelectedServices', obj)
     },
 
-    async deleteEntriesServicesByUser({rootGetters}){
-      const response = await Request.delete(`${this.state.BASE_URL}/m-to-m/delete-all-services-by-user/${rootGetters.getUserId}`)
+    async deleteEntriesServicesByUser({ rootGetters }) {
+      const response = await Request.delete(
+        `${this.state.BASE_URL}/m-to-m/delete-all-services-by-user/${rootGetters.getUserId}`
+      )
     },
     async setTetherUsersServices({ commit, rootGetters }, arr) {
-
       for (const obj of arr) {
         const objMToMUsersServices = {
           id_user: rootGetters.getUserId,
@@ -67,5 +68,5 @@ export default {
       }
     },
   },
-  getters:{}
+  getters: {},
 }

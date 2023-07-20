@@ -46,13 +46,12 @@
 
 <script>
 import Request from '../../services/request'
-import InputStyled from '../Common/InputStyled'
 import ButtonStyled from '../Common/ButtonStyled.vue'
 
 export default {
   name: 'ObjectDetail',
   components: { ButtonStyled },
-  // eslint-disable-next-line vue/prop-name-casing
+  // eslint-disable-next-line vue/prop-name-casing,vue/require-prop-types
   props: ['object_data'],
   data: () => ({
     paramsDetail: [
@@ -222,6 +221,7 @@ export default {
       this.$emit('close-detail')
     },
     async saveData() {
+      this.$toast.success('Данные сохранены',{ duration: 5000 })
       this.isUpdating = true
 
       await Request.put(this.$store.state.BASE_URL + `/entity/objects/${this.object_data.id}`, {

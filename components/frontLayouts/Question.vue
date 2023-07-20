@@ -306,9 +306,7 @@
           v-if="status_question.type !== 'sending' && status_question.type !== 'warning' && check_status"
           class="question_wrapper__content__alert"
         >
-          <v-alert :icon="status_question.icon" :type="status_question.type">
-            <span v-html="status_question.text"/>
-          </v-alert>
+          <!--          <span>{{ $globalToasts }}</span> -->
         </div>
       </transition>
     </template>
@@ -329,10 +327,11 @@ import ButtonUploadFiles from '../Common/ButtonUploadFiles.vue'
 import TooltipStyled from '../Common/TooltipStyled.vue'
 import DropzoneInput from '../Common/DropzoneInput'
 
+
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Question',
-  components: { DropzoneInput, TooltipStyled, TextAreaStyled, InputStyled, AuthModal, ButtonUploadFiles },
+  components: { DropzoneInput, TooltipStyled, TextAreaStyled, InputStyled, AuthModal},
   props: {
     propsData: {
       type: Object,
@@ -378,7 +377,7 @@ export default {
   watch: {
     answer: {
       handler() {
-        if (this.question_data.id_type_answer == '6') {
+        if (this.question_data.id_type_answer === '6') {
           if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
           this.debounceTimeout = setTimeout(() => {
             this.rangeError =
@@ -556,6 +555,7 @@ export default {
 
     /* ANSWER LOGIC */
     textAnswer(value) {
+
       // TODO: А пустое значение на вопрос нужно ли сохранять?
       this.answer = value
       if (this.saveTextDebounce) clearTimeout(this.saveTextDebounce)
@@ -625,6 +625,7 @@ export default {
       this.$store.commit('Objects/setListObjects', [data])
     },
     sendAnswer(dataEnv) {
+
       this.status_name = 'sending'
       this.$nextTick(async () => {
         this.setDataEnv(dataEnv)
@@ -699,6 +700,7 @@ export default {
       this.changeAnswer()
     },
     async changeAnswer(dataEnv) {
+
       this.check_status = true
 
       if (Array.isArray(this.answer)) {
@@ -774,6 +776,7 @@ export default {
       this.changeAnswer()
     },
     getData() {
+
       if (Object.keys(this.$store.state.ArticleModule.selectedComponent).length) {
         this.index_questions = this.$store.state.ArticleModule.count_of_questions
         this.index_component = this.$store.state.ArticleModule.countLayout

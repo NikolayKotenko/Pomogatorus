@@ -343,6 +343,7 @@ export default {
       this.scrollWindow()
     },
     async onSave() {
+      this.$toast.success('Данные сохранены',{ duration: 5000 })
       await this.saveObjData({ id: this.object.id, keys: this.updateProperties })
       // Для обновления списка который прокидываем в SelectObjectStyled
       await this.getListObjectsByUserId(this.getUserId)

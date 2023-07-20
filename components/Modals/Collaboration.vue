@@ -23,36 +23,39 @@
         v-for="(item, index) in $store.state.CollaborationModule.listSearchedMembers"
         :key="index"
         :user-object="item"
+        class="invite_user"
       />
     </div>
     <div v-if="$store.getters['CollaborationModule/getFilteredListByRoleExperts'].length">
-      <span class="category_user">Эксперты</span>
+      <span class="category_user">Рекомендованные специалисты</span>
       <hr>
       <CardInviteUser
         v-for="(item, index) in $store.getters['CollaborationModule/getFilteredListByRoleExperts']"
         :key="index"
         :user-object="item"
+        class="invite_user"
       />
     </div>
     <div v-if="$store.getters['CollaborationModule/getFilteredListByRoleUsers'].length">
-      <span class="category_user">Пользователи</span>
+      <span class="category_user">Приглащенные пользователи</span>
       <hr>
       <CardInviteUser
         v-for="(item) in $store.getters['CollaborationModule/getFilteredListByRoleUsers']"
         :key="item.id"
         :user-object="item"
+        class="invite_user"
       />
     </div>
   </v-container>
 </template>
 
 <script>
-import SearchStyled from "~/components/Common/SearchStyled";
-import CardInviteUser from "~/components/Common/CardInviteUser";
+import SearchStyled from '~/components/Common/SearchStyled';
+import CardInviteUser from '~/components/Common/CardInviteUser';
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
-  name: "Collaboration",
+  name: 'Collaboration',
   components: {
     SearchStyled,
     CardInviteUser
@@ -63,20 +66,19 @@ export default {
     };
   },
   async mounted() {
-    await this.$store.dispatch("CollaborationModule/getListMembersByFilter", { id_object: this.$store.getters["Objects/getIdCurrentObject"] });
+    await this.$store.dispatch('CollaborationModule/getListMembersByFilter', { id_object: this.$store.getters['Objects/getIdCurrentObject'] });
   },
   methods: {
     async localGetListUsers(phrase) {
-      console.log("localGetListUsers", phrase);
       if (!phrase) {
-        await this.$store.dispatch("CollaborationModule/getListMembersByFilter", { id_object: this.$store.getters["Objects/getIdCurrentObject"] });
+        await this.$store.dispatch('CollaborationModule/getListMembersByFilter', { id_object: this.$store.getters['Objects/getIdCurrentObject'] });
         return false;
       }
 
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
 
       this.debounceTimeout = setTimeout(async () => {
-        await this.$store.dispatch("CollaborationModule/getSearchedListMembers", phrase);
+        await this.$store.dispatch('CollaborationModule/getSearchedListMembers', phrase);
       }, 2000);
     }
 
@@ -93,7 +95,7 @@ export default {
   //z-index: 9999;
   background-color: white;
   overflow: auto;
-  width: 900px;
+  width: 1000px;
   max-height: 650px;
   box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
 
@@ -130,6 +132,9 @@ export default {
 
 .category_user {
   font-size: 1.13em;
+}
+.invite_user{
+  margin-top: 20px;
 }
 </style>
 

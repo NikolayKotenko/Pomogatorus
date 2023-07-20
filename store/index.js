@@ -121,6 +121,12 @@ const createStore = () => {
             visible: true,
           },
           {
+            title: 'Оборудование',
+            path: '/products',
+            icon: 'mdi-store-cog-outline',
+            visible: true,
+          },
+          {
             title: 'Агенты',
             path: '/agents',
             icon: 'mdi-account-group',

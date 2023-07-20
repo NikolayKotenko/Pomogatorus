@@ -17,38 +17,37 @@
         @change-search="setSelected"
         @click-clear="getListBasedArticles(); selectedChips = ''"
         @redirect="redirectData"
-      >
-      </SearchStyled>
-      <!--      <ChipsStyled-->
-      <!--        :list-chips="$store.state.PopularSelectionsModule.list_selections.map((elem) => elem.name)"-->
-      <!--        @click-chip="setChip"-->
-      <!--      >-->
-      <!--      </ChipsStyled>-->
+      />
+      <!--      <ChipsStyled -->
+      <!--        :list-chips="$store.state.PopularSelectionsModule.list_selections.map((elem) => elem.name)" -->
+      <!--        @click-chip="setChip" -->
+      <!--      > -->
+      <!--      </ChipsStyled> -->
     </div>
-    <div v-if='listArticles.length' class='list_container'>
-      <Article v-for='(article, index) in listArticles' :key='index' :article='article' />
+    <div v-if="listArticles.length" class="list_container">
+      <Article v-for="(article, index) in listArticles" :key="index" :article="article"/>
     </div>
 
     <v-overlay :value="!loadComponent">
       <v-progress-circular
         indeterminate
         size="64"
-      ></v-progress-circular>
+      />
     </v-overlay>
   </v-container>
 </template>
 
 <script>
 import Article from '@/components/Article/Article'
-import SearchStyled from "@/components/Common/SearchStyled.vue";
-import ChipsStyled from "@/components/Common/ChipsStyled.vue";
-import VerticalMenu from "@/components/VerticalMenu.vue";
-import Request from "~/services/request";
-import constructFilterQuery from "~/utils/constructFilterQuery";
+import SearchStyled from '@/components/Common/SearchStyled.vue';
+import ChipsStyled from '@/components/Common/ChipsStyled.vue';
+import VerticalMenu from '@/components/VerticalMenu.vue';
+import Request from '~/services/request';
+import constructFilterQuery from '~/utils/constructFilterQuery';
 
 export default {
   name: 'index.vue',
-  components: {ChipsStyled, Article , SearchStyled, VerticalMenu},
+  components: { ChipsStyled, Article , SearchStyled, VerticalMenu },
   data: () => ({
     selectedArticle: null,
     selectedChips: '',
@@ -83,10 +82,10 @@ export default {
     },
     redirectData(data){
       if (data.category === 'Тэги'){
-        window.location.href = "/podborki/"+data.data.code
+        window.location.href = '/podborki/'+data.data.code
       }
       if (data.category === 'Статьи'){
-        window.location.href = "/articles/"+data.data.id;
+        window.location.href = '/articles/'+data.data.id;
       }
     },
     async getArticlesBySymbols(symbols) {
@@ -104,7 +103,7 @@ export default {
     async getListBasedArticles(queryParams){
       this.loading = true;
 
-      const basedFilter = {activity: true};
+      const basedFilter = { activity: true };
       const query = constructFilterQuery({ ...basedFilter, ...queryParams });
 
       const response = await Request.get(
@@ -131,7 +130,6 @@ export default {
   margin: 0 !important;
   padding: 0 !important;
 }
-
 
 </style>
 

@@ -49,6 +49,8 @@ export default {
     '@nuxtjs/pwa',
     ['cookie-universal-nuxt', { alias: 'cookiz' }],
     'vue-social-sharing/nuxt',
+    //
+    '@nuxtjs/toast',
   ],
   serverMiddleware: ['~/api/index.js'],
 
@@ -58,7 +60,19 @@ export default {
     baseURL: '/',
     withCredentials: true,
   },
-
+  toast: {
+    position: 'bottom-right',
+    register: [
+      // Register custom toasts
+      {
+        name: 'my-error',
+        message: 'Oops...Something went wrong',
+        options: {
+          type: 'error',
+        },
+      },
+    ],
+  },
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {
     manifest: {

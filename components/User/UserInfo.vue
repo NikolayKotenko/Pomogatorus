@@ -28,7 +28,7 @@
               @new-data="setData"
             />
           </div>
-          <LoginAuth v-else />
+          <LoginAuth v-else/>
         </div>
       </v-tab-item>
 
@@ -48,7 +48,7 @@
           small-chips
           return-object
           solo
-        ></v-combobox>
+        />
       </v-tab-item>
     </v-tabs>
 
@@ -83,9 +83,6 @@
           local-class="style_button saveLogoutBtn"
           @click-button="saveUser"
         />
-        <!--        <v-alert type="error"> -->
-        <!--          <span>Уже уходите?</span> -->
-        <!--        </v-alert> -->
         <ButtonStyled
           v-if="isLoggedIn"
           :local-text="'Выйти'"
@@ -98,14 +95,14 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex';
 
-import LoginAuth from "../frontLayouts/LoginAuth";
-import ButtonStyled from "../Common/ButtonStyled.vue";
-import UserFields from "./UserFields";
+import LoginAuth from '../frontLayouts/LoginAuth';
+import ButtonStyled from '../Common/ButtonStyled.vue';
+import UserFields from './UserFields';
 
 export default {
-  name: "UserInfo",
+  name: 'UserInfo',
   components: {
     ButtonStyled,
     UserFields,
@@ -118,7 +115,7 @@ export default {
     tab: 0
   }),
   async mounted() {
-    await this.$store.dispatch("UserSettings/getListServices");
+    await this.$store.dispatch('UserSettings/getListServices');
   },
   computed: {
     ...mapState({
@@ -143,10 +140,10 @@ export default {
   },
   methods: {
     closeDetail() {
-      this.$emit("close-detail");
+      this.$emit('close-detail');
     },
     logout() {
-      this.$store.dispatch("logout");
+      this.$store.dispatch('logout');
     },
     setChanged(value) {
       this.isChanged = value;
@@ -160,7 +157,8 @@ export default {
     async saveUser() {
       await this.$store.dispatch('UserSettings/deleteEntriesServicesByUser');
       await this.$store.dispatch('UserSettings/setTetherUsersServices', this.$store.state.UserSettings.selectedServices)
-      await this.$store.dispatch("UserSettings/updateUser", { userId: this.userData.id, data: this.data });
+      await this.$store.dispatch('UserSettings/updateUser', { userId: this.userData.id, data: this.data });
+      this.$toast.success('Данные сохранены',{ duration: 5000 })
       this.closeDetail();
     },
   }
