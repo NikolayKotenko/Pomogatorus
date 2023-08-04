@@ -43,7 +43,8 @@ export default {
     }
   },
   data: () => ({
-    indexImage: 0
+    indexImage: 0,
+    viewerId: 0
   }),
   computed: {
     computedOptions() {
@@ -53,6 +54,7 @@ export default {
   methods: {
     inited(viewer) {
       this.$viewer = viewer
+      this.viewerId = viewer.id
     },
     open(index) {
       this.indexImage = index
@@ -66,7 +68,9 @@ export default {
       const height = 100
 
       setTimeout(() => {
-        const viewerElement = document.querySelector('.viewer-container')
+        const viewerElement = document.querySelector(`#viewer${this.viewerId}`)
+
+        console.log(viewerElement)
 
         if (viewerElement) {
           viewerElement.classList.add('blur-background')

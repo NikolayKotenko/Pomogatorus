@@ -253,8 +253,25 @@
         />
       </div>
 
-      <div v-if="question_data.state_attachment_response">
+      <div v-if="question_data.state_attachment_response" class="mb-4">
         <template v-if="(answer || detailed_response) && !disableBtn">
+          <!--          <template v-if="!uploadedFiles.length"> -->
+          <!--            <v-btn -->
+          <!--              :loading="isSelecting" -->
+          <!--              class="dashedButton" -->
+          <!--              outlined -->
+          <!--            > -->
+          <!--              <v-icon large> -->
+          <!--                mdi-cloud-upload -->
+          <!--              </v-icon> -->
+          <!--              Загрузить файлы -->
+          <!--            </v-btn> -->
+          <!--          </template> -->
+          <!--          <template v-else> -->
+          <div class="custom-fields">
+            <DropzoneInput :id-object="$store.state.Objects.currentObject.id"/>
+          </div>
+          <!--          </template> -->
           <!--          <input ref="uploader" class="d-none" type="file" @change="onFileChanged"> -->
           <!--          <ButtonUploadFiles -->
           <!--            :disabled="(!!uploadedFiles.length && statusFile) || status_name === 'sending'" -->
@@ -262,9 +279,6 @@
           <!--          > -->
           <!--            Загрузить файл -->
           <!--          </ButtonUploadFiles> -->
-          <div class="custom-fields">
-            <DropzoneInput/>
-          </div>
         </template>
         <template v-else>
           <v-tooltip bottom>
@@ -301,6 +315,7 @@
           </div>
         </div>
       </div>
+
       <transition name="list">
         <div
           v-if="status_question.type !== 'sending' && status_question.type !== 'warning' && check_status"

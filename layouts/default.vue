@@ -178,6 +178,8 @@ export default {
 body {
   background: #f3f3f3 !important;
   font-family: 'Exo 2', sans-serif;
+  padding-right: 0 !important;
+  overflow: unset !important;
 }
 
 .app {
