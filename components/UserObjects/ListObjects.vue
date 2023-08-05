@@ -31,6 +31,7 @@
       <v-sheet
         v-for="n in 3"
         v-if="! $store.getters['Objects/stateFilledListObjects'] && ! $store.getters.stateAuth"
+        :key="n"
         class="pa-3"
         @click="$store.dispatch('callModalAuth')"
       >
@@ -178,12 +179,12 @@ export default {
     async localGetListObjects(idUser) {
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
       this.debounceTimeout = setTimeout(async () => {
-        const response = await this.$store.dispatch('Objects/getListObjectsByUserId', idUser);
+        const response = await this.$store.dispatch('Objects/getListObjectsByUserId', idUser)
 
-        console.log('response getListObjectsByUserId', response);
+        console.log('response getListObjectsByUserId', response)
         if (response.codeResponse > 400) {
-          await this.$store.dispatch('callModalAuth');
-          this.$store.commit('Objects/setLoadingObjects', false);
+          await this.$store.dispatch('callModalAuth')
+          this.$store.commit('Objects/setLoadingObjects', false)
         }
       }, 1000)
     }
@@ -284,7 +285,7 @@ export default {
   margin-top: auto;
   background: white;
   box-shadow: none;
-  @media only screen and (max-width: 415px){
+  @media only screen and (max-width: 415px) {
     padding-right: 20px;
   }
 }

@@ -278,6 +278,18 @@
   padding-right: 15px;
 }
 
+.dropzone-question {
+  .dz-clickable {
+    width: 100%;
+  }
+
+  .dz-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
 @media (max-width: 768px) {
   .dropzone-column {
     .v-select__slot {

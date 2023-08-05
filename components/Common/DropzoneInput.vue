@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="{'dropzone-column': isDropzoneNotEmpty}"
+    :class="{'dropzone-column': isDropzoneNotEmpty, 'dropzone-question': !objectTemplate}"
     class="dropzone-files"
     @dragenter="onDragEnter"
     @dragleave="onDragLeave"
@@ -132,16 +132,18 @@
           </div>
         </template>
       </v-autocomplete>
-      <dropzone
-        id="dropzone"
-        ref="dropzone"
-        :destroy-dropzone="true"
-        :include-styling="false"
-        :options="$store.getters.optionsDropzone"
-        :use-custom-slot="true"
-        @vdropzone-success="successData"
-        @vdropzone-sending="sendingData"
-      >
+    </template>
+    <dropzone
+      id="dropzone"
+      ref="dropzone"
+      :destroy-dropzone="true"
+      :include-styling="false"
+      :options="$store.getters.optionsDropzone"
+      :use-custom-slot="true"
+      @vdropzone-success="successData"
+      @vdropzone-sending="sendingData"
+    >
+      <template v-if="objectTemplate">
         <div ref="dropzoneTemplate" class="dropzone-custom-content">
           <div :class="{'animated': dragging}" class="dropzone-label">
             <v-icon :color="dragging ? 'blue' : '#B3B3B3'" large>
@@ -150,9 +152,18 @@
             <span :style="dragging ? 'color: #2196F3 ' : ''">{{ computedLabel }}</span>
           </div>
         </div>
-      </dropzone>
-    </template>
-    <template v-else/>
+      </template>
+      <template v-else>
+        <div ref="dropzoneTemplate" class="dropzone-custom-content-question">
+          <div :class="{'animated': dragging}" class="dropzone-label">
+            <v-icon :color="dragging ? 'blue' : '#B3B3B3'" large>
+              mdi-cloud-upload
+            </v-icon>
+            <span :style="dragging ? 'color: #2196F3 ' : ''">{{ computedLabel }}</span>
+          </div>
+        </div>
+      </template>
+    </dropzone>
   </div>
 </template>
 
@@ -225,6 +236,10 @@ export default {
       type: [Number, String],
       required: true
     },
+    idAnswer: {
+      type: [Number, String],
+      default: 0
+    },
     idProperty: {
       type: [Number, String],
       default: null
@@ -232,6 +247,10 @@ export default {
     objectTemplate: {
       type: Boolean,
       default: true
+    },
+    questionType: {
+      type: Boolean,
+      default: false
     }
   },
   data: () => ({
@@ -269,6 +288,7 @@ export default {
   },
   methods: {
     ...mapActions(['addFile']),
+    ...mapActions('Tabs', ['removeFile']),
 
     checkDropZoneFiles() {
       if (Array.isArray(this.data) && this.data.length) {
@@ -297,7 +317,11 @@ export default {
     },
     sendingData(file, xhr, formData) {
       formData.append('uuid', file.upload.uuid)
-      formData.append('id_object', parseInt(this.idObject))
+      if (!this.questionType) {
+        formData.append('id_object', parseInt(this.idObject))
+      } else {
+        formData.append('id_answer', parseInt(this.idAnswer))
+      }
       if (this.idProperty) {
         formData.append('id_object_property', parseInt(this.idProperty))
       }
@@ -305,9 +329,13 @@ export default {
       if (this.codeProperty === 'osnovnoe-foto-obekta') {
         formData.append('main_photo_object', true)
       }
+
+      setTimeout(() => {
+        this.dragging = false
+      }, 300)
     },
     successData(file, response) {
-      console.log('successData', response)
+      // console.log('successData', response)
       const formatObj = Object.assign({}, response.data)
       this.dzData.push(formatObj)
       this.dropzone_uploaded.push(formatObj)
@@ -338,17 +366,28 @@ export default {
     async onDrop(e) {
       e.preventDefault()
 
+      setTimeout(() => {
+        this.dragging = false
+      }, 300)
+
       const files = e.target.files || e.dataTransfer.files
 
       if (files.length) {
         for (const file of files) {
-          const data = await this.addFile({
-            uuid: generateUUID(),
-            id_object: parseInt(this.idObject),
-            id_object_property: this.idProperty ? parseInt(this.idProperty) : null,
-            codeProperty: this.codeProperty,
-            file
-          })
+          const query = {}
+
+          query.uuid = generateUUID()
+          query.file = file
+          query.codeProperty = this.codeProperty
+
+          if (this.questionType) {
+            query.id_answer = parseInt(this.idAnswer) ?? null
+          } else {
+            query.id_object = parseInt(this.idObject)
+            query.id_object_property = this.idProperty ? parseInt(this.idProperty) : null
+          }
+
+          const data = await this.addFile(query)
 
           if (data) {
             const formatObj = Object.assign({}, data.data)

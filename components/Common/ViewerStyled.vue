@@ -70,8 +70,6 @@ export default {
       setTimeout(() => {
         const viewerElement = document.querySelector(`#viewer${this.viewerId}`)
 
-        console.log(viewerElement)
-
         if (viewerElement) {
           viewerElement.classList.add('blur-background')
 

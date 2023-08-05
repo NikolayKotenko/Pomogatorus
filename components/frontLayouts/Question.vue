@@ -255,30 +255,16 @@
 
       <div v-if="question_data.state_attachment_response" class="mb-4">
         <template v-if="(answer || detailed_response) && !disableBtn">
-          <!--          <template v-if="!uploadedFiles.length"> -->
-          <!--            <v-btn -->
-          <!--              :loading="isSelecting" -->
-          <!--              class="dashedButton" -->
-          <!--              outlined -->
-          <!--            > -->
-          <!--              <v-icon large> -->
-          <!--                mdi-cloud-upload -->
-          <!--              </v-icon> -->
-          <!--              Загрузить файлы -->
-          <!--            </v-btn> -->
-          <!--          </template> -->
-          <!--          <template v-else> -->
-          <div class="custom-fields">
-            <DropzoneInput :id-object="$store.state.Objects.currentObject.id"/>
+          <div v-if="$store.state.Objects.currentObject.id" class="custom-fields">
+            <DropzoneInput
+              :id-answer="id_answer"
+              :id-object="$store.state.Objects.currentObject.id"
+              :object-template="!!uploadedFiles.length"
+              :question-type="true"
+              @uploaded-file="uploadFile"
+              @remove-file="removeFile"
+            />
           </div>
-          <!--          </template> -->
-          <!--          <input ref="uploader" class="d-none" type="file" @change="onFileChanged"> -->
-          <!--          <ButtonUploadFiles -->
-          <!--            :disabled="(!!uploadedFiles.length && statusFile) || status_name === 'sending'" -->
-          <!--            :loading="status_name === 'sending'" -->
-          <!--          > -->
-          <!--            Загрузить файл -->
-          <!--          </ButtonUploadFiles> -->
         </template>
         <template v-else>
           <v-tooltip bottom>
@@ -302,19 +288,19 @@
         </template>
       </div>
 
-      <div v-if="files.length" class="files_chips">
-        <h5 class="files_chips__title">
-          Добавленные файлы
-        </h5>
-        <div class="files_chips__wrapper">
-          <div v-for="(file, index) in files" class="files_chips__wrapper__chip">
-            <v-chip :key="index" class="mr-1 text-truncate" close small @click:close="remove(index)">
-              <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ file.name }}</span>
-            </v-chip>
-            <span class="files_chips__wrapper__chip__type">{{ file.name.split('.')[1] }}</span>
-          </div>
-        </div>
-      </div>
+      <!--      <div v-if="files.length" class="files_chips"> -->
+      <!--        <h5 class="files_chips__title"> -->
+      <!--          Добавленные файлы -->
+      <!--        </h5> -->
+      <!--        <div class="files_chips__wrapper"> -->
+      <!--          <div v-for="(file, index) in files" :key="index" class="files_chips__wrapper__chip"> -->
+      <!--            <v-chip :key="index" class="mr-1 text-truncate" close small @click:close="remove(index)"> -->
+      <!--              <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ file.name }}</span> -->
+      <!--            </v-chip> -->
+      <!--            <span class="files_chips__wrapper__chip__type">{{ file.name.split('.')[1] }}</span> -->
+      <!--          </div> -->
+      <!--        </div> -->
+      <!--      </div> -->
 
       <transition name="list">
         <div
@@ -340,14 +326,13 @@ import CompareArrays from '../../utils/compareArrays'
 import AuthModal from '../Modals/AuthModal'
 import InputStyled from '../Common/InputStyled'
 import TextAreaStyled from '../Common/TextAreaStyled'
-import ButtonUploadFiles from '../Common/ButtonUploadFiles.vue'
 import TooltipStyled from '../Common/TooltipStyled.vue'
 import DropzoneInput from '../Common/DropzoneInput'
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Question',
-  components: { DropzoneInput, TooltipStyled, TextAreaStyled, InputStyled, AuthModal, ButtonUploadFiles },
+  components: { DropzoneInput, TooltipStyled, TextAreaStyled, InputStyled, AuthModal },
   props: {
     propsData: {
       type: Object,
@@ -498,75 +483,16 @@ export default {
     },
 
     /* FILES UPLOAD */
-    remove(index) {
-      this.files.splice(index, 1)
+    uploadFile(data) {
+      this.files.push(data)
+      this.uploadedFiles = [...this.files]
     },
-    handleFileImport() {
-      this.isSelecting = true
-
-      // After obtaining the focus when closing the FilePicker, return the button state to normal
-      window.addEventListener(
-        'focus',
-        () => {
-          this.isSelecting = false
-        },
-        { once: true }
-      )
-
-      // Trigger click on the FileInput
-      this.$refs.uploader.click()
-    },
-    onFileChanged(e) {
-      this.selectedFile = e.target.files
-      this.files = [...this.selectedFile, ...this.files]
-    },
-    uploadToServer() {
-      this.status_name = 'sending'
-      const promises = []
-      this.files.forEach((elem) => {
-        promises.push(this.requestFunc(elem))
-      })
-      Promise.all(promises)
-        .then((values) => {
-          if (
-            values.some((elem) => {
-              return elem.codeResponse != '201'
-            })
-          ) {
-            this.status_name = 'error'
-          } else {
-            this.uploadedFiles = [...this.files]
-            this.status_name = 'success'
-
-          }
-        })
-        .catch((error) => {
-          console.warn(error)
-          this.status_name = 'error'
-        })
-        .finally(() => {
-          if (this.$store.state.ArticleModule.answers.map(elem => elem.id).includes(this.question_data.id)) {
-            this.$store.commit('set_files_answer', {
-              id: this.question_data.id,
-              files: this.files
-            })
-          } else {
-            const files = structuredClone(this.files)
-            this.$store.commit('add_answers', {
-              id: this.question_data.id,
-              answer: this.answer,
-              detailed_response: this.detailed_response,
-              files
-            })
-          }
-        })
-    },
-    async requestFunc(element) {
-      return Answers.sendFile({
-        id_answer: this.id_answer,
-        uuid: Answers.create_UUID(),
-        file: element
-      })
+    removeFile(id) {
+      const index = this.files.findIndex(elem => elem.data.id === id)
+      if (index !== -1) {
+        this.files.splice(index, 1)
+        this.uploadedFiles = [...this.files]
+      }
     },
 
     /* ANSWER LOGIC */
