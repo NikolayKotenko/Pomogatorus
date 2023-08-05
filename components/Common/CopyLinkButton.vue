@@ -44,6 +44,7 @@ export default {
   },
   methods: {
     copyUrl() {
+      this.$toast.success('Ссылка скопирована',{ duration: 5000 })
       this.$refs.linkUrl.focus();
       document.execCommand('copy');
     }

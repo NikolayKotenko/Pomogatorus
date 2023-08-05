@@ -8,7 +8,6 @@
   >
     <v-container>
       <v-tabs
-
         v-model="tab"
         color="#000000"
       >
@@ -54,7 +53,7 @@
                 <v-tooltip bottom>
                   <template #activator="{ on }">
                     <v-icon @click="passStateEye = !passStateEye" v-on="on">
-                      {{ passStateEye ? 'mdi-eye' : 'mdi-eye-off' }}
+                      {{ passStateEye ? "mdi-eye" : "mdi-eye-off" }}
                     </v-icon>
                   </template>
                   Показать/скрыть пароль
@@ -85,6 +84,7 @@
               v-if="!isMobile"
               :loading="loading"
               :local-text="'Войти'"
+              class="mt-5"
               local-class="style_button"
               type="submit"
             />
@@ -142,7 +142,7 @@
         dismissible
         @input="alert.state = false"
       >
-        <span v-html="alert.message"/>
+        <span v-html="alert.message" />
       </v-alert>
     </v-container>
   </v-container>
@@ -154,14 +154,14 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 
-import Request from '../../services/request'
-import ButtonStyled from '../Common/ButtonStyled.vue'
-import Logging from '@/services/logging'
+import Request from "../../services/request";
+import ButtonStyled from "../Common/ButtonStyled.vue";
+import Logging from "@/services/logging";
 
 export default {
-  name: 'LoginAuth',
+  name: "LoginAuth",
   components: { ButtonStyled },
   data() {
     return {
@@ -169,18 +169,18 @@ export default {
       valid: false,
       loading: false,
       emailRules: [
-        (v) => !!v || 'Обязательное для заполнение поле',
-        (v) => /.+@.+/.test(v) || 'E-mail должен быть валидным.'
+        (v) => !!v || "Обязательное для заполнение поле",
+        (v) => /.+@.+/.test(v) || "E-mail должен быть валидным."
       ],
-      passRules: [(v) => !!v || 'Обязательное для заполнение поле', (v) => v.length === 4 || 'Необходимо 4 символа'],
+      passRules: [(v) => !!v || "Обязательное для заполнение поле", (v) => v.length === 4 || "Необходимо 4 символа"],
       passStateEye: false,
-      email_user: '',
-      password: '',
-      name: '',
+      email_user: "",
+      password: "",
+      name: "",
       alert: {
         state: false,
-        type: 'info',
-        message: ''
+        type: "info",
+        message: ""
       },
 
       // inserted_component
@@ -188,125 +188,125 @@ export default {
       height: 0,
       index_component: null,
       stateAuthBlock: true
-    }
+    };
   },
   mounted() {
-    this.getData()
+    this.getData();
     if (this.$store.state.changedCookie) {
-      this.hasCookie()
+      this.hasCookie();
     }
   },
   computed: {
-    ...mapGetters(['stateAuth']),
-    ...mapGetters(['getNameUser']),
+    ...mapGetters(["stateAuth"]),
+    ...mapGetters(["getNameUser"]),
     isMobile() {
-      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     }
   },
   watch: {
-    '$store.getters.stateAuth': {
+    "$store.getters.stateAuth": {
       handler() {
-        this.hasCookie()
+        this.hasCookie();
       }
     },
-    '$store.state.changedCookie': {
+    "$store.state.changedCookie": {
       handler() {
-        this.hasCookie()
+        this.hasCookie();
       }
     }
   },
   methods: {
     hasCookie() {
       if (Request.getAccessTokenInCookies() && this.$store.getters.stateAuth) {
-        this.stateAuthBlock = false
+        this.stateAuthBlock = false;
       } else {
-        this.stateAuthBlock = true
+        this.stateAuthBlock = true;
       }
     },
     alertCall(response) {
-      this.alert.state = true
-      this.alert.message = Logging.getMessage(response)
+      this.alert.state = true;
+      this.alert.message = Logging.getMessage(response);
       this.alert.type = Logging.checkExistErr(response)
-        ? 'error'
+        ? "error"
         : Request.getAccessTokenInCookies()
-          ? 'success'
-          : 'warning'
-      this.loading = false
+          ? "success"
+          : "warning";
+      this.loading = false;
 
-      if (this.alert.type === 'success') {
-        this.$emit('close-modal')
+      if (this.alert.type === "success") {
+        this.$emit("close-modal");
       }
     },
 
     async localLoginUser(index_component) {
-      if (this.valid === false) return false
+      if (this.valid === false) return false;
 
-      this.loading = true
-      const res = await this.$store.dispatch('loginUser', {
+      this.loading = true;
+      const res = await this.$store.dispatch("loginUser", {
         email: this.email_user,
         password: this.password,
         id_dom_elem: index_component,
         full_url: window.location.href
-      })
-      console.log('localLoginUser', res)
-      this.alertCall(res)
-      if (res.codeResponse >= 400) return false
+      });
+      console.log("localLoginUser", res);
+      this.alertCall(res);
+      if (res.codeResponse >= 400) return false;
 
       this.$nextTick(() => {
-        this.hasCookie()
-        this.$store.state.listModal[0].isOpen = false
-      })
+        this.hasCookie();
+        this.$store.state.listModal[0].isOpen = false;
+      });
     },
     async localCreateUser(index_component) {
-      if (this.valid === false) return false
+      if (this.valid === false) return false;
 
-      this.loading = true
+      this.loading = true;
       // Пытаемся создать пользователя
-      const res = await this.$store.dispatch('createUserByEmail', {
+      const res = await this.$store.dispatch("createUserByEmail", {
         email: this.email_user,
         name: this.name,
         id_dom_elem: index_component,
         full_url: window.location.href
-      })
+      });
       if (res.codeResponse === 200 || res.codeResponse === 409) {
-        this.tab = 0
+        this.tab = 0;
       }
-      this.alertCall(res)
+      this.alertCall(res);
     },
     async localResendUserPass(index_component) {
-      if (this.$refs.email_user.validate(true) === false) return false
+      if (this.$refs.email_user.validate(true) === false) return false;
 
-      this.loading = true
+      this.loading = true;
       // Пытаемся создать пользователя
-      const res = await this.$store.dispatch('resendUserPass', {
+      const res = await this.$store.dispatch("resendUserPass", {
         email: this.email_user,
         name: this.name,
         id_dom_elem: index_component,
         full_url: window.location.href
-      })
+      });
       if (res.codeResponse === 404) {
-        this.email_user = ''
-        this.$refs.email_user.validate(true)
+        this.email_user = "";
+        this.$refs.email_user.validate(true);
       }
       if (res.codeResponse === 200 || res.codeResponse === 409) {
-        this.tab = 0
+        this.tab = 0;
       }
-      this.alertCall(res)
+      this.alertCall(res);
     },
     // inserted_components
     getData() {
-      this.index_component = this.$store.state.ArticleModule.countLayout
+      this.index_component = this.$store.state.ArticleModule.countLayout;
     },
     deleteQuestion() {
-      const elem = document.getElementById(`component_wrapper-${this.index_component}`)
-      elem.remove()
-      this.$store.dispatch('deleteComponent', this.index_component)
+      const elem = document.getElementById(`component_wrapper-${this.index_component}`);
+      elem.remove();
+      this.$store.dispatch("deleteComponent", this.index_component);
     }
   }
-}
+};
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 form.login {
   margin: 1em;
 
@@ -329,7 +329,7 @@ form.login {
 }
 </style>
 
-<style lang='scss'>
+<style lang="scss">
 $yellowBackground: rgb(255, 244, 203);
 
 @media only screen and (max-width: 375px) {
@@ -377,7 +377,7 @@ $yellowBackground: rgb(255, 244, 203);
   margin-top: 10px !important;
 
   button {
-    margin-top: 10px;
+    //margin-top: 10px;
   }
 }
 

@@ -66,6 +66,28 @@
         <span>{{ $store.getters.menuItems[3].title }}</span>
       </v-tooltip>
     </div>
+    <div class="vertical_menu__element">
+      <v-tooltip left>
+        <template #activator="{ on, attrs }">
+          <v-btn
+            :href="$store.getters.menuItems[4].path"
+            text
+            class="vertical_menu__element__btn"
+          >
+            <v-icon
+              v-if="$store.getters.menuItems[4].visible"
+              class="vertical_menu__element__icon"
+              v-bind="attrs"
+              large
+              v-on="on"
+            >
+              {{ $store.getters.menuItems[4].icon }}
+            </v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $store.getters.menuItems[4].title }}</span>
+      </v-tooltip>
+    </div>
     <v-divider class="vertical_menu__divider"/>
     <div class="vertical_menu__element">
       <v-tooltip left>

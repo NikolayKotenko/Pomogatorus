@@ -18,11 +18,11 @@
                 </v-icon>
               </div>
             </template>
-            <Collaboration/>
+            <Collaboration />
           </v-menu>
         </TooltipStyled>
       </div>
-      <v-divider/>
+      <v-divider />
     </div>
 
     <TooltipStyled
@@ -47,12 +47,26 @@
       </div>
     </TooltipStyled>
 
-    <TooltipStyled :title="'Фотография объекта'">
-      <v-img class="current_object__image">
-        <v-icon class="current_object__image__icon" x-large>
-          mdi-map-marker-outline
-        </v-icon>
-      </v-img>
+    <TooltipStyled :title="$store.getters['Objects/getFirstPhotoObject']['filename'] || 'Фото объекта'">
+      <!--      <v-img class="current_object__image"> -->
+      <!--        <v-icon class="current_object__image__icon" x-large> -->
+      <!--          mdi-map-marker-outline -->
+      <!--        </v-icon> -->
+      <!--      </v-img> -->
+      <div class="current_object__image">
+        <v-img
+          v-if="$store.getters['Objects/getFirstPhotoObject']['full_path']"
+          :src="$store.state.BASE_URL + $store.getters['Objects/getFirstPhotoObject']['full_path']"
+          height="100%"
+        />
+        <div v-else>
+          <v-img class="current_object__image">
+            <v-icon class="current_object__image__icon" x-large>
+              mdi-map-marker-outline
+            </v-icon>
+          </v-img>
+        </div>
+      </div>
     </TooltipStyled>
 
     <!-- Циклом параметры по булеву "транслировать в сниппет" -->
@@ -71,7 +85,7 @@
     </section>
     <section class="current_object__wrapper_info">
       <span class="current_object__wrapper_info__text">ТЗ объекта: {{ $store.state.Objects.currentObject.name
-      }}</span>
+        }}</span>
       <span class="current_object__wrapper_info__value">7 из 130</span>
       <div class="wrapper_button">
         <TooltipStyled :title="'Перейти к объекту'">
@@ -96,56 +110,67 @@
           </ButtonStyled>
         </TooltipStyled>
       </div>
-      <TagsTechBlock v-if="state_tech_task_block"/>
+      <TagsTechBlock v-if="state_tech_task_block" />
     </section>
   </div>
 </template>
 
 <script>
-import SelectObjectStyled from '../Common/SelectObjectStyled';
-import Collaboration from '../Modals/Collaboration.vue';
-import TooltipStyled from '~/components/Common/TooltipStyled';
-import ButtonStyled from '~/components/Common/ButtonStyled';
-import TagsTechBlock from '~/components/Widgets/TagsTechBlock';
+import SelectObjectStyled from "../Common/SelectObjectStyled";
+import Collaboration from "../Modals/Collaboration.vue";
+import TooltipStyled from "~/components/Common/TooltipStyled";
+import ButtonStyled from "~/components/Common/ButtonStyled";
+import TagsTechBlock from "~/components/Widgets/TagsTechBlock";
 
 export default {
-  name: 'CurrentObjects',
+  name: "CurrentObjects",
   // eslint-disable-next-line vue/no-unused-components
   components: {
     TagsTechBlock,
     Collaboration,
     ButtonStyled,
     TooltipStyled,
-    SelectObjectStyled,
+    SelectObjectStyled
   },
+  // eslint-disable-next-line vue/prop-name-casing
+  props: ["object_data"],
   data() {
     return {
       state_tech_task_block: false,
       alert: {
         state: false,
-        message: ''
-      },
+        message: ""
+      }
     };
   },
-  computed: {},
+  computed: {
+    stateCurrentObject() {
+      return this.object_data.id === this.$store.state.Objects.currentObject?.id;
+    },
+    stateFilledImageObject() {
+      if (!this.object_data?.("osnovnoe-foto-obekta")) return false;
+
+      return this.object_data["osnovnoe-foto-obekta"].length;
+    }
+  },
   watch: {
-    '$store.getters.stateAuth': {
+    "$store.getters.stateAuth": {
       handler(state) {
         if (state) {
-          this.$store.dispatch('getListBroadcastSnippet');
+          this.$store.dispatch("getListBroadcastSnippet");
         } else {
-          this.$store.commit('set_list_broadcast_snippet', []);
+          this.$store.commit("set_list_broadcast_snippet", []);
         }
       }
     },
-    '$store.getters.getUserId': {
+    "$store.getters.getUserId": {
       handler(value) {
-        this.$store.dispatch('Objects/getListObjectsByUserId', value);
+        this.$store.dispatch("Objects/getListObjectsByUserId", value);
       }
     }
   },
   mounted() {
-    this.$store.dispatch('getListBroadcastSnippet');
+    this.$store.dispatch("getListBroadcastSnippet");
   },
   methods: {
     callAuthModal() {
@@ -154,7 +179,7 @@ export default {
       this.$store.state.listModal[0].isOpen = true;
     },
     async callback(data) {
-      await this.$store.dispatch('Objects/setCurrentObject', data);
+      await this.$store.dispatch("Objects/setCurrentObject", data);
     }
   }
 };
@@ -177,12 +202,7 @@ export default {
   transition: all 0.4s ease-in-out !important;
   background: white;
   overflow-y: overlay;
-  @media only screen and (max-width: 1600px) {
-    display: none;
-  }
-  @media only screen and (max-width: 768px){
-    display: block;
-  }
+
 
   &:hover {
     @extend .background-hover;

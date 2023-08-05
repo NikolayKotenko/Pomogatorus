@@ -2,40 +2,54 @@
   <v-container class="collaboration">
     <section class="header">
       <SearchStyled
-        class="invite_input"
-        :is-placeholder="'Пригласить новый участников'"
-        :is-filled="true"
-        :is-rounded="true"
-        :is-outlined="false"
-        :is-custom-search-selections="true"
-        :is-hide-selected="true"
-        :is-loading="$store.state.CollaborationModule.isLoading"
-        :is-items="$store.state.CollaborationModule.listMembers"
         :is-clearable="true"
+        :is-custom-search-selections="true"
+        :is-filled="true"
+        :is-hide-selected="true"
         :is-item-text="'email'"
         :is-item-value="'id'"
+        :is-items="$store.state.CollaborationModule.listMembers"
+        :is-loading="$store.state.CollaborationModule.isLoading"
+        :is-outlined="false"
+        :is-placeholder="'Пригласить новый участников'"
+        :is-rounded="true"
+        class="invite_input"
         @update-search-input="localGetListUsers"
       />
     </section>
-    <span class="category_user">Эксперты</span><hr>
-    <CardInviteUser
-      v-for="(item, index) in $store.getters['CollaborationModule/getFilteredListByRoleExperts']"
-      :key="index"
-      :user-object="item"
-    />
-    <span class="category_user">Пользователи</span><hr>
-    <CardInviteUser
-      v-for="(item) in $store.getters['CollaborationModule/getFilteredListByRoleUsers']"
-      :key="item.id"
-      :user-object="item"
-    />
+
+    <div v-if="$store.state.CollaborationModule.listSearchedMembers.length">
+      <CardInviteUser
+        v-for="(item, index) in $store.state.CollaborationModule.listSearchedMembers"
+        :key="index"
+        :user-object="item"
+        class="invite_user"
+      />
+    </div>
+    <div v-if="$store.getters['CollaborationModule/getFilteredListByRoleExperts'].length">
+      <span class="category_user">Рекомендованные специалисты</span>
+      <hr>
+      <CardInviteUser
+        v-for="(item, index) in $store.getters['CollaborationModule/getFilteredListByRoleExperts']"
+        :key="index"
+        :user-object="item"
+        class="invite_user"
+      />
+    </div>
+    <div v-if="$store.getters['CollaborationModule/getFilteredListByRoleUsers'].length">
+      <span class="category_user">Приглащенные пользователи</span>
+      <hr>
+      <CardInviteUser
+        v-for="(item) in $store.getters['CollaborationModule/getFilteredListByRoleUsers']"
+        :key="item.id"
+        :user-object="item"
+        class="invite_user"
+      />
+    </div>
   </v-container>
 </template>
 
 <script>
-import InputStyled from '../Common/InputStyled'
-import Header from '../Header.vue';
-import ButtonStyled from '~/components/Common/ButtonStyled';
 import SearchStyled from '~/components/Common/SearchStyled';
 import CardInviteUser from '~/components/Common/CardInviteUser';
 
@@ -48,27 +62,32 @@ export default {
   },
   data() {
     return {
-      debounceTimeout: null,
-    }
+      debounceTimeout: null
+    };
   },
   async mounted() {
-    await this.$store.dispatch('CollaborationModule/getListMembers', { id_object: this.$store.getters['Objects/getIdCurrentObject'] });
+    await this.$store.dispatch('CollaborationModule/getListMembersByFilter', { id_object: this.$store.getters['Objects/getIdCurrentObject'] });
   },
-  methods:{
-    localGetListUsers(phrase){
+  methods: {
+    async localGetListUsers(phrase) {
+      if (!phrase) {
+        await this.$store.dispatch('CollaborationModule/getListMembersByFilter', { id_object: this.$store.getters['Objects/getIdCurrentObject'] });
+        return false;
+      }
+
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
 
       this.debounceTimeout = setTimeout(async () => {
-        await this.$store.dispatch('CollaborationModule/getListMembers', { searchPhrase: phrase })
+        await this.$store.dispatch('CollaborationModule/getSearchedListMembers', phrase);
       }, 2000);
-    },
+    }
 
-  },
+  }
 };
 </script>
 
 <style lang="scss" scoped>
-.collaboration{
+.collaboration {
   padding: 15px;
   //position: absolute;
   //top: 0;
@@ -76,12 +95,12 @@ export default {
   //z-index: 9999;
   background-color: white;
   overflow: auto;
-  width: 900px;
+  width: 1000px;
   max-height: 650px;
   box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
 
 
-  .header{
+  .header {
     display: inline-flex;
     width: 100%;
     grid-column-gap: 1em;
@@ -93,23 +112,29 @@ export default {
     z-index: 9;
 
 
-    .invite_input{
-      }
-        color: #37392E!important;
-      .v-input__slot{
-        height: unset!important;
-        min-height: unset!important;
-      }
+    .invite_input {
     }
-    .invite_button{
-      width: unset;
-      min-width: unset;
-      height: unset!important;
+
+    color: #37392E !important;
+
+    .v-input__slot {
+      height: unset !important;
+      min-height: unset !important;
     }
   }
 
-  .category_user{
-    font-size: 1.13em;
+  .invite_button {
+    width: unset;
+    min-width: unset;
+    height: unset !important;
   }
+}
+
+.category_user {
+  font-size: 1.13em;
+}
+.invite_user{
+  margin-top: 20px;
+}
 </style>
 

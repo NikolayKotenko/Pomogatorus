@@ -1,11 +1,11 @@
 <template>
   <div class="card_obj">
     <div class="img">
-      <VImg
+      <v-img
         v-if="stateFilledImageObject"
         :class="{'empty_placeholder': ! stateFilledImageObject }"
-        class="img"
         :src="$store.getters.getImageMainPhotoObjects(object_data['osnovnoe-foto-obekta'][0])"
+        class="img"
         height="100%"
       />
       <span v-else class="empty_placeholder">Фото объекта</span>
@@ -88,12 +88,11 @@ import ButtonStyled from '../Common/ButtonStyled.vue';
 import Collaboration from '../Modals/Collaboration.vue';
 import TooltipStyled from '../Common/TooltipStyled.vue';
 import CopyLinkButton from '../Common/CopyLinkButton.vue';
-import ObjectDetail from './ObjectDetail.vue';
 
 
 export default {
   name: 'CardObject',
-  components: { CopyLinkButton, TooltipStyled, Collaboration, ButtonStyled, },
+  components: { CopyLinkButton, TooltipStyled, Collaboration, ButtonStyled },
   // eslint-disable-next-line vue/prop-name-casing
   props: ['object_data'],
   data: () => ({
@@ -128,6 +127,7 @@ export default {
   methods: {
     async setObject() {
       await this.$store.dispatch('Objects/setCurrentObject', this.object_data);
+      this.$toast.success('Объект выбран',{ duration: 5000 })
     },
     openDetailCard() {
       this.$emit('open-detail', this.object_data);
@@ -261,15 +261,17 @@ export default {
   .img {
     margin-right: 0 !important;
   }
-  .header{
+  .header {
     display: grid !important;
     justify-content: center !important;
   }
   .name_and_address {
     justify-content: center;
+
     .name {
       font-size: 1.2em;
     }
+
     .address {
       font-size: 1em;
     }

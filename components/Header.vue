@@ -34,6 +34,23 @@
 
       <!-- Личный кабинет всегда по правую сторону -->
       <v-toolbar-items class="header_right">
+        <TooltipStyled :title="'Совместная работа'" class="current_object_btn">
+          <v-menu
+            :close-on-content-click="false"
+            left
+            offset-y
+            @input="$store.commit('CollaborationModule/changeStateCollaboration', $event)"
+          >
+            <template #activator="{ on, attrs }">
+              <div style="display: inline-flex; grid-column-gap: 5px" v-bind="attrs" v-on="on">
+                <v-icon large v-bind="attrs" v-on="on">
+                  mdi-account-group-outline
+                </v-icon>
+              </div>
+            </template>
+            <Collaboration v-if="$store.state.CollaborationModule.stateCollaborationMenu"/>
+          </v-menu>
+        </TooltipStyled>
         <TooltipStyled :title="'Текущий объект'" class="current_object_btn">
           <v-menu :close-on-content-click="false" left offset-y>
             <template #activator="{ on, attrs }">
@@ -58,7 +75,6 @@
             <v-btn
               :color="listModal[0].isOpen ? '#fafad2' : 'white'"
               class="text-capitalize link_btn"
-              style="margin-left: 1em;"
               text
               @click="openModals"
             >
@@ -78,15 +94,16 @@
 import { mapState } from 'vuex'
 import TooltipStyled from './Common/TooltipStyled'
 import CurrentObjects from './Widgets/CurrentObjects.vue'
+import Collaboration from './Modals/Collaboration.vue';
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names,vue/no-reserved-component-names
   name: 'Header',
-  components: { CurrentObjects, TooltipStyled },
+  components: { Collaboration, CurrentObjects, TooltipStyled },
   data() {
     return {
       debounceTimeout: null,
-      stateCurrentObject: false
+      stateCurrentObject: false,
     }
   },
   mounted() {
@@ -200,7 +217,8 @@ export default {
 }
 
 .header_right {
-  flex: unset;
+  display: flex;
+  grid-column-gap: 20px;
   margin-left: auto;
 }
 

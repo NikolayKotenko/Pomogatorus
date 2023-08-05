@@ -58,7 +58,7 @@
         </v-btn-toggle>
       </div>
     </div>
-    <VImg
+    <v-img
       :src="$store.getters.getImageByEClientFilesObj(article_data.e_client_files)"
       class="mt-5"
       contain

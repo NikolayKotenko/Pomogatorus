@@ -288,25 +288,13 @@
         </template>
       </div>
 
-      <!--      <div v-if="files.length" class="files_chips"> -->
-      <!--        <h5 class="files_chips__title"> -->
-      <!--          Добавленные файлы -->
-      <!--        </h5> -->
-      <!--        <div class="files_chips__wrapper"> -->
-      <!--          <div v-for="(file, index) in files" :key="index" class="files_chips__wrapper__chip"> -->
-      <!--            <v-chip :key="index" class="mr-1 text-truncate" close small @click:close="remove(index)"> -->
-      <!--              <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ file.name }}</span> -->
-      <!--            </v-chip> -->
-      <!--            <span class="files_chips__wrapper__chip__type">{{ file.name.split('.')[1] }}</span> -->
-      <!--          </div> -->
-      <!--        </div> -->
-      <!--      </div> -->
-
       <transition name="list">
         <div
           v-if="status_question.type !== 'sending' && status_question.type !== 'warning' && check_status"
           class="question_wrapper__content__alert"
         >
+<!-- TODO: в мастере вижу что убрали уведомления? Точно это надо? -->
+          <!--          <span>{{ $globalToasts }}</span> -->
           <v-alert :icon="status_question.icon" :type="status_question.type">
             <span v-html="status_question.text"/>
           </v-alert>

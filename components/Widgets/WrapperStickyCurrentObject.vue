@@ -1,14 +1,14 @@
 <template>
   <div class="wrapper_current_object">
-    <CurrentObjects class="current_local_object"></CurrentObjects>
+    <CurrentObjects class="current_local_object"/>
   </div>
 </template>
 
 <script>
-import CurrentObjects from "./CurrentObjects.vue";
+import CurrentObjects from './CurrentObjects.vue';
 
 export default {
-  name: "WrapperStickyCurrentObject",
+  name: 'WrapperStickyCurrentObject',
   components: { CurrentObjects }
 };
 </script>
@@ -16,12 +16,11 @@ export default {
 <style lang="scss" scoped>
 @media (min-width: 1233px) {
   .wrapper_current_object {
-    display: block !important;
+    display: block;
   }
 }
 
 .wrapper_current_object {
-  display: none;
   height: 1px;
   //width: 1px;
   top: 15px;

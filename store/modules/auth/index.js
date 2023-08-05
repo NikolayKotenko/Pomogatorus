@@ -1,5 +1,5 @@
 import Request from '@/services/request'
-import _clone from '../../../helpers/deepClone'
+import _cloneNative from "@/helpers/deepCloneNativeJs";
 
 export default {
   state: {
@@ -33,11 +33,8 @@ export default {
       const tokensData = await Request.post(
         window.location.origin + '/api/auth/refresh'
       )
-      commit('set_user_data', _clone(tokensData.data?.user_data, 'replace'))
-      commit(
-        'set_default_user_data',
-        _clone(tokensData.data?.user_data, 'replace')
-      )
+      commit('set_user_data', _cloneNative(tokensData.data?.user_data))
+      commit('set_default_user_data', _cloneNative(tokensData.data?.user_data))
       commit('change_changedCookie', true, { root: true })
       return tokensData
     },
@@ -45,11 +42,8 @@ export default {
       const tokensData = await Request.post(
         window.location.origin + '/api/auth/validate-auth'
       )
-      commit('set_user_data', _clone(tokensData.data?.user_data, 'replace'))
-      commit(
-        'set_default_user_data',
-        _clone(tokensData.data?.user_data, 'replace')
-      )
+      commit('set_user_data', _cloneNative(tokensData.data?.user_data))
+      commit('set_default_user_data', _cloneNative(tokensData.data?.user_data))
 
       commit('change_changedCookie', true, { root: true })
       return tokensData
@@ -59,11 +53,8 @@ export default {
         window.location.origin + '/api/auth/login',
         objData
       )
-      commit('set_user_data', _clone(tokensData.data?.user_data, 'replace'))
-      commit(
-        'set_default_user_data',
-        _clone(tokensData.data?.user_data, 'replace')
-      )
+      commit('set_user_data', _cloneNative(tokensData.data?.user_data))
+      commit('set_default_user_data', _cloneNative(tokensData.data?.user_data))
 
       commit('change_changedCookie', true, { root: true })
       return tokensData

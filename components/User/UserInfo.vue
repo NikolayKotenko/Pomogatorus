@@ -7,25 +7,59 @@
       </v-icon>
     </div>
 
-    <div class="card_object pt-5 pb-5">
-      <div v-if="isLoggedIn" class="card_object_container">
-        <UserFields
-          @is-changed="setChanged"
-          @new-data="setData"
+    <v-tabs
+      v-model="tab"
+      class="wtf"
+      color="#000000"
+      grow
+    >
+      <v-tab :key="0">
+        Общая информация
+      </v-tab>
+      <v-tab :key="1">
+        Услуги
+      </v-tab>
+      <!-- Общая информация -->
+      <v-tab-item :key="0">
+        <div class="card_object pt-5 pb-5">
+          <div v-if="isLoggedIn" class="card_object_container">
+            <UserFields
+              @is-changed="setChanged"
+              @new-data="setData"
+            />
+          </div>
+          <LoginAuth v-else/>
+        </div>
+      </v-tab-item>
+
+      <!-- Услуги -->
+      <v-tab-item :key="1">
+        <v-combobox
+          v-model="servicesData"
+          :item-text="'name'"
+          :item-value="'id'"
+          :items="$store.state.UserSettings.listServices"
+          class="pt-5"
+          clearable
+          label="Выберите услуги"
+          outlined
+          multiple
+          placeholder="Выберите услуги"
+          small-chips
+          return-object
+          solo
         />
-      </div>
-      <LoginAuth v-else/>
-    </div>
+      </v-tab-item>
+    </v-tabs>
 
     <div class="save_logout_btn">
       <template v-if="isMobile">
         <ButtonStyled
           v-if="isLoggedIn"
-          class="mobile_save_btn"
           :custom-slot="true"
-          :disabled="!isValid"
           :is-mobile="true"
           :loading="isUpdating"
+          class="mobile_save_btn"
           local-class="style_button"
           @click-button="saveUser"
         >
@@ -44,15 +78,11 @@
       <template v-else>
         <ButtonStyled
           v-if="isLoggedIn"
-          :disabled="!isValid"
           :loading="isUpdating"
           :local-text="'Сохранить'"
           local-class="style_button saveLogoutBtn"
           @click-button="saveUser"
         />
-        <!--        <v-alert type="error"> -->
-        <!--          <span>Уже уходите?</span> -->
-        <!--        </v-alert> -->
         <ButtonStyled
           v-if="isLoggedIn"
           :local-text="'Выйти'"
@@ -81,8 +111,12 @@ export default {
   data: () => ({
     isChanged: false,
     data: {},
-    isValid: false
+    isValid: false,
+    tab: 0
   }),
+  async mounted() {
+    await this.$store.dispatch('UserSettings/getListServices');
+  },
   computed: {
     ...mapState({
       isUpdating: state => state.UserSettings.isUpdating,
@@ -94,7 +128,15 @@ export default {
     },
     isMobile() {
       return this.$device.isMobile;
-    }
+    },
+    servicesData:{
+      get() {
+        return this.userData.services;
+      },
+      set(value) {
+        this.$store.dispatch('UserSettings/setSelectedServicesAction', value)
+      }
+    },
   },
   methods: {
     closeDetail() {
@@ -112,8 +154,11 @@ export default {
       this.data.telephone_state = this.userData.telephone_state;
       this.isValid = value.isValid;
     },
-    saveUser() {
-      this.$store.dispatch('updateUser', { userId: this.userData.id, data: this.data });
+    async saveUser() {
+      await this.$store.dispatch('UserSettings/deleteEntriesServicesByUser');
+      await this.$store.dispatch('UserSettings/setTetherUsersServices', this.$store.state.UserSettings.selectedServices)
+      await this.$store.dispatch('UserSettings/updateUser', { userId: this.userData.id, data: this.data });
+      this.$toast.success('Данные сохранены',{ duration: 5000 })
       this.closeDetail();
     },
   }
@@ -125,6 +170,7 @@ export default {
   height: 100%;
   padding: 20px 30px;
   display: flex;
+  grid-row-gap: 1em;
   flex-direction: column;
 
   .user_info_title {
@@ -148,12 +194,13 @@ export default {
     bottom: 0;
     width: 100%;
 
-    .mobile_save_btn{
+    .mobile_save_btn {
       max-width: 64px;
     }
   }
 }
-.close{
+
+.close {
   max-height: 45px;
   max-width: 200px;
   z-index: 999;
