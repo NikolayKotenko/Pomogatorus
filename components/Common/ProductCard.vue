@@ -1,23 +1,21 @@
 <template>
   <v-container class="product_card_wrapper">
-    <!--    <v-img -->
-    <!--      v-if="$store.getters.getImageByEClientFilesObj(item.e_client_files)" -->
-    <!--      :class="{'empty_placeholder': ! $store.getters.getImageByEClientFilesObj(item.e_client_files) }" -->
-    <!--      :src="$store.getters.getImageByEClientFilesObj(item.e_client_files)" -->
-    <!--    /> -->
-    <div class="empty_placeholder">
-      <span>Фото оборудования</span>
-    </div>
+    <v-img
+      class="empty_placeholder"
+      src="https://baxi.ru/upload/iblock/0d1/ECO_Nova_001.png"
+    />
     <div class="product_info">
       <div class="product_title">
-        <h3>Электрический котел Baxi 20кВт</h3>
+        <h3>{{ data.name }}</h3>
       </div>
       <div class="product_info_list">
-        <li>Артикуль: 13146565</li>
-        <li>Монтаж: Настенный</li>
-        <li>Срок эксплуатации: 12 лет</li>
-        <li>Тип топлива: газ</li>
-        <li>Назначение котла: отопление и ГВС</li>
+        <li>Артикул: {{ data.vendor_code }}</li>
+        <li
+          v-for="(character, index) in data._nomenclature_characteristics"
+          :key="index"
+        >
+          {{ character.name }}: {{ character.value }}{{ character.postfix }}
+        </li>
       </div>
     </div>
     <div class="product_buttons">
@@ -51,9 +49,23 @@
               </v-icon>
             </template>
             <v-card class="detail_card_product">
-              <h2>Электрический котел Baxi 45кВт</h2>
-              <div class="product_photos"/>
+              <h2>{{ data.name }}</h2>
+              <div class="product_photos">
+                <v-img
+                  class="main_photo"
+                  src="https://baxi.ru/upload/iblock/0d1/ECO_Nova_001.png"
+                />
+              </div>
               <v-divider/>
+              <div class="list_characters">
+                <li>Артикул: {{ data.vendor_code }}</li>
+                <li
+                  v-for="(character, index) in data._nomenclature_characteristics"
+                  :key="index"
+                >
+                  {{ character.name }}: {{ character.value }}{{ character.postfix }}
+                </li>
+              </div>
               <div class="detail_card_buttons">
                 <div>
                   <SelectStyled
@@ -107,10 +119,19 @@ import ButtonStyled from './ButtonStyled.vue';
 export default {
   name: 'ProductCard',
   components: { ButtonStyled, TooltipStyled, SelectStyled },
+  props: {
+    data: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
     return {
       showModal: false,
     }
+  },
+  async mounted() {
+    await this.$store.dispatch('NomenclatureModule/getListNomenclature')
   },
   methods: {
     changeFavoriteProduct(){
@@ -167,21 +188,31 @@ export default {
   }
 }
 .empty_placeholder{
-  background-color: #D9D9D9;
-  min-width: 200px;
-  min-height: 140px;
+  background-color: #FFFFFF;
+  background-size: cover;
+  height: 100%;
+  max-height: 140px;
+  max-width: 140px;
   border-radius: 5px;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #FFFFFF;
-  font-size: 1.3em;
 }
 .detail_card_product{
   display: inline-grid;
   width: 675px;
   height: 700px;
   padding: 20px;
+  .product_photos {
+    display: flex;
+    justify-content: center;
+    .main_photo{
+      background-size: cover;
+      max-width: 350px;
+      height: 100%;
+      max-height: 220px;
+    }
+  }
   .detail_card_buttons {
     display: flex;
     justify-content: space-between;

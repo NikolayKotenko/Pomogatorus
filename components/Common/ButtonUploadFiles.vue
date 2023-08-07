@@ -3,18 +3,20 @@
     <dropzone
       id="dropzone"
       ref="dropzone"
-      :destroyDropzone="true"
+      :destroy-dropzone="true"
       :include-styling="false"
       :options="$store.getters.optionsDropzone"
-      :useCustomSlot="true"
+      :use-custom-slot="true"
       class="styleUploadFiles"
       @vdropzone-success="successData"
       @vdropzone-sending="sendingData"
     >
       <div ref="dropzoneTemplate" class="dropzone-custom-content">
-        <!--<div v-if='isDropzoneNotEmpty' class='separator'></div>-->
+        <!-- <div v-if='isDropzoneNotEmpty' class='separator'></div> -->
         <div class="dropzone-label">
-          <v-icon color="#857885" large>mdi-cloud-upload</v-icon>
+          <v-icon color="#857885" large>
+            mdi-cloud-upload
+          </v-icon>
           <span>{{ ExternalPlaceholder }}</span>
         </div>
       </div>
@@ -23,36 +25,35 @@
 </template>
 
 <script>
-import Dropzone from "nuxt-dropzone";
-import "nuxt-dropzone/dropzone.css";
+import Dropzone from 'nuxt-dropzone';
+import 'nuxt-dropzone/dropzone.css';
 
 export default {
-  name: "ButtonUploadFiles",
+  name: 'ButtonUploadFiles',
+
+  components: { Dropzone },
   props: {
     ExternalPlaceholder: {
       type: String,
-      default: "Загрузить файлы"
+      default: 'Загрузить файлы'
     }
   },
-
-  components: { Dropzone },
   methods: {
     sendingData(file, xhr, formData) {
-      formData.append("uuid", file.upload.uuid);
-      formData.append("id_object", parseInt(this.idObject));
-      formData.append("id_object_property", parseInt(this.idProperty));
+      formData.append('uuid', file.upload.uuid);
+      formData.append('id_object', parseInt(this.idObject));
+      formData.append('id_object_property', parseInt(this.idProperty));
 
-      if (this.codeProperty === "osnovnoe-foto-obekta") {
-        formData.append("main_photo_object", true);
+      if (this.codeProperty === 'osnovnoe-foto-obekta') {
+        formData.append('main_photo_object', true);
       }
     },
     successData(file, response) {
-      console.log("successData", response);
       const formatObj = Object.assign({}, response.data);
       this.dzData.push(formatObj);
       this.dropzone_uploaded.push(formatObj);
 
-      this.$emit("uploaded-file", { data: formatObj, index: this.dropzone_uploaded.length - 1 });
+      this.$emit('uploaded-file', { data: formatObj, index: this.dropzone_uploaded.length - 1 });
     }
 
   }

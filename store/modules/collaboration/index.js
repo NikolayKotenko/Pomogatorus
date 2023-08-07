@@ -34,7 +34,7 @@ export default {
     //
     async setUserByObject({ dispatch }, object) {
       const response = await Request.post(
-        this.state.BASE_URL + '/m-to-m/users-objects',
+        this.state.BASE_URL + '/users/invite-user-to-object',
         object
       )
       if (response.codeResponse < 400) {
@@ -86,10 +86,10 @@ export default {
         })
       })
     },
-    getFilteredListByRoleUsers(state) {
+    getFilteredListByRoleUsers(state, getters, rootGetters) {
       return state.listMembers.filter((user) => {
-        return user.groups.some((elem) => {
-          return elem.code === 'polzovateli'
+        return user.services_objects.some((elem) => {
+          return elem.id === rootGetters.Objects.currentObject.id
         })
       })
     },

@@ -11,7 +11,7 @@
         :is-items="$store.state.CollaborationModule.listMembers"
         :is-loading="$store.state.CollaborationModule.isLoading"
         :is-outlined="false"
-        :is-placeholder="'Пригласить новый участников'"
+        :is-placeholder="'Пригласить новых участников'"
         :is-rounded="true"
         class="invite_input"
         @update-search-input="localGetListUsers"
@@ -26,16 +26,16 @@
         class="invite_user"
       />
     </div>
-    <div v-if="$store.getters['CollaborationModule/getFilteredListByRoleExperts'].length">
-      <span class="category_user">Рекомендованные специалисты</span>
-      <hr>
-      <CardInviteUser
-        v-for="(item, index) in $store.getters['CollaborationModule/getFilteredListByRoleExperts']"
-        :key="index"
-        :user-object="item"
-        class="invite_user"
-      />
-    </div>
+    <!--    <div v-if="$store.getters['CollaborationModule/getFilteredListByRoleExperts'].length"> -->
+    <!--      <span class="category_user">Знакомые специалисты</span> -->
+    <!--      <hr> -->
+    <!--      <CardInviteUser -->
+    <!--        v-for="(item, index) in $store.getters['CollaborationModule/getFilteredListByRoleExperts']" -->
+    <!--        :key="index" -->
+    <!--        :user-object="item" -->
+    <!--        class="invite_user" -->
+    <!--      /> -->
+    <!--    </div> -->
     <div v-if="$store.getters['CollaborationModule/getFilteredListByRoleUsers'].length">
       <span class="category_user">Приглащенные пользователи</span>
       <hr>

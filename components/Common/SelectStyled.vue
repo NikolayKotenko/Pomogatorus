@@ -15,6 +15,8 @@
     :placeholder="computedPlaceholder"
     :solo="isSolo"
     :background-color="isBackgroundColor"
+    :multiple="isMultiple"
+    :chips="isChips"
     dense
     color="#000000"
     item-color="#000000"
@@ -69,7 +71,15 @@ export default {
     isBackgroundColor: {
       type: String,
       default: '#FFFFFF'
-    }
+    },
+    isMultiple: {
+      type: Boolean,
+      default: false
+    },
+    isChips: {
+      type: Boolean,
+      default: false
+    },
   },
   data: () => ({
     internalData: '',

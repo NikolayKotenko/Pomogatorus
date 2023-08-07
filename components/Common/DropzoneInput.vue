@@ -290,7 +290,7 @@ export default {
       }
     },
     successData(file, response) {
-      console.log('successData', response)
+
       const formatObj = Object.assign({}, response.data)
       this.dzData.push(formatObj)
       this.dropzone_uploaded.push(formatObj)

@@ -16,11 +16,24 @@ export default {
       state.listServices = []
       state.listServices = payload
     },
-    setSelectedServices(state, payload) {
+    addServices(state, payload) {
+      state.selectedServices.push(payload)
+    },
+    setMountedServices(state, payload) {
       state.selectedServices = payload
     },
   },
   actions: {
+    addServicesAction({ commit, state }, payload) {
+      const checkExist = state.selectedServices.some((elem) => {
+        return elem.id === payload.id
+      })
+      if (checkExist) return true
+
+      commit('addServices', payload)
+      return false
+    },
+
     async updateUser({ commit }, payload) {
       const { userId, data } = payload
 
@@ -46,8 +59,17 @@ export default {
       )
       commit('setListServices', response.data)
     },
-    async setSelectedServicesAction({ commit }, obj) {
-      commit('setSelectedServices', obj)
+    async getUserServices({ commit }, payload) {
+      const response = await Request.get(
+        this.state.BASE_URL +
+          `/m-to-m/users-services?filter[id_user]=${payload}`
+      )
+      if (response.data.length) {
+        commit(
+          'setMountedServices',
+          response.data.map((elem) => elem._services)
+        )
+      }
     },
 
     async deleteEntriesServicesByUser({ rootGetters }) {

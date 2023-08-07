@@ -154,7 +154,6 @@ export default {
         const top = window.scrollY + elem.getBoundingClientRect().top - heightNav
         window.scrollTo({ top, left: 0, behavior: 'smooth' })
       }
-      console.log('work')
     },
     getQuestionTitle(item) {
       if (this.isCollection) {

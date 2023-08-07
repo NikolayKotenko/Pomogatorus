@@ -34,7 +34,7 @@
 
       <!-- Личный кабинет всегда по правую сторону -->
       <v-toolbar-items class="header_right">
-        <TooltipStyled :title="'Совместная работа'" class="current_object_btn">
+        <TooltipStyled :title="'Совместная работа над ' + $store.state.Objects.currentObject.name" class="current_object_btn">
           <v-menu
             :close-on-content-click="false"
             left
