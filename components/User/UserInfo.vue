@@ -12,6 +12,7 @@
       class="wtf"
       color="#000000"
       grow
+      @change="checkServicesTab"
     >
       <v-tab :key="0">
         Общая информация
@@ -34,21 +35,48 @@
 
       <!-- Услуги -->
       <v-tab-item :key="1">
-        <v-combobox
-          v-model="servicesData"
-          :item-text="'name'"
-          :item-value="'id'"
-          :items="$store.state.UserSettings.listServices"
-          class="pt-5"
-          clearable
-          label="Выберите услуги"
-          outlined
-          multiple
-          placeholder="Выберите услуги"
-          small-chips
-          return-object
-          solo
-        />
+        <div class="services_list">
+          <span class="container_title">Мои услуги</span>
+          <v-divider style="margin-bottom: 20px"/>
+          <div
+            v-for="(item, index) in $store.state.UserSettings.selectedServices"
+            :key="index"
+            class="service_card"
+          >
+            <span class="service_title">{{ item.name }}</span>
+            <InputStyled
+              class="service_price"
+              :class="'styleTextField'"
+              :is-label="'Договорная'"
+              :is-outlined="true"
+              :is-disabled="true"
+            />
+          </div>
+        </div>
+        <div class="services_search">
+          <v-combobox
+            v-model="localSelectedService"
+            :item-text="'name'"
+            :item-value="'id'"
+            :items="$store.state.UserSettings.listServices"
+            clearable
+            label="Выберите услуги"
+            outlined
+            placeholder="Выберите услуги"
+            return-object
+            solo
+            @keyup.enter="setServiceByUser"
+          />
+          <TooltipStyled :title="'Добавить услугу'">
+            <v-icon
+              class="add_service_button"
+              size="56"
+              @click="setServiceByUser"
+            >
+              mdi-plus-box-outline
+            </v-icon>
+          </TooltipStyled>
+        </div>
       </v-tab-item>
     </v-tabs>
 
@@ -99,11 +127,17 @@ import { mapState } from 'vuex';
 
 import LoginAuth from '../frontLayouts/LoginAuth';
 import ButtonStyled from '../Common/ButtonStyled.vue';
+import SearchStyled from '../Common/SearchStyled.vue';
+import InputStyled from '../Common/InputStyled.vue';
+import TooltipStyled from '../Common/TooltipStyled.vue';
 import UserFields from './UserFields';
 
 export default {
   name: 'UserInfo',
   components: {
+    TooltipStyled,
+    InputStyled,
+    SearchStyled,
     ButtonStyled,
     UserFields,
     LoginAuth
@@ -112,7 +146,11 @@ export default {
     isChanged: false,
     data: {},
     isValid: false,
-    tab: 0
+    tab: 0,
+    loading: false,
+    serviceName: '',
+    servicePrice: '',
+    localSelectedService: null,
   }),
   async mounted() {
     await this.$store.dispatch('UserSettings/getListServices');
@@ -128,14 +166,6 @@ export default {
     },
     isMobile() {
       return this.$device.isMobile;
-    },
-    servicesData:{
-      get() {
-        return this.userData.services;
-      },
-      set(value) {
-        this.$store.dispatch('UserSettings/setSelectedServicesAction', value)
-      }
     },
   },
   methods: {
@@ -160,6 +190,18 @@ export default {
       await this.$store.dispatch('UserSettings/updateUser', { userId: this.userData.id, data: this.data });
       this.$toast.success('Данные сохранены',{ duration: 5000 })
       this.closeDetail();
+    },
+    async setServiceByUser() {
+      const checkExist = await this.$store.dispatch('UserSettings/addServicesAction', this.localSelectedService)
+      console.log('checkExist', checkExist)
+      if (checkExist) return false;
+
+      this.$toast.success('Услуга добавлена',{ duration: 5000 })
+    },
+    checkServicesTab(tabId){
+      if (tabId === 1) {
+        this.$store.dispatch('UserSettings/getUserServices', this.userData.id)
+      }
     },
   }
 };
@@ -214,5 +256,37 @@ export default {
 .fade-enter,
 .fade-leave-to {
   opacity: 0
+}
+
+.services_list{
+  display: grid;
+  margin-top: 2em;
+  .container_title{
+    font-size: 1.2em;
+    font-weight: 500;
+  }
+  .service_card{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .service_title{
+      font-size: 1.3em;
+    }
+    .service_price{
+      max-width: 150px;
+    }
+
+  }
+}
+.services_search{
+  display: flex;
+  justify-content: space-between;
+}
+.add_service_button{
+  cursor: pointer;
+  &:hover {
+    color: #000000;
+  }
+
 }
 </style>

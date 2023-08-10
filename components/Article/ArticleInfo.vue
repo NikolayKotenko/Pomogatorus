@@ -76,14 +76,15 @@
 
 <script>
 
-import TooltipStyled from "../Common/TooltipStyled.vue";
+import TooltipStyled from '../Common/TooltipStyled.vue';
+import ProductsWidget from '../Common/ProductsWidget.vue';
 
 export default {
-  name: "ArticleInfo",
-  components: { TooltipStyled },
-  props: ["article_data"],
+  name: 'ArticleInfo',
+  components: { ProductsWidget, TooltipStyled },
+  props: ['article_data'],
   data: () => ({
-    articleView: "normal"
+    articleView: 'normal'
   }),
   computed: {
     tagsLength() {
@@ -93,7 +94,7 @@ export default {
   },
   methods: {
     setView() {
-      this.$emit("set-view", this.articleView);
+      this.$emit('set-view', this.articleView);
     }
   }
 };

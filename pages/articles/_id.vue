@@ -14,6 +14,8 @@
       <div v-if="$store.state.ArticleModule.refactoring_content || !article" class="hidden-mask"/>
     </div>
 
+    <ProductsWidget/>
+
     <ViewerStyled ref="viewer" :images="totalImages" class="viewer">
       <img
         v-for="(image, index) in totalImages"
@@ -23,7 +25,6 @@
         class="main_img inserted_image d-none"
       >
     </ViewerStyled>
-
 
     <div v-if="listArticlesExcludeCurrent.length" class="article_info_wrapper__more_article">
       <h3>
@@ -57,6 +58,7 @@
 import Vue from 'vue'
 import ArticleSmallCard from '../../components/Article/ArticleSmallCard.vue'
 import Biathlon from '../../components/Common/Biathlon.vue'
+import ProductsWidget from '../../components/Common/ProductsWidget.vue';
 import ViewerStyled from '~/components/Common/ViewerStyled'
 import ImageLayout from '~/components/frontLayouts/ImageLayout'
 import Question from '~/components/frontLayouts/Question'
@@ -68,7 +70,7 @@ import Request from '~/services/request'
 const VuetifyClass = require('vuetify')
 
 export default {
-  components: { Biathlon, ArticleSmallCard, ArticleInfo, HashTagStyled, ViewerStyled },
+  components: { ProductsWidget, Biathlon, ArticleSmallCard, ArticleInfo, HashTagStyled, ViewerStyled },
   async asyncData({ store, params }) {
     try {
       const articleRequest = await Request.get(`${store.state.BASE_URL}/entity/articles/${params.id}`, '', true)

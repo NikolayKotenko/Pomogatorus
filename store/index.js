@@ -10,6 +10,7 @@ import SearchModule from './modules/search'
 import Tabs from './modules/tabs'
 import Objects from './modules/objects'
 import CollaborationModule from './modules/collaboration'
+import NomenclatureModule from './modules/nomenclature'
 
 const createStore = () => {
   return new Vuex.Store({
@@ -255,6 +256,7 @@ const createStore = () => {
       Tabs,
       Objects,
       CollaborationModule,
+      NomenclatureModule,
     },
   })
 }

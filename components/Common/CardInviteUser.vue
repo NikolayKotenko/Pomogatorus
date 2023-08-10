@@ -63,6 +63,29 @@
       <section class="main_info">
         <section>
           <span class="user_name">{{ getValueField(userObject.middle_name) + ' ' + getValueField(userObject.first_name) }}</span>
+          <v-menu
+            offset-overflow
+            offset-y
+          >
+            <template #activator="{ on, attrs }">
+              <v-icon
+                v-bind="attrs"
+                color="#5D80B5"
+                v-on="on"
+              >
+                mdi-swap-horizontal-circle-outline
+              </v-icon>
+            </template>
+            <v-list>
+              <div class="explain_info">
+                <div>
+                  <span style="font-weight: 500">Пользователь рекомендуется на основании выполненных услуг на других объектах: </span>
+                  <li>БАНЯ Куса, Красные орлы 7 - Монтаж унитаза</li>
+                  <li>БАНЯ Куса, Красные орлы 7 - Монтаж водонагревателя</li>
+                </div>
+              </div>
+            </v-list>
+          </v-menu>
         </section>
         <section class="brands">
           <span class="type">Используемые бренды: </span>
@@ -75,7 +98,7 @@
         </section>
       </section>
       <section class="services">
-        <section>
+        <section v-if="">
           <span class="type">Рекомендуемые услуги: </span>
           <div v-for="(item, index) in getLimitedServices" :key="index" class="list_services">
             <span class="name">
@@ -97,32 +120,7 @@
               </template>
               <v-list>
                 <div class="explain_info">
-                  <span>Услуга нужна чтобы ....</span>
-                </div>
-              </v-list>
-            </v-menu>
-            <v-menu
-              offset-overflow
-              offset-y
-            >
-              <template #activator="{ on, attrs }">
-                <v-icon
-                  small
-                  v-bind="attrs"
-                  color="#5D80B5"
-                  v-on="on"
-                >
-                  mdi-swap-horizontal-circle-outline
-                </v-icon>
-              </template>
-              <v-list>
-                <div class="explain_info">
-                  <h3>Услуга </h3>
-                  <div>
-                    <span>Рекомендуется на основании заполненных параметров в объектке: </span>
-                    <li>Тип крепления - Настенный</li>
-                    <li>Тип топлива - Газ</li>
-                  </div>
+                  <span>{{ getValueField(item.description) }}</span>
                 </div>
               </v-list>
             </v-menu>
@@ -134,62 +132,118 @@
         class="application"
       >
         <!-- Модальное окно "Составление заявки" по клику на кнопку "Отправить заявку". -->
-        <v-dialog
-          v-model="showModal"
-          width="600"
-        >
-          <template #activator="{ on, attrs }">
-            <div
-              v-bind="attrs"
-              v-on="on"
-            >
-              <ButtonStyled
-                v-if="getStateTetheredUserInObject"
-                :local-text="'Поcмотреть заявку'"
-                :local-class="'invite_button style_button'"
-                @click="openModal"
-              />
-              <ButtonStyled
-                v-else
-                :local-text="'Отправить заявку'"
-                :local-class="'invite_button style_button'"
-                @click="openModal"
-              />
-            </div>
-          </template>
-          <v-card class="application_card">
-            <div class="application_title">
-              <h3>Составление заявки</h3>
-              <v-icon @click="closeModal">
-                mdi-close
-              </v-icon>
-            </div>
-            <div>
-              <span>Пригласить {{ getValueField(userObject.middle_name) + ' ' + getValueField(userObject.first_name) }} в качестве: </span>
-            </div>
-            <SelectStyled
-              class="services_select"
-              :items="userObject.services"
-              :item-text="'name'"
-              :item-value="'id'"
-              :is-solo="true"
-            />
-            <div class="services_buttons">
-              <div @click="sendApplication">
+        <template v-if="!getStateTetheredUserInObject">
+          <v-dialog
+            v-model="showModal"
+            width="600"
+          >
+            <template #activator="{ on, attrs }">
+              <div
+                v-bind="attrs"
+                v-on="on"
+              >
                 <ButtonStyled
                   :local-text="'Отправить заявку'"
                   :local-class="'invite_button style_button'"
+                  @click="openModal"
                 />
               </div>
-              <div @click="closeModal">
+            </template>
+            <v-card class="application_card">
+              <div class="application_title">
+                <h3>Составление заявки</h3>
+                <v-icon @click="closeModal">
+                  mdi-close
+                </v-icon>
+              </div>
+              <div>
+                <span>Пригласить {{ getValueField(userObject.middle_name) + ' ' + getValueField(userObject.first_name) }} в качестве: </span>
+              </div>
+              <SelectStyled
+                class="services_select"
+                :items="userObject.services"
+                :item-text="'name'"
+                :item-value="'id'"
+                :is-solo="true"
+                :is-multiple="true"
+                :is-chips="true"
+                @update-input="setSelectedServicesIdsLocal"
+              />
+              <div class="services_buttons">
+                <div @click="sendApplication">
+                  <ButtonStyled
+                    :local-text="'Отправить заявку'"
+                    :local-class="'invite_button style_button'"
+                  />
+                </div>
+                <div @click="closeModal">
+                  <ButtonStyled
+                    :local-text="'Отмена'"
+                    :local-class="'style_close'"
+                  />
+                </div>
+              </div>
+            </v-card>
+          </v-dialog>
+        </template>
+
+        <!-- Модальное окно "Просмотр заявки" по клику на кнопку "Посмотреть заявку". -->
+        <template v-else>
+          <v-dialog
+            v-model="showModal"
+            width="600"
+          >
+            <template #activator="{ on, attrs }">
+              <div
+                v-bind="attrs"
+                v-on="on"
+              >
                 <ButtonStyled
-                  :local-text="'Отмена'"
-                  :local-class="'style_close'"
+                  :local-text="'Поcмотреть заявку'"
+                  :local-class="'invite_button style_button'"
+                  @click="openModal"
                 />
               </div>
-            </div>
-          </v-card>
-        </v-dialog>
+            </template>
+            <v-card class="application_card">
+              <div class="application_title">
+                <h3>Просмотр заявки</h3>
+                <v-icon @click="closeModal">
+                  mdi-close
+                </v-icon>
+              </div>
+              <div>
+                <span>Пользователь
+                  {{ getValueField(userObject.middle_name) + ' ' + getValueField(userObject.first_name) }}
+                  приглашен в качестве исполнителя услуг: </span>
+              </div>
+              <SelectStyled
+                class="services_select"
+                :items="userObject.services"
+                :item-text="'name'"
+                :item-value="'id'"
+                :is-solo="true"
+                :is-multiple="true"
+                :is-chips="true"
+                @update-input="setSelectedServicesIdsLocal"
+              />
+              <div class="services_buttons">
+                <div @click="sendApplication">
+                  <ButtonStyled
+                    :local-text="'Сохранить'"
+                    :local-class="'invite_button style_button'"
+                  />
+                </div>
+                <div @click="removeApplication">
+                  <ButtonStyled
+                    :local-text="'Отстранить'"
+                    :local-class="'style_close'"
+                  />
+                </div>
+              </div>
+            </v-card>
+          </v-dialog>
+        </template>
       </section>
     </div>
   </v-container>
@@ -219,6 +273,7 @@ export default {
         { access: 'Может комментировать',value: 3 },
         { access: 'Может смотреть',value: 4 },
       ],
+      selectedServicesIdsLocal: [],
     }
   },
   computed: {
@@ -232,7 +287,7 @@ export default {
       return this.userObject.services.slice(0, 2)
     },
     getStateTetheredUserInObject() {
-      return this.userObject.objects.some((object) => {
+      return this.userObject.services_objects.some((object) => {
         return object.id === this.$store.getters['Objects/getIdCurrentObject']
       })
     },
@@ -250,13 +305,26 @@ export default {
       this.showModal = false
     },
     async sendApplication() {
-      await this.$store.dispatch('CollaborationModule/setUserByObject',
-        {
-          id_user: this.userObject.id,
-          id_object: this.$store.getters['Objects/getIdCurrentObject']
-        })
-      this.$toast.success('Заявка отправлена',{ duration: 5000 })
+      for (const idServices of this.selectedServicesIdsLocal) {
+        await this.$store.dispatch(
+          'CollaborationModule/setUserByObject',
+          {
+            id_user: this.userObject.id,
+            id_object: this.$store.getters['Objects/getIdCurrentObject'],
+            id_services: idServices,
+          })
+      }
+      this.$toast.success('Заявка составлена',{ duration: 5000 })
       this.closeModal()
+    },
+    removeApplication() {
+      const deleteItem = this.$store.getters['CollaborationModule/getFilteredListByRoleUsers'].splice(0, 2)
+      this.$toast.success('Пользователь отстранён',{ duration: 5000 })
+      this.closeModal()
+    },
+    setSelectedServicesIdsLocal(selectedServices) {
+      this.selectedServicesIdsLocal = selectedServices.map(elem => elem.id)
+
     }
   },
   getters: {
@@ -354,11 +422,12 @@ $orange-color: #F79256;
 .services{
   .list_services{
 
+
   }
 
 }
 .explain_info{
   padding: 20px;
-  max-width: 350px;
+  max-width: 500px;
 }
 </style>

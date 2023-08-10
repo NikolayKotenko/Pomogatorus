@@ -13,8 +13,11 @@
       @update-search-input="localGetListItems"
       @click-clear="$store.dispatch('PopularSelectionsModule/getListSelections');"
     />
-    <ProductCard/>
-    <ProductCard/>
+    <ProductCard
+      v-for="(item) in $store.state.NomenclatureModule.listNomenclature"
+      :key="item.id"
+      :data="item"
+    />
   </v-container>
 </template>
 <script>
@@ -25,7 +28,13 @@ export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Index',
   components: { ProductCard, SearchStyled },
-  mounted() {
+  async mounted() {
+    await this.$store.dispatch('NomenclatureModule/getListNomenclature')
+  },
+  methods: {
+    localGetListItems(){
+
+    }
   }
 }
 </script>
