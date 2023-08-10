@@ -17,7 +17,13 @@
                   v-for="(item, index) in getSortedQuestions"
                   :key="index"
                 >
-                  <TooltipStyled :nudge-top="-10" :title="getQuestionTitle(item)" is-top>
+                  <TooltipStyled
+                    :answer="getAnswer(item)"
+                    :nudge-top="-10"
+                    :title="getQuestionTitle(item)"
+                    is-answer
+                    is-top
+                  >
                     <template>
                       <v-radio-group :value="getAnswer(item)" readonly success>
                         <v-radio :ripple="false" :value="getAnswer(item)" readonly @click="scrollToQuestion(item)"/>
@@ -54,7 +60,13 @@
                   v-for="(item, index) in getSortedQuestions"
                   :key="index"
                 >
-                  <TooltipStyled :nudge-top="-10" :title="getQuestionTitle(item)" is-top>
+                  <TooltipStyled
+                    :answer="getAnswer(item)"
+                    :nudge-top="-10"
+                    :title="getQuestionTitle(item)"
+                    is-answer
+                    is-top
+                  >
                     <template>
                       <v-radio-group :value="getAnswer(item)" readonly success>
                         <v-radio :ripple="false" :value="getAnswer(item)" readonly @click="scrollToQuestion(item)"/>
@@ -127,19 +139,18 @@ export default {
     getAnswer(item) {
       if (this.isCollection) {
         if (item?.answer) {
-          return true
+          return item?.answer
         }
-
       }
 
       if (item?.instance?.answer) {
         // Проверка на ответ в слайдере (диапозоне чисел)
         if (Array.isArray(item?.instance?.answer)) {
           if (parseInt(item?.instance?.min) !== parseInt(item?.instance?.answer[0]) || parseInt(item?.instance?.max) !== parseInt(item?.instance?.answer[1])) {
-            return true
+            return `от: ${parseInt(item?.instance?.answer[0])} до: ${parseInt(item?.instance?.answer[1])}`
           }
         } else {
-          return true
+          return item?.instance?.answer
         }
       }
     },
