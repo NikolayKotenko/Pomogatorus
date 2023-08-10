@@ -20,6 +20,7 @@
                   <TooltipStyled
                     :answer="getAnswer(item)"
                     :nudge-top="-10"
+                    :off-hiding="isScrolling"
                     :title="getQuestionTitle(item)"
                     is-answer
                     is-top
@@ -63,6 +64,7 @@
                   <TooltipStyled
                     :answer="getAnswer(item)"
                     :nudge-top="-10"
+                    :off-hiding="isScrolling"
                     :title="getQuestionTitle(item)"
                     is-answer
                     is-top
@@ -116,6 +118,9 @@ export default {
       default: false
     }
   },
+  data: () => ({
+    isScrolling: false
+  }),
   computed: {
     getSortedQuestions() {
       if (this.isCollection) {
@@ -162,6 +167,28 @@ export default {
       const heightNav = 70
 
       if (elem) {
+        this.isScrolling = true
+
+        // Фича для того, чтобы дождаться скролла и давать возможность скрывать тултип после скролла
+        const checkScrollEnd = (entries, observer) => {
+          entries.forEach(entry => {
+            if (entry.target === elem && entry.intersectionRatio >= 0.90) {
+              setTimeout(() => {
+                this.isScrolling = false
+                observer.disconnect()
+              }, 1500)
+            }
+          })
+        }
+
+        const observer = new IntersectionObserver(checkScrollEnd, {
+          root: null,
+          rootMargin: '0px',
+          threshold: 0.90
+        })
+
+        observer.observe(elem)
+
         const top = window.scrollY + elem.getBoundingClientRect().top - heightNav
         window.scrollTo({ top, left: 0, behavior: 'smooth' })
       }
