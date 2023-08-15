@@ -17,7 +17,14 @@
                   v-for="(item, index) in getSortedQuestions"
                   :key="index"
                 >
-                  <TooltipStyled :nudge-top="-10" :title="getQuestionTitle(item)" is-top>
+                  <TooltipStyled
+                    :answer="getAnswer(item)"
+                    :nudge-top="-10"
+                    :off-hiding="isScrolling"
+                    :title="getQuestionTitle(item)"
+                    is-answer
+                    is-top
+                  >
                     <template>
                       <v-radio-group :value="getAnswer(item)" readonly success>
                         <v-radio :ripple="false" :value="getAnswer(item)" readonly @click="scrollToQuestion(item)"/>
@@ -54,7 +61,14 @@
                   v-for="(item, index) in getSortedQuestions"
                   :key="index"
                 >
-                  <TooltipStyled :nudge-top="-10" :title="getQuestionTitle(item)" is-top>
+                  <TooltipStyled
+                    :answer="getAnswer(item)"
+                    :nudge-top="-10"
+                    :off-hiding="isScrolling"
+                    :title="getQuestionTitle(item)"
+                    is-answer
+                    is-top
+                  >
                     <template>
                       <v-radio-group :value="getAnswer(item)" readonly success>
                         <v-radio :ripple="false" :value="getAnswer(item)" readonly @click="scrollToQuestion(item)"/>
@@ -104,6 +118,9 @@ export default {
       default: false
     }
   },
+  data: () => ({
+    isScrolling: false
+  }),
   computed: {
     getSortedQuestions() {
       if (this.isCollection) {
@@ -127,19 +144,18 @@ export default {
     getAnswer(item) {
       if (this.isCollection) {
         if (item?.answer) {
-          return true
+          return item?.answer
         }
-
       }
 
       if (item?.instance?.answer) {
         // Проверка на ответ в слайдере (диапозоне чисел)
         if (Array.isArray(item?.instance?.answer)) {
           if (parseInt(item?.instance?.min) !== parseInt(item?.instance?.answer[0]) || parseInt(item?.instance?.max) !== parseInt(item?.instance?.answer[1])) {
-            return true
+            return `от: ${parseInt(item?.instance?.answer[0])} до: ${parseInt(item?.instance?.answer[1])}`
           }
         } else {
-          return true
+          return item?.instance?.answer
         }
       }
     },
@@ -151,6 +167,28 @@ export default {
       const heightNav = 70
 
       if (elem) {
+        this.isScrolling = true
+
+        // Фича для того, чтобы дождаться скролла и давать возможность скрывать тултип после скролла
+        const checkScrollEnd = (entries, observer) => {
+          entries.forEach(entry => {
+            if (entry.target === elem && entry.intersectionRatio >= 0.90) {
+              setTimeout(() => {
+                this.isScrolling = false
+                observer.disconnect()
+              }, 1500)
+            }
+          })
+        }
+
+        const observer = new IntersectionObserver(checkScrollEnd, {
+          root: null,
+          rootMargin: '0px',
+          threshold: 0.90
+        })
+
+        observer.observe(elem)
+
         const top = window.scrollY + elem.getBoundingClientRect().top - heightNav
         window.scrollTo({ top, left: 0, behavior: 'smooth' })
       }

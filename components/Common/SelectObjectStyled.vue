@@ -4,18 +4,18 @@
     v-model="currentData"
     :auto-select-first="true"
     :autofocus="isAutofocus"
-    :class='{"selector-custom": currentData && customStyle}'
+    :class="{'selector-custom': currentData && customStyle}"
     :disabled="isDisabled"
     :item-text="itemText"
     :item-value="itemValue"
     :items="items"
     :loading="isLoading"
     :menu-props="{
-            closeOnContentClick: true,
-            bottom: true,
-            offsetY: true,
-            maxWidth: 250
-          }"
+      closeOnContentClick: true,
+      bottom: true,
+      offsetY: true,
+      maxWidth: 250
+    }"
     :multiple="false"
     :placeholder="computedPlaceholder"
     :search-input.sync="blockSearch"
@@ -29,17 +29,17 @@
     @keyup.delete="handleDelete()"
     @input.native.stop.prevent="stopInput($event)"
   >
-    <template v-slot:selection="data">
+    <template #selection="data">
       <span
-        :class='{"scrolling-item": data.item[itemText] && data.item[itemText].length > 24}'
+        :class="{'scrolling-item': data.item[itemText] && data.item[itemText].length > 24}"
         class="selected-item"
         v-bind="data.attrs"
         @click="data.select; focusOn()"
       >
-         {{ (visibleSelectedItem) ? data.item.name : "" }}
+        {{ (visibleSelectedItem) ? data.item.name : '' }}
       </span>
     </template>
-    <template v-slot:append>
+    <template #append>
       <template v-if="!isFocused">
         <v-icon>mdi-chevron-down</v-icon>
       </template>
@@ -47,17 +47,25 @@
         <v-icon>mdi-minus</v-icon>
       </template>
     </template>
-    <template v-slot:item="{ item }">
-      <span :class="item.name"
-            class="wrapper_selected_items"
-            @click="setVisibleSelectedItem(true)"
-            v-html="getLintWords(item.name)"
-      ></span>
+    <template #item="{ item }">
+      <span
+        :class="item.name"
+        class="wrapper_selected_items"
+        @click="setVisibleSelectedItem(true)"
+        v-html="getLintWords(item.name)"
+      />
     </template>
-    <template v-slot:no-data>
+    <template #no-data>
       <v-card class="wrapper_add_new_object" elevation="8">
         <v-card-actions>
-          <v-btn :href="'/objects/'" block class="btn_add_new_object" plain small text>
+          <v-btn
+            :href="'/objects/'"
+            block
+            class="btn_add_new_object"
+            plain
+            small
+            text
+          >
             <v-icon>mdi-plus-circle-outline</v-icon>
             <span>Создать новый объект</span>
           </v-btn>
@@ -68,19 +76,19 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import _clone from "../../helpers/deepClone";
+import { mapGetters } from 'vuex'
+import _clone from '../../helpers/deepClone'
 
 export default {
-  name: "SelectObjectStyled",
+  name: 'SelectObjectStyled',
   props: {
     localClass: {
       type: String,
-      default: ""
+      default: ''
     },
     placeholder: {
       type: String,
-      default: "Выберите объект"
+      default: 'Выберите объект'
     },
     isSolo: {
       type: Boolean,
@@ -93,11 +101,11 @@ export default {
     },
     itemText: {
       type: String,
-      default: ""
+      default: ''
     },
     itemValue: {
       type: String,
-      default: ""
+      default: ''
     },
     items: {
       type: Array,
@@ -125,21 +133,21 @@ export default {
     }
   },
   data: () => ({
-    internalData: "",
+    internalData: '',
     isFocused: false,
     visibleSelectedItem: true,
-    blockSearch: "",
+    blockSearch: '',
     defaultObject: {}
   }),
   watch: {
-    "open_close_cabinet": {
+    'open_close_cabinet': {
       handler(v) {
         if (v && this.haveTrigger) {
           if (this.$refs.autocomplete) {
-            this.defaultObject = _clone(this.$store.state.Objects.currentObject);
-            this.$refs.autocomplete.focus();
-            this.$refs.autocomplete.activateMenu();
-            this.$refs.autocomplete.isMenuActive = true;
+            this.defaultObject = _clone(this.$store.state.Objects.currentObject)
+            this.$refs.autocomplete.focus()
+            this.$refs.autocomplete.activateMenu()
+            this.$refs.autocomplete.isMenuActive = true
           } else {
             // TODO: мы не можем через наш селектор создать новый объект -> Необходимо продумать логику и отрисовать макет
             // this.$refs.createNewObj.focus()
@@ -149,46 +157,64 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["open_close_cabinet"]),
+    ...mapGetters(['open_close_cabinet']),
 
     computedPlaceholder() {
       if (this.isFocused) {
-        return "";
+        return ''
       }
-      return this.placeholder;
+      return this.placeholder
     },
     currentData: {
       get() {
-        return this.data;
+        return this.data
       },
       set(value) {
-        this.$emit("update-input", value);
+        this.$emit('update-input', value)
       }
     }
   },
+  mounted() {
+    this.$nextTick(() => {
+      window.addEventListener('scroll', this.checkScroll)
+    })
+  },
+  beforeDestroy() {
+    this.$nextTick(() => {
+      window.removeEventListener('scroll', this.checkScroll)
+    })
+  },
   methods: {
+    checkScroll() {
+      if (process.client) {
+        if (this.$refs.autocomplete) {
+          this.$refs.autocomplete.blur()
+        }
+      }
+    },
+
     stopInput(e) {
       this.$nextTick(() => {
         if (this.currentData) {
-          e.stopPropagation();
-          e.preventDefault();
+          e.stopPropagation()
+          e.preventDefault()
           // this.blockSearch = '';
-          this.setVisibleSelectedItem(false);
+          this.setVisibleSelectedItem(false)
         }
-      });
+      })
     },
     focusOn() {
-      this.$refs.autocomplete.isMenuActive = true;
+      this.$refs.autocomplete.isMenuActive = true
     },
     focusOut() {
-      this.isFocused = false;
+      this.isFocused = false
 
       if (this.haveTrigger) {
-        this.resetValues();
+        this.resetValues()
       }
     },
     handleDelete() {
-      this.currentData = null;
+      this.currentData = null
     },
     resetValues() {
       // setTimeout(() => {
@@ -199,28 +225,28 @@ export default {
     },
     setVisibleSelectedItem(value) {
       // console.log("setVisibleSelectedItem", value);
-      this.visibleSelectedItem = value;
+      this.visibleSelectedItem = value
     },
     getLintWords(string) {
-      if (!string) return string;
-      if (!this.blockSearch) return string;
+      if (!string) return string
+      if (!this.blockSearch) return string
 
-      const haystackString = string.toLowerCase();
-      const needleString = this.blockSearch.toLowerCase();
-      const resMatch = haystackString.match(needleString);
-      if (!resMatch) return string;
+      const haystackString = string.toLowerCase()
+      const needleString = this.blockSearch.toLowerCase()
+      const resMatch = haystackString.match(needleString)
+      if (!resMatch) return string
 
-      return this.highlightSearchTerm(haystackString, needleString);
+      return this.highlightSearchTerm(haystackString, needleString)
     },
     highlightSearchTerm(string, substring) {
-      const regex = new RegExp(`(${substring})`, "ig");
-      return string.replace(regex, "<b>$1</b>");
+      const regex = new RegExp(`(${substring})`, 'ig')
+      return string.replace(regex, '<b>$1</b>')
     }
   }
-};
+}
 </script>
 
-<style lang="scss">
+<style lang='scss'>
 @import '@/assets/styles/global.scss';
 
 .v-menu__content {
@@ -259,7 +285,7 @@ export default {
   cursor: pointer;
 }
 </style>
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 
 .wrapper_selected_items {
   width: 100%;
