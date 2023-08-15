@@ -14,6 +14,30 @@
     <!-- Если загрузка объектов false    -->
     <template v-else>
       <div v-if="$store.getters['Objects/stateFilledListObjects']" class="card_object flex-grow-1 flex-shrink-1">
+
+        <!-- Быстрые чипсы -->
+        <ChipsStyled
+          :is-filter="true"
+          :is-multiple="true"
+          :list-chips="computedListChips"
+          @update-chips="setSelected"
+        ></ChipsStyled>
+        <!-- Поиск -->
+        <!--        <SearchStyled-->
+        <!--          :class="'styleSearch'"-->
+        <!--          :internal-data="selectedChips"-->
+        <!--          :is-clearable="true"-->
+        <!--          :is-custom-template-selections="true"-->
+        <!--          :is-disabled="loading"-->
+        <!--          :is-hide-selected="false"-->
+        <!--          :is-item-text="'text'"-->
+        <!--          :is-item-value="'text'"-->
+        <!--          :is-loading="loading"-->
+        <!--          :is-placeholder="'Поиск по наименованию'"-->
+        <!--          @update-search-input="localGetListItems"-->
+        <!--          @change-search="setSelected"-->
+        <!--          @click-clear="selectedChips = ''"-->
+        <!--        />-->
         <div v-if="listObjects.length" class="card_object_container">
           <CardObject
             v-for="(object, index) in listObjects"
@@ -101,25 +125,42 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
-import ButtonStyled from '../Common/ButtonStyled.vue';
-import ObjectGlobal from './ObjectGlobal';
-import CardObject from './CardObject.vue';
-import TooltipStyled from '@/components/Common/TooltipStyled';
+import { mapActions, mapGetters, mapState } from "vuex";
+import ButtonStyled from "../Common/ButtonStyled.vue";
+import ObjectGlobal from "./ObjectGlobal";
+import CardObject from "./CardObject.vue";
+import TooltipStyled from "@/components/Common/TooltipStyled";
+import ChipsStyled from "~/components/Common/ChipsStyled";
+import SearchStyled from "~/components/Common/SearchStyled";
 
 export default {
-  name: 'ListObjects',
-  components: { TooltipStyled, ButtonStyled, CardObject, ObjectGlobal },
+  name: "ListObjects",
+  components: { ChipsStyled, TooltipStyled, ButtonStyled, CardObject, ObjectGlobal, SearchStyled },
   data: () => ({
     object: {},
-    newObjAddress: '',
-    newObjName: '',
+    newObjAddress: "",
+    newObjName: "",
     showDetail: false,
     detailData: {},
-    debounceTimeout: null
+    debounceTimeout: null,
+    selectedArticle: null,
+    selectedChips: [],
+    loadComponent: false,
+    listArticles: [],
+    listVariables: [
+      {
+        text: "Мои объекты",
+        value: "filter[home_owner]=true"
+      },
+      {
+        text: "Где я работаю",
+        value: "filter[home_worker]=true"
+      }
+    ],
+    loading: false
   }),
   watch: {
-    'getUserId': {
+    "getUserId": {
       handler(val) {
         this.localGetListObjects(val);
       },
@@ -129,9 +170,9 @@ export default {
   async mounted() {
   },
   computed: {
-    ...mapState('Objects', ['listObjects', 'isLoadingObjects', 'loading_objects']),
-    ...mapState(['userData']),
-    ...mapGetters(['getUserId']),
+    ...mapState("Objects", ["listObjects", "isLoadingObjects", "loading_objects"]),
+    ...mapState(["userData"]),
+    ...mapGetters(["getUserId"]),
 
     notEmptyObject() {
       return !!Object.keys(this.object).length;
@@ -143,18 +184,21 @@ export default {
 
     isMobile() {
       return this.$device.isMobile;
+    },
+    computedListChips() {
+      return this.listVariables.map((elem) => elem.text);
     }
   },
   methods: {
-    ...mapActions('Objects', ['createNewObject', 'getListObjectsByUserId']),
+    ...mapActions("Objects", ["createNewObject", "getListObjectsByUserId"]),
 
     async onCreateNewObject() {
-      this.$toast.success('Объект создан',{ duration: 5000 })
+      this.$toast.success("Объект создан", { duration: 5000 });
       await this.createNewObject({
         address: this.newObjAddress,
         name: this.newObjName
       });
-      this.newObjAddress = '';
+      this.newObjAddress = "";
 
       await this.getListObjectsByUserId(this.getUserId);
     },
@@ -162,7 +206,7 @@ export default {
       this.showDetail = false;
     },
     closeDetail() {
-      this.$emit('close-detail');
+      this.$emit("close-detail");
     },
     openDetail(data) {
       this.detailData = data;
@@ -180,14 +224,28 @@ export default {
     async localGetListObjects(idUser) {
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
       this.debounceTimeout = setTimeout(async () => {
-        const response = await this.$store.dispatch('Objects/getListObjectsByUserId', idUser)
+        const response = await this.$store.dispatch("Objects/getListObjectsByUserId", idUser);
 
-        console.log('response getListObjectsByUserId', response)
+        console.log("response getListObjectsByUserId", response);
         if (response.codeResponse > 400) {
-          await this.$store.dispatch('callModalAuth')
-          this.$store.commit('Objects/setLoadingObjects', false)
+          await this.$store.dispatch("callModalAuth");
+          this.$store.commit("Objects/setLoadingObjects", false);
         }
       }, 1000);
+    },
+    async localGetListItems(searchString) {
+      // if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+      //
+      // this.debounceTimeout = setTimeout(async () => {
+      //   await this.getArticlesBySymbols(searchString);
+      // }, 500);
+    },
+    setSelected(nameChip) {
+      console.log("nameChip", nameChip);
+      this.selectedChips = [];
+      nameChip.forEach((key) => {
+        this.selectedChips.push(this.listVariables[key]);
+      });
     }
   }
 };
@@ -212,7 +270,7 @@ export default {
 .card_object {
   display: flex;
   flex-direction: column;
-  row-gap: 25px;
+  row-gap: 0 !important;
 
   &_container {
     padding: 20px 0 90px 0;
