@@ -15,29 +15,32 @@
     <template v-else>
       <div v-if="$store.getters['Objects/stateFilledListObjects']" class="card_object flex-grow-1 flex-shrink-1">
 
+
+        <!-- TODO  нужно формировать из поиска и из тэгов одну дату и её слать через одну функцию запрос -->
+
         <!-- Быстрые чипсы -->
         <ChipsStyled
           :is-filter="true"
           :is-multiple="true"
           :list-chips="computedListChips"
-          @update-chips="setSelected"
+          @update-chips="setQueryChips"
+          class="chips_list_object"
         ></ChipsStyled>
+
         <!-- Поиск -->
-        <!--        <SearchStyled-->
-        <!--          :class="'styleSearch'"-->
-        <!--          :internal-data="selectedChips"-->
-        <!--          :is-clearable="true"-->
-        <!--          :is-custom-template-selections="true"-->
-        <!--          :is-disabled="loading"-->
-        <!--          :is-hide-selected="false"-->
-        <!--          :is-item-text="'text'"-->
-        <!--          :is-item-value="'text'"-->
-        <!--          :is-loading="loading"-->
-        <!--          :is-placeholder="'Поиск по наименованию'"-->
-        <!--          @update-search-input="localGetListItems"-->
-        <!--          @change-search="setSelected"-->
-        <!--          @click-clear="selectedChips = ''"-->
-        <!--        />-->
+        <SearchStyled
+          :class="'styleSearch'"
+          :is-clearable="true"
+          :is-custom-template-selections="true"
+          :is-disabled="loading_objects"
+          :is-hide-selected="false"
+          :is-item-text="'text'"
+          :is-item-value="'text'"
+          :is-loading="loading_objects"
+          :is-placeholder="'Поиск по наименованию'"
+          @update-search-input="setQuerySearchData"
+        />
+
         <div v-if="listObjects.length" class="card_object_container">
           <CardObject
             v-for="(object, index) in listObjects"
@@ -143,11 +146,8 @@ export default {
     showDetail: false,
     detailData: {},
     debounceTimeout: null,
-    selectedArticle: null,
-    selectedChips: [],
-    loadComponent: false,
-    listArticles: [],
-    listVariables: [
+    selectedQueryChips: [],
+    listQueryFilters: [
       {
         text: "Мои объекты",
         value: "filter[home_owner]=true"
@@ -157,7 +157,10 @@ export default {
         value: "filter[home_worker]=true"
       }
     ],
-    loading: false
+    querySearchData:{
+      value: '',
+      baseQuery: 'filter[search]='
+    },
   }),
   watch: {
     "getUserId": {
@@ -186,7 +189,7 @@ export default {
       return this.$device.isMobile;
     },
     computedListChips() {
-      return this.listVariables.map((elem) => elem.text);
+      return this.listQueryFilters.map((elem) => elem.text);
     }
   },
   methods: {
@@ -233,19 +236,15 @@ export default {
         }
       }, 1000);
     },
-    async localGetListItems(searchString) {
-      // if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
-      //
-      // this.debounceTimeout = setTimeout(async () => {
-      //   await this.getArticlesBySymbols(searchString);
-      // }, 500);
-    },
-    setSelected(nameChip) {
-      console.log("nameChip", nameChip);
-      this.selectedChips = [];
+    setQueryChips(nameChip) {
+      this.selectedQueryChips = [];
       nameChip.forEach((key) => {
-        this.selectedChips.push(this.listVariables[key]);
+        this.selectedQueryChips.push(this.listQueryFilters[key]);
       });
+    },
+    setQuerySearchData(string){
+      const calcString = (string) ? string : '';
+      this.querySearchData.value = this.querySearchData.baseQuery + calcString
     }
   }
 };
@@ -254,6 +253,11 @@ export default {
 <style lang="scss">
 @import 'assets/styles/userObjects';
 
+.chips_list_object{
+  .styleChip{
+    font-size: 1.1em;
+  }
+}
 .modal_wrapper {
   padding: 0 !important;
 }

@@ -8,6 +8,7 @@
             :key="key"
             :filter="isFilter"
             :large="isLarge"
+            :small="isSmall"
             :outlined="isOutlined"
             class="styleChip"
             @click="$emit('click-chip', chip)"
@@ -46,6 +47,10 @@ export default {
       default: false
     },
     isLarge: {
+      type: Boolean,
+      default: false
+    },
+    isSmall: {
       type: Boolean,
       default: false
     },
