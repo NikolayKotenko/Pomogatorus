@@ -90,5 +90,9 @@ export default {
       }
     },
   },
-  getters: {},
+  getters: {
+    getCountServices(state) {
+      return state.selectedServices.length
+    },
+  },
 }

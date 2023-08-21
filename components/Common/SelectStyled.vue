@@ -40,9 +40,8 @@ export default {
       default: false
     },
     data: {
-      type: Object,
-      default: () => {
-      }
+      type: Array,
+      default: () => []
     },
     itemText: {
       type: String,

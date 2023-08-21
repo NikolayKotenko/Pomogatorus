@@ -79,7 +79,7 @@ export default {
 
       this.debounceTimeout = setTimeout(async () => {
         await this.$store.dispatch('CollaborationModule/getSearchedListMembers', phrase);
-      }, 2000);
+      }, 1000);
     }
 
   }

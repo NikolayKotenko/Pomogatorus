@@ -46,8 +46,34 @@
               </div>
             </section>
             <section>
-              <span class="type">Оказываемые услуги: </span>
-              <span/>
+              <span class="type">Оказываемые услуги на объекте: </span>
+              <div v-for="(item, index) in getServicesTetheredByUserObject.slice(0, 2)" :key="index" class="list_services">
+                <span>- {{ item.name }}</span>
+                <TooltipStyled
+                  :title="'Описание услуги'"
+                >
+                  <v-menu
+                    offset-overflow
+                    offset-y
+                  >
+                    <template #activator="{ on, attrs }">
+                      <v-icon
+                        small
+                        v-bind="attrs"
+                        color="#5D80B5"
+                        v-on="on"
+                      >
+                        mdi-help-circle-outline
+                      </v-icon>
+                    </template>
+                    <v-list>
+                      <div class="explain_info">
+                        <span>{{ getValueField(item.description) }}</span>
+                      </div>
+                    </v-list>
+                  </v-menu>
+                </TooltipStyled>
+              </div>
             </section>
             <section class="brands">
               <span class="type">Используемые бренды: </span>
@@ -61,31 +87,33 @@
     <!-- Invite USER CARD -->
     <div class="user_info">
       <section class="main_info">
-        <section>
+        <section style="display: flex;">
           <span class="user_name">{{ getValueField(userObject.middle_name) + ' ' + getValueField(userObject.first_name) }}</span>
-          <v-menu
-            offset-overflow
-            offset-y
-          >
-            <template #activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                color="#5D80B5"
-                v-on="on"
-              >
-                mdi-swap-horizontal-circle-outline
-              </v-icon>
-            </template>
-            <v-list>
-              <div class="explain_info">
-                <div>
-                  <span style="font-weight: 500">Пользователь рекомендуется на основании выполненных услуг на других объектах: </span>
-                  <li>БАНЯ Куса, Красные орлы 7 - Монтаж унитаза</li>
-                  <li>БАНЯ Куса, Красные орлы 7 - Монтаж водонагревателя</li>
+          <TooltipStyled :title="'Основания для рекомендации'">
+            <v-menu
+              offset-overflow
+              offset-y
+            >
+              <template #activator="{ on, attrs }">
+                <v-icon
+                  v-bind="attrs"
+                  color="#5D80B5"
+                  v-on="on"
+                >
+                  mdi-swap-horizontal-circle-outline
+                </v-icon>
+              </template>
+              <v-list>
+                <div class="explain_info">
+                  <div>
+                    <span style="font-weight: 500">Пользователь рекомендуется на основании выполненных услуг на других объектах: </span>
+                    <li>БАНЯ Куса, Красные орлы 7 - Монтаж унитаза</li>
+                    <li>БАНЯ Куса, Красные орлы 7 - Монтаж водонагревателя</li>
+                  </div>
                 </div>
-              </div>
-            </v-list>
-          </v-menu>
+              </v-list>
+            </v-menu>
+          </TooltipStyled>
         </section>
         <section class="brands">
           <span class="type">Используемые бренды: </span>
@@ -98,32 +126,68 @@
         </section>
       </section>
       <section class="services">
-        <section v-if="">
+        <section v-if="!getStateTetheredUserInObject">
           <span class="type">Рекомендуемые услуги: </span>
           <div v-for="(item, index) in getLimitedServices" :key="index" class="list_services">
             <span class="name">
               - {{ getValueField(item.name) }}
             </span>
-            <v-menu
-              offset-overflow
-              offset-y
+            <TooltipStyled
+              :title="'Описание услуги'"
             >
-              <template #activator="{ on, attrs }">
-                <v-icon
-                  small
-                  v-bind="attrs"
-                  color="#5D80B5"
-                  v-on="on"
-                >
-                  mdi-help-circle-outline
-                </v-icon>
-              </template>
-              <v-list>
-                <div class="explain_info">
-                  <span>{{ getValueField(item.description) }}</span>
-                </div>
-              </v-list>
-            </v-menu>
+              <v-menu
+                offset-overflow
+                offset-y
+              >
+                <template #activator="{ on, attrs }">
+                  <v-icon
+                    small
+                    v-bind="attrs"
+                    color="#5D80B5"
+                    v-on="on"
+                  >
+                    mdi-help-circle-outline
+                  </v-icon>
+                </template>
+                <v-list>
+                  <div class="explain_info">
+                    <span>{{ getValueField(item.description) }}</span>
+                  </div>
+                </v-list>
+              </v-menu>
+            </TooltipStyled>
+          </div>
+        </section>
+        <section v-else>
+          <span class="type">Оказываемые услуги: </span>
+          <div v-for="(item, index) in getServicesTetheredByUserObject.slice(0, 2)" :key="index" class="list_services">
+            <span class="name">
+              - {{ getValueField(item.name) }}
+            </span>
+            <TooltipStyled
+              :title="'Описание услуги'"
+            >
+              <v-menu
+                offset-overflow
+                offset-y
+              >
+                <template #activator="{ on, attrs }">
+                  <v-icon
+                    small
+                    v-bind="attrs"
+                    color="#5D80B5"
+                    v-on="on"
+                  >
+                    mdi-help-circle-outline
+                  </v-icon>
+                </template>
+                <v-list>
+                  <div class="explain_info">
+                    <span>{{ getValueField(item.description) }}</span>
+                  </div>
+                </v-list>
+              </v-menu>
+            </TooltipStyled>
           </div>
         </section>
       </section>
@@ -172,6 +236,7 @@
               <div class="services_buttons">
                 <div @click="sendApplication">
                   <ButtonStyled
+                    :is-disabled="!selectedServicesIdsLocal.length"
                     :local-text="'Отправить заявку'"
                     :local-class="'invite_button style_button'"
                   />
@@ -219,6 +284,7 @@
               </div>
               <SelectStyled
                 class="services_select"
+                :data="getServicesTetheredByUserObject"
                 :items="userObject.services"
                 :item-text="'name'"
                 :item-value="'id'"
@@ -230,13 +296,15 @@
               <div class="services_buttons">
                 <div @click="sendApplication">
                   <ButtonStyled
-                    :local-text="'Сохранить'"
+                    :is-disabled="!selectedServicesIdsLocal.length"
+                    :local-text="'Добавить услугу'"
                     :local-class="'invite_button style_button'"
                   />
                 </div>
-                <div @click="removeApplication">
+                <div @click="localDeleteServiceUserByObject">
                   <ButtonStyled
-                    :local-text="'Отстранить'"
+                    :is-disabled="!selectedServicesIdsLocal.length"
+                    :local-text="'Удалить услугу'"
                     :local-class="'style_close'"
                   />
                 </div>
@@ -253,10 +321,11 @@
 import SelectStyled from './SelectStyled.vue';
 import SearchStyled from './SearchStyled.vue';
 import ButtonStyled from './ButtonStyled.vue';
+import TooltipStyled from './TooltipStyled.vue';
 
 export default {
   name: 'CardInviteUser',
-  components: { ButtonStyled, SelectStyled },
+  components: { TooltipStyled, ButtonStyled, SelectStyled },
   props: {
     userObject: {
       type: Object,
@@ -291,6 +360,25 @@ export default {
         return object.id === this.$store.getters['Objects/getIdCurrentObject']
       })
     },
+    getServicesTetheredByUserObject() {
+      const currentObject = this.userObject.services_objects
+        .filter((obj) => obj.id === this.$store.getters['Objects/getIdCurrentObject'])[0];
+
+      if (!currentObject) return []
+
+      if (!currentObject.m_to_m_users_services_objects) return []
+
+      const idsServices = currentObject.m_to_m_users_services_objects
+        .filter((obj) => obj.id_user === this.userObject.id)
+        .map((obj) => obj.id_services)
+
+      return this.userObject.services.filter((obj) => {
+        return idsServices.includes(obj.id)
+      })
+    },
+  },
+  mounted() {
+    this.selectedServicesIdsLocal = this.getServicesTetheredByUserObject.map((obj) => obj.id)
   },
 
   methods: {
@@ -305,8 +393,9 @@ export default {
       this.showModal = false
     },
     async sendApplication() {
+      let response = null;
       for (const idServices of this.selectedServicesIdsLocal) {
-        await this.$store.dispatch(
+        response = await this.$store.dispatch(
           'CollaborationModule/setUserByObject',
           {
             id_user: this.userObject.id,
@@ -314,22 +403,37 @@ export default {
             id_services: idServices,
           })
       }
+      if (! response) return false;
+
+      if (response.codeResponse >= 400) return false;
+
       this.$toast.success('Заявка составлена',{ duration: 5000 })
       this.closeModal()
     },
-    removeApplication() {
-      const deleteItem = this.$store.getters['CollaborationModule/getFilteredListByRoleUsers'].splice(0, 2)
-      this.$toast.success('Пользователь отстранён',{ duration: 5000 })
+    async localDeleteServiceUserByObject() {
+      let response = null;
+      for (const idServices of this.selectedServicesIdsLocal) {
+        response = await this.$store.dispatch(
+          'CollaborationModule/deleteServiceUserByObject',
+          {
+            id_user: this.userObject.id,
+            id_object: this.$store.getters['Objects/getIdCurrentObject'],
+            id_services: idServices,
+          })
+      }
+      if (! response) return false;
+
+      if (response.codeResponse >= 400) return false;
+
+      this.$toast.success('Услуга удалена',{ duration: 5000 })
       this.closeModal()
     },
     setSelectedServicesIdsLocal(selectedServices) {
+      this.selectedServicesIdsLocal = [];
       this.selectedServicesIdsLocal = selectedServices.map(elem => elem.id)
 
     }
   },
-  getters: {
-
-  }
 };
 </script>
 
@@ -419,13 +523,14 @@ $orange-color: #F79256;
   font-size: 0.88em;
 }
 
-.services{
-  .list_services{
+.list_services{
+  display: flex;
+  align-items: center;
 
-
-  }
 
 }
+
+.services{}
 .explain_info{
   padding: 20px;
   max-width: 500px;

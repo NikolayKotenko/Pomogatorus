@@ -38,11 +38,22 @@ export default {
         object
       )
       if (response.codeResponse < 400) {
-        await dispatch('CollaborationModule/getListMembersByFilter', {
+        await dispatch('getListMembersByFilter', {
           id_object: object.id_object,
         })
       }
-      console.log(response)
+      return response
+    },
+    async deleteServiceUserByObject({ dispatch }, object) {
+      const response = await Request.delete(
+        this.state.BASE_URL + '/m-to-m/delete-one-service',
+        object
+      )
+      if (response.codeResponse < 400) {
+        await dispatch('getListMembersByFilter', {
+          id_object: object.id_object,
+        })
+      }
       return response
     },
     async getSearchedListMembers({ commit }, string) {

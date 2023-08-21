@@ -17,8 +17,16 @@
       <v-tab :key="0">
         Общая информация
       </v-tab>
-      <v-tab :key="1">
-        Услуги
+      <v-tab
+        v-if="isLoggedIn"
+        :key="1"
+      >
+        Мои услуги
+        <v-badge
+          :content="$store.getters['UserSettings/getCountServices']"
+          :value="$store.getters['UserSettings/getCountServices']"
+          color="#95D7AE"
+        />
       </v-tab>
       <!-- Общая информация -->
       <v-tab-item :key="0">
@@ -34,16 +42,40 @@
       </v-tab-item>
 
       <!-- Услуги -->
+
       <v-tab-item :key="1">
         <div class="services_list">
-          <span class="container_title">Мои услуги</span>
-          <v-divider style="margin-bottom: 20px"/>
           <div
             v-for="(item, index) in $store.state.UserSettings.selectedServices"
             :key="index"
             class="service_card"
           >
-            <span class="service_title">{{ item.name }}</span>
+            <div style="display: flex; align-items: center;">
+              <span class="service_title">{{ item.name }}</span>
+              <TooltipStyled
+                :title="'Описание услуги'"
+              >
+                <v-menu
+                  offset-overflow
+                  offset-y
+                >
+                  <template #activator="{ on, attrs }">
+                    <v-icon
+                      v-bind="attrs"
+                      color="#5D80B5"
+                      v-on="on"
+                    >
+                      mdi-help-circle-outline
+                    </v-icon>
+                  </template>
+                  <v-list>
+                    <div class="explain_info">
+                      <span>{{ item.description }}</span>
+                    </div>
+                  </v-list>
+                </v-menu>
+              </TooltipStyled>
+            </div>
             <InputStyled
               class="service_price"
               :class="'styleTextField'"

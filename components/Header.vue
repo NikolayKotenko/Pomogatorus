@@ -58,7 +58,7 @@
                 <v-badge
                   :content="$store.getters['Objects/getCountObject']"
                   :value="$store.getters['Objects/getCountObject']"
-                  bordered
+                  color="#95D7AE"
                   overlap
                 >
                   <v-icon large v-bind="attrs" v-on="on">

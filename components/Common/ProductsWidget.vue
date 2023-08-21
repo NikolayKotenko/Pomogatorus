@@ -111,8 +111,8 @@ export default {
   }
   .item_container {
     margin: 12px;
-    width: 250px;
-    height: 250px;
+    width: 230px;
+    height: 230px;
     .img_product {
       background-size: cover;
       height: 100%;
