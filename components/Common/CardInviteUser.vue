@@ -47,8 +47,8 @@
             </section>
             <section>
               <span class="type">Оказываемые услуги на объекте: </span>
-              <div v-for="(item, index) in getServicesTetheredByUserObject.slice(0, 2)" :key="index" class="list_services">
-                <span>- {{ item.name }}</span>
+              <div v-for="(item, index) in getServicesTetheredByUserObject.slice(0, 3)" :key="index" class="list_services">
+                <span class="name">- {{ item.name }}</span>
                 <TooltipStyled
                   :title="'Описание услуги'"
                 >
@@ -160,7 +160,7 @@
         </section>
         <section v-else>
           <span class="type">Оказываемые услуги: </span>
-          <div v-for="(item, index) in getServicesTetheredByUserObject.slice(0, 2)" :key="index" class="list_services">
+          <div v-for="(item, index) in getServicesTetheredByUserObject.slice(0, 3)" :key="index" class="list_services">
             <span class="name">
               - {{ getValueField(item.name) }}
             </span>
@@ -461,7 +461,8 @@ $orange-color: #F79256;
   }
 }
 .application {
-  padding-top: 20px ;
+  padding-top: 20px;
+
 }
 .application_card {
   padding: 20px;
@@ -486,7 +487,7 @@ $orange-color: #F79256;
   grid-column-gap: 1em;
   align-items: center;
   width: 100%;
-  max-width: 1000px;
+  max-width: 1080px;
   border-radius: 5px;
   transition: all 0.4s ease-in-out;
   cursor: default;
