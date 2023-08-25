@@ -13,10 +13,16 @@
 
     <!-- Если загрузка объектов false    -->
     <template v-else>
+      <!-- TODO доделать -->
+<!--      <VProgressCircular-->
+<!--        v-if="$store.getters.stateAuth || $store.state['Objects/isLoading']"-->
+<!--        :size="50"-->
+<!--        color="primary"-->
+<!--        indeterminate-->
+<!--        style="margin: 20px auto 40px auto"-->
+<!--      />-->
+
       <div v-if="$store.getters['Objects/stateFilledListObjects']" class="card_object flex-grow-1 flex-shrink-1">
-
-
-        <!-- TODO  нужно формировать из поиска и из тэгов одну дату и её слать через одну функцию запрос -->
 
         <!-- Быстрые чипсы -->
         <ChipsStyled
@@ -24,7 +30,7 @@
           :is-multiple="true"
           :list-chips="computedListChips"
           class="chips_list_object"
-          @update-chips="setQueryChips;"
+          @update-chips="setQueryChips"
         ></ChipsStyled>
 
         <!-- Поиск -->
@@ -38,7 +44,8 @@
           :is-item-value="'text'"
           :is-loading="loading_objects"
           :is-placeholder="'Поиск по наименованию'"
-          @update-search-input="setQuerySearchData;"
+          @update-search-input="setQuerySearchData"
+          style="max-height: 61px"
         />
 
         <div v-if="listObjects.length" class="card_object_container">
@@ -150,16 +157,16 @@ export default {
     listQueryFilters: [
       {
         text: "Мои объекты",
-        value: "filter[home_owner]=true"
+        value: "home_owner=true"
       },
       {
         text: "Где я работаю",
-        value: "filter[home_worker]=true"
+        value: "home_worker=true"
       }
     ],
     querySearchData: {
+      baseQuery: "search=",
       value: "",
-      baseQuery: "filter[search]="
     },
     allQueryFilters: []
   }),
@@ -204,7 +211,7 @@ export default {
       });
       this.newObjAddress = "";
 
-      await this.getListObjectsByUserId(this.getUserId);
+      await this.getListObjectsByUserId();
     },
     closeDetailObj() {
       this.showDetail = false;
@@ -228,7 +235,7 @@ export default {
     async localGetListObjects(idUser) {
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
       this.debounceTimeout = setTimeout(async () => {
-        const response = await this.$store.dispatch("Objects/getListObjectsByUserId", idUser);
+        const response = await this.$store.dispatch("Objects/getListObjectsByUserId");
 
         console.log("response getListObjectsByUserId", response);
         if (response.codeResponse > 400) {
@@ -245,19 +252,27 @@ export default {
       this.computedAllQuery();
     },
     setQuerySearchData(string) {
-      const calcString = (string) ? string : "";
-      this.querySearchData.value = this.querySearchData.baseQuery + calcString;
+      this.querySearchData.value = (string) ? string : "";
       this.computedAllQuery();
     },
-    computedAllQuery() {
-      console.log("this.selectedQueryChips", this.selectedQueryChips);
-      console.log("this.querySearchData", this.querySearchData);
+    async computedAllQuery() {
+      const value1 = this.selectedQueryChips.map((elem) => elem.value);
+      const value2 = (this.querySearchData.value) ? this.querySearchData.baseQuery + this.querySearchData.value : null;
 
-      this.allQueryFilters = Object.assign(
-        {},
-        this.selectedQueryChips.map((elem) => elem.value),
-        this.querySearchData.map((elem) => elem.value)
-      );
+      const calcQueryFilters = [];
+      calcQueryFilters.push(...value1)
+      if (value2){
+        calcQueryFilters.push(value2)
+      }
+
+      this.allQueryFilters = [];
+      calcQueryFilters.forEach((string) => {
+        const params = string.split('=');
+        this.allQueryFilters.push({
+          [params[0]]: params[1]
+        })
+      })
+      const response = await this.$store.dispatch("Objects/getListObjectsByUserId", this.allQueryFilters);
     }
   }
 };
@@ -291,7 +306,7 @@ export default {
   row-gap: 0 !important;
 
   &_container {
-    padding: 20px 0 90px 0;
+    padding: 20px 0 25% 0;
   }
 }
 

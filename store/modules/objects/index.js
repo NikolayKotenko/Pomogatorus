@@ -50,18 +50,21 @@ export default {
       commit('set_currentObject', currentObj)
     },
     // TODO: Когда появится новый "Безопасный" метод заменить на него по токену
-    async getListObjectsByUserId({ commit, dispatch }, idUser) {
-      const query = constructFilterQuery({
-        id_user: idUser || null,
-      })
+    async getListObjectsByUserId({ commit, dispatch, getters, rootGetters }, queryArr = []) {
+      commit('setLoading', true)
 
+      queryArr.push({
+        'id_user': rootGetters.getUserId || null
+      })
+      console.log('queryArr', queryArr)
+      const query = constructFilterQuery(queryArr)
       const response = await Request.get(
         this.state.BASE_URL + `/entity/objects${query}&sort[updated_at]=desc`
       )
       commit('setListObjects', response.data)
       dispatch('onloadSetCurrentUserObject')
 
-      commit('setLoadingObjects', false)
+      commit('setLoading', false)
 
       return response
     },
