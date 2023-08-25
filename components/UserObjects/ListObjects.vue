@@ -23,8 +23,8 @@
           :is-filter="true"
           :is-multiple="true"
           :list-chips="computedListChips"
-          @update-chips="setQueryChips"
           class="chips_list_object"
+          @update-chips="setQueryChips;"
         ></ChipsStyled>
 
         <!-- Поиск -->
@@ -38,7 +38,7 @@
           :is-item-value="'text'"
           :is-loading="loading_objects"
           :is-placeholder="'Поиск по наименованию'"
-          @update-search-input="setQuerySearchData"
+          @update-search-input="setQuerySearchData;"
         />
 
         <div v-if="listObjects.length" class="card_object_container">
@@ -157,10 +157,11 @@ export default {
         value: "filter[home_worker]=true"
       }
     ],
-    querySearchData:{
-      value: '',
-      baseQuery: 'filter[search]='
+    querySearchData: {
+      value: "",
+      baseQuery: "filter[search]="
     },
+    allQueryFilters: []
   }),
   watch: {
     "getUserId": {
@@ -241,10 +242,22 @@ export default {
       nameChip.forEach((key) => {
         this.selectedQueryChips.push(this.listQueryFilters[key]);
       });
+      this.computedAllQuery();
     },
-    setQuerySearchData(string){
-      const calcString = (string) ? string : '';
-      this.querySearchData.value = this.querySearchData.baseQuery + calcString
+    setQuerySearchData(string) {
+      const calcString = (string) ? string : "";
+      this.querySearchData.value = this.querySearchData.baseQuery + calcString;
+      this.computedAllQuery();
+    },
+    computedAllQuery() {
+      console.log("this.selectedQueryChips", this.selectedQueryChips);
+      console.log("this.querySearchData", this.querySearchData);
+
+      this.allQueryFilters = Object.assign(
+        {},
+        this.selectedQueryChips.map((elem) => elem.value),
+        this.querySearchData.map((elem) => elem.value)
+      );
     }
   }
 };
@@ -253,11 +266,12 @@ export default {
 <style lang="scss">
 @import 'assets/styles/userObjects';
 
-.chips_list_object{
-  .styleChip{
+.chips_list_object {
+  .styleChip {
     font-size: 1.1em;
   }
 }
+
 .modal_wrapper {
   padding: 0 !important;
 }
