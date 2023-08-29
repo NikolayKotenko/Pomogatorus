@@ -12,28 +12,30 @@
     </template>
     <!-- Если загрузка объектов false    -->
     <template v-else>
-      <!-- Быстрые чипсы -->
-      <ChipsStyled
-        :is-filter="true"
-        :is-multiple="true"
-        :list-chips="computedListChips"
-        class="chips_list_object"
-        @update-chips="setQueryChips"
-      ></ChipsStyled>
-      <!-- Поиск -->
-      <SearchStyled
-        :class="'styleSearch'"
-        :is-clearable="true"
-        :is-custom-template-selections="true"
-        :is-disabled="loading_objects"
-        :is-hide-selected="false"
-        :is-item-text="'text'"
-        :is-item-value="'text'"
-        :is-loading="loading_objects"
-        :is-placeholder="'Поиск по имени, адресу, заметкам'"
-        style="max-height: 61px"
-        @update-search-input="setQuerySearchData"
-      />
+      <v-card class="static_search_breadcrumbs" elevation="5" outlined shaped>
+        <!-- Быстрые чипсы -->
+        <ChipsStyled
+          :is-filter="true"
+          :is-multiple="true"
+          :list-chips="computedListChips"
+          class="chips_list_object"
+          @update-chips="setQueryChips"
+        ></ChipsStyled>
+        <!-- Поиск -->
+        <SearchStyled
+          :class="'styleSearch'"
+          :is-clearable="true"
+          :is-custom-template-selections="true"
+          :is-disabled="loading_objects"
+          :is-hide-selected="false"
+          :is-item-text="'text'"
+          :is-item-value="'text'"
+          :is-loading="loading_objects"
+          :is-placeholder="'Поиск по имени, адресу, заметкам'"
+          style="max-height: 61px"
+          @update-search-input="setQuerySearchData"
+        />
+      </v-card>
       <div v-if="$store.getters['Objects/stateFilledListObjects'] && !$store.state.Objects.isLoading"
            class="card_object flex-grow-1 flex-shrink-1">
         <div class="card_object_container">
@@ -256,7 +258,22 @@ export default {
 <style lang="scss">
 @import 'assets/styles/userObjects';
 
+.static_search_breadcrumbs {
+  position: sticky;
+  display: block;
+  top: 1px;
+  background: white;
+  z-index: 9;
+  padding: 15px;
+
+  .styleSearch {
+    font-size: 1.3em !important;
+  }
+}
+
 .chips_list_object {
+  margin-top: 0 !important;
+
   .styleChip {
     font-size: 1.1em;
   }
