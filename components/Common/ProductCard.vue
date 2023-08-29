@@ -21,8 +21,8 @@
     <div class="product_buttons">
       <div class="product_icons">
         <TooltipStyled
-          :title="'Добавить в избранное'"
           :is-top="true"
+          :title="'Добавить в избранное'"
         >
           <v-icon
             size="36"
@@ -32,8 +32,8 @@
           </v-icon>
         </TooltipStyled>
         <TooltipStyled
-          :title="'Подробнее о товаре'"
           :is-top="true"
+          :title="'Подробнее о товаре'"
         >
           <v-dialog
             v-model="showModal"
@@ -56,7 +56,7 @@
                   src="https://baxi.ru/upload/iblock/0d1/ECO_Nova_001.png"
                 />
               </div>
-              <v-divider/>
+              <v-divider />
               <div class="list_characters">
                 <li>Артикул: {{ data.vendor_code }}</li>
                 <li
@@ -84,16 +84,16 @@
           </v-dialog>
         </TooltipStyled>
         <TooltipStyled
-          :title="'Перейти в Яндекс Маркет'"
           :is-top="true"
+          :title="'Перейти в Яндекс Маркет'"
         >
           <v-icon size="36">
             mdi-heart-outline
           </v-icon>
         </TooltipStyled>
         <TooltipStyled
-          :title="'Подробнее об эксплуатации'"
           :is-top="true"
+          :title="'Подробнее об эксплуатации'"
         >
           <v-icon size="36">
             mdi-file-cog-outline
@@ -102,9 +102,9 @@
       </div>
       <div class="product_function_btn">
         <SelectStyled
-          class=""
           :is-solo="true"
           :placeholder="'Выберите действие'"
+          class=""
         />
       </div>
     </div>
@@ -112,12 +112,12 @@
 </template>
 
 <script>
-import SelectStyled from './SelectStyled.vue';
-import TooltipStyled from './TooltipStyled.vue';
-import ButtonStyled from './ButtonStyled.vue';
+import SelectStyled from "./SelectStyled.vue";
+import TooltipStyled from "./TooltipStyled.vue";
+import ButtonStyled from "./ButtonStyled.vue";
 
 export default {
-  name: 'ProductCard',
+  name: "ProductCard",
   components: { ButtonStyled, TooltipStyled, SelectStyled },
   props: {
     data: {
@@ -127,29 +127,29 @@ export default {
   },
   data() {
     return {
-      showModal: false,
-    }
+      showModal: false
+    };
   },
   async mounted() {
-    await this.$store.dispatch('NomenclatureModule/getListNomenclature')
+    await this.$store.dispatch("NomenclatureModule/getListNomenclature");
   },
   methods: {
-    changeFavoriteProduct(){
-      this.$toast.success('Добавленно в избранное', { duration: 5000 })
+    changeFavoriteProduct() {
+      this.$toast.success("Добавленно в избранное", { duration: 5000 });
     },
     openModal() {
-      this.showModal = true
+      this.showModal = true;
     },
     closeModal() {
-      this.showModal = false
-    },
-  },
+      this.showModal = false;
+    }
+  }
 
-}
+};
 </script>
 
 <style lang="scss" scoped>
-.product_card_wrapper{
+.product_card_wrapper {
   display: inline-flex;
   grid-column-gap: 20px;
   justify-content: space-between;
@@ -159,35 +159,39 @@ export default {
   margin-top: 20px;
   border-radius: 5px;
   transition: all 0.4s ease-in-out;
+
   &:hover {
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
     background-color: #FFF4CB;
   }
 
-  .product_info{
+  .product_info {
     display: grid;
     margin-right: auto;
 
-    .product_info_list{
+    .product_info_list {
       font-size: 0.8em;
       color: #8A8784;
       margin-top: auto;
     }
   }
-  .product_buttons{
+
+  .product_buttons {
     display: grid;
 
     .product_icons {
       display: inline-flex;
       margin-bottom: auto;
-      justify-content: end;
+      justify-content: flex-end;
     }
-    .product_function_btn{
+
+    .product_function_btn {
       margin-top: auto;
     }
   }
 }
-.empty_placeholder{
+
+.empty_placeholder {
   background-color: #FFFFFF;
   background-size: cover;
   height: 100%;
@@ -198,25 +202,29 @@ export default {
   justify-content: center;
   align-items: center;
 }
-.detail_card_product{
+
+.detail_card_product {
   display: inline-grid;
   width: 675px;
   height: 700px;
   padding: 20px;
+
   .product_photos {
     display: flex;
     justify-content: center;
-    .main_photo{
+
+    .main_photo {
       background-size: cover;
       max-width: 350px;
       height: 100%;
       max-height: 220px;
     }
   }
+
   .detail_card_buttons {
     display: flex;
     justify-content: space-between;
-    align-items: end;
+    align-items: flex-end;
   }
 }
 </style>

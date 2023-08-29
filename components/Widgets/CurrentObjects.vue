@@ -165,7 +165,7 @@ export default {
     },
     "$store.getters.getUserId": {
       handler(value) {
-        this.$store.dispatch("Objects/getListObjectsByUserId", value);
+        this.$store.dispatch("Objects/getListObjectsByUserId");
       }
     }
   },
