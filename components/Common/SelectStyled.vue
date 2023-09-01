@@ -17,6 +17,7 @@
     :background-color="isBackgroundColor"
     :multiple="isMultiple"
     :chips="isChips"
+    :append-icon="isAppendIcon"
     dense
     color="#000000"
     item-color="#000000"
@@ -78,6 +79,10 @@ export default {
     isChips: {
       type: Boolean,
       default: false
+    },
+    isAppendIcon: {
+      type: String,
+      default: ''
     },
   },
   data: () => ({

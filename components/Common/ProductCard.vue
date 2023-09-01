@@ -1,5 +1,6 @@
 <template>
   <v-container class="product_card_wrapper">
+    <!-- Общая информация -->
     <v-img
       class="empty_placeholder"
       src="https://baxi.ru/upload/iblock/0d1/ECO_Nova_001.png"
@@ -18,8 +19,11 @@
         </li>
       </div>
     </div>
+
+    <!-- Меню Кнопок -->
     <div class="product_buttons">
       <div class="product_icons">
+        <!-- Избранное -->
         <TooltipStyled
           :title="'Добавить в избранное'"
           :is-top="true"
@@ -31,6 +35,8 @@
             mdi-heart-outline
           </v-icon>
         </TooltipStyled>
+
+        <!-- Модальное окно. Детальная карточка товара -->
         <TooltipStyled
           :title="'Подробнее о товаре'"
           :is-top="true"
@@ -48,49 +54,90 @@
                 mdi-list-box-outline
               </v-icon>
             </template>
+
             <v-card class="detail_card_product">
               <h2>{{ data.name }}</h2>
+
+              <!-- Фотографии Оборудования -->
               <div class="product_photos">
                 <v-img
+                  contain
                   class="main_photo"
-                  src="https://baxi.ru/upload/iblock/0d1/ECO_Nova_001.png"
+                  src="https://baxi.ru/upload/resize_cache/iblock/9f7/nhgq6mqyk0hiqa1nj4z5xumqvil0ursp/800_700_1/ECO_LIFE_124F_03.png"
                 />
               </div>
               <v-divider/>
-              <div class="list_characters">
-                <li>Артикул: {{ data.vendor_code }}</li>
-                <li
-                  v-for="(character, index) in data._nomenclature_characteristics"
-                  :key="index"
-                >
-                  {{ character.name }}: {{ character.value }}{{ character.postfix }}
-                </li>
+
+              <!-- Инфорамация об Оборудовании -->
+              <div class="product_detail_info">
+                <v-tabs vertical color="#95D7AE">
+                  <v-tab :key="0">
+                    Описание
+                  </v-tab>
+                  <v-tab :key="1">
+                    Характеристики
+                  </v-tab>
+                  <v-tab :key="2">
+                    Документация
+                  </v-tab>
+                  <v-tab-item :key="0">
+                    <div>
+                      <span class="product_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+                        ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                        laboris nisi ut aliquip ex ea commodo consequat.
+                      </span>
+                    </div>
+                  </v-tab-item>
+                  <v-tab-item :key="1">
+                    <div class="product_characteristics">
+                      <li>Артикул: {{ data.vendor_code }}</li>
+                      <li
+                        v-for="(character, index) in data._nomenclature_characteristics"
+                        :key="index"
+                      >
+                        {{ character.name }}: {{ character.value }}{{ character.postfix }}
+                      </li>
+                    </div>
+                  </v-tab-item>
+                  <v-tab-item :key="2">
+                    <div class="product_documents"/>
+                  </v-tab-item>
+                </v-tabs>
               </div>
-              <div class="detail_card_buttons">
+
+              <!-- Функциональные кнопки -->
+              <div class="product_detail_buttons">
+                <SelectStyled
+                  class="function_btn"
+                  :items="actionsWithProduct"
+                  :item-text="'action'"
+                  :item-value="'value'"
+                  :is-solo="true"
+                  :placeholder="'Выберите действие'"
+                />
                 <div>
-                  <SelectStyled
-                    :is-solo="true"
-                    :placeholder="'Выберите действие'"
-                  />
-                </div>
-                <div @click="closeModal">
                   <ButtonStyled
                     :local-text="'Закрыть'"
-                    local-class="style_close"
+                    :local-class="'style_close'"
+                    @click-button="closeModal"
                   />
                 </div>
               </div>
             </v-card>
           </v-dialog>
         </TooltipStyled>
+
+        <!-- Ссылка на маркетплейс -->
         <TooltipStyled
           :title="'Перейти в Яндекс Маркет'"
           :is-top="true"
         >
           <v-icon size="36">
-            mdi-heart-outline
+            mdi-store-outline
           </v-icon>
         </TooltipStyled>
+
+        <!-- Модальное окно эксплуатации -->
         <TooltipStyled
           :title="'Подробнее об эксплуатации'"
           :is-top="true"
@@ -100,9 +147,12 @@
           </v-icon>
         </TooltipStyled>
       </div>
-      <div class="product_function_btn">
+      <div class="product_detail_buttons">
         <SelectStyled
-          class=""
+          class="function_btn"
+          :items="actionsWithProduct"
+          :item-text="'action'"
+          :item-value="'value'"
           :is-solo="true"
           :placeholder="'Выберите действие'"
         />
@@ -128,6 +178,12 @@ export default {
   data() {
     return {
       showModal: false,
+      actionsWithProduct: [
+        { action: 'Зарегистрировать покупку', value: 1 },
+        { action: 'Оформить акт установки', value: 2 },
+        { action: 'Оформить акт тех.обслуживания', value: 3 },
+        { action: 'Оформить акт утилизации', value: 4 },
+      ],
     }
   },
   async mounted() {
@@ -182,14 +238,11 @@ export default {
       margin-bottom: auto;
       justify-content: end;
     }
-    .product_function_btn{
-      margin-top: auto;
-    }
   }
 }
 .empty_placeholder{
   background-color: #FFFFFF;
-  background-size: cover;
+  background-size: contain;
   height: 100%;
   max-height: 140px;
   max-width: 140px;
@@ -206,17 +259,34 @@ export default {
   .product_photos {
     display: flex;
     justify-content: center;
+    height: 220px;
     .main_photo{
-      background-size: cover;
+      background-size: contain;
       max-width: 350px;
-      height: 100%;
-      max-height: 220px;
     }
   }
-  .detail_card_buttons {
-    display: flex;
-    justify-content: space-between;
-    align-items: end;
+  .product_detail_info{
+    height: 200px;
+    .product_description{
+      font-size: 0.9em;
+    }
+    .product_characteristics{
+      font-size: 0.9em;
+      color: #8A8784;
+      margin-top: auto;
+    }
   }
+
+}
+.product_detail_buttons{
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+
+}
+.function_btn{
+  width: 320px;
+  max-width: 320px;
+  margin-bottom: 0;
 }
 </style>

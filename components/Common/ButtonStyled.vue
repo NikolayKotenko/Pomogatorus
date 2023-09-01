@@ -1,13 +1,14 @@
 <template>
   <v-btn
-    :class='computedClass'
-    :disabled='isDisabled'
-    :href='href'
-    :loading='isLoading'
+    :class="computedClass"
+    :disabled="isDisabled"
+    :href="href"
+    :loading="isLoading"
+    :nuxt="isNuxtLink"
     @click="$emit('click-button')"
   >
-    <template v-if='customSlot'>
-      <slot></slot>
+    <template v-if="customSlot">
+      <slot/>
     </template>
     <template v-else>
       {{ localText }}
@@ -40,6 +41,10 @@ export default {
       default: ''
     },
     isSolo: {
+      type: Boolean,
+      default: false
+    },
+    isNuxtLink: {
       type: Boolean,
       default: false
     },
