@@ -89,31 +89,31 @@
       <section class="main_info">
         <section style="display: flex;">
           <span class="user_name">{{ getValueField(userObject.middle_name) + ' ' + getValueField(userObject.first_name) }}</span>
-          <TooltipStyled :title="'Основания для рекомендации'">
-            <v-menu
-              offset-overflow
-              offset-y
-            >
-              <template #activator="{ on, attrs }">
-                <v-icon
-                  v-bind="attrs"
-                  color="#5D80B5"
-                  v-on="on"
-                >
-                  mdi-swap-horizontal-circle-outline
-                </v-icon>
-              </template>
-              <v-list>
-                <div class="explain_info">
-                  <div>
-                    <span style="font-weight: 500">Пользователь рекомендуется на основании выполненных услуг на других объектах: </span>
-                    <li>БАНЯ Куса, Красные орлы 7 - Монтаж унитаза</li>
-                    <li>БАНЯ Куса, Красные орлы 7 - Монтаж водонагревателя</li>
-                  </div>
-                </div>
-              </v-list>
-            </v-menu>
-          </TooltipStyled>
+          <!--          <TooltipStyled :title="'Основания для рекомендации'"> -->
+          <!--            <v-menu -->
+          <!--              offset-overflow -->
+          <!--              offset-y -->
+          <!--            > -->
+          <!--              <template #activator="{ on, attrs }"> -->
+          <!--                <v-icon -->
+          <!--                  v-bind="attrs" -->
+          <!--                  color="#5D80B5" -->
+          <!--                  v-on="on" -->
+          <!--                > -->
+          <!--                  mdi-swap-horizontal-circle-outline -->
+          <!--                </v-icon> -->
+          <!--              </template> -->
+          <!--              <v-list> -->
+          <!--                <div class="explain_info"> -->
+          <!--                  <div> -->
+          <!--                    <span style="font-weight: 500">Пользователь рекомендуется на основании выполненных услуг на других объектах: </span> -->
+          <!--                    <li>БАНЯ Куса, Красные орлы 7 - Монтаж унитаза</li> -->
+          <!--                    <li>БАНЯ Куса, Красные орлы 7 - Монтаж водонагревателя</li> -->
+          <!--                  </div> -->
+          <!--                </div> -->
+          <!--              </v-list> -->
+          <!--            </v-menu> -->
+          <!--          </TooltipStyled> -->
         </section>
         <section class="brands">
           <span class="type">Используемые бренды: </span>
@@ -407,7 +407,7 @@ export default {
 
       if (response.codeResponse >= 400) return false;
 
-      this.$toast.success('Заявка составлена',{ duration: 5000 })
+      this.$toast.success('Заявка на услугу отправлена ${item.name ? item.name : \'\'}',{ duration: 5000 })
       this.closeModal()
     },
     async localDeleteServiceUserByObject() {

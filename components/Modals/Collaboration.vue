@@ -37,7 +37,7 @@
     <!--      /> -->
     <!--    </div> -->
     <div v-if="$store.getters['CollaborationModule/getFilteredListByRoleUsers'].length">
-      <span class="category_user">Приглащенные пользователи</span>
+      <span class="category_user">Приглашенные пользователи</span>
       <hr>
       <CardInviteUser
         v-for="(item) in $store.getters['CollaborationModule/getFilteredListByRoleUsers']"
