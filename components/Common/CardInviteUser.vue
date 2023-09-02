@@ -43,6 +43,30 @@
                 <span class="name">
                   - {{ getValueField(item.name) }}
                 </span>
+                <TooltipStyled
+                  :title="'Описание услуги'"
+                >
+                  <v-menu
+                    offset-overflow
+                    offset-y
+                  >
+                    <template #activator="{ on, attrs }">
+                      <v-icon
+                        small
+                        v-bind="attrs"
+                        color="#5D80B5"
+                        v-on="on"
+                      >
+                        mdi-help-circle-outline
+                      </v-icon>
+                    </template>
+                    <v-list>
+                      <div class="explain_info">
+                        <span>{{ getValueField(item.description) }}</span>
+                      </div>
+                    </v-list>
+                  </v-menu>
+                </TooltipStyled>
               </div>
             </section>
             <section>
@@ -407,7 +431,7 @@ export default {
 
       if (response.codeResponse >= 400) return false;
 
-      this.$toast.success('Заявка на услугу отправлена ${item.name ? item.name : \'\'}',{ duration: 5000 })
+      this.$toast.success('Заявка на услугу отправлена',{ duration: 5000 })
       this.closeModal()
     },
     async localDeleteServiceUserByObject() {
@@ -498,7 +522,7 @@ $orange-color: #F79256;
 
   .user_info{
     display: grid;
-    grid-template-columns: 1.2fr 1fr 0.7fr;
+    grid-template-columns: 1fr 1fr 0.7fr;
     width: 100%;
     align-items: center;
     .access_rights{
