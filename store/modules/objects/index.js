@@ -4,17 +4,12 @@ import constructFilterQuery from '@/utils/constructFilterQuery'
 export default {
   namespaced: true,
   state: {
-    isLoading: false,
-    isLoadingObjects: true,
+    isLoadingObjects: false,
     listObjects: [],
     currentObject: {},
     modalCurrentObject: {},
-    loading_objects: false,
   },
   mutations: {
-    setLoading(state, payload) {
-      state.isLoading = payload
-    },
     setLoadingObjects(state, payload) {
       state.isLoadingObjects = payload
     },
@@ -29,9 +24,6 @@ export default {
       if (!value) return false
 
       state.currentObject = value
-    },
-    change_loaderObjects(state, value) {
-      state.loading_objects = value
     },
   },
   actions: {
@@ -55,37 +47,39 @@ export default {
       { commit, dispatch, getters, rootGetters },
       queryArr = []
     ) {
-      commit('setLoading', true)
+      if (!rootGetters.getUserId) return false
 
-      queryArr.push({
-        id_user: rootGetters.getUserId || null,
-      })
-      const query = constructFilterQuery(queryArr)
+      commit('setLoadingObjects', true)
+
+      const arrayA = queryArr
+      const arrayB = [{ id_user: rootGetters.getUserId || null }]
+      const newArray = arrayA.concat(arrayB)
+
+      const query = constructFilterQuery(newArray)
       const response = await Request.get(
         this.state.BASE_URL + `/entity/objects${query}&sort[updated_at]=desc`
       )
       commit('setListObjects', response.data)
       dispatch('onloadSetCurrentUserObject')
 
-      commit('setLoading', false)
       commit('setLoadingObjects', false)
 
       return response
     },
     async saveObjData({ commit }, payload) {
-      commit('setLoading', true)
+      commit('setLoadingObjects', true)
 
       const { id, keys } = payload
 
       await Request.put(this.state.BASE_URL + `/entity/objects/${id}`, keys)
 
-      commit('setLoading', false)
+      commit('setLoadingObjects', false)
     },
     clearListObjects({ commit }) {
       commit('clearListObjects')
     },
     async createNewObject({ commit, dispatch, rootState }, payload) {
-      commit('change_loaderObjects', true)
+      commit('setLoadingObjects', true)
 
       const { data } = await Request.post(
         this.state.BASE_URL + '/entity/objects',
@@ -101,7 +95,7 @@ export default {
         await dispatch('setCurrentObject', data)
       }
 
-      commit('change_loaderObjects', false)
+      commit('setLoadingObjects', false)
 
       return data
     },

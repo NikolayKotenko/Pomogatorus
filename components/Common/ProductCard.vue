@@ -25,8 +25,8 @@
       <div class="product_icons">
         <!-- Избранное -->
         <TooltipStyled
-          :title="'Добавить в избранное'"
           :is-top="true"
+          :title="'Добавить в избранное'"
         >
           <v-icon
             size="36"
@@ -38,8 +38,8 @@
 
         <!-- Модальное окно. Детальная карточка товара -->
         <TooltipStyled
-          :title="'Подробнее о товаре'"
           :is-top="true"
+          :title="'Подробнее о товаре'"
         >
           <v-dialog
             v-model="showModal"
@@ -61,16 +61,16 @@
               <!-- Фотографии Оборудования -->
               <div class="product_photos">
                 <v-img
-                  contain
                   class="main_photo"
+                  contain
                   src="https://baxi.ru/upload/resize_cache/iblock/9f7/nhgq6mqyk0hiqa1nj4z5xumqvil0ursp/800_700_1/ECO_LIFE_124F_03.png"
                 />
               </div>
-              <v-divider/>
+              <v-divider />
 
               <!-- Инфорамация об Оборудовании -->
               <div class="product_detail_info">
-                <v-tabs vertical color="#95D7AE">
+                <v-tabs color="#95D7AE" vertical>
                   <v-tab :key="0">
                     Описание
                   </v-tab>
@@ -100,7 +100,7 @@
                     </div>
                   </v-tab-item>
                   <v-tab-item :key="2">
-                    <div class="product_documents"/>
+                    <div class="product_documents" />
                   </v-tab-item>
                 </v-tabs>
               </div>
@@ -108,17 +108,17 @@
               <!-- Функциональные кнопки -->
               <div class="product_detail_buttons">
                 <SelectStyled
-                  class="function_btn"
-                  :items="actionsWithProduct"
+                  :is-solo="true"
                   :item-text="'action'"
                   :item-value="'value'"
-                  :is-solo="true"
+                  :items="actionsWithProduct"
                   :placeholder="'Выберите действие'"
+                  class="function_btn"
                 />
                 <div>
                   <ButtonStyled
-                    :local-text="'Закрыть'"
                     :local-class="'style_close'"
+                    :local-text="'Закрыть'"
                     @click-button="closeModal"
                   />
                 </div>
@@ -129,8 +129,8 @@
 
         <!-- Ссылка на маркетплейс -->
         <TooltipStyled
-          :title="'Перейти в Яндекс Маркет'"
           :is-top="true"
+          :title="'Перейти в Яндекс Маркет'"
         >
           <v-icon size="36">
             mdi-store-outline
@@ -139,8 +139,8 @@
 
         <!-- Модальное окно эксплуатации -->
         <TooltipStyled
-          :title="'Подробнее об эксплуатации'"
           :is-top="true"
+          :title="'Подробнее об эксплуатации'"
         >
           <v-icon size="36">
             mdi-file-cog-outline
@@ -149,12 +149,12 @@
       </div>
       <div class="product_detail_buttons">
         <SelectStyled
-          class="function_btn"
-          :items="actionsWithProduct"
+          :is-solo="true"
           :item-text="'action'"
           :item-value="'value'"
-          :is-solo="true"
+          :items="actionsWithProduct"
           :placeholder="'Выберите действие'"
+          class="function_btn"
         />
       </div>
     </div>
@@ -162,12 +162,12 @@
 </template>
 
 <script>
-import SelectStyled from './SelectStyled.vue';
-import TooltipStyled from './TooltipStyled.vue';
-import ButtonStyled from './ButtonStyled.vue';
+import SelectStyled from "./SelectStyled.vue";
+import TooltipStyled from "./TooltipStyled.vue";
+import ButtonStyled from "./ButtonStyled.vue";
 
 export default {
-  name: 'ProductCard',
+  name: "ProductCard",
   components: { ButtonStyled, TooltipStyled, SelectStyled },
   props: {
     data: {
@@ -179,33 +179,33 @@ export default {
     return {
       showModal: false,
       actionsWithProduct: [
-        { action: 'Зарегистрировать покупку', value: 1 },
-        { action: 'Оформить акт установки', value: 2 },
-        { action: 'Оформить акт тех.обслуживания', value: 3 },
-        { action: 'Оформить акт утилизации', value: 4 },
-      ],
-    }
+        { action: "Зарегистрировать покупку", value: 1 },
+        { action: "Оформить акт установки", value: 2 },
+        { action: "Оформить акт тех.обслуживания", value: 3 },
+        { action: "Оформить акт утилизации", value: 4 }
+      ]
+    };
   },
   async mounted() {
-    await this.$store.dispatch('NomenclatureModule/getListNomenclature')
+    await this.$store.dispatch("NomenclatureModule/getListNomenclature");
   },
   methods: {
-    changeFavoriteProduct(){
-      this.$toast.success('Добавленно в избранное', { duration: 5000 })
+    changeFavoriteProduct() {
+      this.$toast.success("Добавленно в избранное", { duration: 5000 });
     },
     openModal() {
-      this.showModal = true
+      this.showModal = true;
     },
     closeModal() {
-      this.showModal = false
-    },
-  },
+      this.showModal = false;
+    }
+  }
 
-}
+};
 </script>
 
 <style lang="scss" scoped>
-.product_card_wrapper{
+.product_card_wrapper {
   display: inline-flex;
   grid-column-gap: 20px;
   justify-content: space-between;
@@ -215,32 +215,35 @@ export default {
   margin-top: 20px;
   border-radius: 5px;
   transition: all 0.4s ease-in-out;
+
   &:hover {
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
     background-color: #FFF4CB;
   }
 
-  .product_info{
+  .product_info {
     display: grid;
     margin-right: auto;
 
-    .product_info_list{
+    .product_info_list {
       font-size: 0.8em;
       color: #8A8784;
       margin-top: auto;
     }
   }
-  .product_buttons{
+
+  .product_buttons {
     display: grid;
 
     .product_icons {
       display: inline-flex;
       margin-bottom: auto;
-      justify-content: end;
+      justify-content: flex-end;
     }
   }
 }
-.empty_placeholder{
+
+.empty_placeholder {
   background-color: #FFFFFF;
   background-size: contain;
   height: 100%;
@@ -251,26 +254,32 @@ export default {
   justify-content: center;
   align-items: center;
 }
-.detail_card_product{
+
+.detail_card_product {
   display: inline-grid;
   width: 675px;
   height: 700px;
   padding: 20px;
+
   .product_photos {
     display: flex;
     justify-content: center;
     height: 220px;
-    .main_photo{
+
+    .main_photo {
       background-size: contain;
       max-width: 350px;
     }
   }
-  .product_detail_info{
+
+  .product_detail_info {
     height: 200px;
-    .product_description{
+
+    .product_description {
       font-size: 0.9em;
     }
-    .product_characteristics{
+
+    .product_characteristics {
       font-size: 0.9em;
       color: #8A8784;
       margin-top: auto;
@@ -278,13 +287,15 @@ export default {
   }
 
 }
-.product_detail_buttons{
+
+.product_detail_buttons {
   display: flex;
   justify-content: space-between;
-  align-items: end;
+  align-items: flex-end;
 
 }
-.function_btn{
+
+.function_btn {
   width: 320px;
   max-width: 320px;
   margin-bottom: 0;

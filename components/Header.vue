@@ -8,7 +8,7 @@
     elevate-on-scroll
   >
     <v-container class="d-flex custom_grid_system">
-      <v-app-bar-nav-icon v-if="isMobile" @click="showDrawer"/>
+      <v-app-bar-nav-icon v-if="isMobile" @click="showDrawer" />
       <v-toolbar-title v-if="isMobile">
         <router-link :to="getCurrentRoute.path" style="color: unset; text-decoration: unset">
           {{ getCurrentRoute.title }}
@@ -34,7 +34,8 @@
 
       <!-- Личный кабинет всегда по правую сторону -->
       <v-toolbar-items class="header_right">
-        <TooltipStyled :title="'Совместная работа над ' + $store.state.Objects.currentObject.name" class="current_object_btn">
+        <TooltipStyled :title="'Совместная работа над ' + $store.state.Objects.currentObject.name"
+                       class="current_object_btn">
           <v-menu
             :close-on-content-click="false"
             left
@@ -48,11 +49,11 @@
                 </v-icon>
               </div>
             </template>
-            <Collaboration v-if="$store.state.CollaborationModule.stateCollaborationMenu"/>
+            <Collaboration v-if="$store.state.CollaborationModule.stateCollaborationMenu" />
           </v-menu>
         </TooltipStyled>
         <TooltipStyled :title="'Текущий объект'" class="current_object_btn">
-          <v-menu :close-on-content-click="false" left offset-y>
+          <v-menu v-if="$route.name !== 'objects'" :close-on-content-click="false" left offset-y>
             <template #activator="{ on, attrs }">
               <div style="display: inline-flex; grid-column-gap: 5px" v-bind="attrs" v-on="on">
                 <v-badge
@@ -67,7 +68,7 @@
                 </v-badge>
               </div>
             </template>
-            <CurrentObjects/>
+            <CurrentObjects />
           </v-menu>
         </TooltipStyled>
         <TooltipStyled :title="'Личный кабинет'">
@@ -91,25 +92,25 @@
 
 <script>
 // eslint-disable-next-line vue/multi-word-component-names,vue/no-reserved-component-names
-import { mapState } from 'vuex'
-import TooltipStyled from './Common/TooltipStyled'
-import CurrentObjects from './Widgets/CurrentObjects.vue'
-import Collaboration from './Modals/Collaboration.vue';
+import { mapState } from "vuex";
+import TooltipStyled from "./Common/TooltipStyled";
+import CurrentObjects from "./Widgets/CurrentObjects.vue";
+import Collaboration from "./Modals/Collaboration.vue";
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names,vue/no-reserved-component-names
-  name: 'Header',
+  name: "Header",
   components: { Collaboration, CurrentObjects, TooltipStyled },
   data() {
     return {
       debounceTimeout: null,
-      stateCurrentObject: false,
-    }
+      stateCurrentObject: false
+    };
   },
   mounted() {
     // eslint-disable-next-line nuxt/no-env-in-hooks
     if (!process.server) {
-      this.onScroll()
+      this.onScroll();
     }
   },
   // eslint-disable-next-line vue/order-in-components
@@ -120,60 +121,60 @@ export default {
     }),
 
     isMobile() {
-      return this.$device.isMobile
+      return this.$device.isMobile;
     },
     getCurrentRoute() {
       if (this.listModal[0].isOpen) {
         return {
-          path: '',
-          title: 'Личный кабинет'
-        }
+          path: "",
+          title: "Личный кабинет"
+        };
       }
       return this.$store.getters.menuItems.find((elem) => {
-        return this.$route.path.match(elem.path)
-      })
+        return this.$route.path.match(elem.path);
+      });
     }
   },
   methods: {
     showDrawer() {
-      this.$store.commit('set_drawer', !this.drawer)
+      this.$store.commit("set_drawer", !this.drawer);
     },
     openModals() {
       // TODO: Продумать логику открывания модалки независимо от индексa
-      this.listModal[0].isOpen = !this.listModal[0].isOpen
+      this.listModal[0].isOpen = !this.listModal[0].isOpen;
     },
     // openObject() {
     //   this.$emit("open_object", this.$store.state.listObjects.currentObject)
     //   console.log('work')
     // },
     setHeader(value) {
-      if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
       this.debounceTimeout = setTimeout(() => {
-        this.$store.commit('change_show_header', value)
-      })
+        this.$store.commit("change_show_header", value);
+      });
     },
     onScroll() {
       if (this.$device.isDesktop) {
-        let prevScrollpos = window.pageYOffset
-        const _this = this
+        let prevScrollpos = window.pageYOffset;
+        const _this = this;
         window.onscroll = function() {
-          const currentScrollPos = window.pageYOffset
+          const currentScrollPos = window.pageYOffset;
           if (prevScrollpos > currentScrollPos) {
-            document.getElementById('navbar').style.top = '0'
-            _this.setHeader(true)
+            document.getElementById("navbar").style.top = "0";
+            _this.setHeader(true);
           } else {
-            document.getElementById('navbar').style.top = '-70px'
-            _this.setHeader(false)
+            document.getElementById("navbar").style.top = "-70px";
+            _this.setHeader(false);
           }
-          prevScrollpos = currentScrollPos
-        }
+          prevScrollpos = currentScrollPos;
+        };
       }
     }
   }
-}
+};
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .v-btn:not(.v-btn--round).v-size--default {
   padding: 0 !important;
   min-width: 0;

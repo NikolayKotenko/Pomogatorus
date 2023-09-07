@@ -130,7 +130,7 @@
           <ButtonStyled
             :custom-slot="true"
             :is-animation="animationBtn"
-            :is-loading="isLoading"
+            :is-loading="isLoadingObjects"
             :is-mobile="true"
             local-class="style_button"
             @click-button="closeModal"
@@ -182,7 +182,7 @@
         <div class="object-wrapper-footer__left">
           <ButtonStyled
             :is-animation="animationBtn"
-            :is-loading="isLoading"
+            :is-loading="isLoadingObjects"
             local-class="style_button"
             local-text="Сохранить изменения"
             @click-button="onSave"
@@ -287,7 +287,7 @@ export default {
     }
   },
   computed: {
-    ...mapState("Objects", ["isLoading", "listObjects"]),
+    ...mapState("Objects", ["isLoadingObjects", "listObjects"]),
     ...mapGetters(["getUserId"]),
 
     notEmptyObject() {

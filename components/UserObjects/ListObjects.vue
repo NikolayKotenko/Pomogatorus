@@ -1,42 +1,50 @@
 <template>
   <div class="modal_wrapper">
-    <!-- Если загрузка объектов true    -->
-    <template v-if="isLoadingObjects">
-      <VProgressCircular
-        v-if="$store.getters.stateAuth"
-        :size="50"
-        color="primary"
-        indeterminate
-        style="margin: 20px auto 40px auto"
-      />
-    </template>
-    <!-- Если загрузка объектов false    -->
-    <template v-else>
-      <v-card class="static_search_breadcrumbs" elevation="5" outlined shaped>
-        <!-- Быстрые чипсы -->
-        <ChipsStyled
-          :is-filter="true"
-          :is-multiple="true"
-          :list-chips="computedListChips"
-          class="chips_list_object"
-          @update-chips="setQueryChips"
-        ></ChipsStyled>
+    <template>
+      <v-card v-show="$store.getters.stateAuth" class="static_search_breadcrumbs" elevation="5"
+              outlined
+              shaped
+      >
+        <div class="wrapper_chips">
+          <!-- Быстрые чипсы -->
+          <ChipsStyled
+            :data="selectedQueryChips"
+            :is-filter="true"
+            :is-multiple="true"
+            :list-chips="computedListChips"
+            class="chips_list_object"
+            @update-chips="setQueryChips"
+          ></ChipsStyled>
+
+          <TooltipStyled
+            :is-top="true"
+            :title="'Контекст работы'"
+          >
+            <v-icon
+              color="#5D80B5"
+            >
+              mdi-help-circle-outline
+            </v-icon>
+          </TooltipStyled>
+        </div>
         <!-- Поиск -->
         <SearchStyled
           :class="'styleSearch'"
+          :internal-data="querySearchData.value"
           :is-clearable="true"
           :is-custom-template-selections="true"
-          :is-disabled="loading_objects"
+          :is-disabled="isLoadingObjects"
           :is-hide-selected="false"
           :is-item-text="'text'"
           :is-item-value="'text'"
-          :is-loading="loading_objects"
+          :is-loading="isLoadingObjects"
           :is-placeholder="'Поиск по имени, адресу, заметкам'"
+          :is-return-object="true"
           style="max-height: 61px"
           @update-search-input="setQuerySearchData"
         />
       </v-card>
-      <div v-if="$store.getters['Objects/stateFilledListObjects'] && !$store.state.Objects.isLoading"
+      <div v-if="$store.getters['Objects/stateFilledListObjects'] && !$store.state.Objects.isLoadingObjects"
            class="card_object flex-grow-1 flex-shrink-1">
         <div class="card_object_container">
           <CardObject
@@ -49,7 +57,7 @@
       </div>
       <v-sheet
         v-for="n in 3"
-        v-if="(! $store.getters['Objects/stateFilledListObjects'] && ! $store.getters.stateAuth) || $store.state.Objects.isLoading"
+        v-if="!$store.getters.stateAuth || $store.state.Objects.isLoadingObjects"
         :key="n"
         class="pa-3"
         @click="$store.dispatch('callModalAuth')"
@@ -74,7 +82,7 @@
               </div>
               <VTextField
                 v-model="newObjName"
-                :loading="loading_objects"
+                :loading="isLoadingObjects"
                 auto-grow
                 class="text_field"
                 clearable
@@ -91,7 +99,7 @@
           <div class="new_object_button">
             <ButtonStyled
               :is-disabled="!newObjName"
-              :is-loading="loading_objects"
+              :is-loading="isLoadingObjects"
               :local-text="'Создать объект'"
               local-class="style_button"
               @click-button="onCreateNewObject"
@@ -157,12 +165,26 @@ export default {
   watch: {
     "getUserId": {
       handler(val) {
-        this.computedAllQuery();
+        this.setAllQuery();
+      }
+    },
+    "$store.state.AuthModule.userData.objects_context": {
+      handler(newVal, oldVal) {
+        if (!newVal || !oldVal) {
+          this.selectedQueryChips = [];
+          newVal.forEach((elem) => {
+            if (elem["search"]) {
+              this.querySearchData.value = elem["search"];
+            } else {
+              this.selectedQueryChips.push(Object.keys(elem) + "=" + Object.values(elem));
+            }
+          });
+        }
       }
     }
   },
   computed: {
-    ...mapState("Objects", ["listObjects", "isLoadingObjects", "loading_objects"]),
+    ...mapState("Objects", ["listObjects", "isLoadingObjects"]),
     ...mapState(["userData"]),
     ...mapGetters(["getUserId"]),
 
@@ -178,7 +200,7 @@ export default {
       return this.$device.isMobile;
     },
     computedListChips() {
-      return this.listQueryFilters.map((elem) => elem.text);
+      return this.listQueryFilters;
     }
   },
   methods: {
@@ -214,18 +236,20 @@ export default {
       this.updateProperties.long = data.coords[1];
     },
     setQueryChips(nameChip) {
+      console.log("setQueryChips", nameChip);
       this.selectedQueryChips = [];
-      nameChip.forEach((key) => {
-        this.selectedQueryChips.push(this.listQueryFilters[key]);
+      nameChip.forEach((value) => {
+        this.selectedQueryChips.push(value);
       });
-      this.computedAllQuery();
+      this.setAllQuery();
     },
     setQuerySearchData(string) {
+      console.log(string);
       this.querySearchData.value = (string) ? string : "";
-      this.computedAllQuery();
+      this.setAllQuery();
     },
-    async computedAllQuery() {
-      const value1 = this.selectedQueryChips.map((elem) => elem.value);
+    async setAllQuery() {
+      const value1 = this.selectedQueryChips;
       const value2 = (this.querySearchData.value) ? this.querySearchData.baseQuery + this.querySearchData.value : null;
 
       const calcQueryFilters = [];
@@ -244,8 +268,19 @@ export default {
 
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
       this.debounceTimeout = setTimeout(async () => {
-        const response = await this.$store.dispatch("Objects/getListObjectsByUserId", this.allQueryFilters);
-        if (response.codeResponse > 400) {
+
+        if (this.allQueryFilters.length) {
+          const responseUserData = await this.$store.dispatch("UserSettings/updateUser", {
+            userId: this.$store.getters.getUserId,
+            data: {
+              objects_context: JSON.stringify(this.allQueryFilters)
+            }
+          });
+          console.log("responseUserData", responseUserData);
+        }
+
+        const responseListObjects = await this.$store.dispatch("Objects/getListObjectsByUserId", this.allQueryFilters);
+        if (responseListObjects.codeResponse > 400) {
           await this.$store.dispatch("callModalAuth");
           this.$store.commit("Objects/setLoadingObjects", false);
         }
@@ -265,6 +300,12 @@ export default {
   background: white;
   z-index: 9;
   padding: 15px;
+
+  .wrapper_chips {
+    display: inline-flex;
+    justify-content: space-between;
+    width: 100%;
+  }
 
   .styleSearch {
     font-size: 1.3em !important;
