@@ -42,7 +42,11 @@
             @input="$store.commit('CollaborationModule/changeStateCollaboration', $event)"
           >
             <template #activator="{ on, attrs }">
-              <div style="display: inline-flex; grid-column-gap: 5px" v-bind="attrs" v-on="on">
+              <div
+                style="display: inline-flex; grid-column-gap: 5px"
+                v-bind="attrs"
+                v-on="on"
+              >
                 <v-icon large v-bind="attrs" v-on="on">
                   mdi-account-group-outline
                 </v-icon>
@@ -54,7 +58,11 @@
         <TooltipStyled :title="'Текущий объект'" class="current_object_btn">
           <v-menu :close-on-content-click="false" left offset-y>
             <template #activator="{ on, attrs }">
-              <div style="display: inline-flex; grid-column-gap: 5px" v-bind="attrs" v-on="on">
+              <div
+                style="display: inline-flex; grid-column-gap: 5px"
+                v-bind="attrs"
+                v-on="on"
+              >
                 <v-badge
                   :content="$store.getters['Objects/getCountObject']"
                   :value="$store.getters['Objects/getCountObject']"
@@ -68,6 +76,33 @@
               </div>
             </template>
             <CurrentObjects/>
+          </v-menu>
+        </TooltipStyled>
+        <TooltipStyled :title="'Уведомления'">
+          <v-menu
+            :close-on-content-click="false"
+            left
+            offset-y
+          >
+            <template #activator="{ on, attrs }">
+              <div
+                style="display: inline-flex; grid-column-gap: 5px"
+                v-bind="attrs"
+                v-on="on"
+              >
+                <v-badge
+                  content="6"
+                  value="6"
+                  color="#95D7AE"
+                  overlap
+                >
+                  <v-icon large v-bind="attrs" v-on="on">
+                    mdi-bell-outline
+                  </v-icon>
+                </v-badge>
+              </div>
+            </template>
+            <Notifications/>
           </v-menu>
         </TooltipStyled>
         <TooltipStyled :title="'Личный кабинет'">
@@ -95,11 +130,12 @@ import { mapState } from 'vuex'
 import TooltipStyled from './Common/TooltipStyled'
 import CurrentObjects from './Widgets/CurrentObjects.vue'
 import Collaboration from './Modals/Collaboration.vue';
+import Notifications from './Common/Notifications.vue';
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names,vue/no-reserved-component-names
   name: 'Header',
-  components: { Collaboration, CurrentObjects, TooltipStyled },
+  components: { Notifications, Collaboration, CurrentObjects, TooltipStyled },
   data() {
     return {
       debounceTimeout: null,

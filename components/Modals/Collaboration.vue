@@ -97,7 +97,7 @@ export default {
   overflow: auto;
   width: 1080px;
   max-height: 650px;
-  box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+  box-shadow: -2px 2px 4px 0px rgba(0, 0, 0, 0.25), 2px 2px 4px 0px rgba(0, 0, 0, 0.25);
 
 
   .header {

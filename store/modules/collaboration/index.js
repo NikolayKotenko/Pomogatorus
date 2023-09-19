@@ -37,14 +37,12 @@ export default {
         this.state.BASE_URL + '/users/invite-user-to-object',
         object
       )
-      if (response.codeResponse < 400) {
-        await dispatch('getListMembersByFilter', {
-          id_object: object.id_object,
-        })
-      }
+
       return response
     },
-    async deleteServiceUserByObject({ dispatch }, object) {
+    async deleteServiceUserByObject({ dispatch, commit }, object) {
+      commit('setLoading', true)
+
       const response = await Request.delete(
         this.state.BASE_URL + '/m-to-m/delete-one-service',
         object
@@ -54,6 +52,8 @@ export default {
           id_object: object.id_object,
         })
       }
+
+      commit('setLoading', false)
       return response
     },
     async getSearchedListMembers({ commit }, string) {

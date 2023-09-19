@@ -86,6 +86,15 @@
           </div>
         </div>
         <div class="services_search">
+          <TooltipStyled :title="'Добавить услугу'">
+            <v-icon
+              class="add_service_button"
+              size="56"
+              @click="setServiceByUser"
+            >
+              mdi-plus-circle-outline
+            </v-icon>
+          </TooltipStyled>
           <v-combobox
             v-model="localSelectedService"
             :item-text="'name'"
@@ -99,15 +108,6 @@
             solo
             @keyup.enter="setServiceByUser"
           />
-          <TooltipStyled :title="'Добавить услугу'">
-            <v-icon
-              class="add_service_button"
-              size="56"
-              @click="setServiceByUser"
-            >
-              mdi-plus-box-outline
-            </v-icon>
-          </TooltipStyled>
         </div>
       </v-tab-item>
     </v-tabs>
@@ -225,7 +225,6 @@ export default {
     },
     async setServiceByUser() {
       const checkExist = await this.$store.dispatch('UserSettings/addServicesAction', this.localSelectedService)
-      console.log('checkExist', checkExist)
       if (checkExist) return false;
 
       this.$toast.success('Услуга добавлена',{ duration: 5000 })
