@@ -4,16 +4,17 @@
                 :show-arrows="true"
                 class="styleChip_container"
   >
-    <v-chip v-for="(chip, key) in listChips"
+    <v-chip v-for="(object, key) in listChips"
             :key="key"
             :filter="isFilter"
             :large="isLarge"
-            :small="isSmall"
             :outlined="isOutlined"
+            :small="isSmall"
+            :value="object.value"
             class="styleChip"
-            @click="$emit('click-chip', chip)"
+            @click="$emit('click-chip', object)"
     >
-      {{ chip }}
+      {{ object.text }}
     </v-chip>
   </v-chip-group>
 </template>
@@ -59,9 +60,8 @@ export default {
       default: false
     },
     data: {
-      type: Object,
-      default: () => {
-      }
+      type: Array,
+      default: () => []
     }
   },
   computed: {

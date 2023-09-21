@@ -37,6 +37,8 @@ export default {
     async updateUser({ commit }, payload) {
       const { userId, data } = payload
 
+      if (!userId) return false
+
       commit('setIsUpdating', true)
 
       await Request.put(

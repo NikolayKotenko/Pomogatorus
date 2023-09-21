@@ -121,9 +121,7 @@ export default {
     }
   },
   watch: {},
-  mounted() {
-    this.$store.dispatch('getListBroadcastSnippet');
-  },
+  mounted() {},
   methods: {
     async setObject() {
       await this.$store.dispatch('Objects/setCurrentObject', this.object_data);

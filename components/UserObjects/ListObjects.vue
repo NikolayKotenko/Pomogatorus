@@ -1,47 +1,52 @@
 <template>
   <div class="modal_wrapper">
-    <!-- Если загрузка объектов true    -->
-    <template v-if="isLoadingObjects">
-      <VProgressCircular
-        v-if="$store.getters.stateAuth"
-        :size="50"
-        color="primary"
-        indeterminate
-        style="margin: 20px auto 40px auto"
-      />
-    </template>
+    <template>
+      <v-card v-show="$store.getters.stateAuth" class="static_search_breadcrumbs" elevation="5"
+              outlined
+              shaped
+      >
+        <div class="wrapper_chips">
+          <!-- Быстрые чипсы -->
+          <ChipsStyled
+            :data="selectedQueryChips"
+            :is-filter="true"
+            :is-multiple="true"
+            :list-chips="computedListChips"
+            class="chips_list_object"
+            @update-chips="setQueryChips"
+          ></ChipsStyled>
 
-    <!-- Если загрузка объектов false    -->
-    <template v-else>
-      <div v-if="$store.getters['Objects/stateFilledListObjects']" class="card_object flex-grow-1 flex-shrink-1">
-
-
-        <!-- TODO  нужно формировать из поиска и из тэгов одну дату и её слать через одну функцию запрос -->
-
-        <!-- Быстрые чипсы -->
-        <ChipsStyled
-          :is-filter="true"
-          :is-multiple="true"
-          :list-chips="computedListChips"
-          @update-chips="setQueryChips"
-          class="chips_list_object"
-        ></ChipsStyled>
-
+          <TooltipStyled
+            :is-top="true"
+            :title="'Контекст работы'"
+          >
+            <v-icon
+              color="#5D80B5"
+            >
+              mdi-help-circle-outline
+            </v-icon>
+          </TooltipStyled>
+        </div>
         <!-- Поиск -->
         <SearchStyled
           :class="'styleSearch'"
+          :internal-data="querySearchData.value"
           :is-clearable="true"
           :is-custom-template-selections="true"
-          :is-disabled="loading_objects"
+          :is-disabled="isLoadingObjects"
           :is-hide-selected="false"
           :is-item-text="'text'"
           :is-item-value="'text'"
-          :is-loading="loading_objects"
-          :is-placeholder="'Поиск по наименованию'"
+          :is-loading="isLoadingObjects"
+          :is-placeholder="'Поиск по имени, адресу, заметкам'"
+          :is-return-object="true"
+          style="max-height: 61px"
           @update-search-input="setQuerySearchData"
         />
-
-        <div v-if="listObjects.length" class="card_object_container">
+      </v-card>
+      <div v-if="$store.getters['Objects/stateFilledListObjects'] && !$store.state.Objects.isLoadingObjects"
+           class="card_object flex-grow-1 flex-shrink-1">
+        <div class="card_object_container">
           <CardObject
             v-for="(object, index) in listObjects"
             :key="index"
@@ -49,15 +54,10 @@
             @open-detail="openDetail"
           />
         </div>
-
-        <!-- TODO: Что показывать когда объектов еще нет??? -->
-        <div v-else>
-          Создайте объект!
-        </div>
       </div>
       <v-sheet
         v-for="n in 3"
-        v-if="! $store.getters['Objects/stateFilledListObjects'] && ! $store.getters.stateAuth"
+        v-if="!$store.getters.stateAuth || $store.state.Objects.isLoadingObjects"
         :key="n"
         class="pa-3"
         @click="$store.dispatch('callModalAuth')"
@@ -69,7 +69,6 @@
           />
         </TooltipStyled>
       </v-sheet>
-
       <div v-if="$store.getters.stateAuth" class="new_object_wrapper custom_grid_system">
         <!--        <v-divider class="new_obj_divider"></v-divider> -->
         <div class="new_object">
@@ -83,7 +82,7 @@
               </div>
               <VTextField
                 v-model="newObjName"
-                :loading="loading_objects"
+                :loading="isLoadingObjects"
                 auto-grow
                 class="text_field"
                 clearable
@@ -100,7 +99,7 @@
           <div class="new_object_button">
             <ButtonStyled
               :is-disabled="!newObjName"
-              :is-loading="loading_objects"
+              :is-loading="isLoadingObjects"
               :local-text="'Создать объект'"
               local-class="style_button"
               @click-button="onCreateNewObject"
@@ -150,30 +149,42 @@ export default {
     listQueryFilters: [
       {
         text: "Мои объекты",
-        value: "filter[home_owner]=true"
+        value: "home_owner=true"
       },
       {
         text: "Где я работаю",
-        value: "filter[home_worker]=true"
+        value: "home_worker=true"
       }
     ],
-    querySearchData:{
-      value: '',
-      baseQuery: 'filter[search]='
+    querySearchData: {
+      baseQuery: "search=",
+      value: ""
     },
+    allQueryFilters: []
   }),
   watch: {
     "getUserId": {
       handler(val) {
-        this.localGetListObjects(val);
-      },
-      immediate: true
+        this.setAllQuery();
+      }
+    },
+    "$store.state.AuthModule.userData.objects_context": {
+      handler(newVal, oldVal) {
+        if (!newVal || !oldVal) {
+          this.selectedQueryChips = [];
+          newVal.forEach((elem) => {
+            if (elem["search"]) {
+              this.querySearchData.value = elem["search"];
+            } else {
+              this.selectedQueryChips.push(Object.keys(elem) + "=" + Object.values(elem));
+            }
+          });
+        }
+      }
     }
   },
-  async mounted() {
-  },
   computed: {
-    ...mapState("Objects", ["listObjects", "isLoadingObjects", "loading_objects"]),
+    ...mapState("Objects", ["listObjects", "isLoadingObjects"]),
     ...mapState(["userData"]),
     ...mapGetters(["getUserId"]),
 
@@ -189,7 +200,7 @@ export default {
       return this.$device.isMobile;
     },
     computedListChips() {
-      return this.listQueryFilters.map((elem) => elem.text);
+      return this.listQueryFilters;
     }
   },
   methods: {
@@ -203,7 +214,7 @@ export default {
       });
       this.newObjAddress = "";
 
-      await this.getListObjectsByUserId(this.getUserId);
+      await this.getListObjectsByUserId();
     },
     closeDetailObj() {
       this.showDetail = false;
@@ -224,27 +235,56 @@ export default {
       this.updateProperties.lat = data.coords[0];
       this.updateProperties.long = data.coords[1];
     },
-    async localGetListObjects(idUser) {
+    setQueryChips(nameChip) {
+      console.log("setQueryChips", nameChip);
+      this.selectedQueryChips = [];
+      nameChip.forEach((value) => {
+        this.selectedQueryChips.push(value);
+      });
+      this.setAllQuery();
+    },
+    setQuerySearchData(string) {
+      console.log(string);
+      this.querySearchData.value = (string) ? string : "";
+      this.setAllQuery();
+    },
+    async setAllQuery() {
+      const value1 = this.selectedQueryChips;
+      const value2 = (this.querySearchData.value) ? this.querySearchData.baseQuery + this.querySearchData.value : null;
+
+      const calcQueryFilters = [];
+      calcQueryFilters.push(...value1);
+      if (value2) {
+        calcQueryFilters.push(value2);
+      }
+
+      this.allQueryFilters = [];
+      calcQueryFilters.forEach((string) => {
+        const params = string.split("=");
+        this.allQueryFilters.push({
+          [params[0]]: params[1]
+        });
+      });
+
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
       this.debounceTimeout = setTimeout(async () => {
-        const response = await this.$store.dispatch("Objects/getListObjectsByUserId", idUser);
 
-        console.log("response getListObjectsByUserId", response);
-        if (response.codeResponse > 400) {
+        if (this.allQueryFilters.length) {
+          const responseUserData = await this.$store.dispatch("UserSettings/updateUser", {
+            userId: this.$store.getters.getUserId,
+            data: {
+              objects_context: JSON.stringify(this.allQueryFilters)
+            }
+          });
+          console.log("responseUserData", responseUserData);
+        }
+
+        const responseListObjects = await this.$store.dispatch("Objects/getListObjectsByUserId", this.allQueryFilters);
+        if (responseListObjects.codeResponse > 400) {
           await this.$store.dispatch("callModalAuth");
           this.$store.commit("Objects/setLoadingObjects", false);
         }
-      }, 1000);
-    },
-    setQueryChips(nameChip) {
-      this.selectedQueryChips = [];
-      nameChip.forEach((key) => {
-        this.selectedQueryChips.push(this.listQueryFilters[key]);
-      });
-    },
-    setQuerySearchData(string){
-      const calcString = (string) ? string : '';
-      this.querySearchData.value = this.querySearchData.baseQuery + calcString
+      }, 500);
     }
   }
 };
@@ -253,11 +293,33 @@ export default {
 <style lang="scss">
 @import 'assets/styles/userObjects';
 
-.chips_list_object{
-  .styleChip{
+.static_search_breadcrumbs {
+  position: sticky;
+  display: block;
+  top: 1px;
+  background: white;
+  z-index: 9;
+  padding: 15px;
+
+  .wrapper_chips {
+    display: inline-flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .styleSearch {
+    font-size: 1.3em !important;
+  }
+}
+
+.chips_list_object {
+  margin-top: 0 !important;
+
+  .styleChip {
     font-size: 1.1em;
   }
 }
+
 .modal_wrapper {
   padding: 0 !important;
 }
@@ -277,7 +339,7 @@ export default {
   row-gap: 0 !important;
 
   &_container {
-    padding: 20px 0 90px 0;
+    padding: 20px 0 25% 0;
   }
 }
 
