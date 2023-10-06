@@ -3,26 +3,8 @@
     <div class="current_object__label">
       <div class="current_object__label__container">
         <span>Текущий объект</span>
-        <TooltipStyled :title="'Совместная работа'">
-          <v-menu :close-on-content-click="false" left offset-y>
-            <template #activator="{ on, attrs }">
-              <div v-bind="attrs" v-on="on">
-                <v-icon
-                  class="share"
-                  color="#ADADAD"
-                  size="26"
-                  v-bind="attrs"
-                  v-on="on"
-                >
-                  mdi-account-group-outline
-                </v-icon>
-              </div>
-            </template>
-            <Collaboration />
-          </v-menu>
-        </TooltipStyled>
       </div>
-      <v-divider />
+      <v-divider/>
     </div>
 
     <TooltipStyled
@@ -85,7 +67,7 @@
     </section>
     <section class="current_object__wrapper_info">
       <span class="current_object__wrapper_info__text">ТЗ объекта: {{ $store.state.Objects.currentObject.name
-        }}</span>
+      }}</span>
       <span class="current_object__wrapper_info__value">7 из 130</span>
       <div class="wrapper_button">
         <TooltipStyled :title="'Перейти к объекту'">
@@ -110,20 +92,20 @@
           </ButtonStyled>
         </TooltipStyled>
       </div>
-      <TagsTechBlock v-if="state_tech_task_block" />
+      <TagsTechBlock v-if="state_tech_task_block"/>
     </section>
   </div>
 </template>
 
 <script>
-import SelectObjectStyled from "../Common/SelectObjectStyled";
-import Collaboration from "../Modals/Collaboration.vue";
-import TooltipStyled from "~/components/Common/TooltipStyled";
-import ButtonStyled from "~/components/Common/ButtonStyled";
-import TagsTechBlock from "~/components/Widgets/TagsTechBlock";
+import SelectObjectStyled from '../Common/SelectObjectStyled';
+import Collaboration from '../Modals/Collaboration.vue';
+import TooltipStyled from '~/components/Common/TooltipStyled';
+import ButtonStyled from '~/components/Common/ButtonStyled';
+import TagsTechBlock from '~/components/Widgets/TagsTechBlock';
 
 export default {
-  name: "CurrentObjects",
+  name: 'CurrentObjects',
   // eslint-disable-next-line vue/no-unused-components
   components: {
     TagsTechBlock,
@@ -133,13 +115,13 @@ export default {
     SelectObjectStyled
   },
   // eslint-disable-next-line vue/prop-name-casing
-  props: ["object_data"],
+  props: ['object_data'],
   data() {
     return {
       state_tech_task_block: false,
       alert: {
         state: false,
-        message: ""
+        message: ''
       }
     };
   },
@@ -148,29 +130,29 @@ export default {
       return this.object_data.id === this.$store.state.Objects.currentObject?.id;
     },
     stateFilledImageObject() {
-      if (!this.object_data?.("osnovnoe-foto-obekta")) return false;
+      if (!this.object_data?.('osnovnoe-foto-obekta')) return false;
 
-      return this.object_data["osnovnoe-foto-obekta"].length;
+      return this.object_data['osnovnoe-foto-obekta'].length;
     }
   },
   watch: {
-    "$store.getters.stateAuth": {
+    '$store.getters.stateAuth': {
       handler(state) {
         if (state) {
-          this.$store.dispatch("getListBroadcastSnippet");
+          this.$store.dispatch('getListBroadcastSnippet');
         } else {
-          this.$store.commit("set_list_broadcast_snippet", []);
+          this.$store.commit('set_list_broadcast_snippet', []);
         }
       }
     },
-    "$store.getters.getUserId": {
+    '$store.getters.getUserId': {
       handler(value) {
-        this.$store.dispatch("Objects/getListObjectsByUserId");
+        this.$store.dispatch('Objects/getListObjectsByUserId');
       }
     }
   },
   mounted() {
-    this.$store.dispatch("getListBroadcastSnippet");
+    this.$store.dispatch('getListBroadcastSnippet');
   },
   methods: {
     callAuthModal() {
@@ -179,7 +161,7 @@ export default {
       this.$store.state.listModal[0].isOpen = true;
     },
     async callback(data) {
-      await this.$store.dispatch("Objects/setCurrentObject", data);
+      await this.$store.dispatch('Objects/setCurrentObject', data);
     }
   }
 };

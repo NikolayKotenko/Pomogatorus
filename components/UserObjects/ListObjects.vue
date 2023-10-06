@@ -1,9 +1,12 @@
 <template>
   <div class="modal_wrapper">
     <template>
-      <v-card v-show="$store.getters.stateAuth" class="static_search_breadcrumbs" elevation="5"
-              outlined
-              shaped
+      <v-card
+        v-show="$store.getters.stateAuth"
+        class="static_search_breadcrumbs"
+        elevation="5"
+        outlined
+        shaped
       >
         <div class="wrapper_chips">
           <!-- Быстрые чипсы -->
@@ -14,7 +17,7 @@
             :list-chips="computedListChips"
             class="chips_list_object"
             @update-chips="setQueryChips"
-          ></ChipsStyled>
+          />
 
           <TooltipStyled
             :is-top="true"
@@ -44,8 +47,10 @@
           @update-search-input="setQuerySearchData"
         />
       </v-card>
-      <div v-if="$store.getters['Objects/stateFilledListObjects'] && !$store.state.Objects.isLoadingObjects"
-           class="card_object flex-grow-1 flex-shrink-1">
+      <div
+        v-if="$store.getters['Objects/stateFilledListObjects'] && !$store.state.Objects.isLoadingObjects"
+        class="card_object flex-grow-1 flex-shrink-1"
+      >
         <div class="card_object_container">
           <CardObject
             v-for="(object, index) in listObjects"
@@ -127,66 +132,71 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from "vuex";
-import ButtonStyled from "../Common/ButtonStyled.vue";
-import ObjectGlobal from "./ObjectGlobal";
-import CardObject from "./CardObject.vue";
-import TooltipStyled from "@/components/Common/TooltipStyled";
-import ChipsStyled from "~/components/Common/ChipsStyled";
-import SearchStyled from "~/components/Common/SearchStyled";
+import { mapActions, mapGetters, mapState } from 'vuex';
+import ButtonStyled from '../Common/ButtonStyled.vue';
+import ObjectGlobal from './ObjectGlobal';
+import CardObject from './CardObject.vue';
+import TooltipStyled from '@/components/Common/TooltipStyled';
+import ChipsStyled from '~/components/Common/ChipsStyled';
+import SearchStyled from '~/components/Common/SearchStyled';
 
 export default {
-  name: "ListObjects",
+  name: 'ListObjects',
   components: { ChipsStyled, TooltipStyled, ButtonStyled, CardObject, ObjectGlobal, SearchStyled },
   data: () => ({
     object: {},
-    newObjAddress: "",
-    newObjName: "",
+    newObjAddress: '',
+    newObjName: '',
     showDetail: false,
     detailData: {},
     debounceTimeout: null,
     selectedQueryChips: [],
     listQueryFilters: [
       {
-        text: "Мои объекты",
-        value: "home_owner=true"
+        text: 'Мои объекты',
+        value: 'home_owner=true'
       },
       {
-        text: "Где я работаю",
-        value: "home_worker=true"
+        text: 'Где я работаю',
+        value: 'home_worker=true'
       }
     ],
     querySearchData: {
-      baseQuery: "search=",
-      value: ""
+      baseQuery: 'search=',
+      value: ''
     },
     allQueryFilters: []
   }),
   watch: {
-    "getUserId": {
+    'getUserId': {
       handler(val) {
         this.setAllQuery();
       }
     },
-    "$store.state.AuthModule.userData.objects_context": {
-      handler(newVal, oldVal) {
-        if (!newVal || !oldVal) {
-          this.selectedQueryChips = [];
-          newVal.forEach((elem) => {
-            if (elem["search"]) {
-              this.querySearchData.value = elem["search"];
-            } else {
-              this.selectedQueryChips.push(Object.keys(elem) + "=" + Object.values(elem));
-            }
-          });
-        }
-      }
-    }
+    // '$store.state.AuthModule.userData.objects_context': {
+    //   handler(newVal, oldVal) {
+    //     console.log('asd', newVal)
+    //     if (!newVal) {
+    //       console.log('asd', newVal)
+    //       this.selectedQueryChips = [];
+    //       newVal.forEach((elem) => {
+    //         if (elem.search) {
+    //           this.querySearchData.value = elem.search;
+    //         } else {
+    //           this.selectedQueryChips.push(Object.keys(elem) + '=' + Object.values(elem));
+    //         }
+    //         console.log('asd', newVal)
+    //       });
+    //       console.log('asd', newVal)
+    //     }
+    //     console.log('asd', newVal)
+    //   }
+    // }
   },
   computed: {
-    ...mapState("Objects", ["listObjects", "isLoadingObjects"]),
-    ...mapState(["userData"]),
-    ...mapGetters(["getUserId"]),
+    ...mapState('Objects', ['listObjects', 'isLoadingObjects']),
+    ...mapState(['userData']),
+    ...mapGetters(['getUserId']),
 
     notEmptyObject() {
       return !!Object.keys(this.object).length;
@@ -204,15 +214,15 @@ export default {
     }
   },
   methods: {
-    ...mapActions("Objects", ["createNewObject", "getListObjectsByUserId"]),
+    ...mapActions('Objects', ['createNewObject', 'getListObjectsByUserId']),
 
     async onCreateNewObject() {
-      this.$toast.success("Объект создан", { duration: 5000 });
+      this.$toast.success('Объект создан', { duration: 5000 });
       await this.createNewObject({
         address: this.newObjAddress,
         name: this.newObjName
       });
-      this.newObjAddress = "";
+      this.newObjAddress = '';
 
       await this.getListObjectsByUserId();
     },
@@ -220,7 +230,7 @@ export default {
       this.showDetail = false;
     },
     closeDetail() {
-      this.$emit("close-detail");
+      this.$emit('close-detail');
     },
     openDetail(data) {
       this.detailData = data;
@@ -236,7 +246,7 @@ export default {
       this.updateProperties.long = data.coords[1];
     },
     setQueryChips(nameChip) {
-      console.log("setQueryChips", nameChip);
+      console.log('setQueryChips', nameChip);
       this.selectedQueryChips = [];
       nameChip.forEach((value) => {
         this.selectedQueryChips.push(value);
@@ -245,10 +255,10 @@ export default {
     },
     setQuerySearchData(string) {
       console.log(string);
-      this.querySearchData.value = (string) ? string : "";
+      this.querySearchData.value = (string) || '';
       this.setAllQuery();
     },
-    async setAllQuery() {
+    setAllQuery() {
       const value1 = this.selectedQueryChips;
       const value2 = (this.querySearchData.value) ? this.querySearchData.baseQuery + this.querySearchData.value : null;
 
@@ -260,7 +270,7 @@ export default {
 
       this.allQueryFilters = [];
       calcQueryFilters.forEach((string) => {
-        const params = string.split("=");
+        const params = string.split('=');
         this.allQueryFilters.push({
           [params[0]]: params[1]
         });
@@ -270,19 +280,19 @@ export default {
       this.debounceTimeout = setTimeout(async () => {
 
         if (this.allQueryFilters.length) {
-          const responseUserData = await this.$store.dispatch("UserSettings/updateUser", {
+          const responseUserData = await this.$store.dispatch('UserSettings/updateUser', {
             userId: this.$store.getters.getUserId,
             data: {
               objects_context: JSON.stringify(this.allQueryFilters)
             }
           });
-          console.log("responseUserData", responseUserData);
+          console.log('responseUserData', responseUserData);
         }
 
-        const responseListObjects = await this.$store.dispatch("Objects/getListObjectsByUserId", this.allQueryFilters);
+        const responseListObjects = await this.$store.dispatch('Objects/getListObjectsByUserId', this.allQueryFilters);
         if (responseListObjects.codeResponse > 400) {
-          await this.$store.dispatch("callModalAuth");
-          this.$store.commit("Objects/setLoadingObjects", false);
+          await this.$store.dispatch('callModalAuth');
+          this.$store.commit('Objects/setLoadingObjects', false);
         }
       }, 500);
     }
