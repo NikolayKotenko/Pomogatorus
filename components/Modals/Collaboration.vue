@@ -1,6 +1,9 @@
 <template>
   <v-container class="collaboration">
     <section class="header">
+      <span class="header_title">
+        Совместная работа над объектом "{{ $store.state.Objects.currentObject.name }}"
+      </span>
       <SearchStyled
         :is-clearable="true"
         :is-custom-search-selections="true"
@@ -88,7 +91,7 @@ export default {
 
 <style lang="scss" scoped>
 .collaboration {
-  padding: 15px;
+  padding: 20px;
   //position: absolute;
   //top: 0;
   //right: 0;
@@ -101,7 +104,8 @@ export default {
 
 
   .header {
-    display: inline-flex;
+    display: grid;
+    grid-row-gap: 1em;
     width: 100%;
     grid-column-gap: 1em;
     margin-bottom: 2em;
@@ -110,7 +114,10 @@ export default {
 
     top: 0;
     z-index: 9;
-
+    .header_title{
+      font-size: 1.5em;
+      font-weight: 700;
+    }
 
     .invite_input {
     }
