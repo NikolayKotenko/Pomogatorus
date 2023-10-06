@@ -268,7 +268,7 @@ $grey-color: #8A8784;
 .more_info_container {
   padding: 20px;
   background-color: #FFFFFF;
-  width: 58px;
+  width: 580px;
   display: grid;
   grid-row-gap: 20px;
   .more_info_title{

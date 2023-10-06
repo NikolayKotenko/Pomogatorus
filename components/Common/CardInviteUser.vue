@@ -233,7 +233,7 @@
             <template v-else>
               <!-- Разрешение на добавление других участников на объект. -->
               <TooltipStyled
-                :title="'Функционал в разработке'"
+                :title="'Предоставить права для приглашения других пользователей'"
               >
                 <v-icon size="44" disabled>
                   mdi-account-multiple-check
@@ -272,8 +272,8 @@
                   </TooltipStyled>
                 </template>
                 <v-card class="application_card">
-                  <div class="application_title">
-                    <h3>Отстранить пользователя</h3>
+                  <div class="application_header">
+                    <span class="header_title">Отстранить пользователя</span>
                     <v-icon large @click="showDeleteUserModal = false">
                       mdi-close
                     </v-icon>
@@ -299,86 +299,13 @@
                 </v-card>
               </v-dialog>
             </template>
-
-
-            <v-dialog
-              v-model="showModal"
-              width="600"
-            >
-              <v-card class="application_card">
-                <template v-if="!getStateTetheredUserInObject">
-                  <div class="application_title">
-                    <h3>Составление заявки</h3>
-                    <v-icon large @click="closeModal">
-                      mdi-close
-                    </v-icon>
-                  </div>
-                  <div>
-                    <span>Пригласить {{ getValueField(userObject.middle_name) + ' ' + getValueField(userObject.first_name) }} в качестве: </span>
-                  </div>
-                </template>
-                <template v-else>
-                  <div class="application_title">
-                    <h3>Просмотр заявки</h3>
-                    <v-icon large @click="closeModal">
-                      mdi-close
-                    </v-icon>
-                  </div>
-                  <div>
-                    <span>Редактирование услуг пользователя
-                      {{ getValueField(userObject.middle_name) + ' ' + getValueField(userObject.first_name) }}
-                    </span>
-                  </div>
-                </template>
-                <div class="services_table">
-                  <div
-                    v-for="(item, index) in getServicesTetheredByUserObject"
-                    :key="index"
-                    class="services_table_elem"
-                  >
-                    <li>{{ getValueField(item.name) }}</li>
-                    <div class="services_table_buttons">
-                      <TooltipStyled :title="'Удалить услугу'">
-                        <v-icon
-                          size="30"
-                          color="#000000"
-                          @click="localDeleteOneServiceUserByObject(item.id)"
-                        >
-                          mdi-delete-outline
-                        </v-icon>
-                      </TooltipStyled>
-                    </div>
-                  </div>
-                  <div
-                    class="add_services"
-                  >
-                    <TooltipStyled
-                      :is-top="true"
-                      :title="'Добавить услугу'"
-                    >
-                      <v-icon
-                        size="56"
-                        @click="sendApplication"
-                      >
-                        mdi-plus-circle-outline
-                      </v-icon>
-                    </TooltipStyled>
-                    <v-combobox
-                      :items="userObject.services"
-                      :item-text="'name'"
-                      :item-value="'id'"
-                      clearable
-                      label="Выберите услуги"
-                      outlined
-                      placeholder="Выберите услуги"
-                      return-object
-                      solo
-                      @change="setSelectedServicesIdsLocal"
-                    />
-                  </div>
-                </div>
-              </v-card>
-            </v-dialog>
+            <InviteUserModal
+              ref="inviteUserModal"
+              :current-task="getTaskData"
+              :user-object="userObject"
+              :get-services-tethered-by-user-object="getServicesTetheredByUserObject"
+              :get-state-tethered-user-in-object="getStateTetheredUserInObject"
+            />
           </div>
         </section>
       </section>
@@ -387,6 +314,8 @@
 </template>
 
 <script>
+import { mapGetters, mapState } from 'vuex';
+import InviteUserModal from '../Collaboration/InviteUserModal.vue';
 import SelectStyled from './SelectStyled.vue';
 import SearchStyled from './SearchStyled.vue';
 import ButtonStyled from './ButtonStyled.vue';
@@ -394,7 +323,7 @@ import TooltipStyled from './TooltipStyled.vue';
 
 export default {
   name: 'CardInviteUser',
-  components: { TooltipStyled, ButtonStyled, SelectStyled },
+  components: { InviteUserModal, TooltipStyled, ButtonStyled, SelectStyled },
   props: {
     userObject: {
       type: Object,
@@ -404,19 +333,40 @@ export default {
   },
   data() {
     return {
-      showModal: false,
       showDeleteUserModal: false,
-      userAccess: [
-        { access: 'Полный доступ',value: 1 },
-        { access: 'Может редактировать',value: 2 },
-        { access: 'Может комментировать',value: 3 },
-        { access: 'Может смотреть',value: 4 },
-      ],
       selectedServicesIdsLocal: [],
       localSelectedServices: null,
+
+      // TODO: testData ona pridet s backenda
+      testData: [
+        {
+          'id': 56,
+          'ids_users': [12,29,42, 76],
+          'id_object': 15,
+          'services': [
+            {
+              'id_service': 136,
+              'id_nomenclature': 55,
+              'price': '300',
+              'quantity': 4
+            },
+            {
+              'id_service': 2,
+              'id_nomenclature': 77,
+              'price': '600',
+              'quantity': 5
+            }
+          ],
+          'notes': 'BLABLABLA',
+          'status': 'request'
+        },
+      ]
     }
   },
   computed: {
+    ...mapState('CollaborationModule', ['listMembers']),
+    ...mapState('Objects', ['currentObject']),
+
     SearchStyled() {
       return SearchStyled
     },
@@ -448,6 +398,47 @@ export default {
       })
     },
 
+    getTaskData() {
+      if (!this.getStateTetheredUserInObject) {
+        return null
+      }
+
+      const taskByObjectID = this.testData.filter(elem => elem.id_object === this.currentObject.id) // iz store  15 (currentObject)
+      // Spisok zayavok otfiltrovan po object
+      // V modalke pokazyvaem konkretnyu zayavky po id zayavke
+      const findedTask = taskByObjectID.find(elem => elem.id === 56) // 56 (id zayavki) esli otrkryvaem modalky to berem id zayavki
+
+      // TODO: esli back vse vernet chetko to ydeli vse nizhe
+      if (findedTask) {
+        // Otrkyvaem modalky s dannymi iz zayaki
+        const usersArray = this.listMembers.filter(user => findedTask.ids_users.includes(user.id)) // only users
+
+        const servicesByUsers = usersArray.map(user => user.services).flat() // [{}, {}, {}, {}]
+
+        const uniqServices = new Set(servicesByUsers) // only uniq service
+
+
+        findedTask.services.map(serviceTask => {
+          let serviceData = {}; // Zdes zapolnitsya infa po service
+
+          uniqServices.forEach(uniqService => {
+            if (uniqService.id === serviceTask.id_service) {
+              serviceData = window.structuredClone(uniqService) // data iz usera
+              console.log(uniqService)
+            }
+          })
+
+          return Object.assign(serviceTask, serviceData)
+        })
+
+        return findedTask
+
+      } else {
+        // Otrkyvaem pystyu zayavky
+        return null
+      }
+    }
+
   },
   mounted() {
     this.$nextTick(() => {
@@ -461,10 +452,11 @@ export default {
     },
     openModal() {
       this.$store.commit('UserSettings/setListServices', [])
-      this.showModal = true
+
+      this.$refs.inviteUserModal.openModal()
     },
     closeModal() {
-      this.showModal = false
+      this.$refs.inviteUserModal.closeModal()
     },
     sendApplication() {
       const promises = [];
@@ -511,23 +503,6 @@ export default {
       this.$toast.success('Пользователь отстранён',{ duration: 5000 })
       this.closeModal()
     },
-    async localDeleteOneServiceUserByObject(idService) {
-      let response = null;
-
-      response = await this.$store.dispatch(
-        'CollaborationModule/deleteServiceUserByObject',
-        {
-          id_user: this.userObject.id,
-          id_object: this.$store.getters['Objects/getIdCurrentObject'],
-          id_services: idService,
-        })
-
-      if (! response) return false;
-
-      if (response.codeResponse >= 400) return false;
-
-      this.$toast.success('Услуга удалена',{ duration: 5000 })
-    },
     setSelectedServicesIdsLocal(selectedServices) {
       if ( ! selectedServices ) return false
 
@@ -570,44 +545,6 @@ $orange-color: #F79256;
   display: flex;
   justify-content: center;
   grid-column-gap: 1em;
-}
-
-.application_card {
-  display: grid;
-  grid-row-gap: 1em;
-  padding: 20px;
-  .application_title {
-    display: flex;
-    justify-content: space-between;
-  }
-  .services_table{
-    display: grid;
-    grid-row-gap: 1em;
-    .services_table_elem{
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      counter-reset: elem;
-      .service_name:before {
-        counter-increment: elem;
-        content: counter(elem) ". ";
-      }
-      .services_table_buttons{
-        display: flex;
-        grid-column-gap: 1em;
-      }
-    }
-    .add_services{
-      display: flex;
-    }
-  }
-  .services_select {
-    padding: 20px 0;
-  }
-  .services_buttons {
-    display: flex;
-    justify-content: space-between;
-  }
 }
 
 .avatar_fio{
