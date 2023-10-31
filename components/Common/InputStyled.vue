@@ -134,9 +134,12 @@ export default {
 
 .styleTextField {
   border-radius: 5px;
-  margin-bottom: 1em !important;
   &.primary--text {
     color: #95D7AE !important;
   }
+}
+
+.styleQuantityField {
+  max-width: 70px;
 }
 </style>

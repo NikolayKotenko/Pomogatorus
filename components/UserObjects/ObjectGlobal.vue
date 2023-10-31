@@ -193,6 +193,7 @@
         <v-dialog
           v-model="stateTagsTechBlock"
           width="1080"
+
         >
           <v-card>
             <v-card-title class="d-flex justify-end">
