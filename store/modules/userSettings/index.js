@@ -7,6 +7,7 @@ export default {
     isUpdating: false,
     listServices: [],
     selectedServices: [],
+    selectedRawServices: [],
   },
   mutations: {
     setIsUpdating(state, payload) {
@@ -21,6 +22,9 @@ export default {
     },
     setMountedServices(state, payload) {
       state.selectedServices = payload
+    },
+    seRawServices(state, payload) {
+      state.selectedRawServices = payload
     },
   },
   actions: {
@@ -64,14 +68,18 @@ export default {
     async getUserServices({ commit }, payload) {
       const response = await Request.get(
         this.state.BASE_URL +
-          `/m-to-m/users-services?filter[id_user]=${payload}`
+          `/m-to-m/users-services?filter[id_user]=${payload}&filter[once_entry]=true`
       )
       if (response.data.length) {
         commit(
           'setMountedServices',
           response.data.map((elem) => elem._services)
         )
+        commit('seRawServices', response.data)
       }
+    },
+    async updatePriceService({ commit }, payload) {
+      // const response = Request.put()
     },
 
     async deleteEntriesServicesByUser({ rootGetters }) {
@@ -95,6 +103,12 @@ export default {
   getters: {
     getCountServices(state) {
       return state.selectedServices.length
+    },
+    getPriceByIdServices: (state) => (idServices) => {
+      const wtf = state.selectedRawServices.find(
+        (elem) => elem.id_services === idServices
+      )['price']
+      return wtf.toString()
     },
   },
 }

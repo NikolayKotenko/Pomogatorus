@@ -1,22 +1,54 @@
 <template>
   <v-text-field
-    v-model="currentData"
-    class="styleTextField"
-    :filled="isFilled"
-    :outlined="isOutlined"
+    v-if="isNumber"
+    v-model.number="currentData"
     :append-icon="appendIcon"
     :autofocus="isAutofocus"
     :disabled="isDisabled"
+    :error-messages="isErrorMessages"
+    :filled="isFilled"
     :flat="isFlat"
-    :loading="isLoading"
-    :placeholder="computedPlaceholder"
+    :hide-details="isHideDetails"
     :label="isLabel"
+    :loading="isLoading"
+    :outlined="isOutlined"
+    :placeholder="computedPlaceholder"
     :prepend-inner-icon="prependIconInner"
     :readonly="isReadonly"
-    :solo="isSolo"
     :rounded="isRounded"
+    :rules="isRules"
+    :solo="isSolo"
+    class="styleTextField"
     dense
-    hide-details
+    type="number"
+    @change="onChange"
+    @click="onClick"
+    @focus="isFocused = true"
+    @focusout="isFocused = false"
+  ></v-text-field>
+
+  <v-text-field
+    v-else
+    v-model="currentData"
+    :append-icon="appendIcon"
+    :autofocus="isAutofocus"
+    :disabled="isDisabled"
+    :error-messages="isErrorMessages"
+    :filled="isFilled"
+    :flat="isFlat"
+    :hide-details="isHideDetails"
+    :label="isLabel"
+    :loading="isLoading"
+    :outlined="isOutlined"
+    :placeholder="computedPlaceholder"
+    :prepend-inner-icon="prependIconInner"
+    :readonly="isReadonly"
+    :rounded="isRounded"
+    :rules="isRules"
+    :solo="isSolo"
+    class="styleTextField"
+    dense
+    @change="onChange"
     @click="onClick"
     @focus="isFocused = true"
     @focusout="isFocused = false"
@@ -25,7 +57,7 @@
 
 <script>
 export default {
-  name: 'InputStyled',
+  name: "InputStyled",
   props: {
     fullSincProp: {
       type: Boolean,
@@ -33,11 +65,11 @@ export default {
     },
     placeholder: {
       type: String,
-      default: ''
+      default: ""
     },
     isLabel: {
       type: String,
-      default:''
+      default: ""
     },
     isSolo: {
       type: Boolean,
@@ -49,7 +81,7 @@ export default {
     },
     data: {
       type: String,
-      default: ''
+      default: ""
     },
     isDisabled: {
       type: Boolean,
@@ -73,11 +105,11 @@ export default {
     },
     appendIcon: {
       type: String,
-      default: ''
+      default: ""
     },
     prependIconInner: {
       type: String,
-      default: ''
+      default: ""
     },
     isFlat: {
       type: Boolean,
@@ -87,54 +119,74 @@ export default {
       type: Boolean,
       default: false
     },
+    isRules: {
+      type: Array,
+      default: () => []
+    },
+    isHideDetails: {
+      type: Boolean,
+      default: true
+    },
+    isErrorMessages: {
+      type: String,
+      default: ""
+    },
+    isNumber: {
+      type: Boolean,
+      default: false
+    }
   },
   data: () => ({
-    internalData: '',
+    internalData: "",
     isFocused: false
   }),
   computed: {
     computedPlaceholder() {
       if (this.isFocused) {
-        return ''
+        return "";
       }
-      return this.placeholder
+      return this.placeholder;
     },
     currentData: {
       get() {
         if (!this.fullSincProp) {
           if (this.data) {
-            return this.data
+            return this.data;
           }
-          return this.internalData
+          return this.internalData;
         }
 
-        return this.data
+        return this.data;
       },
       set(value) {
         if (!this.data) {
-          this.internalData = value
+          this.internalData = value;
         }
-        this.$emit('update-input', value)
+        this.$emit("update-input", value);
       }
     }
   },
   methods: {
     onClick() {
-      this.$emit('on-click')
+      this.$emit("on-click");
+    },
+    onChange(value) {
+      this.$emit("on-change", value);
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
 
-.v-text-field--rounded{
-  border-radius: 10px!important;
+.v-text-field--rounded {
+  border-radius: 10px !important;
 }
 
 .styleTextField {
   border-radius: 5px;
   margin-bottom: 1em !important;
+
   &.primary--text {
     color: #95D7AE !important;
   }

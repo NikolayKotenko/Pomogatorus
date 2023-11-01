@@ -37,7 +37,7 @@
               @new-data="setData"
             />
           </div>
-          <LoginAuth v-else/>
+          <LoginAuth v-else />
         </div>
       </v-tab-item>
 
@@ -61,8 +61,8 @@
                 >
                   <template #activator="{ on, attrs }">
                     <v-icon
-                      v-bind="attrs"
                       color="#5D80B5"
+                      v-bind="attrs"
                       v-on="on"
                     >
                       mdi-help-circle-outline
@@ -77,11 +77,15 @@
               </TooltipStyled>
             </div>
             <InputStyled
-              class="service_price"
               :class="'styleTextField'"
+              :data="$store.getters['UserSettings/getPriceByIdServices'](item.id)"
+              :is-hide-details="false"
               :is-label="'Договорная'"
+              :is-number="true"
               :is-outlined="true"
-              :is-disabled="true"
+              :is-rules="isErrorMessagesPrice"
+              class="service_price"
+              @on-change="localUpdatePriceService($event, item.id)"
             />
           </div>
         </div>
@@ -155,17 +159,17 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState } from "vuex";
 
-import LoginAuth from '../frontLayouts/LoginAuth';
-import ButtonStyled from '../Common/ButtonStyled.vue';
-import SearchStyled from '../Common/SearchStyled.vue';
-import InputStyled from '../Common/InputStyled.vue';
-import TooltipStyled from '../Common/TooltipStyled.vue';
-import UserFields from './UserFields';
+import LoginAuth from "../frontLayouts/LoginAuth";
+import ButtonStyled from "../Common/ButtonStyled.vue";
+import SearchStyled from "../Common/SearchStyled.vue";
+import InputStyled from "../Common/InputStyled.vue";
+import TooltipStyled from "../Common/TooltipStyled.vue";
+import UserFields from "./UserFields";
 
 export default {
-  name: 'UserInfo',
+  name: "UserInfo",
   components: {
     TooltipStyled,
     InputStyled,
@@ -180,12 +184,15 @@ export default {
     isValid: false,
     tab: 0,
     loading: false,
-    serviceName: '',
-    servicePrice: '',
+    serviceName: "",
+    servicePrice: "",
     localSelectedService: null,
+    isErrorMessagesPrice: [
+      v => Number.isInteger(v) || "Поле должно быть числом"
+    ]
   }),
   async mounted() {
-    await this.$store.dispatch('UserSettings/getListServices');
+    await this.$store.dispatch("UserSettings/getListServices");
   },
   computed: {
     ...mapState({
@@ -198,14 +205,14 @@ export default {
     },
     isMobile() {
       return this.$device.isMobile;
-    },
+    }
   },
   methods: {
     closeDetail() {
-      this.$emit('close-detail');
+      this.$emit("close-detail");
     },
     logout() {
-      this.$store.dispatch('logout');
+      this.$store.dispatch("logout");
     },
     setChanged(value) {
       this.isChanged = value;
@@ -217,23 +224,31 @@ export default {
       this.isValid = value.isValid;
     },
     async saveUser() {
-      await this.$store.dispatch('UserSettings/deleteEntriesServicesByUser');
-      await this.$store.dispatch('UserSettings/setTetherUsersServices', this.$store.state.UserSettings.selectedServices)
-      await this.$store.dispatch('UserSettings/updateUser', { userId: this.userData.id, data: this.data });
-      this.$toast.success('Данные сохранены',{ duration: 5000 })
+      await this.$store.dispatch("UserSettings/deleteEntriesServicesByUser");
+      await this.$store.dispatch("UserSettings/setTetherUsersServices", this.$store.state.UserSettings.selectedServices);
+      await this.$store.dispatch("UserSettings/updateUser", { userId: this.userData.id, data: this.data });
+      this.$toast.success("Данные сохранены", { duration: 5000 });
       this.closeDetail();
     },
     async setServiceByUser() {
-      const checkExist = await this.$store.dispatch('UserSettings/addServicesAction', this.localSelectedService)
+      const checkExist = await this.$store.dispatch("UserSettings/addServicesAction", this.localSelectedService);
       if (checkExist) return false;
 
-      this.$toast.success('Услуга добавлена',{ duration: 5000 })
+      this.$toast.success("Услуга добавлена", { duration: 5000 });
     },
-    checkServicesTab(tabId){
+    checkServicesTab(tabId) {
       if (tabId === 1) {
-        this.$store.dispatch('UserSettings/getUserServices', this.userData.id)
+        this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
       }
     },
+    localUpdatePriceService(price, id_services) {
+
+      console.log("price", price);
+      console.log("id_services", id_services);
+
+      // this.$store.dispatch('UserSettings/updatePriceService', {
+      // })
+    }
   }
 };
 </script>
@@ -289,32 +304,39 @@ export default {
   opacity: 0
 }
 
-.services_list{
+.services_list {
   display: grid;
   margin-top: 2em;
-  .container_title{
+
+  .container_title {
     font-size: 1.2em;
     font-weight: 500;
   }
-  .service_card{
+
+  .service_card {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    .service_title{
+
+    .service_title {
       font-size: 1.3em;
     }
-    .service_price{
+
+    .service_price {
       max-width: 150px;
     }
 
   }
 }
-.services_search{
+
+.services_search {
   display: flex;
   justify-content: space-between;
 }
-.add_service_button{
+
+.add_service_button {
   cursor: pointer;
+
   &:hover {
     color: #000000;
   }
