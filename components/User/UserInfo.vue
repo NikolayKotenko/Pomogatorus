@@ -45,50 +45,18 @@
 
       <v-tab-item :key="1">
         <div class="services_list">
-          <div
-            v-for="(item, index) in $store.state.UserSettings.selectedServices"
+          <ServiceCard
+            v-for="(item, index) in $store.state.UserSettings.selectedRawServices"
             :key="index"
-            class="service_card"
-          >
-            <div style="display: flex; align-items: center;">
-              <span class="service_title">{{ item.name }}</span>
-              <TooltipStyled
-                :title="'Описание услуги'"
-              >
-                <v-menu
-                  offset-overflow
-                  offset-y
-                >
-                  <template #activator="{ on, attrs }">
-                    <v-icon
-                      color="#5D80B5"
-                      v-bind="attrs"
-                      v-on="on"
-                    >
-                      mdi-help-circle-outline
-                    </v-icon>
-                  </template>
-                  <v-list>
-                    <div class="explain_info">
-                      <span>{{ item.description }}</span>
-                    </div>
-                  </v-list>
-                </v-menu>
-              </TooltipStyled>
-            </div>
-            <InputStyled
-              :class="'styleTextField'"
-              :data="$store.getters['UserSettings/getPriceByIdServices'](item.id)"
-              :is-hide-details="false"
-              :is-label="'Договорная'"
-              :is-number="true"
-              :is-outlined="true"
-              :is-rules="isErrorMessagesPrice"
-              class="service_price"
-              @on-change="localUpdatePriceService($event, item.id)"
-            />
-          </div>
+            :is-equipment-exist="false"
+            :is-quantity-exist="false"
+            :iteration-key="index+1"
+            :service-object="item"
+            @delete-one-service="deleteOneService(index)"
+            @update-price-field="setPrice(index, $event)"
+          />
         </div>
+        <!-- Добавить услугу -->
         <div class="services_search">
           <TooltipStyled :title="'Добавить услугу'">
             <v-icon
@@ -167,6 +135,7 @@ import SearchStyled from "../Common/SearchStyled.vue";
 import InputStyled from "../Common/InputStyled.vue";
 import TooltipStyled from "../Common/TooltipStyled.vue";
 import UserFields from "./UserFields";
+import ServiceCard from "@/components/Collaboration/ServiceCard.vue";
 
 export default {
   name: "UserInfo",
@@ -176,7 +145,8 @@ export default {
     SearchStyled,
     ButtonStyled,
     UserFields,
-    LoginAuth
+    LoginAuth,
+    ServiceCard
   },
   data: () => ({
     isChanged: false,
@@ -248,6 +218,15 @@ export default {
 
       // this.$store.dispatch('UserSettings/updatePriceService', {
       // })
+    },
+    deleteOneService(serviceToRemove) {
+      // this.taskData.services.splice(serviceToRemove, 1)
+
+      // this.closeDeleteOneServiceModal()
+      this.$toast.success("Услуга удалена");
+    },
+    setPrice(index, price) {
+      // this.taskData.services[index].price = price
     }
   }
 };
@@ -306,7 +285,9 @@ export default {
 
 .services_list {
   display: grid;
-  margin-top: 2em;
+  margin: 1em 0;
+  padding: 0 2px;
+  grid-row-gap: 1em;
 
   .container_title {
     font-size: 1.2em;

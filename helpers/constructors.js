@@ -1,11 +1,7 @@
-export function ServiceDataConstructor(
-  code = '',
-  name ='',
-  description = '',
-) {
-  this.code = code;
-  this.name = name;
-  this.description = description;
+export function ServiceDataConstructor(code = '', name = '', description = '') {
+  this.code = code
+  this.name = name
+  this.description = description
 }
 
 export function Service(
@@ -14,13 +10,13 @@ export function Service(
   idsNomenclatures = [],
   price = '',
   quantity = null,
-  ServiceData = new ServiceDataConstructor()
+  service_data = new ServiceDataConstructor()
 ) {
-  this.id_services = idServices;
-  this.ids_nomenclatures = idsNomenclatures;
-  this.price = price;
-  this.quantity = quantity;
-  this.ServiceData = ServiceData;
+  this.id_services = idServices
+  this.ids_nomenclatures = idsNomenclatures
+  this.price = price
+  this.quantity = quantity
+  this.service_data = service_data
 }
 
 export function TaskData(
@@ -30,10 +26,9 @@ export function TaskData(
   services = [],
   status = 'request'
 ) {
-  this.notes = notes;
-  this.ids_users = idsUsers;
-  this.id_object = idObject;
-  this.services = services;
+  this.notes = notes
+  this.ids_users = idsUsers
+  this.id_object = idObject
+  this.services = services
   this.status = status
 }
-

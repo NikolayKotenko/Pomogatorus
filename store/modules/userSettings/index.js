@@ -73,7 +73,7 @@ export default {
       if (response.data.length) {
         commit(
           'setMountedServices',
-          response.data.map((elem) => elem._services)
+          response.data.map((elem) => elem.service_data)
         )
         commit('seRawServices', response.data)
       }
