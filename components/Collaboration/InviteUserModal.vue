@@ -1,7 +1,8 @@
 <template>
   <v-dialog
     v-model="showModal"
-    width="600"
+    width="760"
+    persistent
   >
     <v-card class="application_card">
       <template v-if="!getStateTetheredUserInObject">
@@ -11,94 +12,20 @@
             mdi-close
           </v-icon>
         </div>
-
-        <!-- Блок с пользователями. -->
-        <div class="info_wrapper">
-          <span class="info_title">Пригласить пользователя: </span>
-          <!-- v-for usersArray  -->
-
-          <li class="info_text">
-            {{ getValueField(userObject.middle_name) + ' ' + getValueField(userObject.first_name) + ' ' + getValueField(userObject.last_name) }}
-          </li>
-        </div>
       </template>
-      <template v-else>
-        <div class="application_header">
-          <span class="header_title">Просмотр заявки</span>
-          <v-icon large @click="closeModal">
-            mdi-close
-          </v-icon>
-        </div>
-        <div class="info_wrapper">
-          <span class="info_title">Редактирование услуг пользователя: </span>
-          <li class="info_text">
-            {{ getValueField(userObject.middle_name) + ' ' + getValueField(userObject.first_name) + ' ' + getValueField(userObject.last_name) }}
-          </li>
-        </div>
-      </template>
+
+      <!-- Блок с услугами. -->
       <div class="services_table">
         <div class="info_wrapper">
           <span class="info_title">Услуги: </span>
-          <!-- TODO: v props -->
-          <div
-            v-for="(item, index) in getServicesTetheredByUserObject"
-            :key="index"
-            class="services_table_elem"
-          >
-            <li>{{ getValueField(item.name) }}</li>
-            <div class="services_table_buttons">
-              <v-text-field
-                outlined
-                color="#000000"
-                type="number"
-              />
-              <v-dialog
-                v-model="showDeleteOneServiceModal"
-                width="600"
-              >
-                <template #activator="{ on, attrs }">
-                  <TooltipStyled :title="'Удалить услугу'">
-                    <v-icon
-                      size="30"
-                      color="#000000"
-                      v-bind="attrs"
-                      v-on="on"
-                      @click="showDeleteOneServiceModal = true"
-                    >
-                      mdi-delete-outline
-                    </v-icon>
-                  </TooltipStyled>
-                </template>
-                <v-card class="application_card">
-                  <div class="application_header">
-                    <span class="header_title">Удаление услуги</span>
-                    <v-icon large @click="showDeleteOneServiceModal = false">
-                      mdi-close
-                    </v-icon>
-                  </div>
-                  <span>Вы действительно хотите удалить услугу "{{ getValueField(item.name) }}" у пользователя
-                    {{ getValueField(userObject.middle_name) + ' ' + getValueField(userObject.first_name) }}?
-                  </span>
-                  <div class="services_buttons">
-                    <div @click="localDeleteOneServiceUserByObject(item.id)">
-                      <ButtonStyled
-                        :local-text="'Подтвердить'"
-                        :local-class="'invite_button style_button'"
-                        :is-loading="$store.state.CollaborationModule.isLoading"
-                      />
-                    </div>
-                    <div
-                      @click="toggleDeleteService(false)"
-                    >
-                      <ButtonStyled
-                        :local-text="'Отмена'"
-                        :local-class="'style_close'"
-                      />
-                    </div>
-                  </div>
-                </v-card>
-              </v-dialog>
-            </div>
+          <div class="service_card_wrapper">
+            <ServiceCard
+              v-for="(item, index) in taskData.services"
+              :key="index"
+              :service-object="item"
+              @delete-one-service="deleteOneService(index)"
+              @update-price-field="setPrice(index, $event)"
+            />
           </div>
         </div>
         <div
@@ -109,8 +36,9 @@
             :title="'Добавить услугу'"
           >
             <v-icon
-              size="20"
-              @click="sendApplication"
+              color="#95D7AE"
+              size="34"
+              @click="addService"
             >
               mdi-plus-circle-outline
             </v-icon>
@@ -119,10 +47,13 @@
             :items="userObject.services"
             :item-text="'name'"
             :item-value="'id'"
+            :hide-details="true"
+            hide-selected
+            class="search_service"
             clearable
-            label="Выберите услуги"
+            label="Добавить услугу"
             outlined
-            placeholder="Выберите услуги"
+            placeholder="Добавить услугу"
             return-object
             solo
             @change="setSelectedServicesIdsLocal"
@@ -130,18 +61,113 @@
         </div>
       </div>
 
+      <!-- Блок с пользователями. -->
+      <div class="info_wrapper">
+        <span class="info_title">Исполнители: </span>
+        <div
+          v-for="(item, index) in dataUsers"
+          :key="index"
+          class="user_info"
+        >
+          <li>{{ item.user_fio }}</li>
+          <v-dialog
+            v-model="showDeleteOneUserModal"
+            width="600"
+          >
+            <template #activator="{ on, attrs }">
+              <TooltipStyled :title="'Удалить исполнителя'">
+                <v-icon
+                  size="32"
+                  color="#8A8784"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  mdi-delete-outline
+                </v-icon>
+              </TooltipStyled>
+            </template>
+            <v-card class="delete_user_modal">
+              <div class="delete_user_header">
+                <span class="header_title">Удаление исполнителя</span>
+                <v-icon large @click="closeDeleteOneUserModal">
+                  mdi-close
+                </v-icon>
+              </div>
+              <span>
+                Вы действительно хотите удалить исполнителя "{{ item.user_fio }}"?
+              </span>
+              <div class="delete_user_buttons">
+                <ButtonStyled
+                  :local-text="'Подтвердить'"
+                  :local-class="'invite_button style_button'"
+                  @click-button="deleteOneUser(taskData.ids_users.item, index)"
+                />
+                <ButtonStyled
+                  :local-text="'Отмена'"
+                  :local-class="'style_close'"
+                  @click-button="closeDeleteOneUserModal"
+                />
+              </div>
+            </v-card>
+          </v-dialog>
+        </div>
+        <div class="add_users_wrapper">
+          <TooltipStyled
+            :is-top="true"
+            :title="'Добавить исполнителя'"
+          >
+            <v-icon
+              color="#95D7AE"
+              size="34"
+              @click="addUser"
+            >
+              mdi-plus-circle-outline
+            </v-icon>
+          </TooltipStyled>
+          <v-combobox
+            :items="$store.state.CollaborationModule.listMembers"
+            :item-text="'user_fio'"
+            :item-value="'id'"
+            :hide-details="true"
+            hide-selected
+            class="search_service"
+            clearable
+            label="Добавить исполнителя"
+            outlined
+            return-object
+            solo
+            @change="setSelectedUsersIdsLocal"
+          />
+        </div>
+      </div>
 
       <!-- Блок с примечанием. -->
       <div class="info_wrapper">
         <span class="info_title">Примечание: </span>
         <div class="textarea_style">
           <v-textarea
+            v-model="taskData.notes"
+            :hide-details="true"
             outlined
             label="Введите примечание"
             color="#000000"
             clearable
           />
         </div>
+      </div>
+
+      <!-- Блок с кнопками. -->
+      <div class="footer_buttons">
+        <ButtonStyled
+          :local-text="'Отправить заявку'"
+          :local-class="'invite_button style_button'"
+          @click-button="sendTask"
+        />
+        <ButtonStyled
+          :local-text="'Отмена'"
+          :local-class="'style_close'"
+          @click-button="closeModal"
+        />
       </div>
     </v-card>
   </v-dialog>
@@ -151,9 +177,13 @@
 import ButtonStyled from '../Common/ButtonStyled.vue';
 import TooltipStyled from '../Common/TooltipStyled.vue';
 import SelectStyled from '../Common/SelectStyled.vue';
+import { Service, ServiceDataConstructor, TaskData } from '../../helpers/constructors';
+import ServiceCard from './ServiceCard.vue';
+
 export default {
   name: 'InviteUserModal',
   components: {
+    ServiceCard,
     TooltipStyled,
     ButtonStyled,
     SelectStyled,
@@ -180,58 +210,129 @@ export default {
   },
   data() {
     return {
+      taskData: new TaskData(),
+      dataUsers: [],
       showModal: false,
       showDeleteOneServiceModal: false,
-
-      taskData: {
-      'id': '', // tolko esli ezhe sozdannaya
-      'ids_users': [], // cherez selector userov
-      'id_object': '', // currentObject
-      'services': [], // structura iz helpService
-      'notes': '', // textarea
-      'status': 'request',
-      },
-      helpService: [
-        {
-          'id_service': 136, // berem iz selectora
-          'id_nomenclature': 55, // Yznat otkyda mi eto berem
-          'price': '300', // iz selectora
-          'quantity': 4 // nakidyvat 4erez interface
-        },
-        {
-          'id_service': 2,
-          'id_nomenclature': 77,
-          'price': '600',
-          'quantity': 5
-        }
-      ]
+      showDeleteOneUserModal: false,
+      selectedService: {},
+      selectedUser: {},
     }
   },
   mounted() {
     if (this.currentTask) {
       this.taskData = this.currentTask
     }
+    this.taskData.id_object = this.$store.getters['Objects/getIdCurrentObject']
   },
   methods: {
     getValueField(str) {
       return (str) || ''
     },
 
-    toggleDeleteService(value){
-      // TODO: Ybrat vse showDeleteOneServiceModal iz template i podstaviit nash method
-      this.showDeleteOneServiceModal = value
-    },
     closeModal() {
       this.showModal = false
     },
+
     openModal() {
       this.showModal = true
     },
 
-    setSelectedServicesIdsLocal() {
-
+    closeDeleteOneServiceModal() {
+      this.showDeleteOneServiceModal = false
     },
-    sendApplication() {},
+
+    openDeleteOneUserModal() {
+      this.showDeleteOneUserModal = true
+    },
+
+    closeDeleteOneUserModal() {
+      this.showDeleteOneUserModal = false
+    },
+
+    setSelectedServicesIdsLocal(obj) {
+      this.selectedService = obj;
+    },
+
+    setSelectedUsersIdsLocal(obj) {
+      this.selectedUser = obj;
+    },
+
+    addService(){
+      if (this.taskData.services.find(item => item.id_services === this.selectedService.id)) {
+        this.$toast.error('Услуга уже добавлена')
+        return false
+      }
+
+      this.taskData.services.push( new Service(
+        this.selectedService.id,
+        [],
+        '',
+        '1',
+        new ServiceDataConstructor(
+          this.selectedService.code,
+          this.selectedService.name,
+          this.selectedService.description,
+        )
+      ) )
+
+      this.$toast.success('Услуга добавлена')
+    },
+
+    setPrice(index, price) {
+      this.taskData.services[index].price = price
+    },
+
+    addUser() {
+      if (this.taskData.ids_users.includes(this.selectedUser.id)) {
+        this.$toast.error('Исполнитель уже добавлен')
+        return false
+      }
+
+      this.taskData.ids_users.push(this.selectedUser.id)
+      this.dataUsers.push(this.selectedUser)
+
+      this.$toast.success('Исполнитель добавлен')
+    },
+
+    async sendTask() {
+      if (! this.taskData.services.length) {
+        this.$toast.info('Выберите услугу')
+        return false
+      }
+
+      if (! this.taskData.ids_users.length) {
+        this.$toast.info('Добавьте исполнителя')
+        return false
+      }
+
+      const response = await this.$store.dispatch(
+        'CollaborationModule/setTaskByObject',
+        this.taskData
+      )
+
+      this.$toast.success(response.message)
+      this.closeModal()
+
+      // TODO: Доделать дестрой
+      // this.dataUsers = ''
+      // this.taskData = new TaskData()
+    },
+
+    deleteOneService(serviceToRemove) {
+      this.taskData.services.splice(serviceToRemove, 1)
+
+      this.closeDeleteOneServiceModal()
+      this.$toast.success('Услуга удалена')
+    },
+
+    deleteOneUser(idUserToRemove, dataUserToRemove) {
+      this.taskData.ids_users.splice(idUserToRemove, 1)
+      this.dataUsers.splice(dataUserToRemove, 1)
+
+      this.closeDeleteOneUserModal()
+      this.$toast.success('Исполнитель удален')
+    },
 
     async localDeleteOneServiceUserByObject(idService) {
       let response = null;
@@ -256,16 +357,24 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$yellowBackground: rgb(255, 244, 203);
+$shadowBox: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+$borderRadius: 5px;
+
+.v-input__slot {
+  max-height: 40px !important;
+}
+
 .application_card {
-  width: 600px;
   display: grid;
-  grid-row-gap: 20px;
+  grid-row-gap: 15px;
   padding: 20px;
+  background: #FFFFFF;
   .application_header {
     display: flex;
     justify-content: space-between;
     .header_title {
-      font-size: 1.3em;
+      font-size: 1.5em;
       font-weight: 600;
     }
   }
@@ -274,11 +383,35 @@ export default {
     grid-row-gap: 10px;
     .info_title{
       font-weight: 600;
+      font-size: 1.3em;
     }
+
+    .user_info {
+      display: inline-flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .info_text {
+      font-size: 1.3em;
+    }
+    .add_users_wrapper {
+      display: inline-flex;
+      align-items: center;
+      grid-column-gap: 10px;
+      .search_service {
+        max-width: 300px;
+      }
+    }
+
   }
   .services_table{
     display: grid;
     grid-row-gap: 1em;
+    background: $yellowBackground;
+    box-shadow: $shadowBox;
+    border-radius: $borderRadius;
+    padding: 10px;
     .services_table_elem{
       display: flex;
       justify-content: space-between;
@@ -291,6 +424,14 @@ export default {
     }
     .add_services{
       display: flex;
+      align-items: center;
+      grid-column-gap: 10px;
+      padding: 10px;
+      background: #FFFFFF;
+      border-radius: $borderRadius;
+      box-shadow: $shadowBox;
+      .search_service {
+      }
     }
   }
   .services_select {
@@ -299,6 +440,38 @@ export default {
   .services_buttons {
     display: flex;
     justify-content: space-between;
+  }
+  .footer_buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.delete_user_modal {
+  padding: 20px;
+  display: grid;
+  grid-row-gap: 20px;
+  .delete_user_header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.3em;
+    font-weight: 600;
+  }
+  .delete_user_buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+</style>
+
+<style lang="scss">
+.search_service {
+  .v-input__control {
+    min-height: 40px !important;
+    .v-input__slot {
+      min-height: 40px !important;
+    }
   }
 }
 </style>

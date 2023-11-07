@@ -40,6 +40,14 @@ export default {
 
       return response
     },
+    async setTaskByObject({ dispatch }, object) {
+      const response = await Request.post(
+        this.state.BASE_URL + '/entity/request-for-work',
+        object
+      )
+
+      return response
+    },
     async deleteServiceUserByObject({ dispatch, commit }, object) {
       commit('setLoading', true)
 
@@ -88,6 +96,7 @@ export default {
 
       commit('setLoading', false)
     },
+
   },
   getters: {
     getFilteredListByRoleExperts(state) {

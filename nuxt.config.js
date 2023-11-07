@@ -72,6 +72,7 @@ export default {
         },
       },
     ],
+    duration: 5000,
   },
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {

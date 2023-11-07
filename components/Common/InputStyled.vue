@@ -191,4 +191,8 @@ export default {
     color: #95D7AE !important;
   }
 }
+
+.styleQuantityField {
+  max-width: 70px;
+}
 </style>

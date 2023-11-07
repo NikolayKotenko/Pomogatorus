@@ -320,6 +320,7 @@ export default {
 
     .service_title {
       font-size: 1.3em;
+
     }
 
     .service_price {

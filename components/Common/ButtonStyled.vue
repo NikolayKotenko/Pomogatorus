@@ -100,7 +100,7 @@ export default {
 }
 
 .v-btn.style_button {
-  background-color: #ffffff;
+  background-color: #ffffff !important;
   color: #000000;
   border: 1px solid rgba(149, 215, 174, 1);
 
