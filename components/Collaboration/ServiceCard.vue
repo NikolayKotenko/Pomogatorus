@@ -88,7 +88,7 @@
         />
       </div>
       <v-dialog
-        v-model="showDeleteOneServiceModal"
+        v-model="$store.state.UserSettings.showDeleteOneServiceModal"
         width="600"
       >
         <template #activator="{ on, attrs }">
@@ -106,7 +106,7 @@
         <v-card class="delete_service_modal">
           <div class="delete_service_header">
             <span class="header_title">Удаление услуги</span>
-            <v-icon large @click="closeDeleteOneServiceModal">
+            <v-icon large @click="$store.commit('UserSettings/changeStateDeleteServiceModal', false)">
               mdi-close
             </v-icon>
           </div>
@@ -122,7 +122,7 @@
             <ButtonStyled
               :local-class="'style_close'"
               :local-text="'Отмена'"
-              @click-button="closeDeleteOneServiceModal"
+              @click-button="$store.commit('UserSettings/changeStateDeleteServiceModal', false)"
             />
           </div>
         </v-card>
@@ -135,7 +135,7 @@
 import index from "v-viewer";
 import InputStyled from "../Common/InputStyled.vue";
 import TooltipStyled from "../Common/TooltipStyled.vue";
-import { Service } from "../../helpers/constructors";
+import { Service } from "~/helpers/constructors";
 import ButtonStyled from "../Common/ButtonStyled.vue";
 
 export default {
@@ -157,28 +157,21 @@ export default {
     iterationKey: {
       type: Number,
       default: 1
+    },
+    isLoading: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
-    return {
-      showDeleteOneServiceModal: false
-    };
+    return {};
   },
   computed: {
     index() {
       return index;
     }
   },
-  methods: {
-    openDeleteOneServiceModal() {
-      this.showDeleteOneServiceModal = true;
-    },
-
-    closeDeleteOneServiceModal() {
-      this.showDeleteOneServiceModal = false;
-    }
-
-  }
+  methods: {}
 };
 </script>
 

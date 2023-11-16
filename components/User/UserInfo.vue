@@ -49,38 +49,22 @@
             v-for="(item, index) in $store.state.UserSettings.selectedRawServices"
             :key="index"
             :is-equipment-exist="false"
+            :is-loading="$store.state.UserSettings.loading"
             :is-quantity-exist="false"
             :iteration-key="index+1"
             :service-object="item"
-            @delete-one-service="deleteOneService(index)"
+            @delete-one-service="deleteOneService(item)"
             @update-price-field="setPrice(index, $event)"
           />
         </div>
+
         <!-- Добавить услугу -->
-        <div class="services_search">
-          <TooltipStyled :title="'Добавить услугу'">
-            <v-icon
-              class="add_service_button"
-              size="56"
-              @click="setServiceByUser"
-            >
-              mdi-plus-circle-outline
-            </v-icon>
-          </TooltipStyled>
-          <v-combobox
-            v-model="localSelectedService"
-            :item-text="'name'"
-            :item-value="'id'"
-            :items="$store.state.UserSettings.listServices"
-            clearable
-            label="Выберите услуги"
-            outlined
-            placeholder="Выберите услуги"
-            return-object
-            solo
-            @keyup.enter="setServiceByUser"
-          />
-        </div>
+        <AddNewServiceButton
+          :list-services-available-to-add="$store.state.UserSettings.listServices"
+          class="mt-5"
+          @add-service="setServiceByUser"
+        />
+
       </v-tab-item>
     </v-tabs>
 
@@ -136,6 +120,7 @@ import InputStyled from "../Common/InputStyled.vue";
 import TooltipStyled from "../Common/TooltipStyled.vue";
 import UserFields from "./UserFields";
 import ServiceCard from "@/components/Collaboration/ServiceCard.vue";
+import AddNewServiceButton from "@/components/Collaboration/AddNewServiceButton.vue";
 
 export default {
   name: "UserInfo",
@@ -146,7 +131,8 @@ export default {
     ButtonStyled,
     UserFields,
     LoginAuth,
-    ServiceCard
+    ServiceCard,
+    AddNewServiceButton
   },
   data: () => ({
     isChanged: false,
@@ -194,16 +180,21 @@ export default {
       this.isValid = value.isValid;
     },
     async saveUser() {
-      await this.$store.dispatch("UserSettings/deleteEntriesServicesByUser");
-      await this.$store.dispatch("UserSettings/setTetherUsersServices", this.$store.state.UserSettings.selectedServices);
       await this.$store.dispatch("UserSettings/updateUser", { userId: this.userData.id, data: this.data });
       this.$toast.success("Данные сохранены", { duration: 5000 });
       this.closeDetail();
     },
-    async setServiceByUser() {
-      const checkExist = await this.$store.dispatch("UserSettings/addServicesAction", this.localSelectedService);
-      if (checkExist) return false;
+    async setServiceByUser(serviceData) {
+      const checkExist = this.$store.state.UserSettings.selectedServices.some((elem) => {
+        return elem.id === serviceData.id;
+      });
+      if (checkExist) {
+        this.$toast.error("Такая услуга уже добавлена!", { duration: 5000 });
+        return false;
+      }
 
+      await this.$store.dispatch("UserSettings/addServicesAction", serviceData);
+      await this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
       this.$toast.success("Услуга добавлена", { duration: 5000 });
     },
     checkServicesTab(tabId) {
@@ -219,10 +210,12 @@ export default {
       // this.$store.dispatch('UserSettings/updatePriceService', {
       // })
     },
-    deleteOneService(serviceToRemove) {
-      // this.taskData.services.splice(serviceToRemove, 1)
+    async deleteOneService(serviceRawObj) {
+      console.log("deleteOneService", serviceRawObj);
+      await this.$store.dispatch("UserSettings/deleteOneServiceAssignToUser", serviceRawObj.id_services);
+      await this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
 
-      // this.closeDeleteOneServiceModal()
+      this.$store.commit("UserSettings/changeStateDeleteServiceModal", false);
       this.$toast.success("Услуга удалена");
     },
     setPrice(index, price) {
@@ -285,7 +278,6 @@ export default {
 
 .services_list {
   display: grid;
-  margin: 1em 0;
   padding: 0 2px;
   grid-row-gap: 1em;
 
@@ -311,10 +303,6 @@ export default {
   }
 }
 
-.services_search {
-  display: flex;
-  justify-content: space-between;
-}
 
 .add_service_button {
   cursor: pointer;

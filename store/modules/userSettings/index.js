@@ -8,6 +8,8 @@ export default {
     listServices: [],
     selectedServices: [],
     selectedRawServices: [],
+    loading: false,
+    showDeleteOneServiceModal: false,
   },
   mutations: {
     setIsUpdating(state, payload) {
@@ -26,16 +28,23 @@ export default {
     seRawServices(state, payload) {
       state.selectedRawServices = payload
     },
+    setLoading(state, payload) {
+      state.loading = payload
+    },
+    changeStateDeleteServiceModal(state, payload) {
+      state.showDeleteOneServiceModal = payload
+    },
   },
   actions: {
-    addServicesAction({ commit, state }, payload) {
-      const checkExist = state.selectedServices.some((elem) => {
-        return elem.id === payload.id
-      })
-      if (checkExist) return true
-
-      commit('addServices', payload)
-      return false
+    async addServicesAction({ commit, rootGetters, state }, serviceData) {
+      const objMToMUsersServices = {
+        id_user: rootGetters.getUserId,
+        id_services: serviceData.id,
+      }
+      await Request.post(
+        `${this.state.BASE_URL}/m-to-m/users-services`,
+        objMToMUsersServices
+      )
     },
 
     async updateUser({ commit }, payload) {
@@ -65,18 +74,16 @@ export default {
       )
       commit('setListServices', response.data)
     },
-    async getUserServices({ commit }, payload) {
+    async getUserServices({ commit }, idUser) {
       const response = await Request.get(
         this.state.BASE_URL +
-          `/m-to-m/users-services?filter[id_user]=${payload}&filter[once_entry]=true`
+          `/m-to-m/users-services?filter[id_user]=${idUser}&filter[once_entry]=true`
       )
-      if (response.data.length) {
-        commit(
-          'setMountedServices',
-          response.data.map((elem) => elem.service_data)
-        )
-        commit('seRawServices', response.data)
-      }
+      commit(
+        'setMountedServices',
+        response.data.map((elem) => elem.service_data)
+      )
+      commit('seRawServices', response.data)
     },
     async updatePriceService({ commit }, payload) {
       // const response = Request.put()
@@ -87,17 +94,18 @@ export default {
         `${this.state.BASE_URL}/m-to-m/delete-all-services-by-user/${rootGetters.getUserId}`
       )
     },
-    async setTetherUsersServices({ commit, rootGetters }, arr) {
-      for (const obj of arr) {
-        const objMToMUsersServices = {
+    async deleteOneServiceAssignToUser({ commit, rootGetters }, idService) {
+      commit('setLoading', true)
+
+      const response = await Request.delete(
+        `${this.state.BASE_URL}/m-to-m/delete-one-service-assign-to-user`,
+        {
           id_user: rootGetters.getUserId,
-          id_services: obj.id,
+          id_services: idService,
         }
-        const response = await Request.post(
-          `${this.state.BASE_URL}/m-to-m/users-services`,
-          objMToMUsersServices
-        )
-      }
+      )
+
+      commit('setLoading', false)
     },
   },
   getters: {
