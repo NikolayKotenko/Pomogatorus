@@ -1,176 +1,170 @@
 <template>
-  <v-dialog
-    v-model="showModal"
-    width="760"
-    persistent
-  >
-    <v-card class="application_card">
-      <template v-if="!getStateTetheredUserInObject">
-        <div class="application_header">
-          <span class="header_title">Составление заявки</span>
-          <v-icon large @click="closeModal">
-            mdi-close
+  <v-card class="application_card">
+    <template v-if="!getStateTetheredUserInObject">
+      <div class="application_header">
+        <span class="header_title">Составление заявки</span>
+        <v-icon large @click="$emit('close-modal')">
+          mdi-close
+        </v-icon>
+      </div>
+    </template>
+
+    <!-- Блок с услугами. -->
+    <div class="services_table">
+      <div class="info_wrapper">
+        <span class="info_title">Услуги: </span>
+        <div class="service_card_wrapper">
+          <ServiceCard
+            v-for="(item, index) in taskData.services"
+            :key="index"
+            :service-object="item"
+            @delete-one-service="deleteOneService(index)"
+            @update-price-field="setPrice(index, $event)"
+          />
+        </div>
+      </div>
+      <div
+        class="add_services"
+      >
+        <TooltipStyled
+          :is-top="true"
+          :title="'Добавить услугу'"
+        >
+          <v-icon
+            color="#95D7AE"
+            size="34"
+            @click="addService"
+          >
+            mdi-plus-circle-outline
           </v-icon>
-        </div>
-      </template>
-
-      <!-- Блок с услугами. -->
-      <div class="services_table">
-        <div class="info_wrapper">
-          <span class="info_title">Услуги: </span>
-          <div class="service_card_wrapper">
-            <ServiceCard
-              v-for="(item, index) in taskData.services"
-              :key="index"
-              :service-object="item"
-              @delete-one-service="deleteOneService(index)"
-              @update-price-field="setPrice(index, $event)"
-            />
-          </div>
-        </div>
-        <div
-          class="add_services"
-        >
-          <TooltipStyled
-            :is-top="true"
-            :title="'Добавить услугу'"
-          >
-            <v-icon
-              color="#95D7AE"
-              size="34"
-              @click="addService"
-            >
-              mdi-plus-circle-outline
-            </v-icon>
-          </TooltipStyled>
-          <v-combobox
-            :items="userObject.services"
-            :item-text="'name'"
-            :item-value="'id'"
-            :hide-details="true"
-            hide-selected
-            class="search_service"
-            clearable
-            label="Добавить услугу"
-            outlined
-            placeholder="Добавить услугу"
-            return-object
-            solo
-            @change="setSelectedServicesIdsLocal"
-          />
-        </div>
-      </div>
-
-      <!-- Блок с пользователями. -->
-      <div class="info_wrapper">
-        <span class="info_title">Исполнители: </span>
-        <div
-          v-for="(item, index) in dataUsers"
-          :key="index"
-          class="user_info"
-        >
-          <li>{{ item.user_fio }}</li>
-          <v-dialog
-            v-model="showDeleteOneUserModal"
-            width="600"
-          >
-            <template #activator="{ on, attrs }">
-              <TooltipStyled :title="'Удалить исполнителя'">
-                <v-icon
-                  size="32"
-                  color="#8A8784"
-                  v-bind="attrs"
-                  v-on="on"
-                >
-                  mdi-delete-outline
-                </v-icon>
-              </TooltipStyled>
-            </template>
-            <v-card class="delete_user_modal">
-              <div class="delete_user_header">
-                <span class="header_title">Удаление исполнителя</span>
-                <v-icon large @click="closeDeleteOneUserModal">
-                  mdi-close
-                </v-icon>
-              </div>
-              <span>
-                Вы действительно хотите удалить исполнителя "{{ item.user_fio }}"?
-              </span>
-              <div class="delete_user_buttons">
-                <ButtonStyled
-                  :local-text="'Подтвердить'"
-                  :local-class="'invite_button style_button'"
-                  @click-button="deleteOneUser(taskData.ids_users.item, index)"
-                />
-                <ButtonStyled
-                  :local-text="'Отмена'"
-                  :local-class="'style_close'"
-                  @click-button="closeDeleteOneUserModal"
-                />
-              </div>
-            </v-card>
-          </v-dialog>
-        </div>
-        <div class="add_users_wrapper">
-          <TooltipStyled
-            :is-top="true"
-            :title="'Добавить исполнителя'"
-          >
-            <v-icon
-              color="#95D7AE"
-              size="34"
-              @click="addUser"
-            >
-              mdi-plus-circle-outline
-            </v-icon>
-          </TooltipStyled>
-          <v-combobox
-            :items="$store.state.CollaborationModule.listMembers"
-            :item-text="'user_fio'"
-            :item-value="'id'"
-            :hide-details="true"
-            hide-selected
-            class="search_service"
-            clearable
-            label="Добавить исполнителя"
-            outlined
-            return-object
-            solo
-            @change="setSelectedUsersIdsLocal"
-          />
-        </div>
-      </div>
-
-      <!-- Блок с примечанием. -->
-      <div class="info_wrapper">
-        <span class="info_title">Примечание: </span>
-        <div class="textarea_style">
-          <v-textarea
-            v-model="taskData.notes"
-            :hide-details="true"
-            outlined
-            label="Введите примечание"
-            color="#000000"
-            clearable
-          />
-        </div>
-      </div>
-
-      <!-- Блок с кнопками. -->
-      <div class="footer_buttons">
-        <ButtonStyled
-          :local-text="'Отправить заявку'"
-          :local-class="'invite_button style_button'"
-          @click-button="sendTask"
-        />
-        <ButtonStyled
-          :local-text="'Отмена'"
-          :local-class="'style_close'"
-          @click-button="closeModal"
+        </TooltipStyled>
+        <v-combobox
+          :items="userObject.services"
+          :item-text="'name'"
+          :item-value="'id'"
+          :hide-details="true"
+          hide-selected
+          class="search_service"
+          clearable
+          label="Добавить услугу"
+          outlined
+          placeholder="Добавить услугу"
+          return-object
+          solo
+          @change="setSelectedServicesIdsLocal"
         />
       </div>
-    </v-card>
-  </v-dialog>
+    </div>
+
+    <!-- Блок с пользователями. -->
+    <div class="info_wrapper">
+      <span class="info_title">Исполнители: </span>
+      <div
+        v-for="(item, index) in dataUsers"
+        :key="index"
+        class="user_info"
+      >
+        <li>{{ item.user_fio }}</li>
+        <v-dialog
+          v-model="showDeleteOneUserModal"
+          width="600"
+        >
+          <template #activator="{ on, attrs }">
+            <TooltipStyled :title="'Удалить исполнителя'">
+              <v-icon
+                size="32"
+                color="#8A8784"
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-delete-outline
+              </v-icon>
+            </TooltipStyled>
+          </template>
+          <v-card class="delete_user_modal">
+            <div class="delete_user_header">
+              <span class="header_title">Удаление исполнителя</span>
+              <v-icon large @click="closeDeleteOneUserModal">
+                mdi-close
+              </v-icon>
+            </div>
+            <span>
+              Вы действительно хотите удалить исполнителя "{{ item.user_fio }}"?
+            </span>
+            <div class="delete_user_buttons">
+              <ButtonStyled
+                :local-text="'Подтвердить'"
+                :local-class="'invite_button style_button'"
+                @click-button="deleteOneUser(taskData.ids_users.item, index)"
+              />
+              <ButtonStyled
+                :local-text="'Отмена'"
+                :local-class="'style_close'"
+                @click-button="closeDeleteOneUserModal"
+              />
+            </div>
+          </v-card>
+        </v-dialog>
+      </div>
+      <div class="add_users_wrapper">
+        <TooltipStyled
+          :is-top="true"
+          :title="'Добавить исполнителя'"
+        >
+          <v-icon
+            color="#95D7AE"
+            size="34"
+            @click="addUser"
+          >
+            mdi-plus-circle-outline
+          </v-icon>
+        </TooltipStyled>
+        <v-combobox
+          :items="$store.state.CollaborationModule.listMembers"
+          :item-text="'user_fio'"
+          :item-value="'id'"
+          :hide-details="true"
+          hide-selected
+          class="search_service"
+          clearable
+          label="Добавить исполнителя"
+          outlined
+          return-object
+          solo
+          @change="setSelectedUsersIdsLocal"
+        />
+      </div>
+    </div>
+
+    <!-- Блок с примечанием. -->
+    <div class="info_wrapper">
+      <span class="info_title">Примечание: </span>
+      <div class="textarea_style">
+        <v-textarea
+          v-model="taskData.notes"
+          :hide-details="true"
+          outlined
+          label="Введите примечание"
+          color="#000000"
+          clearable
+        />
+      </div>
+    </div>
+
+    <!-- Блок с кнопками. -->
+    <div class="footer_buttons">
+      <ButtonStyled
+        :local-text="'Отправить заявку'"
+        :local-class="'invite_button style_button'"
+        @click-button="sendTask"
+      />
+      <ButtonStyled
+        :local-text="'Отмена'"
+        :local-class="'style_close'"
+        @click-button="$emit('close-modal')"
+      />
+    </div>
+  </v-card>
 </template>
 
 <script>
@@ -312,6 +306,7 @@ export default {
       )
 
       this.$toast.success(response.message)
+      this.$emit('close-modal')
       this.closeModal()
 
       // TODO: Доделать дестрой

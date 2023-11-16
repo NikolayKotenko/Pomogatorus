@@ -18,22 +18,23 @@
         @click-clear="getListBasedArticles(); selectedChips = ''"
         @redirect="redirectData"
       />
-      <!--      <ChipsStyled -->
-      <!--        :list-chips="$store.state.PopularSelectionsModule.list_selections.map((elem) => elem.name)" -->
-      <!--        @click-chip="setChip" -->
-      <!--      > -->
-      <!--      </ChipsStyled> -->
-    </div>
-    <div v-if="listArticles.length" class="list_container">
-      <Article v-for="(article, index) in listArticles" :key="index" :article="article"/>
-    </div>
+      <!--      &lt;!&ndash;      <ChipsStyled &ndash;&gt; -->
+      <!--      &lt;!&ndash;        :list-chips="$store.state.PopularSelectionsModule.list_selections.map((elem) => elem.name)" &ndash;&gt; -->
+      <!--      &lt;!&ndash;        @click-chip="setChip" &ndash;&gt; -->
+      <!--      &lt;!&ndash;      > &ndash;&gt; -->
+      <!--      &lt;!&ndash;      </ChipsStyled> &ndash;&gt; -->
+      <!--    </div> -->
+      <div v-if="listArticles.length" class="list_container">
+        <Article v-for="(article, index) in listArticles" :key="index" :article="article"/>
+      </div>
 
-    <v-overlay :value="!loadComponent">
-      <v-progress-circular
-        indeterminate
-        size="64"
-      />
-    </v-overlay>
+      <v-overlay :value="!loadComponent">
+        <v-progress-circular
+          indeterminate
+          size="64"
+        />
+      </v-overlay>
+    </div>
   </v-container>
 </template>
 
