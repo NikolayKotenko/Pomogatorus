@@ -11,6 +11,7 @@ import Tabs from './modules/tabs'
 import Objects from './modules/objects'
 import CollaborationModule from './modules/collaboration'
 import NomenclatureModule from './modules/nomenclature'
+import NotificationModule from './modules/notification';
 
 const createStore = () => {
   return new Vuex.Store({
@@ -35,6 +36,7 @@ const createStore = () => {
 
       /* HEADER */
       drawer: false,
+      stateVerticalMenu: true,
 
       /* Objects */
       showCabinet: false,
@@ -106,7 +108,7 @@ const createStore = () => {
           {
             title: 'Статьи',
             path: '/articles',
-            icon: 'mdi-message-text',
+            icon: 'mdi-card-text-outline',
             visible: true,
           },
           {
@@ -125,6 +127,12 @@ const createStore = () => {
             title: 'Оборудование',
             path: '/products',
             icon: 'mdi-store-cog-outline',
+            visible: true,
+          },
+          {
+            title: 'Уведомления',
+            path: '/notifications',
+            icon: 'mdi-bell-outline',
             visible: true,
           },
           {
@@ -257,6 +265,7 @@ const createStore = () => {
       Objects,
       CollaborationModule,
       NomenclatureModule,
+      NotificationModule,
     },
   })
 }

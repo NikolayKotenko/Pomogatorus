@@ -1,6 +1,9 @@
 <template>
   <VCombobox
     v-model="currentData"
+    background-color="#ffffff"
+    color="#000000"
+    :placeholder="isPlaceholder"
     :chips="isChips"
     :class="isClass"
     :clearable="(localSearchInputSync || localSelected) ? isClearable : false"
@@ -16,7 +19,6 @@
     :loading="false"
     :menu-props="(computedSearchInputState && compareSearchStringAndExistEntry) ? {} : {value: false}"
     :outlined="isOutlined"
-    :placeholder="isPlaceholder"
     :return-object="isReturnObject"
     :rounded="isRounded"
     :search-input.sync="localSearchInputSync"
@@ -223,6 +225,7 @@ export default {
 }
 
 .styleSearch {
+
   &.primary--text {
     color: #95D7AE !important;
   }
@@ -232,16 +235,16 @@ export default {
   //min-width: 1144px;
 
   .v-input__slot {
-    height: 60px;
+    height: 40px;
   }
 
   .v-select__selections {
-    height: 60px;
+    height: 40px;
   }
 
   .v-input__append-inner {
     .v-input__icon--append {
-      margin-top: 8px;
+      //margin-top: 8px;
     }
 
     //height: 60px;
@@ -255,9 +258,12 @@ export default {
     color: #37392E !important;
 
     input {
-      margin: 10px 0 !important;
-      padding: 15px 0;
+      color: black;
+    }
 
+    input::placeholder {
+      color: #878787;
+      font-size: 0.8em;
 
     }
   }
@@ -272,7 +278,6 @@ export default {
 
   .mdi-close {
     font-size: 1em;
-    margin-top: 20px;
     align-content: center;
     color: #F79256 !important;
   }

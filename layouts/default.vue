@@ -6,7 +6,10 @@
       <SubHeader/>
     </div>
     <v-main id="main_content" class="main">
-      <VerticalMenu class="fixed_left_menu"/>
+      <VerticalMenu
+        v-if="$store.state.stateVerticalMenu"
+        class="fixed_left_menu"
+      />
       <Nuxt class="custom_grid_system main__left_column"/>
       <WrapperStickyCurrentObject v-if="! listExcludedRightColumn && $device.isDesktop"/>
     </v-main>
@@ -65,7 +68,7 @@ export default {
           text: 'Эти статьи помогут вам подобрать решение для вашей проблемы'
         }
       ],
-      articles_breadcrumbs: []
+      articles_breadcrumbs: [],
     }
   },
   async fetch() {
@@ -117,6 +120,13 @@ export default {
       }
     ]
   },
+  watch:{
+    '$store.getters.getUserId': {
+      handler(value) {
+        this.$store.dispatch('Objects/getListObjectsByUserId');
+      }
+    }
+  },
   mounted() {
     this.fuckinMiddleware()
     window.onNuxtReady((app) => {
@@ -138,7 +148,9 @@ export default {
 
       const arrPathExcluded = [
         'search',
-        'object'
+        'object',
+        'podborki',
+        'notifications'
       ]
       return arrPathExcluded.some((path) => {
         return this.$route.path.match(path)
@@ -167,8 +179,9 @@ export default {
       }
 
       this.$store.commit('change_refactoring_content', false)
-    }
-  }
+    },
+  },
+
 }
 </script>
 
@@ -183,7 +196,7 @@ body {
 }
 
 .app {
-  background: #ffffff !important;
+  background: #F2F2F2 !important;
 }
 
 ::v-deep .v-btn {
@@ -195,7 +208,7 @@ body {
   width: $max-width;
   //max-width: $max-width;
   margin: 5px auto 0 auto;
-  border-radius: 5px;
+  border-radius: 20px;
   padding: unset !important;
 
   &__left_column {

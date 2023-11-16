@@ -299,7 +299,7 @@
                 </v-card>
               </v-dialog>
             </template>
-            <InviteUserModal
+            <TaskModal
               ref="inviteUserModal"
               :user-object="userObject"
               :get-services-tethered-by-user-object="getServicesTetheredByUserObject"
@@ -314,7 +314,8 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex';
-import InviteUserModal from '../Collaboration/InviteUserModal.vue';
+import InviteUserModal from '../Collaboration/Task.vue';
+import TaskModal from '../Collaboration/TaskModal.vue';
 import SelectStyled from './SelectStyled.vue';
 import SearchStyled from './SearchStyled.vue';
 import ButtonStyled from './ButtonStyled.vue';
@@ -322,7 +323,7 @@ import TooltipStyled from './TooltipStyled.vue';
 
 export default {
   name: 'CardInviteUser',
-  components: { InviteUserModal, TooltipStyled, ButtonStyled, SelectStyled },
+  components: { TaskModal, InviteUserModal, TooltipStyled, ButtonStyled, SelectStyled },
   props: {
     userObject: {
       type: Object,

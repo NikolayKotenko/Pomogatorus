@@ -145,11 +145,6 @@ export default {
         }
       }
     },
-    '$store.getters.getUserId': {
-      handler(value) {
-        this.$store.dispatch('Objects/getListObjectsByUserId');
-      }
-    }
   },
   mounted() {
     this.$store.dispatch('getListBroadcastSnippet');

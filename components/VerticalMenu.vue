@@ -1,109 +1,30 @@
 <template>
-  <div class="vertical_menu">
-    <div class="vertical_menu__element">
-      <v-tooltip left>
-        <template #activator="{ on, attrs }">
-          <v-btn
-            :href="$store.getters.menuItems[1].path"
-            text
-            class="vertical_menu__element__btn"
-          >
-            <v-icon
-              v-if="$store.getters.menuItems[1].visible"
-              class="vertical_menu__element__icon"
-              v-bind="attrs"
-              large
-              v-on="on"
-            >
-              {{ $store.getters.menuItems[1].icon }}
-            </v-icon>
-          </v-btn>
-        </template>
-        <span class="vertical_menu__element__title">{{ $store.getters.menuItems[1].title }}</span>
-      </v-tooltip>
-    </div>
-    <div class="vertical_menu__element">
-      <v-tooltip left>
-        <template #activator="{ on, attrs }">
-          <v-btn
-            :href="$store.getters.menuItems[2].path"
-            text
-            class="vertical_menu__element__btn"
-          >
-            <v-icon
-              v-if="$store.getters.menuItems[2].visible"
-              class="vertical_menu__element__icon"
-              v-bind="attrs"
-              large
-              v-on="on"
-            >
-              {{ $store.getters.menuItems[2].icon }}
-            </v-icon>
-          </v-btn>
-        </template>
-        <span>{{ $store.getters.menuItems[2].title }}</span>
-      </v-tooltip>
-    </div>
-    <div class="vertical_menu__element">
-      <v-tooltip left>
-        <template #activator="{ on, attrs }">
-          <v-btn
-            :href="$store.getters.menuItems[3].path"
-            text
-            class="vertical_menu__element__btn"
-          >
-            <v-icon
-              v-if="$store.getters.menuItems[3].visible"
-              class="vertical_menu__element__icon"
-              v-bind="attrs"
-              large
-              v-on="on"
-            >
-              {{ $store.getters.menuItems[3].icon }}
-            </v-icon>
-          </v-btn>
-        </template>
-        <span>{{ $store.getters.menuItems[3].title }}</span>
-      </v-tooltip>
-    </div>
-    <div class="vertical_menu__element">
-      <v-tooltip left>
-        <template #activator="{ on, attrs }">
-          <v-btn
-            :href="$store.getters.menuItems[4].path"
-            text
-            class="vertical_menu__element__btn"
-          >
-            <v-icon
-              v-if="$store.getters.menuItems[4].visible"
-              class="vertical_menu__element__icon"
-              v-bind="attrs"
-              large
-              v-on="on"
-            >
-              {{ $store.getters.menuItems[4].icon }}
-            </v-icon>
-          </v-btn>
-        </template>
-        <span>{{ $store.getters.menuItems[4].title }}</span>
-      </v-tooltip>
-    </div>
-    <v-divider class="vertical_menu__divider"/>
-    <div class="vertical_menu__element">
-      <v-tooltip left>
-        <template #activator="{ on, attrs }">
+  <div class="menu_container">
+    <div
+      v-for="(item, index) in $store.getters.menuItems"
+      :key="index"
+    >
+      <div
+        v-if="item.visible"
+        class="btn_wrapper"
+        :class="{'active_element': getActiveMenuElement(item.path)}"
+      >
+        <v-btn
+          :href="item.path"
+          text
+          class="btn"
+        >
           <v-icon
-            class="vertical_menu__element__icon"
-            v-bind="attrs"
-            large
-            v-on="on"
-            @click="$store.state.listModal[0].isOpen = !$store.state.listModal[0].isOpen"
+            class="icon"
+            size="24"
           >
-            mdi-account
+            {{ item.icon }}
           </v-icon>
-        </template>
-        <span>Личный кабинет</span>
-      </v-tooltip>
+          <span class="text">
+            {{ item.title }}
+          </span>
+        </v-btn>
+      </div>
     </div>
   </div>
 </template>
@@ -115,59 +36,66 @@ export default {
     return {
       show: true
     }
-  }
+  },
+  computed: {},
+  methods: {
+    getActiveMenuElement(elem) {
+      return this.$route.path === elem
+    }
+  },
 }
 </script>
 
 <style lang="scss" scoped>
-.vertical_menu {
+
+.menu_container {
   height: auto;
   width: auto;
   position: fixed;
   z-index: 1;
-  top: 40%;
-  left: 10%;
+  top: 8%;
+  left: 1%;
   overflow-x: hidden;
-  border-right: 2px solid rgba(179, 179, 179, 1);
 
-    &__element {
-      margin: 0.5em 1em;
-      cursor: pointer;
+  .btn_wrapper {
+    cursor: pointer;
+    margin-bottom: 5px;
+    .btn {
+      display: flex;
+      justify-content: flex-start;
+      min-width: 190px;
+      min-height: 44px;
+      border-radius: 10px;
 
-        &__icon {
-          color: #857885 !important;
-
-          &:hover {
-            color: #95D7AE !important;
-          }
-        }
-
-        &__btn {
-          margin: 0 0 0 0!important;
-          padding: 0 0 0 0 !important;
-          min-width: 0 !important;
-
-          &:active {
-            color: #E9E9E9 ;
-          }
-        }
-        &__title {
-
-        }
+      .icon {
+        color: #000000;
+        margin-right: 10px;
       }
-
-    &__divider {
-      border-color: rgba(179, 179, 179, 1) !important;
-      border-width: 1px;
-      max-width: 50px;
-      margin-left: 0.6em;
-
+      .text {
+        font-size: 1.2em;
+        text-transform: none !important;
+        font-weight: 400;
+        font-style: normal !important;
+        letter-spacing: 0 !important;
+      }
     }
+    }
+
+}
+
+.menu_container {
+  .active_element {
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    .btn .icon {
+      color: #95D7AE !important;
+    }
+  }
 }
 
 
 @media only screen and (max-width: 1600px) {
-  .vertical_menu{
+  .menu_container{
     display: none;
   }
 }
