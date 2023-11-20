@@ -68,14 +68,21 @@
       </div>
       <div class="service_info">
         <v-text-field
+          ref="price_field"
+          :color="(delayUpdatingData) ? 'green' : 'blue'"
+          :hide-details="!delayUpdatingData"
+          :hint="'Обновлено - ' + serviceObject.created_at_minutes"
+          :persistent-hint="delayUpdatingData"
+          :value="serviceObject.price"
           class="price_field"
           dense
           height="40"
-          hide-details
           label="Цена услуги"
           outlined
-          placeholder="Цена услуги"
-          @change="$emit('update-price-field', $event)"
+          persistent-placeholder
+          placeholder="Договорная"
+          type="number"
+          @input="$emit('update-price-field', $event)"
         />
         <InputStyled
           v-if="isQuantityExist"
@@ -161,10 +168,26 @@ export default {
     isLoading: {
       type: Boolean,
       default: false
+    },
+    delayUpdatingData: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
-    return {};
+    return {
+      isErrorMessagesPrice: [
+        value => (!!Number.parseInt(value) || value === "" || value === null) || "Должно быть числом"
+      ]
+    };
+  },
+  watch: {
+    "delayUpdatingData": {
+      handler(v) {
+        if (!v) return false;
+        this.$refs.price_field.focus();
+      }
+    }
   },
   computed: {
     index() {
@@ -206,6 +229,11 @@ export default {
 
       .price_field {
         max-width: 150px;
+
+        .v-messages__message {
+          color: green !important;
+          background: red;
+        }
       }
 
       .quantity_field {
@@ -264,5 +292,9 @@ export default {
       min-height: 30px !important;
     }
   }
+}
+
+.price_field .v-messages__message {
+  color: green;
 }
 </style>

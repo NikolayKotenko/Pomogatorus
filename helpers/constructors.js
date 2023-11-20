@@ -32,3 +32,8 @@ export function TaskData(
   this.services = services
   this.status = status
 }
+
+export function MtoMUsersServices(id_services = null, price = '') {
+  this.id_services = id_services
+  this.price = price
+}

@@ -48,13 +48,14 @@
           <ServiceCard
             v-for="(item, index) in $store.state.UserSettings.selectedRawServices"
             :key="index"
+            :delay-updating-data="delayUpdatingData"
             :is-equipment-exist="false"
             :is-loading="$store.state.UserSettings.loading"
             :is-quantity-exist="false"
             :iteration-key="index+1"
             :service-object="item"
             @delete-one-service="deleteOneService(item)"
-            @update-price-field="setPrice(index, $event)"
+            @update-price-field="setPrice(item, $event)"
           />
         </div>
 
@@ -73,8 +74,8 @@
         <ButtonStyled
           v-if="isLoggedIn"
           :custom-slot="true"
+          :is-loading="isUpdating"
           :is-mobile="true"
-          :loading="isUpdating"
           class="mobile_save_btn"
           local-class="style_button"
           @click-button="saveUser"
@@ -94,7 +95,7 @@
       <template v-else>
         <ButtonStyled
           v-if="isLoggedIn"
-          :loading="isUpdating"
+          :is-loading="isUpdating"
           :local-text="'Сохранить'"
           local-class="style_button saveLogoutBtn"
           @click-button="saveUser"
@@ -107,6 +108,18 @@
         />
       </template>
     </div>
+
+    <v-overlay
+      :value="isUpdating"
+      absolute
+      color="#F2F2F2"
+    >
+      <v-progress-circular
+        color="#95D7AE"
+        indeterminate
+        size="64"
+      />
+    </v-overlay>
   </div>
 </template>
 
@@ -121,6 +134,7 @@ import TooltipStyled from "../Common/TooltipStyled.vue";
 import UserFields from "./UserFields";
 import ServiceCard from "@/components/Collaboration/ServiceCard.vue";
 import AddNewServiceButton from "@/components/Collaboration/AddNewServiceButton.vue";
+import { MtoMUsersServices } from "~/helpers/constructors";
 
 export default {
   name: "UserInfo",
@@ -143,9 +157,8 @@ export default {
     serviceName: "",
     servicePrice: "",
     localSelectedService: null,
-    isErrorMessagesPrice: [
-      v => Number.isInteger(v) || "Поле должно быть числом"
-    ]
+    debounceTimeout: null,
+    delayUpdatingData: false
   }),
   async mounted() {
     await this.$store.dispatch("UserSettings/getListServices");
@@ -193,7 +206,7 @@ export default {
         return false;
       }
 
-      await this.$store.dispatch("UserSettings/addServicesAction", serviceData);
+      await this.$store.dispatch("UserSettings/addServicesAction", new MtoMUsersServices(serviceData.id));
       await this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
       this.$toast.success("Услуга добавлена", { duration: 5000 });
     },
@@ -202,24 +215,33 @@ export default {
         this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
       }
     },
-    localUpdatePriceService(price, id_services) {
-
-      console.log("price", price);
-      console.log("id_services", id_services);
-
-      // this.$store.dispatch('UserSettings/updatePriceService', {
-      // })
-    },
     async deleteOneService(serviceRawObj) {
-      console.log("deleteOneService", serviceRawObj);
       await this.$store.dispatch("UserSettings/deleteOneServiceAssignToUser", serviceRawObj.id_services);
       await this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
 
       this.$store.commit("UserSettings/changeStateDeleteServiceModal", false);
       this.$toast.success("Услуга удалена");
     },
-    setPrice(index, price) {
-      // this.taskData.services[index].price = price
+    async setPrice(object, price) {
+
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+      this.debounceTimeout = setTimeout(async () => {
+        await this.$store.dispatch("UserSettings/addServicesAction", new MtoMUsersServices(
+          object.id_services,
+          price
+        ));
+        await this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
+        this.setDelayUpdatingData();
+        this.$toast.success("Услуга обновлена");
+      }, 2000);
+    },
+    setDelayUpdatingData() {
+      this.delayUpdatingData = true;
+
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+      this.debounceTimeout = setTimeout(async () => {
+        this.delayUpdatingData = false;
+      }, 8000);
     }
   }
 };

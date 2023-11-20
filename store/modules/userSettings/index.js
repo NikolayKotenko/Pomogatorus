@@ -1,5 +1,6 @@
 import _clone from '../../../helpers/deepClone'
 import Request from '@/services/request'
+import { MtoMUsersServices } from '~/helpers/constructors'
 
 export default {
   namespaced: true,
@@ -36,10 +37,14 @@ export default {
     },
   },
   actions: {
-    async addServicesAction({ commit, rootGetters, state }, serviceData) {
+    async addServicesAction(
+      { commit, rootGetters, state },
+      obj = new MtoMUsersServices()
+    ) {
       const objMToMUsersServices = {
         id_user: rootGetters.getUserId,
-        id_services: serviceData.id,
+        id_services: obj.id_services,
+        price: obj.price,
       }
       await Request.post(
         `${this.state.BASE_URL}/m-to-m/users-services`,
@@ -85,9 +90,19 @@ export default {
       )
       commit('seRawServices', response.data)
     },
-    async updatePriceService({ commit }, payload) {
-      // const response = Request.put()
-    },
+
+    // Нам не нужно обновление записи, нам нужно хранить хронологию изменения цены
+    // async updatePriceService({ commit }, payload) {
+    //   const { id } = payload
+    //
+    //   console.log('updatePriceService payload', payload)
+    //
+    //   const response = await Request.put(
+    //     this.state.BASE_URL + `/m-to-m/users-services/${id}`,
+    //     payload
+    //   )
+    //   console.log('updatePriceService res', response)
+    // },
 
     async deleteEntriesServicesByUser({ rootGetters }) {
       const response = await Request.delete(
