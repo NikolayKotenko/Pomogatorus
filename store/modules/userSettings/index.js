@@ -9,8 +9,12 @@ export default {
     listServices: [],
     selectedServices: [],
     selectedRawServices: [],
+    selectedRawServicesBased: [],
     loading: false,
     showDeleteOneServiceModal: false,
+    searchServiceByName: '',
+    sortListServicesValue: '',
+    updatedEntryPrice: null,
   },
   mutations: {
     setIsUpdating(state, payload) {
@@ -28,6 +32,7 @@ export default {
     },
     seRawServices(state, payload) {
       state.selectedRawServices = payload
+      state.selectedRawServicesBased = payload
     },
     setLoading(state, payload) {
       state.loading = payload
@@ -79,16 +84,27 @@ export default {
       )
       commit('setListServices', response.data)
     },
-    async getUserServices({ commit }, idUser) {
+    async getUserServices({ commit, state }, idUser) {
+      commit('setLoading', true)
+
+      const queryFilter = Request.ConstructFilterQuery({
+        id_user: idUser,
+        once_entry: true,
+        name: state.searchServiceByName,
+      })
       const response = await Request.get(
         this.state.BASE_URL +
-          `/m-to-m/users-services?filter[id_user]=${idUser}&filter[once_entry]=true`
+          `/m-to-m/users-services` +
+          queryFilter +
+          state.sortListServicesValue
       )
       commit(
         'setMountedServices',
         response.data.map((elem) => elem.service_data)
       )
       commit('seRawServices', response.data)
+
+      commit('setLoading', false)
     },
 
     // Нам не нужно обновление записи, нам нужно хранить хронологию изменения цены
@@ -132,6 +148,15 @@ export default {
         (elem) => elem.id_services === idServices
       )['price']
       return wtf.toString()
+    },
+    getFilteredListServicesByName(state) {
+      if (!state.searchServiceByName) return state.selectedRawServicesBased
+
+      return state.selectedRawServicesBased.filter((elem) => {
+        const haystack = elem.service_data.name.toLowerCase()
+        const needle = state.searchServiceByName.toLowerCase()
+        return !!haystack.match(needle)
+      })
     },
   },
 }

@@ -168,24 +168,24 @@ export default {
     isLoading: {
       type: Boolean,
       default: false
-    },
-    delayUpdatingData: {
-      type: Boolean,
-      default: false
     }
   },
   data() {
     return {
       isErrorMessagesPrice: [
         value => (!!Number.parseInt(value) || value === "" || value === null) || "Должно быть числом"
-      ]
+      ],
+      delayUpdatingData: false
     };
   },
   watch: {
-    "delayUpdatingData": {
-      handler(v) {
-        if (!v) return false;
-        this.$refs.price_field.focus();
+    "serviceObject.id": {
+      handler(newV, oldV) {
+        if (!newV) return false;
+        if (newV === oldV) return false;
+        if (oldV !== this.$store.state.UserSettings.updatedEntryPrice) return false;
+
+        this.setDelayUpdatingData();
       }
     }
   },
@@ -194,7 +194,17 @@ export default {
       return index;
     }
   },
-  methods: {}
+  methods: {
+    setDelayUpdatingData() {
+      this.delayUpdatingData = true;
+      this.$refs.price_field.focus();
+
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+      this.debounceTimeout = setTimeout(async () => {
+        this.delayUpdatingData = false;
+      }, 6000);
+    }
+  }
 };
 </script>
 

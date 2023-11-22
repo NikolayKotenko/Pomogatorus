@@ -1,7 +1,10 @@
 <template>
   <v-select
     v-model="currentData"
+    :append-icon="isAppendIcon"
     :autofocus="isAutofocus"
+    :background-color="isBackgroundColor"
+    :chips="isChips"
     :disabled="isDisabled"
     :item-text="itemText"
     :item-value="itemValue"
@@ -12,16 +15,13 @@
       bottom: true,
       offsetY: true,
     }"
+    :multiple="isMultiple"
     :placeholder="computedPlaceholder"
     :solo="isSolo"
-    :background-color="isBackgroundColor"
-    :multiple="isMultiple"
-    :chips="isChips"
-    :append-icon="isAppendIcon"
-    dense
     color="#000000"
-    item-color="#000000"
+    dense
     hide-details
+    item-color="#000000"
     return-object
     @focus="isFocused = true"
     @focusout="isFocused = false"
@@ -30,27 +30,28 @@
 
 <script>
 export default {
-  name: 'SelectStyled',
+  name: "SelectStyled",
   props: {
     placeholder: {
       type: String,
-      default: ''
+      default: ""
     },
     isSolo: {
       type: Boolean,
       default: false
     },
     data: {
-      type: Array,
-      default: () => []
+      type: Object,
+      default: () => {
+      }
     },
     itemText: {
       type: String,
-      default: ''
+      default: ""
     },
     itemValue: {
       type: String,
-      default: ''
+      default: ""
     },
     items: {
       type: Array,
@@ -70,7 +71,7 @@ export default {
     },
     isBackgroundColor: {
       type: String,
-      default: '#FFFFFF'
+      default: "#FFFFFF"
     },
     isMultiple: {
       type: Boolean,
@@ -82,36 +83,36 @@ export default {
     },
     isAppendIcon: {
       type: String,
-      default: ''
-    },
+      default: ""
+    }
   },
   data: () => ({
-    internalData: '',
+    internalData: "",
     isFocused: false
   }),
   computed: {
     computedPlaceholder() {
       if (this.isFocused) {
-        return ''
+        return "";
       }
-      return this.placeholder
+      return this.placeholder;
     },
     currentData: {
       get() {
         if (this.data) {
-          return this.data
+          return this.data;
         }
-        return this.internalData
+        return this.internalData;
       },
       set(value) {
         if (!this.data) {
-          this.internalData = value
+          this.internalData = value;
         }
-        this.$emit('update-input', value)
+        this.$emit("update-input", value);
       }
     }
   }
-}
+};
 </script>
 
 <style scoped>

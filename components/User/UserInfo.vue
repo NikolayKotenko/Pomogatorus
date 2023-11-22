@@ -9,7 +9,6 @@
 
     <v-tabs
       v-model="tab"
-      class="wtf"
       color="#000000"
       grow
       @change="checkServicesTab"
@@ -44,19 +43,48 @@
       <!-- Услуги -->
 
       <v-tab-item :key="1">
-        <div class="services_list">
-          <ServiceCard
-            v-for="(item, index) in $store.state.UserSettings.selectedRawServices"
-            :key="index"
-            :delay-updating-data="delayUpdatingData"
-            :is-equipment-exist="false"
+
+        <!-- Поиск | Сортировка -->
+        <div class="search_sort">
+          <SearchStyled
+            :is-class="'styleSearch'"
+            :is-clearable="true"
+            :is-hide-selected="true"
+            :is-item-text="'text'"
+            :is-item-value="'text'"
             :is-loading="$store.state.UserSettings.loading"
-            :is-quantity-exist="false"
-            :iteration-key="index+1"
-            :service-object="item"
-            @delete-one-service="deleteOneService(item)"
-            @update-price-field="setPrice(item, $event)"
+            :is-placeholder="'Фильтр по наименованию услуги'"
+            @update-search-input="filterListService"
           />
+          <div class="wrapper_sort">
+            <section>Сортировка:</section>
+            <SelectStyled
+              :data="arrSort[0]"
+              :is-solo="false"
+              :item-text="'action'"
+              :item-value="'value'"
+              :items="arrSort"
+              :placeholder="'Выберите действие'"
+              class="select_sort"
+              @update-input="sortListServices"
+            />
+          </div>
+        </div>
+
+        <div class="services_list">
+          <div v-for="(item, index) in $store.state.UserSettings.selectedRawServices">
+            <ServiceCard
+              v-if="item.id"
+              :key="index"
+              :is-equipment-exist="false"
+              :is-loading="$store.state.UserSettings.loading"
+              :is-quantity-exist="false"
+              :iteration-key="index+1"
+              :service-object="item"
+              @delete-one-service="deleteOneService(item)"
+              @update-price-field="setPrice(item, $event)"
+            />
+          </div>
         </div>
 
         <!-- Добавить услугу -->
@@ -135,10 +163,12 @@ import UserFields from "./UserFields";
 import ServiceCard from "@/components/Collaboration/ServiceCard.vue";
 import AddNewServiceButton from "@/components/Collaboration/AddNewServiceButton.vue";
 import { MtoMUsersServices } from "~/helpers/constructors";
+import SelectStyled from "~/components/Common/SelectStyled";
 
 export default {
   name: "UserInfo",
   components: {
+    SelectStyled,
     TooltipStyled,
     InputStyled,
     SearchStyled,
@@ -158,7 +188,16 @@ export default {
     servicePrice: "",
     localSelectedService: null,
     debounceTimeout: null,
-    delayUpdatingData: false
+    arrSort: [
+      {
+        "action": "По алфавиту",
+        "value": "&sort[name]=asc"
+      },
+      {
+        "action": "По дате",
+        "value": "&sort[created_at]=desc"
+      }
+    ]
   }),
   async mounted() {
     await this.$store.dispatch("UserSettings/getListServices");
@@ -202,13 +241,13 @@ export default {
         return elem.id === serviceData.id;
       });
       if (checkExist) {
-        this.$toast.error("Такая услуга уже добавлена!", { duration: 5000 });
+        this.$toast.error("Такая услуга уже добавлена!");
         return false;
       }
 
       await this.$store.dispatch("UserSettings/addServicesAction", new MtoMUsersServices(serviceData.id));
       await this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
-      this.$toast.success("Услуга добавлена", { duration: 5000 });
+      this.$toast.success("Услуга добавлена");
     },
     checkServicesTab(tabId) {
       if (tabId === 1) {
@@ -223,25 +262,34 @@ export default {
       this.$toast.success("Услуга удалена");
     },
     async setPrice(object, price) {
-
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
       this.debounceTimeout = setTimeout(async () => {
         await this.$store.dispatch("UserSettings/addServicesAction", new MtoMUsersServices(
           object.id_services,
           price
         ));
+        this.$store.state.UserSettings.updatedEntryPrice = object.id;
         await this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
-        this.setDelayUpdatingData();
         this.$toast.success("Услуга обновлена");
       }, 2000);
     },
-    setDelayUpdatingData() {
-      this.delayUpdatingData = true;
+    filterListService(string) {
+      if (!string) {
+        string = "";
+      }
 
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
       this.debounceTimeout = setTimeout(async () => {
-        this.delayUpdatingData = false;
-      }, 8000);
+        this.$store.state.UserSettings.searchServiceByName = string;
+        await this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
+      }, 1000);
+    },
+    sortListServices(object) {
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+      this.debounceTimeout = setTimeout(async () => {
+        this.$store.state.UserSettings.sortListServicesValue = object.value;
+        await this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
+      }, 1000);
     }
   }
 };
@@ -325,6 +373,23 @@ export default {
   }
 }
 
+.search_sort {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 2em;
+  margin-bottom: 2em;
+
+  .wrapper_sort {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-column-gap: 10px;
+    align-items: center;
+
+    .select_sort {
+      margin-top: 0 !important;
+    }
+  }
+}
 
 .add_service_button {
   cursor: pointer;

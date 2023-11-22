@@ -37,3 +37,15 @@ export function MtoMUsersServices(id_services = null, price = '') {
   this.id_services = id_services
   this.price = price
 }
+
+export function MtoMUsersServicesQuery(
+  id_user = null,
+  id_services = null,
+  once_entry = false,
+  name = null
+) {
+  this.id_user = id_user
+  this.id_services = id_services
+  this.once_entry = once_entry
+  this.name = name
+}
