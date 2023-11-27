@@ -11,7 +11,8 @@ import Tabs from './modules/tabs'
 import Objects from './modules/objects'
 import CollaborationModule from './modules/collaboration'
 import NomenclatureModule from './modules/nomenclature'
-import NotificationModule from './modules/notification';
+import NotificationModule from './modules/notification'
+
 
 const createStore = () => {
   return new Vuex.Store({

@@ -1,7 +1,7 @@
 <template>
   <div class="user_info_wrapper">
     <div class="user_info_title">
-      <h3>{{ isLoggedIn ? "Настройки профиля" : "Авторизуйтесь" }}</h3>
+      <h3>{{ isLoggedIn ? "Настройки профиля" : "Войти или Зарегистрироваться" }}</h3>
       <v-icon large @click="closeDetail">
         mdi-close
       </v-icon>
@@ -14,8 +14,10 @@
       grow
       @change="checkServicesTab"
     >
-      <v-tab :key="0">
-        Общая информация
+      <v-tab
+        :key="0"
+      >
+        {{ isLoggedIn ? "Общая информация" : "Авторизация" }}
       </v-tab>
       <v-tab
         v-if="isLoggedIn"
@@ -37,7 +39,7 @@
               @new-data="setData"
             />
           </div>
-          <LoginAuth v-else />
+          <LoginAuth v-else/>
         </div>
       </v-tab-item>
 
@@ -127,18 +129,18 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex';
 
-import LoginAuth from "../frontLayouts/LoginAuth";
-import ButtonStyled from "../Common/ButtonStyled.vue";
-import SearchStyled from "../Common/SearchStyled.vue";
-import InputStyled from "../Common/InputStyled.vue";
-import TooltipStyled from "../Common/TooltipStyled.vue";
-import UserFields from "./UserFields";
-import ServiceCard from "@/components/Collaboration/ServiceCard.vue";
+import LoginAuth from '../frontLayouts/LoginAuth';
+import ButtonStyled from '../Common/ButtonStyled.vue';
+import SearchStyled from '../Common/SearchStyled.vue';
+import InputStyled from '../Common/InputStyled.vue';
+import TooltipStyled from '../Common/TooltipStyled.vue';
+import UserFields from './UserFields';
+import ServiceCard from '@/components/Collaboration/ServiceCard.vue';
 
 export default {
-  name: "UserInfo",
+  name: 'UserInfo',
   components: {
     TooltipStyled,
     InputStyled,
@@ -154,15 +156,15 @@ export default {
     isValid: false,
     tab: 0,
     loading: false,
-    serviceName: "",
-    servicePrice: "",
+    serviceName: '',
+    servicePrice: '',
     localSelectedService: null,
     isErrorMessagesPrice: [
-      v => Number.isInteger(v) || "Поле должно быть числом"
+      v => Number.isInteger(v) || 'Поле должно быть числом'
     ]
   }),
   async mounted() {
-    await this.$store.dispatch("UserSettings/getListServices");
+    await this.$store.dispatch('UserSettings/getListServices');
   },
   computed: {
     ...mapState({
@@ -179,10 +181,10 @@ export default {
   },
   methods: {
     closeDetail() {
-      this.$emit("close-detail");
+      this.$emit('close-detail');
     },
     logout() {
-      this.$store.dispatch("logout");
+      this.$store.dispatch('logout');
     },
     setChanged(value) {
       this.isChanged = value;
@@ -194,27 +196,27 @@ export default {
       this.isValid = value.isValid;
     },
     async saveUser() {
-      await this.$store.dispatch("UserSettings/deleteEntriesServicesByUser");
-      await this.$store.dispatch("UserSettings/setTetherUsersServices", this.$store.state.UserSettings.selectedServices);
-      await this.$store.dispatch("UserSettings/updateUser", { userId: this.userData.id, data: this.data });
-      this.$toast.success("Данные сохранены", { duration: 5000 });
+      await this.$store.dispatch('UserSettings/deleteEntriesServicesByUser');
+      await this.$store.dispatch('UserSettings/setTetherUsersServices', this.$store.state.UserSettings.selectedServices);
+      await this.$store.dispatch('UserSettings/updateUser', { userId: this.userData.id, data: this.data });
+      this.$toast.success('Данные сохранены', { duration: 5000 });
       this.closeDetail();
     },
     async setServiceByUser() {
-      const checkExist = await this.$store.dispatch("UserSettings/addServicesAction", this.localSelectedService);
+      const checkExist = await this.$store.dispatch('UserSettings/addServicesAction', this.localSelectedService);
       if (checkExist) return false;
 
-      this.$toast.success("Услуга добавлена", { duration: 5000 });
+      this.$toast.success('Услуга добавлена', { duration: 5000 });
     },
     checkServicesTab(tabId) {
       if (tabId === 1) {
-        this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
+        this.$store.dispatch('UserSettings/getUserServices', this.userData.id);
       }
     },
     localUpdatePriceService(price, id_services) {
 
-      console.log("price", price);
-      console.log("id_services", id_services);
+      console.log('price', price);
+      console.log('id_services', id_services);
 
       // this.$store.dispatch('UserSettings/updatePriceService', {
       // })
@@ -223,7 +225,7 @@ export default {
       // this.taskData.services.splice(serviceToRemove, 1)
 
       // this.closeDeleteOneServiceModal()
-      this.$toast.success("Услуга удалена");
+      this.$toast.success('Услуга удалена');
     },
     setPrice(index, price) {
       // this.taskData.services[index].price = price
