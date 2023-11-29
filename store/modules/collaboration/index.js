@@ -9,6 +9,7 @@ export default {
     listSearchedMembers: [],
     listInviteIdUsers: [],
     stateCollaborationMenu: false,
+    debounceTimeout: null,
   },
   mutations: {
     setLoading(state, payload) {
@@ -70,28 +71,42 @@ export default {
       )
       return response
     },
-    async getSearchedListMembers({ commit }, string) {
+    getSearchedListMembers({ commit, state }, string) {
       if (!string) return false
 
-      const response = await Request.get(
-        this.state.BASE_URL + '/users/get-list-users/search?q=' + string
-      )
-      const result = response.data.map((elem) => elem.data) // Преобразуем из поисковой структуры в обычный массив
-
-      commit('setSearchedMembersList', result)
-      commit('setLoading', false)
-      return response
-    },
-    async getListMembersByFilter({ commit }, Obj) {
       commit('setLoading', true)
 
-      const query = Request.ConstructFilterQuery(Obj) // query = ?filter[id_object]=2
-      const response = await Request.get(
-        this.state.BASE_URL + '/users/get-list-users' + query
-      )
-      commit('setMembersList', response.data)
-      commit('setLoading', false)
-      return response
+      if (state.debounceTimeout) clearTimeout(state.debounceTimeout);
+      state.debounceTimeout = setTimeout(async () => {
+
+        const response = await Request.get(
+          this.state.BASE_URL + '/users/get-list-users/search?q=' + string
+        )
+        const result = response.data.map((elem) => elem.data) // Преобразуем из поисковой структуры в обычный массив
+
+        commit('setSearchedMembersList', result)
+        commit('setLoading', false)
+
+        return response
+      }, 1000);
+    },
+    getListMembersByFilter({ commit, state }, Obj) {
+      if (!Obj) return false;
+      if (!Obj.id_object) return false;
+
+      commit('setLoading', true)
+
+      if (state.debounceTimeout) clearTimeout(state.debounceTimeout);
+      state.debounceTimeout = setTimeout(async () => {
+
+        const query = Request.ConstructFilterQuery(Obj) // query = ?filter[id_object]=2
+        const response = await Request.get(
+          this.state.BASE_URL + '/users/get-list-users' + query
+        )
+        commit('setMembersList', response.data)
+        commit('setLoading', false)
+        return response
+      }, 1000);
     },
     async saveObjData({ commit }, payload) {
       commit('setLoading', true)

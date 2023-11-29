@@ -69,20 +69,14 @@ export default {
     };
   },
   async mounted() {
-    await this.$store.dispatch('CollaborationModule/getListMembersByFilter', { id_object: this.$store.getters['Objects/getIdCurrentObject'] });
   },
   methods: {
     async localGetListUsers(phrase) {
-      if (!phrase) {
-        await this.$store.dispatch('CollaborationModule/getListMembersByFilter', { id_object: this.$store.getters['Objects/getIdCurrentObject'] });
-        return false;
-      }
+      await this.$store.dispatch('CollaborationModule/getSearchedListMembers', phrase);
 
-      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+      if (phrase) return false;
 
-      this.debounceTimeout = setTimeout(async () => {
-        await this.$store.dispatch('CollaborationModule/getSearchedListMembers', phrase);
-      }, 1000);
+      await this.$store.dispatch('CollaborationModule/getListMembersByFilter', { id_object: this.$store.getters['Objects/getIdCurrentObject'] });
     }
 
   }

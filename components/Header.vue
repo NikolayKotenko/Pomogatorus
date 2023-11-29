@@ -78,7 +78,7 @@
             :close-on-content-click="false"
             left
             offset-y
-            @input="$store.commit('CollaborationModule/changeStateCollaboration', $event)"
+            @input="openCollaborationModule($event)"
           >
             <template #activator="{ on, attrs }">
               <div
@@ -123,7 +123,7 @@
               :color="listModal[0].isOpen ? '#fafad2' : 'white'"
               class="text-capitalize link_btn"
               text
-              @click="openModals"
+              @click="$store.commit('set_modal_auth', true)"
             >
               <v-icon large>
                 mdi-account
@@ -228,10 +228,6 @@ export default {
     showDrawer() {
       this.$store.commit('set_drawer', !this.drawer)
     },
-    openModals() {
-      // TODO: Продумать логику открывания модалки независимо от индексa
-      this.listModal[0].isOpen = !this.listModal[0].isOpen
-    },
     // openObject() {
     //   this.$emit("open_object", this.$store.state.listObjects.currentObject)
     //   console.log('work')
@@ -277,6 +273,14 @@ export default {
     setSelected(selectedObj){
       this.selectedArticle = selectedObj;
     },
+    openCollaborationModule(state){
+      if (! this.$store.getters.stateAuth) {
+        this.$store.commit('set_modal_auth', state)
+      }
+      else {
+        this.$store.commit('CollaborationModule/changeStateCollaboration', state)
+      }
+    }
     // async getArticlesBySymbols(symbols) {
     //   this.loading = true;
     //

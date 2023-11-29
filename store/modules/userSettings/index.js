@@ -59,7 +59,9 @@ export default {
           commit('setIsUpdating', false)
         })
     },
-    async getListServices({ commit }) {
+    async getListServices({ commit, rootGetters }) {
+      if (! rootGetters.stateAuth) return false;
+
       const response = await Request.get(
         this.state.BASE_URL + '/dictionary/tags?filter[flag_service]=true'
       )
@@ -107,7 +109,7 @@ export default {
     getPriceByIdServices: (state) => (idServices) => {
       const wtf = state.selectedRawServices.find(
         (elem) => elem.id_services === idServices
-      )['price']
+      ).price
       return wtf.toString()
     },
   },

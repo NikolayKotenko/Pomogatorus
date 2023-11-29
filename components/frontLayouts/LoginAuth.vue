@@ -49,29 +49,30 @@
                 name="password"
                 placeholder="Введите код доступа"
                 required
-              />
+              >
+                <template #append>
+                  <v-tooltip bottom>
+                    <template #activator="{ on }">
+                      <v-icon @click="passStateEye = !passStateEye" v-on="on">
+                        {{ passStateEye ? "mdi-eye" : "mdi-eye-off" }}
+                      </v-icon>
+                    </template>
+                    Показать/скрыть пароль
+                  </v-tooltip>
+                </template>
+                <template #append-outer>
+                  <v-tooltip bottom>
+                    <template #activator="{ on }">
+                      <v-icon @click="localResendUserPass(`component_wrapper-${index_component}`)" v-on="on">
+                        mdi-lock-reset
+                      </v-icon>
+                    </template>
+                    Восстановить Код доступа
+                  </v-tooltip>
+                </template>
+              </v-text-field>
             </div>
-            <template #append>
-              <v-tooltip bottom>
-                <template #activator="{ on }">
-                  <v-icon @click="passStateEye = !passStateEye" v-on="on">
-                    {{ passStateEye ? "mdi-eye" : "mdi-eye-off" }}
-                  </v-icon>
-                </template>
-                Показать/скрыть пароль
-              </v-tooltip>
-            </template>
-            <template #append-outer>
-              <v-tooltip bottom>
-                <template #activator="{ on }">
-                  <v-icon @click="localResendUserPass(`component_wrapper-${index_component}`)" v-on="on">
-                    mdi-lock-reset
-                  </v-icon>
-                </template>
-                Восстановить Код доступа
-              </v-tooltip>
-            </template>
-            </v-text-field>
+
             <ButtonStyled
               v-if="isMobile"
               :custom-slot="true"

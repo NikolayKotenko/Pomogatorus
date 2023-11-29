@@ -216,7 +216,7 @@ const createStore = () => {
         state.list_broadcast_snippet = []
         state.list_broadcast_snippet = payload
       },
-      setModalAuth(state, payload) {
+      set_modal_auth(state, payload) {
         state.listModal[0].isOpen = payload
       },
     },
@@ -232,7 +232,9 @@ const createStore = () => {
         commit('set_list_tags', response.data)
         return response
       },
-      async getListBroadcastSnippet({ commit }) {
+      async getListBroadcastSnippet({ commit, rootGetters }) {
+        if (! rootGetters.stateAuth) return false;
+
         const query = 'filter[broadcast_to_snippet]=true'
         const response = await Request.get(
           this.state.BASE_URL + '/dictionary/object-properties?' + query

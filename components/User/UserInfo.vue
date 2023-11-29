@@ -2,7 +2,7 @@
   <div class="user_info_wrapper">
     <div class="user_info_title">
       <h3>{{ isLoggedIn ? "Настройки профиля" : "Войти или Зарегистрироваться" }}</h3>
-      <v-icon large @click="closeDetail">
+      <v-icon large @click="$store.commit('set_modal_auth', false)">
         mdi-close
       </v-icon>
     </div>
