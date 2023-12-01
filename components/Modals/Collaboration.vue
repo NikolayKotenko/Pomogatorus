@@ -28,6 +28,19 @@
         :user-object="item"
         class="invite_user"
       />
+      <v-overlay
+        class="overlay_style"
+        color="#F2F2F2"
+        opacity="100"
+        absolute
+        :value="$store.state.CollaborationModule.isLoading"
+      >
+        <v-progress-circular
+          indeterminate
+          color="#95D7AE"
+          size="64"
+        />
+      </v-overlay>
     </div>
     <!--    <div v-if="$store.getters['CollaborationModule/getFilteredListByRoleExperts'].length"> -->
     <!--      <span class="category_user">Знакомые специалисты</span> -->
@@ -48,6 +61,19 @@
         :user-object="item"
         class="invite_user"
       />
+      <v-overlay
+        class="overlay_style"
+        color="#F2F2F2"
+        opacity="100"
+        absolute
+        :value="$store.state.CollaborationModule.isLoading"
+      >
+        <v-progress-circular
+          indeterminate
+          color="#95D7AE"
+          size="64"
+        />
+      </v-overlay>
     </div>
   </v-container>
 </template>
