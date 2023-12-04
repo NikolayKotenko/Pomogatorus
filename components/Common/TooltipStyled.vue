@@ -1,8 +1,11 @@
 <template>
-  <VTooltip v-model="show" :bottom="(! isTop)" :nudge-top="nudgeTop" :top="isTop" retain-focus-on-click>
+  <VTooltip v-model="show" :bottom="(! isTop)" :content-class="getStateTooltip" :nudge-top="nudgeTop"
+            :top="isTop"
+            retain-focus-on-click
+  >
     <template #activator="{ on, attrs }">
       <div v-bind="attrs" v-on="on">
-        <slot/>
+        <slot />
       </div>
     </template>
     <template v-if="isAnswer">
@@ -11,7 +14,7 @@
         <span class="font-weight-bold">{{ title }}</span>
         <span>Ответ:</span>
         <span v-if="!answer" class="red-color font-weight-bold">Не заполнен</span>
-        <span v-else class="font-weight-bold green-color" v-html="answer"/>
+        <span v-else class="font-weight-bold green-color" v-html="answer" />
       </span>
     </template>
     <template v-else>
@@ -22,11 +25,11 @@
 
 <script>
 export default {
-  name: 'TooltipStyled',
+  name: "TooltipStyled",
   props: {
     title: {
       type: String,
-      default: ''
+      default: ""
     },
     isTop: {
       type: Boolean,
@@ -42,7 +45,7 @@ export default {
     },
     answer: {
       type: String,
-      default: ''
+      default: ""
     },
     offHiding: {
       type: Boolean,
@@ -54,34 +57,43 @@ export default {
   }),
   computed: {
     isMobile() {
-      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    },
+    getStateTooltip() {
+      return !this.title ? "hideTooltip" : "";
     }
   },
   mounted() {
     this.$nextTick(() => {
       if (this.isMobile) {
-        window.addEventListener('scroll', this.checkScroll)
+        window.addEventListener("scroll", this.checkScroll);
       }
-    })
+    });
   },
   beforeDestroy() {
     this.$nextTick(() => {
       if (this.isMobile) {
-        window.removeEventListener('scroll', this.checkScroll)
+        window.removeEventListener("scroll", this.checkScroll);
       }
-    })
+    });
   },
   methods: {
     checkScroll() {
       if (process.client) {
         this.$nextTick(() => {
           if (!this.offHiding) {
-            this.show = false
+            this.show = false;
           }
-        })
+        });
       }
     }
   }
-}
+};
 </script>
 
+<style lang="scss" scoped>
+.hideTooltip {
+  display: none;
+}
+
+</style>

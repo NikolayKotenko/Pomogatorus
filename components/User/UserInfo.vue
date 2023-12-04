@@ -88,7 +88,7 @@
         </div>
 
         <!-- Добавить услугу -->
-        <AddNewServiceButton
+        <UniversalAddInput
           :list-services-available-to-add="$store.state.UserSettings.listServices"
           class="mt-5"
           @add-service="setServiceByUser"
@@ -161,7 +161,7 @@ import InputStyled from "../Common/InputStyled.vue";
 import TooltipStyled from "../Common/TooltipStyled.vue";
 import UserFields from "./UserFields";
 import ServiceCard from "@/components/Collaboration/ServiceCard.vue";
-import AddNewServiceButton from "@/components/Collaboration/AddNewServiceButton.vue";
+import UniversalAddInput from "@/components/Common/UniversalAddInput.vue";
 import { MtoMUsersServices } from "~/helpers/constructors";
 import SelectStyled from "~/components/Common/SelectStyled";
 
@@ -176,7 +176,7 @@ export default {
     UserFields,
     LoginAuth,
     ServiceCard,
-    AddNewServiceButton
+    UniversalAddInput
   },
   data: () => ({
     isChanged: false,
