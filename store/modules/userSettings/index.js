@@ -1,5 +1,6 @@
 import _clone from '../../../helpers/deepClone'
 import Request from '@/services/request'
+import { MtoMUsersServices } from '~/helpers/constructors'
 
 export default {
   namespaced: true,
@@ -8,6 +9,12 @@ export default {
     listServices: [],
     selectedServices: [],
     selectedRawServices: [],
+    selectedRawServicesBased: [],
+    loading: false,
+    showDeleteOneServiceModal: false,
+    searchServiceByName: '',
+    sortListServicesValue: '',
+    updatedEntryPrice: null,
   },
   mutations: {
     setIsUpdating(state, payload) {
@@ -25,17 +32,29 @@ export default {
     },
     seRawServices(state, payload) {
       state.selectedRawServices = payload
+      state.selectedRawServicesBased = payload
+    },
+    setLoading(state, payload) {
+      state.loading = payload
+    },
+    changeStateDeleteServiceModal(state, payload) {
+      state.showDeleteOneServiceModal = payload
     },
   },
   actions: {
-    addServicesAction({ commit, state }, payload) {
-      const checkExist = state.selectedServices.some((elem) => {
-        return elem.id === payload.id
-      })
-      if (checkExist) return true
-
-      commit('addServices', payload)
-      return false
+    async addServicesAction(
+      { commit, rootGetters, state },
+      obj = new MtoMUsersServices()
+    ) {
+      const objMToMUsersServices = {
+        id_user: rootGetters.getUserId,
+        id_services: obj.id_services,
+        price: obj.price,
+      }
+      await Request.post(
+        `${this.state.BASE_URL}/m-to-m/users-services`,
+        objMToMUsersServices
+      )
     },
 
     async updateUser({ commit }, payload) {
@@ -67,39 +86,59 @@ export default {
       )
       commit('setListServices', response.data)
     },
-    async getUserServices({ commit }, payload) {
+    async getUserServices({ commit, state }, idUser) {
+      commit('setLoading', true)
+
+      const queryFilter = Request.ConstructFilterQuery({
+        id_user: idUser,
+        once_entry: true,
+        name: state.searchServiceByName,
+      })
       const response = await Request.get(
         this.state.BASE_URL +
-          `/m-to-m/users-services?filter[id_user]=${payload}&filter[once_entry]=true`
+          `/m-to-m/users-services` +
+          queryFilter +
+          state.sortListServicesValue
       )
-      if (response.data.length) {
-        commit(
-          'setMountedServices',
-          response.data.map((elem) => elem.service_data)
-        )
-        commit('seRawServices', response.data)
-      }
+      commit(
+        'setMountedServices',
+        response.data.map((elem) => elem.service_data)
+      )
+      commit('seRawServices', response.data)
+
+      commit('setLoading', false)
     },
-    async updatePriceService({ commit }, payload) {
-      // const response = Request.put()
-    },
+
+    // Нам не нужно обновление записи, нам нужно хранить хронологию изменения цены
+    // async updatePriceService({ commit }, payload) {
+    //   const { id } = payload
+    //
+    //   console.log('updatePriceService payload', payload)
+    //
+    //   const response = await Request.put(
+    //     this.state.BASE_URL + `/m-to-m/users-services/${id}`,
+    //     payload
+    //   )
+    //   console.log('updatePriceService res', response)
+    // },
 
     async deleteEntriesServicesByUser({ rootGetters }) {
       const response = await Request.delete(
         `${this.state.BASE_URL}/m-to-m/delete-all-services-by-user/${rootGetters.getUserId}`
       )
     },
-    async setTetherUsersServices({ commit, rootGetters }, arr) {
-      for (const obj of arr) {
-        const objMToMUsersServices = {
+    async deleteOneServiceAssignToUser({ commit, rootGetters }, idService) {
+      commit('setLoading', true)
+
+      const response = await Request.delete(
+        `${this.state.BASE_URL}/m-to-m/delete-one-service-assign-to-user`,
+        {
           id_user: rootGetters.getUserId,
-          id_services: obj.id,
+          id_services: idService,
         }
-        const response = await Request.post(
-          `${this.state.BASE_URL}/m-to-m/users-services`,
-          objMToMUsersServices
-        )
-      }
+      )
+
+      commit('setLoading', false)
     },
   },
   getters: {
@@ -111,6 +150,15 @@ export default {
         (elem) => elem.id_services === idServices
       ).price
       return wtf.toString()
+    },
+    getFilteredListServicesByName(state) {
+      if (!state.searchServiceByName) return state.selectedRawServicesBased
+
+      return state.selectedRawServicesBased.filter((elem) => {
+        const haystack = elem.service_data.name.toLowerCase()
+        const needle = state.searchServiceByName.toLowerCase()
+        return !!haystack.match(needle)
+      })
     },
   },
 }

@@ -68,14 +68,21 @@
       </div>
       <div class="service_info">
         <v-text-field
+          ref="price_field"
+          :color="(delayUpdatingData) ? 'green' : 'blue'"
+          :hide-details="!delayUpdatingData"
+          :hint="'Обновлено - ' + serviceObject.created_at_minutes"
+          :persistent-hint="delayUpdatingData"
+          :value="serviceObject.price"
           class="price_field"
           dense
           height="40"
-          hide-details
           label="Цена услуги"
           outlined
-          placeholder="Цена услуги"
-          @change="$emit('update-price-field', $event)"
+          persistent-placeholder
+          placeholder="Договорная"
+          type="number"
+          @input="$emit('update-price-field', $event)"
         />
         <InputStyled
           v-if="isQuantityExist"
@@ -88,7 +95,7 @@
         />
       </div>
       <v-dialog
-        v-model="showDeleteOneServiceModal"
+        v-model="$store.state.UserSettings.showDeleteOneServiceModal"
         width="600"
       >
         <template #activator="{ on, attrs }">
@@ -106,7 +113,7 @@
         <v-card class="delete_service_modal">
           <div class="delete_service_header">
             <span class="header_title">Удаление услуги</span>
-            <v-icon large @click="closeDeleteOneServiceModal">
+            <v-icon large @click="$store.commit('UserSettings/changeStateDeleteServiceModal', false)">
               mdi-close
             </v-icon>
           </div>
@@ -122,7 +129,7 @@
             <ButtonStyled
               :local-class="'style_close'"
               :local-text="'Отмена'"
-              @click-button="closeDeleteOneServiceModal"
+              @click-button="$store.commit('UserSettings/changeStateDeleteServiceModal', false)"
             />
           </div>
         </v-card>
@@ -135,7 +142,7 @@
 import index from "v-viewer";
 import InputStyled from "../Common/InputStyled.vue";
 import TooltipStyled from "../Common/TooltipStyled.vue";
-import { Service } from "../../helpers/constructors";
+import { Service } from "~/helpers/constructors";
 import ButtonStyled from "../Common/ButtonStyled.vue";
 
 export default {
@@ -157,12 +164,30 @@ export default {
     iterationKey: {
       type: Number,
       default: 1
+    },
+    isLoading: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      showDeleteOneServiceModal: false
+      isErrorMessagesPrice: [
+        value => (!!Number.parseInt(value) || value === "" || value === null) || "Должно быть числом"
+      ],
+      delayUpdatingData: false
     };
+  },
+  watch: {
+    "serviceObject.id": {
+      handler(newV, oldV) {
+        if (!newV) return false;
+        if (newV === oldV) return false;
+        if (oldV !== this.$store.state.UserSettings.updatedEntryPrice) return false;
+
+        this.setDelayUpdatingData();
+      }
+    }
   },
   computed: {
     index() {
@@ -170,14 +195,15 @@ export default {
     }
   },
   methods: {
-    openDeleteOneServiceModal() {
-      this.showDeleteOneServiceModal = true;
-    },
+    setDelayUpdatingData() {
+      this.delayUpdatingData = true;
+      this.$refs.price_field.focus();
 
-    closeDeleteOneServiceModal() {
-      this.showDeleteOneServiceModal = false;
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+      this.debounceTimeout = setTimeout(async () => {
+        this.delayUpdatingData = false;
+      }, 6000);
     }
-
   }
 };
 </script>
@@ -213,6 +239,11 @@ export default {
 
       .price_field {
         max-width: 150px;
+
+        .v-messages__message {
+          color: green !important;
+          background: red;
+        }
       }
 
       .quantity_field {
@@ -271,5 +302,9 @@ export default {
       min-height: 30px !important;
     }
   }
+}
+
+.price_field .v-messages__message {
+  color: green;
 }
 </style>
