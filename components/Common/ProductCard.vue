@@ -3,7 +3,7 @@
     <!-- Общая информация -->
     <v-img
       class="empty_placeholder"
-      src="https://baxi.ru/upload/iblock/0d1/ECO_Nova_001.png"
+      :src="getMainProductPhoto"
     />
     <div class="product_info">
       <div class="product_title">
@@ -56,17 +56,33 @@
             </template>
 
             <v-card class="detail_card_product">
-              <h2>{{ data.name }}</h2>
+              <div class="card_name">
+                {{ data.name }}
+              </div>
 
               <!-- Фотографии Оборудования -->
               <div class="product_photos">
-                <v-img
-                  class="main_photo"
-                  contain
-                  src="https://baxi.ru/upload/resize_cache/iblock/9f7/nhgq6mqyk0hiqa1nj4z5xumqvil0ursp/800_700_1/ECO_LIFE_124F_03.png"
-                />
+                <ViewerStyled
+                  :images="data._family.photos"
+                  class="photos_container"
+                >
+                  <img
+                    v-for="(image, index) in data._family.photos"
+                    :key="index"
+                    :src="image.url"
+                    alt=""
+                    class="photo"
+                  >
+                </ViewerStyled>
+                <div class="main_photo_wrapper">
+                  <v-img
+                    class="main_photo"
+                    contain
+                    :src="getMainProductPhoto"
+                  />
+                </div>
               </div>
-              <v-divider />
+              <v-divider/>
 
               <!-- Инфорамация об Оборудовании -->
               <div class="product_detail_info">
@@ -82,9 +98,8 @@
                   </v-tab>
                   <v-tab-item :key="0">
                     <div>
-                      <span class="product_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-                        ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat.
+                      <span class="product_description">
+                        {{ data._family.description }}
                       </span>
                     </div>
                   </v-tab-item>
@@ -100,7 +115,7 @@
                     </div>
                   </v-tab-item>
                   <v-tab-item :key="2">
-                    <div class="product_documents" />
+                    <div class="product_documents"/>
                   </v-tab-item>
                 </v-tabs>
               </div>
@@ -162,13 +177,14 @@
 </template>
 
 <script>
-import SelectStyled from "./SelectStyled.vue";
-import TooltipStyled from "./TooltipStyled.vue";
-import ButtonStyled from "./ButtonStyled.vue";
+import SelectStyled from './SelectStyled.vue';
+import TooltipStyled from './TooltipStyled.vue';
+import ButtonStyled from './ButtonStyled.vue';
+import ViewerStyled from './ViewerStyled.vue';
 
 export default {
-  name: "ProductCard",
-  components: { ButtonStyled, TooltipStyled, SelectStyled },
+  name: 'ProductCard',
+  components: { ViewerStyled, ButtonStyled, TooltipStyled, SelectStyled },
   props: {
     data: {
       type: Object,
@@ -179,19 +195,24 @@ export default {
     return {
       showModal: false,
       actionsWithProduct: [
-        { action: "Зарегистрировать покупку", value: 1 },
-        { action: "Оформить акт установки", value: 2 },
-        { action: "Оформить акт тех.обслуживания", value: 3 },
-        { action: "Оформить акт утилизации", value: 4 }
+        { action: 'Зарегистрировать покупку', value: 1 },
+        { action: 'Оформить акт установки', value: 2 },
+        { action: 'Оформить акт тех.обслуживания', value: 3 },
+        { action: 'Оформить акт утилизации', value: 4 }
       ]
     };
   },
+  computed: {
+    getMainProductPhoto() {
+      return this.data?._family?.photos[0].url
+    },
+  },
   async mounted() {
-    await this.$store.dispatch("NomenclatureModule/getListNomenclature");
+    await this.$store.dispatch('NomenclatureModule/getListNomenclature');
   },
   methods: {
     changeFavoriteProduct() {
-      this.$toast.success("Добавленно в избранное", { duration: 5000 });
+      this.$toast.success('Добавленно в избранное', { duration: 5000 });
     },
     openModal() {
       this.showModal = true;
@@ -213,6 +234,7 @@ export default {
   height: 180px;
   padding: 20px;
   margin-top: 20px;
+  background-color: #FFFFFF;
   border-radius: 5px;
   transition: all 0.4s ease-in-out;
 
@@ -257,19 +279,39 @@ export default {
 
 .detail_card_product {
   display: inline-grid;
-  width: 675px;
+  grid-row-gap: 20px;
+  width: 700px;
   height: 700px;
   padding: 20px;
+  .card_name {
+    font-size: 1.5em;
+    font-weight: 700;
+  }
 
   .product_photos {
     display: flex;
-    justify-content: center;
-    height: 220px;
-
-    .main_photo {
-      background-size: contain;
-      max-width: 350px;
+    max-height: 220px;
+    width: 100%;
+    .main_photo_wrapper {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      .main_photo {
+        height: auto;
+        max-width: 300px;
+      }
     }
+    .photo {
+      display: grid;
+      max-height: 70px;
+      cursor: pointer;
+      transition: all 0.4s ease-in-out;
+      margin-bottom: 10px;
+      &:hover {
+        background: linear-gradient(0deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.15) 100%);
+      }
+    }
+
   }
 
   .product_detail_info {

@@ -1,8 +1,8 @@
 <template>
   <div class="user_info_wrapper">
     <div class="user_info_title">
-      <h3>{{ isLoggedIn ? "Настройки профиля" : "Авторизуйтесь" }}</h3>
-      <v-icon large @click="closeDetail">
+      <h3>{{ isLoggedIn ? "Настройки профиля" : "Войти или Зарегистрироваться" }}</h3>
+      <v-icon large @click="$store.commit('set_modal_auth', false)">
         mdi-close
       </v-icon>
     </div>
@@ -13,8 +13,10 @@
       grow
       @change="checkServicesTab"
     >
-      <v-tab :key="0">
-        Общая информация
+      <v-tab
+        :key="0"
+      >
+        {{ isLoggedIn ? "Общая информация" : "Авторизация" }}
       </v-tab>
       <v-tab
         v-if="isLoggedIn"
@@ -36,14 +38,13 @@
               @new-data="setData"
             />
           </div>
-          <LoginAuth v-else />
+          <LoginAuth v-else/>
         </div>
       </v-tab-item>
 
       <!-- Услуги -->
 
       <v-tab-item :key="1">
-
         <!-- Поиск | Сортировка -->
         <div class="search_sort">
           <SearchStyled
@@ -72,7 +73,7 @@
         </div>
 
         <div class="services_list">
-          <div v-for="(item, index) in $store.state.UserSettings.selectedRawServices">
+          <div v-for="(item, index) in $store.state.UserSettings.selectedRawServices" :key="index">
             <ServiceCard
               v-if="item.id"
               :key="index"
@@ -93,7 +94,6 @@
           class="mt-5"
           @add-service="setServiceByUser"
         />
-
       </v-tab-item>
     </v-tabs>
 
@@ -152,7 +152,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex';
 
 import LoginAuth from "../frontLayouts/LoginAuth";
 import ButtonStyled from "../Common/ButtonStyled.vue";
@@ -166,7 +166,7 @@ import { MtoMUsersServices } from "~/helpers/constructors";
 import SelectStyled from "~/components/Common/SelectStyled";
 
 export default {
-  name: "UserInfo",
+  name: 'UserInfo',
   components: {
     SelectStyled,
     TooltipStyled,
@@ -184,23 +184,26 @@ export default {
     isValid: false,
     tab: 0,
     loading: false,
-    serviceName: "",
-    servicePrice: "",
+    serviceName: '',
+    servicePrice: '',
     localSelectedService: null,
+    isErrorMessagesPrice: [
+      v => Number.isInteger(v) || 'Поле должно быть числом'
+    ],
     debounceTimeout: null,
     arrSort: [
       {
-        "action": "По алфавиту",
-        "value": "&sort[name]=asc"
+        'action': 'По алфавиту',
+        'value': '&sort[name]=asc'
       },
       {
-        "action": "По дате",
-        "value": "&sort[created_at]=desc"
+        'action': 'По дате',
+        'value': '&sort[created_at]=desc'
       }
     ]
   }),
   async mounted() {
-    await this.$store.dispatch("UserSettings/getListServices");
+    await this.$store.dispatch('UserSettings/getListServices');
   },
   computed: {
     ...mapState({
@@ -217,10 +220,10 @@ export default {
   },
   methods: {
     closeDetail() {
-      this.$emit("close-detail");
+      this.$emit('close-detail');
     },
     logout() {
-      this.$store.dispatch("logout");
+      this.$store.dispatch('logout');
     },
     setChanged(value) {
       this.isChanged = value;
@@ -241,54 +244,54 @@ export default {
         return elem.id === serviceData.id;
       });
       if (checkExist) {
-        this.$toast.error("Такая услуга уже добавлена!");
+        this.$toast.error('Такая услуга уже добавлена!');
         return false;
       }
 
-      await this.$store.dispatch("UserSettings/addServicesAction", new MtoMUsersServices(serviceData.id));
-      await this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
-      this.$toast.success("Услуга добавлена");
+      await this.$store.dispatch('UserSettings/addServicesAction', new MtoMUsersServices(serviceData.id));
+      await this.$store.dispatch('UserSettings/getUserServices', this.userData.id);
+      this.$toast.success('Услуга добавлена');
     },
     checkServicesTab(tabId) {
       if (tabId === 1) {
-        this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
+        this.$store.dispatch('UserSettings/getUserServices', this.userData.id);
       }
     },
     async deleteOneService(serviceRawObj) {
-      await this.$store.dispatch("UserSettings/deleteOneServiceAssignToUser", serviceRawObj.id_services);
-      await this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
+      await this.$store.dispatch('UserSettings/deleteOneServiceAssignToUser', serviceRawObj.id_services);
+      await this.$store.dispatch('UserSettings/getUserServices', this.userData.id);
 
       this.$store.commit("UserSettings/changeStateDeleteServiceModal", false);
       this.$toast.success("Услуга удалена");
     },
-    async setPrice(object, price) {
+    setPrice(object, price) {
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
       this.debounceTimeout = setTimeout(async () => {
-        await this.$store.dispatch("UserSettings/addServicesAction", new MtoMUsersServices(
+        await this.$store.dispatch('UserSettings/addServicesAction', new MtoMUsersServices(
           object.id_services,
           price
         ));
         this.$store.state.UserSettings.updatedEntryPrice = object.id;
-        await this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
-        this.$toast.success("Услуга обновлена");
+        await this.$store.dispatch('UserSettings/getUserServices', this.userData.id);
+        this.$toast.success('Услуга обновлена');
       }, 2000);
     },
     filterListService(string) {
       if (!string) {
-        string = "";
+        string = '';
       }
 
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
       this.debounceTimeout = setTimeout(async () => {
         this.$store.state.UserSettings.searchServiceByName = string;
-        await this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
+        await this.$store.dispatch('UserSettings/getUserServices', this.userData.id);
       }, 1000);
     },
     sortListServices(object) {
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
       this.debounceTimeout = setTimeout(async () => {
         this.$store.state.UserSettings.sortListServicesValue = object.value;
-        await this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
+        await this.$store.dispatch('UserSettings/getUserServices', this.userData.id);
       }, 1000);
     }
   }

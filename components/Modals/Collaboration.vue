@@ -28,6 +28,19 @@
         :user-object="item"
         class="invite_user"
       />
+      <v-overlay
+        class="overlay_style"
+        color="#F2F2F2"
+        opacity="100"
+        absolute
+        :value="$store.state.CollaborationModule.isLoading"
+      >
+        <v-progress-circular
+          indeterminate
+          color="#95D7AE"
+          size="64"
+        />
+      </v-overlay>
     </div>
     <!--    <div v-if="$store.getters['CollaborationModule/getFilteredListByRoleExperts'].length"> -->
     <!--      <span class="category_user">Знакомые специалисты</span> -->
@@ -48,6 +61,19 @@
         :user-object="item"
         class="invite_user"
       />
+      <v-overlay
+        class="overlay_style"
+        color="#F2F2F2"
+        opacity="100"
+        absolute
+        :value="$store.state.CollaborationModule.isLoading"
+      >
+        <v-progress-circular
+          indeterminate
+          color="#95D7AE"
+          size="64"
+        />
+      </v-overlay>
     </div>
   </v-container>
 </template>
@@ -69,20 +95,14 @@ export default {
     };
   },
   async mounted() {
-    await this.$store.dispatch('CollaborationModule/getListMembersByFilter', { id_object: this.$store.getters['Objects/getIdCurrentObject'] });
   },
   methods: {
     async localGetListUsers(phrase) {
-      if (!phrase) {
-        await this.$store.dispatch('CollaborationModule/getListMembersByFilter', { id_object: this.$store.getters['Objects/getIdCurrentObject'] });
-        return false;
-      }
+      await this.$store.dispatch('CollaborationModule/getSearchedListMembers', phrase);
 
-      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+      if (phrase) return false;
 
-      this.debounceTimeout = setTimeout(async () => {
-        await this.$store.dispatch('CollaborationModule/getSearchedListMembers', phrase);
-      }, 1000);
+      await this.$store.dispatch('CollaborationModule/getListMembersByFilter', { id_object: this.$store.getters['Objects/getIdCurrentObject'] });
     }
 
   }

@@ -293,7 +293,7 @@
           v-if="status_question.type !== 'sending' && status_question.type !== 'warning' && check_status"
           class="question_wrapper__content__alert"
         >
-<!-- TODO: в мастере вижу что убрали уведомления? Точно это надо? -->
+          <!-- TODO: в мастере вижу что убрали уведомления? Точно это надо? -->
           <!--          <span>{{ $globalToasts }}</span> -->
           <v-alert :icon="status_question.icon" :type="status_question.type">
             <span v-html="status_question.text"/>
@@ -643,7 +643,7 @@ export default {
           /* Fix default scroll by hash on page */
           this.createAnchorToAuth()
         })
-        this.$store.commit('setModalAuth', true)
+        this.$store.commit('set_modal_auth', true)
       } else if (!this.$store.state.Objects.currentObject || !Object.keys(this.$store.state.Objects.currentObject).length) {
         if (!Array.isArray(this.$store.state.AuthModule.userData.objects) || this.$store.state.AuthModule.userData.objects.length < 1) {
           await this.silentCreateObject()

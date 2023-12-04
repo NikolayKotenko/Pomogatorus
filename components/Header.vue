@@ -52,9 +52,10 @@
           :internal-data="selectedChips"
           @update-search-input="localGetListItems"
           @change-search="setSelected"
-          @click-clear="getListBasedArticles(); selectedChips = ''"
-          @redirect="redirectData"
         />
+        <!--          @click-clear="getListBasedArticles(); selectedChips = ''" -->
+        <!--          @redirect="redirectData" -->
+
         <!--        <v-toolbar-items class="header_center"> -->
         <!--          <div v-for="item in $store.getters.menuItems" :key="item.title"> -->
         <!--            <v-btn -->
@@ -77,7 +78,7 @@
             :close-on-content-click="false"
             left
             offset-y
-            @input="$store.commit('CollaborationModule/changeStateCollaboration', $event)"
+            @input="openCollaborationModule($event)"
           >
             <template #activator="{ on, attrs }">
               <div
@@ -122,7 +123,7 @@
               :color="listModal[0].isOpen ? '#fafad2' : 'white'"
               class="text-capitalize link_btn"
               text
-              @click="openModals"
+              @click="$store.commit('set_modal_auth', true)"
             >
               <v-icon large>
                 mdi-account
@@ -159,6 +160,40 @@ export default {
       listArticles: [],
       listVariables: [],
       loading: false,
+      answersList: [
+        {
+          category: 'Пользователи',
+          data: {},
+          query: '',
+          search: '',
+          text: '',
+          isAuthorized: null
+        },
+        {
+          category: 'Подборки',
+          data: {},
+          query: '',
+          search: '',
+          text: '',
+          isAuthorized: null
+        },
+        {
+          category: 'Оборудование',
+          data: {},
+          query: '',
+          search: '',
+          text: '',
+          isAuthorized: null
+        },
+        {
+          category: 'Объекты',
+          data: {},
+          query: '',
+          search: '',
+          text: '',
+          isAuthorized: null
+        },
+      ]
     }
   },
   mounted() {
@@ -193,10 +228,6 @@ export default {
     showDrawer() {
       this.$store.commit('set_drawer', !this.drawer)
     },
-    openModals() {
-      // TODO: Продумать логику открывания модалки независимо от индексa
-      this.listModal[0].isOpen = !this.listModal[0].isOpen
-    },
     // openObject() {
     //   this.$emit("open_object", this.$store.state.listObjects.currentObject)
     //   console.log('work')
@@ -228,46 +259,62 @@ export default {
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
 
       this.debounceTimeout = setTimeout(async () => {
-        await this.getArticlesBySymbols(searchString)
+        await this.getListSearchedArticlesBySymbols(searchString)
       }, 500)
     },
+    async getListSearchedArticlesBySymbols(symbols) {
+      const result = await Request.get(
+        `${this.$store.state.BASE_URL}/entity/articles/search/{q}?q=${symbols}`
+      )
+      this.listVariables = result.data
+    },
+
+
     setSelected(selectedObj){
       this.selectedArticle = selectedObj;
     },
-    async getArticlesBySymbols(symbols) {
-      this.loading = true;
-
-      const result = await Request.get(
-        `${this.$store.state.BASE_URL}/entity/articles/search/{q}?q=${symbols}`
-      );
-      this.listVariables = result.data;
-
-      const payload = (symbols) ? { name_or_tags: symbols } : null
-      await this.getListBasedArticles(payload)
-      this.loading = false;
-    },
-    async getListBasedArticles(queryParams){
-      this.loading = true;
-
-      const basedFilter = { activity: true };
-      const query = constructFilterQuery({ ...basedFilter, ...queryParams });
-
-      const response = await Request.get(
-        this.$store.state.BASE_URL + '/entity/articles' + query
-      );
-      this.listArticles = response.data;
-      this.loading = false;
-
-      return response;
-    },
-    redirectData(data){
-      if (data.category === 'Тэги'){
-        window.location.href = '/podborki/'+data.data.code
+    openCollaborationModule(state){
+      if (! this.$store.getters.stateAuth) {
+        this.$store.commit('set_modal_auth', state)
       }
-      if (data.category === 'Статьи'){
-        window.location.href = '/articles/'+data.data.id;
+      else {
+        this.$store.commit('CollaborationModule/changeStateCollaboration', state)
       }
-    },
+    }
+    // async getArticlesBySymbols(symbols) {
+    //   this.loading = true;
+    //
+    //   const result = await Request.get(
+    //     `${this.$store.state.BASE_URL}/entity/articles/search/{q}?q=${symbols}`
+    //   );
+    //   this.listVariables = result.data;
+    //
+    //   const payload = (symbols) ? { name_or_tags: symbols } : null
+    //   await this.getListBasedArticles(payload)
+    //   this.loading = false;
+    // },
+    // async getListBasedArticles(queryParams){
+    //   this.loading = true;
+    //
+    //   const basedFilter = { activity: true };
+    //   const query = constructFilterQuery({ ...basedFilter, ...queryParams });
+    //
+    //   const response = await Request.get(
+    //     this.$store.state.BASE_URL + '/entity/articles' + query
+    //   );
+    //   this.listArticles = response.data;
+    //   this.loading = false;
+    //
+    //   return response;
+    // },
+    // redirectData(data){
+    //   if (data.category === 'Тэги'){
+    //     window.location.href = '/podborki/'+data.data.code
+    //   }
+    //   if (data.category === 'Статьи'){
+    //     window.location.href = '/articles/'+data.data.id;
+    //   }
+    // },
 
   }
 }

@@ -139,14 +139,14 @@
 </template>
 
 <script>
-import index from "v-viewer";
-import InputStyled from "../Common/InputStyled.vue";
-import TooltipStyled from "../Common/TooltipStyled.vue";
-import { Service } from "~/helpers/constructors";
-import ButtonStyled from "../Common/ButtonStyled.vue";
+import index from 'v-viewer';
+import InputStyled from '../Common/InputStyled.vue';
+import TooltipStyled from '../Common/TooltipStyled.vue';
+import { Service } from '../../helpers/constructors';
+import ButtonStyled from '../Common/ButtonStyled.vue';
 
 export default {
-  name: "ServiceCard",
+  name: 'ServiceCard',
   components: { ButtonStyled, TooltipStyled, InputStyled },
   props: {
     serviceObject: {
@@ -173,13 +173,18 @@ export default {
   data() {
     return {
       isErrorMessagesPrice: [
-        value => (!!Number.parseInt(value) || value === "" || value === null) || "Должно быть числом"
+        value => (!!Number.parseInt(value) || value === '' || value === null) || 'Должно быть числом'
       ],
       delayUpdatingData: false
     };
   },
+  computed: {
+    index() {
+      return index;
+    }
+  },
   watch: {
-    "serviceObject.id": {
+    'serviceObject.id': {
       handler(newV, oldV) {
         if (!newV) return false;
         if (newV === oldV) return false;
@@ -189,18 +194,13 @@ export default {
       }
     }
   },
-  computed: {
-    index() {
-      return index;
-    }
-  },
   methods: {
     setDelayUpdatingData() {
       this.delayUpdatingData = true;
       this.$refs.price_field.focus();
 
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
-      this.debounceTimeout = setTimeout(async () => {
+      this.debounceTimeout = setTimeout( () => {
         this.delayUpdatingData = false;
       }, 6000);
     }

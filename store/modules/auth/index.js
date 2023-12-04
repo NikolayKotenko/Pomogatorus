@@ -1,5 +1,5 @@
 import Request from '@/services/request'
-import _cloneNative from "@/helpers/deepCloneNativeJs";
+import _cloneNative from '@/helpers/deepCloneNativeJs';
 
 export default {
   state: {
@@ -75,7 +75,7 @@ export default {
       )
     },
     async createUserFromEmailAndPass(_, objData) {
-      //Делаем запрос на создание пользователя, если такой есть то будет 409 конфликт ошибка ну и бог с ней
+      // Делаем запрос на создание пользователя, если такой есть то будет 409 конфликт ошибка ну и бог с ней
       return await Request.post(
         this.state.BASE_URL + '/users/create-from-full-credentials',
         objData
@@ -91,7 +91,7 @@ export default {
     },
     callModalAuth({ commit, getters }) {
       if (!getters.stateAuth) {
-        commit('setModalAuth', true)
+        commit('set_modal_auth', true)
       }
     },
   },
