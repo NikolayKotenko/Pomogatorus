@@ -9,7 +9,6 @@
 
     <v-tabs
       v-model="tab"
-      class="wtf"
       color="#000000"
       grow
       @change="checkServicesTab"
@@ -37,78 +36,64 @@
               @new-data="setData"
             />
           </div>
-          <LoginAuth v-else/>
+          <LoginAuth v-else />
         </div>
       </v-tab-item>
 
       <!-- Услуги -->
 
       <v-tab-item :key="1">
-        <div class="services_list">
-          <div
-            v-for="(item, index) in $store.state.UserSettings.selectedServices"
-            :key="index"
-            class="service_card"
-          >
-            <div style="display: flex; align-items: center;">
-              <span class="service_title">{{ item.name }}</span>
-              <TooltipStyled
-                :title="'Описание услуги'"
-              >
-                <v-menu
-                  offset-overflow
-                  offset-y
-                >
-                  <template #activator="{ on, attrs }">
-                    <v-icon
-                      v-bind="attrs"
-                      color="#5D80B5"
-                      v-on="on"
-                    >
-                      mdi-help-circle-outline
-                    </v-icon>
-                  </template>
-                  <v-list>
-                    <div class="explain_info">
-                      <span>{{ item.description }}</span>
-                    </div>
-                  </v-list>
-                </v-menu>
-              </TooltipStyled>
-            </div>
-            <InputStyled
-              class="service_price"
-              :class="'styleTextField'"
-              :is-label="'Договорная'"
-              :is-outlined="true"
-              :is-disabled="true"
+
+        <!-- Поиск | Сортировка -->
+        <div class="search_sort">
+          <SearchStyled
+            :is-class="'styleSearch'"
+            :is-clearable="true"
+            :is-hide-selected="true"
+            :is-item-text="'text'"
+            :is-item-value="'text'"
+            :is-loading="$store.state.UserSettings.loading"
+            :is-placeholder="'Фильтр по наименованию услуги'"
+            @update-search-input="filterListService"
+          />
+          <div class="wrapper_sort">
+            <section>Сортировка:</section>
+            <SelectStyled
+              :data="arrSort[0]"
+              :is-solo="false"
+              :item-text="'action'"
+              :item-value="'value'"
+              :items="arrSort"
+              :placeholder="'Выберите действие'"
+              class="select_sort"
+              @update-input="sortListServices"
             />
           </div>
         </div>
-        <div class="services_search">
-          <TooltipStyled :title="'Добавить услугу'">
-            <v-icon
-              class="add_service_button"
-              size="56"
-              @click="setServiceByUser"
-            >
-              mdi-plus-circle-outline
-            </v-icon>
-          </TooltipStyled>
-          <v-combobox
-            v-model="localSelectedService"
-            :item-text="'name'"
-            :item-value="'id'"
-            :items="$store.state.UserSettings.listServices"
-            clearable
-            label="Выберите услуги"
-            outlined
-            placeholder="Выберите услуги"
-            return-object
-            solo
-            @keyup.enter="setServiceByUser"
-          />
+
+        <div class="services_list">
+          <div v-for="(item, index) in $store.state.UserSettings.selectedRawServices">
+            <ServiceCard
+              v-if="item.id"
+              :key="index"
+              :is-equipment-exist="false"
+              :is-loading="$store.state.UserSettings.loading"
+              :is-quantity-exist="false"
+              :iteration-key="index+1"
+              :service-object="item"
+              @delete-one-service="deleteOneService(item)"
+              @update-price-field="setPrice(item, $event)"
+            />
+          </div>
         </div>
+
+        <!-- Добавить услугу -->
+        <AddNewServiceButton
+          :list-services-available-to-add="$store.state.UserSettings.listServices"
+          class="mt-5"
+          @add-service="setServiceByUser"
+        />
+
       </v-tab-item>
     </v-tabs>
 
@@ -117,8 +102,8 @@
         <ButtonStyled
           v-if="isLoggedIn"
           :custom-slot="true"
+          :is-loading="isUpdating"
           :is-mobile="true"
-          :loading="isUpdating"
           class="mobile_save_btn"
           local-class="style_button"
           @click-button="saveUser"
@@ -138,7 +123,7 @@
       <template v-else>
         <ButtonStyled
           v-if="isLoggedIn"
-          :loading="isUpdating"
+          :is-loading="isUpdating"
           :local-text="'Сохранить'"
           local-class="style_button saveLogoutBtn"
           @click-button="saveUser"
@@ -151,28 +136,47 @@
         />
       </template>
     </div>
+
+    <v-overlay
+      :value="isUpdating"
+      absolute
+      color="#F2F2F2"
+    >
+      <v-progress-circular
+        color="#95D7AE"
+        indeterminate
+        size="64"
+      />
+    </v-overlay>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState } from "vuex";
 
-import LoginAuth from '../frontLayouts/LoginAuth';
-import ButtonStyled from '../Common/ButtonStyled.vue';
-import SearchStyled from '../Common/SearchStyled.vue';
-import InputStyled from '../Common/InputStyled.vue';
-import TooltipStyled from '../Common/TooltipStyled.vue';
-import UserFields from './UserFields';
+import LoginAuth from "../frontLayouts/LoginAuth";
+import ButtonStyled from "../Common/ButtonStyled.vue";
+import SearchStyled from "../Common/SearchStyled.vue";
+import InputStyled from "../Common/InputStyled.vue";
+import TooltipStyled from "../Common/TooltipStyled.vue";
+import UserFields from "./UserFields";
+import ServiceCard from "@/components/Collaboration/ServiceCard.vue";
+import AddNewServiceButton from "@/components/Collaboration/AddNewServiceButton.vue";
+import { MtoMUsersServices } from "~/helpers/constructors";
+import SelectStyled from "~/components/Common/SelectStyled";
 
 export default {
-  name: 'UserInfo',
+  name: "UserInfo",
   components: {
+    SelectStyled,
     TooltipStyled,
     InputStyled,
     SearchStyled,
     ButtonStyled,
     UserFields,
-    LoginAuth
+    LoginAuth,
+    ServiceCard,
+    AddNewServiceButton
   },
   data: () => ({
     isChanged: false,
@@ -180,12 +184,23 @@ export default {
     isValid: false,
     tab: 0,
     loading: false,
-    serviceName: '',
-    servicePrice: '',
+    serviceName: "",
+    servicePrice: "",
     localSelectedService: null,
+    debounceTimeout: null,
+    arrSort: [
+      {
+        "action": "По алфавиту",
+        "value": "&sort[name]=asc"
+      },
+      {
+        "action": "По дате",
+        "value": "&sort[created_at]=desc"
+      }
+    ]
   }),
   async mounted() {
-    await this.$store.dispatch('UserSettings/getListServices');
+    await this.$store.dispatch("UserSettings/getListServices");
   },
   computed: {
     ...mapState({
@@ -198,14 +213,14 @@ export default {
     },
     isMobile() {
       return this.$device.isMobile;
-    },
+    }
   },
   methods: {
     closeDetail() {
-      this.$emit('close-detail');
+      this.$emit("close-detail");
     },
     logout() {
-      this.$store.dispatch('logout');
+      this.$store.dispatch("logout");
     },
     setChanged(value) {
       this.isChanged = value;
@@ -217,23 +232,65 @@ export default {
       this.isValid = value.isValid;
     },
     async saveUser() {
-      await this.$store.dispatch('UserSettings/deleteEntriesServicesByUser');
-      await this.$store.dispatch('UserSettings/setTetherUsersServices', this.$store.state.UserSettings.selectedServices)
-      await this.$store.dispatch('UserSettings/updateUser', { userId: this.userData.id, data: this.data });
-      this.$toast.success('Данные сохранены',{ duration: 5000 })
+      await this.$store.dispatch("UserSettings/updateUser", { userId: this.userData.id, data: this.data });
+      this.$toast.success("Данные сохранены", { duration: 5000 });
       this.closeDetail();
     },
-    async setServiceByUser() {
-      const checkExist = await this.$store.dispatch('UserSettings/addServicesAction', this.localSelectedService)
-      if (checkExist) return false;
+    async setServiceByUser(serviceData) {
+      const checkExist = this.$store.state.UserSettings.selectedServices.some((elem) => {
+        return elem.id === serviceData.id;
+      });
+      if (checkExist) {
+        this.$toast.error("Такая услуга уже добавлена!");
+        return false;
+      }
 
-      this.$toast.success('Услуга добавлена',{ duration: 5000 })
+      await this.$store.dispatch("UserSettings/addServicesAction", new MtoMUsersServices(serviceData.id));
+      await this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
+      this.$toast.success("Услуга добавлена");
     },
-    checkServicesTab(tabId){
+    checkServicesTab(tabId) {
       if (tabId === 1) {
-        this.$store.dispatch('UserSettings/getUserServices', this.userData.id)
+        this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
       }
     },
+    async deleteOneService(serviceRawObj) {
+      await this.$store.dispatch("UserSettings/deleteOneServiceAssignToUser", serviceRawObj.id_services);
+      await this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
+
+      this.$store.commit("UserSettings/changeStateDeleteServiceModal", false);
+      this.$toast.success("Услуга удалена");
+    },
+    async setPrice(object, price) {
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+      this.debounceTimeout = setTimeout(async () => {
+        await this.$store.dispatch("UserSettings/addServicesAction", new MtoMUsersServices(
+          object.id_services,
+          price
+        ));
+        this.$store.state.UserSettings.updatedEntryPrice = object.id;
+        await this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
+        this.$toast.success("Услуга обновлена");
+      }, 2000);
+    },
+    filterListService(string) {
+      if (!string) {
+        string = "";
+      }
+
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+      this.debounceTimeout = setTimeout(async () => {
+        this.$store.state.UserSettings.searchServiceByName = string;
+        await this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
+      }, 1000);
+    },
+    sortListServices(object) {
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+      this.debounceTimeout = setTimeout(async () => {
+        this.$store.state.UserSettings.sortListServicesValue = object.value;
+        await this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
+      }, 1000);
+    }
   }
 };
 </script>
@@ -289,32 +346,54 @@ export default {
   opacity: 0
 }
 
-.services_list{
+.services_list {
   display: grid;
-  margin-top: 2em;
-  .container_title{
+  padding: 0 2px;
+  grid-row-gap: 1em;
+
+  .container_title {
     font-size: 1.2em;
     font-weight: 500;
   }
-  .service_card{
+
+  .service_card {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    .service_title{
+
+    .service_title {
       font-size: 1.3em;
+
     }
-    .service_price{
+
+    .service_price {
       max-width: 150px;
     }
 
   }
 }
-.services_search{
-  display: flex;
-  justify-content: space-between;
+
+.search_sort {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 2em;
+  margin-bottom: 2em;
+
+  .wrapper_sort {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-column-gap: 10px;
+    align-items: center;
+
+    .select_sort {
+      margin-top: 0 !important;
+    }
+  }
 }
-.add_service_button{
+
+.add_service_button {
   cursor: pointer;
+
   &:hover {
     color: #000000;
   }

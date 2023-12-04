@@ -40,6 +40,14 @@ export default {
 
       return response
     },
+    async setTaskByObject({ dispatch }, object) {
+      const response = await Request.post(
+        this.state.BASE_URL + '/entity/request-for-work',
+        object
+      )
+
+      return response
+    },
     async deleteServiceUserByObject({ dispatch, commit }, object) {
       commit('setLoading', true)
 
@@ -54,6 +62,12 @@ export default {
       }
 
       commit('setLoading', false)
+      return response
+    },
+    async getRequestForWorkList() {
+      const response = await Request.get(
+        this.state.BASE_URL + '/entity/request-for-work/'
+      )
       return response
     },
     async getSearchedListMembers({ commit }, string) {
@@ -88,6 +102,7 @@ export default {
 
       commit('setLoading', false)
     },
+
   },
   getters: {
     getFilteredListByRoleExperts(state) {

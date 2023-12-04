@@ -17,19 +17,57 @@
 
       <!-- Desktop -->
       <template v-if="!isMobile">
-        <v-toolbar-items class="header_center">
-          <div v-for="item in $store.getters.menuItems" :key="item.title">
-            <v-btn
-              v-if="item.visible"
-              :href="item.path"
-              class="text-capitalize link_btn"
-              style="margin-right: 2em;"
-              text
+        <div
+          class="header_left"
+        >
+          <div
+            class="menu"
+            @click="$store.state.stateVerticalMenu = !$store.state.stateVerticalMenu"
+          >
+            <v-icon
+              color="#ffffff"
+              size="32"
             >
-              <span :class="{activeElement: getCurrentRoute.title === item.title}">{{ item.title }}</span>
-            </v-btn>
+              mdi-menu
+            </v-icon>
           </div>
-        </v-toolbar-items>
+          <div class="logo_wrapper">
+            <v-img
+              :src="require(`~/assets/svg/logo.svg`)"
+            />
+          </div>
+        </div>
+        <SearchStyled
+          class="search"
+          :is-placeholder="'Поиск'"
+          :class="'styleSearch'"
+          :is-loading="loading"
+          :is-disabled="loading"
+          :is-items="listVariables"
+          :is-clearable="true"
+          :is-item-text="'text'"
+          :is-item-value="'text'"
+          :is-hide-selected="false"
+          :is-custom-template-selections="true"
+          :internal-data="selectedChips"
+          @update-search-input="localGetListItems"
+          @change-search="setSelected"
+          @click-clear="getListBasedArticles(); selectedChips = ''"
+          @redirect="redirectData"
+        />
+        <!--        <v-toolbar-items class="header_center"> -->
+        <!--          <div v-for="item in $store.getters.menuItems" :key="item.title"> -->
+        <!--            <v-btn -->
+        <!--              v-if="item.visible" -->
+        <!--              :href="item.path" -->
+        <!--              class="text-capitalize link_btn" -->
+        <!--              style="margin-right: 2em;" -->
+        <!--              text -->
+        <!--            > -->
+        <!--              <span :class="{activeElement: getCurrentRoute.title === item.title}">{{ item.title }}</span> -->
+        <!--            </v-btn> -->
+        <!--          </div> -->
+        <!--        </v-toolbar-items> -->
       </template>
 
       <!-- Личный кабинет всегда по правую сторону -->
@@ -78,33 +116,6 @@
             <CurrentObjects/>
           </v-menu>
         </TooltipStyled>
-        <TooltipStyled :title="'Уведомления'">
-          <v-menu
-            :close-on-content-click="false"
-            left
-            offset-y
-          >
-            <template #activator="{ on, attrs }">
-              <div
-                style="display: inline-flex; grid-column-gap: 5px"
-                v-bind="attrs"
-                v-on="on"
-              >
-                <v-badge
-                  content="6"
-                  value="6"
-                  color="#95D7AE"
-                  overlap
-                >
-                  <v-icon large v-bind="attrs" v-on="on">
-                    mdi-bell-outline
-                  </v-icon>
-                </v-badge>
-              </div>
-            </template>
-            <Notifications/>
-          </v-menu>
-        </TooltipStyled>
         <TooltipStyled :title="'Личный кабинет'">
           <template>
             <v-btn
@@ -127,19 +138,27 @@
 <script>
 // eslint-disable-next-line vue/multi-word-component-names,vue/no-reserved-component-names
 import { mapState } from 'vuex'
+import Request from '../services/request';
 import TooltipStyled from './Common/TooltipStyled'
 import CurrentObjects from './Widgets/CurrentObjects.vue'
 import Collaboration from './Modals/Collaboration.vue';
-import Notifications from './Common/Notifications.vue';
+import SearchStyled from './Common/SearchStyled.vue';
+import constructFilterQuery from '~/utils/constructFilterQuery';
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names,vue/no-reserved-component-names
   name: 'Header',
-  components: { Notifications, Collaboration, CurrentObjects, TooltipStyled },
+  components: { SearchStyled, Collaboration, CurrentObjects, TooltipStyled },
   data() {
     return {
       debounceTimeout: null,
       stateCurrentObject: false,
+      selectedArticle: null,
+      selectedChips: '',
+      loadComponent: false,
+      listArticles: [],
+      listVariables: [],
+      loading: false,
     }
   },
   mounted() {
@@ -204,7 +223,52 @@ export default {
           prevScrollpos = currentScrollPos
         }
       }
-    }
+    },
+    async localGetListItems(searchString){
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
+
+      this.debounceTimeout = setTimeout(async () => {
+        await this.getArticlesBySymbols(searchString)
+      }, 500)
+    },
+    setSelected(selectedObj){
+      this.selectedArticle = selectedObj;
+    },
+    async getArticlesBySymbols(symbols) {
+      this.loading = true;
+
+      const result = await Request.get(
+        `${this.$store.state.BASE_URL}/entity/articles/search/{q}?q=${symbols}`
+      );
+      this.listVariables = result.data;
+
+      const payload = (symbols) ? { name_or_tags: symbols } : null
+      await this.getListBasedArticles(payload)
+      this.loading = false;
+    },
+    async getListBasedArticles(queryParams){
+      this.loading = true;
+
+      const basedFilter = { activity: true };
+      const query = constructFilterQuery({ ...basedFilter, ...queryParams });
+
+      const response = await Request.get(
+        this.$store.state.BASE_URL + '/entity/articles' + query
+      );
+      this.listArticles = response.data;
+      this.loading = false;
+
+      return response;
+    },
+    redirectData(data){
+      if (data.category === 'Тэги'){
+        window.location.href = '/podborki/'+data.data.code
+      }
+      if (data.category === 'Статьи'){
+        window.location.href = '/articles/'+data.data.id;
+      }
+    },
+
   }
 }
 </script>
@@ -247,15 +311,35 @@ export default {
   }
 }
 
+.header_left {
+  position: fixed;
+  left: 0;
+  padding-left: 20px;
+  display: flex;
+  align-items: center;
+  grid-column-gap: 20px;
+  .menu {
+    cursor: pointer;
+  }
+  .logo_wrapper {
+    @media only screen and (max-width: 1600px){
+      display: none;
+    }
+  }
+}
+
 .header_center {
   flex: 1;
   align-items: center;
 }
 
 .header_right {
+  position: fixed;
+  right: 0;
   display: flex;
   grid-column-gap: 20px;
   margin-left: auto;
+  padding-right: 20px;
 }
 
 .link_btn {
@@ -281,5 +365,11 @@ export default {
 .custom_grid_system {
   align-items: center;
   padding-left: 10px;
+}
+
+.search {
+  max-width: 750px;
+  max-height: 40px;
+
 }
 </style>

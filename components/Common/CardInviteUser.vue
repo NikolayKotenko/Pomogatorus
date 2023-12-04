@@ -241,16 +241,16 @@
               </TooltipStyled>
 
               <!-- Просмотр заявки. -->
-              <TooltipStyled
-                :title="'Просмотр заявки'"
-              >
-                <v-icon
-                  size="44"
-                  @click="openModal"
-                >
-                  mdi-list-status
-                </v-icon>
-              </TooltipStyled>
+              <!--              <TooltipStyled -->
+              <!--                :title="'Просмотр заявки'" -->
+              <!--              > -->
+              <!--                <v-icon -->
+              <!--                  size="44" -->
+              <!--                  @click="openModal" -->
+              <!--                > -->
+              <!--                  mdi-list-status -->
+              <!--                </v-icon> -->
+              <!--              </TooltipStyled> -->
 
               <!-- Отстранить пользователя (под капотом удалить все услуги). -->
               <v-dialog
@@ -299,9 +299,8 @@
                 </v-card>
               </v-dialog>
             </template>
-            <InviteUserModal
+            <TaskModal
               ref="inviteUserModal"
-              :current-task="getTaskData"
               :user-object="userObject"
               :get-services-tethered-by-user-object="getServicesTetheredByUserObject"
               :get-state-tethered-user-in-object="getStateTetheredUserInObject"
@@ -315,7 +314,8 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex';
-import InviteUserModal from '../Collaboration/InviteUserModal.vue';
+import InviteUserModal from '../Collaboration/Task.vue';
+import TaskModal from '../Collaboration/TaskModal.vue';
 import SelectStyled from './SelectStyled.vue';
 import SearchStyled from './SearchStyled.vue';
 import ButtonStyled from './ButtonStyled.vue';
@@ -323,7 +323,7 @@ import TooltipStyled from './TooltipStyled.vue';
 
 export default {
   name: 'CardInviteUser',
-  components: { InviteUserModal, TooltipStyled, ButtonStyled, SelectStyled },
+  components: { TaskModal, InviteUserModal, TooltipStyled, ButtonStyled, SelectStyled },
   props: {
     userObject: {
       type: Object,
@@ -337,30 +337,6 @@ export default {
       selectedServicesIdsLocal: [],
       localSelectedServices: null,
 
-      // TODO: testData ona pridet s backenda
-      testData: [
-        {
-          'id': 56,
-          'ids_users': [12,29,42, 76],
-          'id_object': 15,
-          'services': [
-            {
-              'id_service': 136,
-              'id_nomenclature': 55,
-              'price': '300',
-              'quantity': 4
-            },
-            {
-              'id_service': 2,
-              'id_nomenclature': 77,
-              'price': '600',
-              'quantity': 5
-            }
-          ],
-          'notes': 'BLABLABLA',
-          'status': 'request'
-        },
-      ]
     }
   },
   computed: {
@@ -397,48 +373,6 @@ export default {
         return idsServices.includes(obj.id)
       })
     },
-
-    getTaskData() {
-      if (!this.getStateTetheredUserInObject) {
-        return null
-      }
-
-      const taskByObjectID = this.testData.filter(elem => elem.id_object === this.currentObject.id) // iz store  15 (currentObject)
-      // Spisok zayavok otfiltrovan po object
-      // V modalke pokazyvaem konkretnyu zayavky po id zayavke
-      const findedTask = taskByObjectID.find(elem => elem.id === 56) // 56 (id zayavki) esli otrkryvaem modalky to berem id zayavki
-
-      // TODO: esli back vse vernet chetko to ydeli vse nizhe
-      if (findedTask) {
-        // Otrkyvaem modalky s dannymi iz zayaki
-        const usersArray = this.listMembers.filter(user => findedTask.ids_users.includes(user.id)) // only users
-
-        const servicesByUsers = usersArray.map(user => user.services).flat() // [{}, {}, {}, {}]
-
-        const uniqServices = new Set(servicesByUsers) // only uniq service
-
-
-        findedTask.services.map(serviceTask => {
-          let serviceData = {}; // Zdes zapolnitsya infa po service
-
-          uniqServices.forEach(uniqService => {
-            if (uniqService.id === serviceTask.id_service) {
-              serviceData = window.structuredClone(uniqService) // data iz usera
-              console.log(uniqService)
-            }
-          })
-
-          return Object.assign(serviceTask, serviceData)
-        })
-
-        return findedTask
-
-      } else {
-        // Otrkyvaem pystyu zayavky
-        return null
-      }
-    }
-
   },
   mounted() {
     this.$nextTick(() => {
@@ -458,32 +392,6 @@ export default {
     closeModal() {
       this.$refs.inviteUserModal.closeModal()
     },
-    sendApplication() {
-      const promises = [];
-      for (const idServices of this.selectedServicesIdsLocal) {
-        promises.push(this.$store.dispatch(
-          'CollaborationModule/setUserByObject',
-          {
-            id_user: this.userObject.id,
-            id_object: this.$store.getters['Objects/getIdCurrentObject'],
-            id_services: idServices,
-          }))
-      }
-      Promise.allSettled(promises).then(async () => {
-        await this.$store.dispatch(
-          'CollaborationModule/getListMembersByFilter',
-          { id_object: this.$store.getters['Objects/getIdCurrentObject'],
-        })
-        this.$toast.success('Заявка на услугу отправлена',{ duration: 5000 })
-      })
-    },
-    // async updateListServices(){
-    //   await this.$store.dispatch(
-    //     'CollaborationModule/getListMembersByFilter',
-    //     { id_object: this.$store.getters['Objects/getIdCurrentObject'],
-    //     })
-    //   this.$toast.success('Заявка на услуги отправлена',{ duration: 5000 })
-    // }
 
     async localDeleteServiceUserByObject() {
       let response = null;
@@ -543,7 +451,7 @@ $orange-color: #F79256;
 }
 .functional_icons{
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   grid-column-gap: 1em;
 }
 
@@ -567,7 +475,7 @@ $orange-color: #F79256;
 
   .user_info{
     display: grid;
-    grid-template-columns: 1.2fr 1.2fr 0.6fr;
+    grid-template-columns: 2fr 1.3fr 0.7fr;
     width: 100%;
     align-items: center;
     .access_rights{
