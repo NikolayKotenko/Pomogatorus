@@ -29,15 +29,15 @@
         class="invite_user"
       />
       <v-overlay
+        :value="$store.state.CollaborationModule.isLoading"
+        absolute
         class="overlay_style"
         color="#F2F2F2"
         opacity="100"
-        absolute
-        :value="$store.state.CollaborationModule.isLoading"
       >
         <v-progress-circular
-          indeterminate
           color="#95D7AE"
+          indeterminate
           size="64"
         />
       </v-overlay>
@@ -62,15 +62,15 @@
         class="invite_user"
       />
       <v-overlay
+        :value="$store.state.CollaborationModule.isLoading"
+        absolute
         class="overlay_style"
         color="#F2F2F2"
         opacity="100"
-        absolute
-        :value="$store.state.CollaborationModule.isLoading"
       >
         <v-progress-circular
-          indeterminate
           color="#95D7AE"
+          indeterminate
           size="64"
         />
       </v-overlay>
@@ -79,12 +79,11 @@
 </template>
 
 <script>
-import SearchStyled from '~/components/Common/SearchStyled';
-import CardInviteUser from '~/components/Common/CardInviteUser';
+import SearchStyled from "~/components/Common/SearchStyled";
+import CardInviteUser from "~/components/Common/CardInviteUser";
 
 export default {
-  // eslint-disable-next-line vue/multi-word-component-names
-  name: 'Collaboration',
+  name: "Collaboration",
   components: {
     SearchStyled,
     CardInviteUser
@@ -98,11 +97,11 @@ export default {
   },
   methods: {
     async localGetListUsers(phrase) {
-      await this.$store.dispatch('CollaborationModule/getSearchedListMembers', phrase);
+      await this.$store.dispatch("CollaborationModule/getSearchedListMembers", phrase);
 
       if (phrase) return false;
 
-      await this.$store.dispatch('CollaborationModule/getListMembersByFilter', { id_object: this.$store.getters['Objects/getIdCurrentObject'] });
+      await this.$store.dispatch("CollaborationModule/getListMembersByFilter", { id_object: this.$store.getters["Objects/getIdCurrentObject"] });
     }
 
   }
@@ -134,7 +133,8 @@ export default {
 
     top: 0;
     z-index: 9;
-    .header_title{
+
+    .header_title {
       font-size: 1.5em;
       font-weight: 700;
     }
@@ -160,7 +160,8 @@ export default {
 .category_user {
   font-size: 1.13em;
 }
-.invite_user{
+
+.invite_user {
   margin-top: 20px;
 }
 </style>
