@@ -8,7 +8,7 @@
     elevate-on-scroll
   >
     <v-container class="d-flex custom_grid_system">
-      <v-app-bar-nav-icon v-if="isMobile" @click="showDrawer"/>
+      <v-app-bar-nav-icon v-if="isMobile" @click="showDrawer" />
       <v-toolbar-title v-if="isMobile">
         <router-link :to="getCurrentRoute.path" style="color: unset; text-decoration: unset">
           {{ getCurrentRoute.title }}
@@ -38,18 +38,18 @@
           </div>
         </div>
         <SearchStyled
-          class="search"
-          :is-placeholder="'Поиск'"
           :class="'styleSearch'"
-          :is-loading="loading"
-          :is-disabled="loading"
-          :is-items="listVariables"
+          :internal-data="selectedChips"
           :is-clearable="true"
+          :is-custom-template-selections="true"
+          :is-disabled="loading"
+          :is-hide-selected="false"
           :is-item-text="'text'"
           :is-item-value="'text'"
-          :is-hide-selected="false"
-          :is-custom-template-selections="true"
-          :internal-data="selectedChips"
+          :is-items="listVariables"
+          :is-loading="loading"
+          :is-placeholder="'Поиск'"
+          class="search"
           @update-search-input="localGetListItems"
           @change-search="setSelected"
         />
@@ -73,7 +73,8 @@
 
       <!-- Личный кабинет всегда по правую сторону -->
       <v-toolbar-items class="header_right">
-        <TooltipStyled :title="'Совместная работа над ' + $store.state.Objects.currentObject.name" class="current_object_btn">
+        <TooltipStyled :title="'Совместная работа над ' + $store.state.Objects.currentObject.name"
+                       class="current_object_btn">
           <v-menu
             :close-on-content-click="false"
             left
@@ -91,7 +92,7 @@
                 </v-icon>
               </div>
             </template>
-            <Collaboration v-if="$store.state.CollaborationModule.stateCollaborationMenu"/>
+            <Collaboration v-if="$store.state.CollaborationModule.stateCollaborationMenu" />
           </v-menu>
         </TooltipStyled>
         <TooltipStyled :title="'Текущий объект'" class="current_object_btn">
@@ -114,7 +115,7 @@
                 </v-badge>
               </div>
             </template>
-            <CurrentObjects/>
+            <CurrentObjects />
           </v-menu>
         </TooltipStyled>
         <TooltipStyled :title="'Личный кабинет'">
@@ -137,69 +138,66 @@
 </template>
 
 <script>
-// eslint-disable-next-line vue/multi-word-component-names,vue/no-reserved-component-names
-import { mapState } from 'vuex'
-import Request from '../services/request';
-import TooltipStyled from './Common/TooltipStyled'
-import CurrentObjects from './Widgets/CurrentObjects.vue'
-import Collaboration from './Modals/Collaboration.vue';
-import SearchStyled from './Common/SearchStyled.vue';
-import constructFilterQuery from '~/utils/constructFilterQuery';
+import { mapState } from "vuex";
+import Request from "../services/request";
+import TooltipStyled from "./Common/TooltipStyled";
+import CurrentObjects from "./Widgets/CurrentObjects.vue";
+import Collaboration from "./Modals/Collaboration.vue";
+import SearchStyled from "./Common/SearchStyled.vue";
 
 export default {
-  // eslint-disable-next-line vue/multi-word-component-names,vue/no-reserved-component-names
-  name: 'Header',
+  name: "Header",
   components: { SearchStyled, Collaboration, CurrentObjects, TooltipStyled },
   data() {
     return {
       debounceTimeout: null,
       stateCurrentObject: false,
       selectedArticle: null,
-      selectedChips: '',
+      selectedChips: "",
       loadComponent: false,
       listArticles: [],
       listVariables: [],
       loading: false,
       answersList: [
         {
-          category: 'Пользователи',
+          category: "Пользователи",
           data: {},
-          query: '',
-          search: '',
-          text: '',
+          query: "",
+          search: "",
+          text: "",
           isAuthorized: null
         },
         {
-          category: 'Подборки',
+          category: "Подборки",
           data: {},
-          query: '',
-          search: '',
-          text: '',
+          query: "",
+          search: "",
+          text: "",
           isAuthorized: null
         },
         {
-          category: 'Оборудование',
+          category: "Оборудование",
           data: {},
-          query: '',
-          search: '',
-          text: '',
+          query: "",
+          search: "",
+          text: "",
           isAuthorized: null
         },
         {
-          category: 'Объекты',
+          category: "Объекты",
           data: {},
-          query: '',
-          search: '',
-          text: '',
+          query: "",
+          search: "",
+          text: "",
           isAuthorized: null
-        },
+        }
       ]
-    }
+    };
   },
   mounted() {
     // eslint-disable-next-line nuxt/no-env-in-hooks
     if (!process.server) {
-      this.onScroll()
+      this.onScroll();
     }
   },
   // eslint-disable-next-line vue/order-in-components
@@ -210,75 +208,74 @@ export default {
     }),
 
     isMobile() {
-      return this.$device.isMobile
+      return this.$device.isMobile;
     },
     getCurrentRoute() {
       if (this.listModal[0].isOpen) {
         return {
-          path: '',
-          title: 'Личный кабинет'
-        }
+          path: "",
+          title: "Личный кабинет"
+        };
       }
       return this.$store.getters.menuItems.find((elem) => {
-        return this.$route.path.match(elem.path)
-      })
+        return this.$route.path.match(elem.path);
+      });
     }
   },
   methods: {
     showDrawer() {
-      this.$store.commit('set_drawer', !this.drawer)
+      this.$store.commit("set_drawer", !this.drawer);
     },
     // openObject() {
     //   this.$emit("open_object", this.$store.state.listObjects.currentObject)
     //   console.log('work')
     // },
     setHeader(value) {
-      if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
       this.debounceTimeout = setTimeout(() => {
-        this.$store.commit('change_show_header', value)
-      })
+        this.$store.commit("change_show_header", value);
+      });
     },
     onScroll() {
       if (this.$device.isDesktop) {
-        let prevScrollpos = window.pageYOffset
-        const _this = this
+        let prevScrollpos = window.pageYOffset;
+        const _this = this;
         window.onscroll = function() {
-          const currentScrollPos = window.pageYOffset
+          const currentScrollPos = window.pageYOffset;
           if (prevScrollpos > currentScrollPos) {
-            document.getElementById('navbar').style.top = '0'
-            _this.setHeader(true)
+            document.getElementById("navbar").style.top = "0";
+            _this.setHeader(true);
           } else {
-            document.getElementById('navbar').style.top = '-70px'
-            _this.setHeader(false)
+            document.getElementById("navbar").style.top = "-70px";
+            _this.setHeader(false);
           }
-          prevScrollpos = currentScrollPos
-        }
+          prevScrollpos = currentScrollPos;
+        };
       }
     },
-    async localGetListItems(searchString){
-      if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
+    async localGetListItems(searchString) {
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
 
       this.debounceTimeout = setTimeout(async () => {
-        await this.getListSearchedArticlesBySymbols(searchString)
-      }, 500)
+        await this.getListSearchedArticlesBySymbols(searchString);
+      }, 500);
     },
     async getListSearchedArticlesBySymbols(symbols) {
       const result = await Request.get(
         `${this.$store.state.BASE_URL}/entity/articles/search/{q}?q=${symbols}`
-      )
-      this.listVariables = result.data
+      );
+      this.listVariables = result.data;
     },
 
 
-    setSelected(selectedObj){
+    setSelected(selectedObj) {
       this.selectedArticle = selectedObj;
     },
-    openCollaborationModule(state){
-      if (! this.$store.getters.stateAuth) {
-        this.$store.commit('set_modal_auth', state)
-      }
-      else {
-        this.$store.commit('CollaborationModule/changeStateCollaboration', state)
+    openCollaborationModule(state) {
+      if (!this.$store.getters.stateAuth) {
+        this.$store.commit("set_modal_auth", state);
+      } else {
+        this.$store.commit("CollaborationModule/changeStateCollaboration", state);
       }
     }
     // async getArticlesBySymbols(symbols) {
@@ -317,10 +314,10 @@ export default {
     // },
 
   }
-}
+};
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .v-btn:not(.v-btn--round).v-size--default {
   padding: 0 !important;
   min-width: 0;
@@ -365,11 +362,13 @@ export default {
   display: flex;
   align-items: center;
   grid-column-gap: 20px;
+
   .menu {
     cursor: pointer;
   }
+
   .logo_wrapper {
-    @media only screen and (max-width: 1600px){
+    @media only screen and (max-width: 1600px) {
       display: none;
     }
   }

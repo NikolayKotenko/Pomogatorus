@@ -89,7 +89,7 @@
         </div>
 
         <!-- Добавить услугу -->
-        <AddNewServiceButton
+        <UniversalAddInput
           :list-services-available-to-add="$store.state.UserSettings.listServices"
           class="mt-5"
           @add-service="setServiceByUser"
@@ -154,26 +154,29 @@
 <script>
 import { mapState } from 'vuex';
 
-import LoginAuth from '../frontLayouts/LoginAuth';
-import ButtonStyled from '../Common/ButtonStyled.vue';
-import SearchStyled from '../Common/SearchStyled.vue';
-import UserFields from './UserFields';
-import ServiceCard from '@/components/Collaboration/ServiceCard.vue';
-import AddNewServiceButton from '@/components/Collaboration/AddNewServiceButton.vue';
-import { MtoMUsersServices } from '~/helpers/constructors';
-import SelectStyled from '~/components/Common/SelectStyled';
-
+import LoginAuth from "../frontLayouts/LoginAuth";
+import ButtonStyled from "../Common/ButtonStyled.vue";
+import SearchStyled from "../Common/SearchStyled.vue";
+import InputStyled from "../Common/InputStyled.vue";
+import TooltipStyled from "../Common/TooltipStyled.vue";
+import UserFields from "./UserFields";
+import ServiceCard from "@/components/Collaboration/ServiceCard.vue";
+import UniversalAddInput from "@/components/Common/UniversalAddInput.vue";
+import { MtoMUsersServices } from "~/helpers/constructors";
+import SelectStyled from "~/components/Common/SelectStyled";
 
 export default {
   name: 'UserInfo',
   components: {
     SelectStyled,
+    TooltipStyled,
+    InputStyled,
     SearchStyled,
     ButtonStyled,
     UserFields,
     LoginAuth,
     ServiceCard,
-    AddNewServiceButton
+    UniversalAddInput
   },
   data: () => ({
     isChanged: false,
@@ -232,10 +235,8 @@ export default {
       this.isValid = value.isValid;
     },
     async saveUser() {
-      await this.$store.dispatch('UserSettings/deleteEntriesServicesByUser');
-      await this.$store.dispatch('UserSettings/setTetherUsersServices', this.$store.state.UserSettings.selectedServices);
-      await this.$store.dispatch('UserSettings/updateUser', { userId: this.userData.id, data: this.data });
-      this.$toast.success('Данные сохранены', { duration: 5000 });
+      await this.$store.dispatch("UserSettings/updateUser", { userId: this.userData.id, data: this.data });
+      this.$toast.success("Данные сохранены", { duration: 5000 });
       this.closeDetail();
     },
     async setServiceByUser(serviceData) {
@@ -260,10 +261,8 @@ export default {
       await this.$store.dispatch('UserSettings/deleteOneServiceAssignToUser', serviceRawObj.id_services);
       await this.$store.dispatch('UserSettings/getUserServices', this.userData.id);
 
-      // this.$store.dispatch('UserSettings/updatePriceService', {
-      // })
-      this.$store.commit('UserSettings/changeStateDeleteServiceModal', false);
-      this.$toast.success('Услуга удалена');
+      this.$store.commit("UserSettings/changeStateDeleteServiceModal", false);
+      this.$toast.success("Услуга удалена");
     },
     setPrice(object, price) {
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
@@ -281,8 +280,7 @@ export default {
       if (!string) {
         string = '';
       }
-      // this.closeDeleteOneServiceModal()
-      this.$toast.success('Услуга удалена');
+
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
       this.debounceTimeout = setTimeout(async () => {
         this.$store.state.UserSettings.searchServiceByName = string;

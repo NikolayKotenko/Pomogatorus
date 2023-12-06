@@ -9,6 +9,7 @@ export default {
     listServices: [],
     selectedServices: [],
     selectedRawServices: [],
+    selectedRawAdditionalDataServices: [],
     selectedRawServicesBased: [],
     loading: false,
     showDeleteOneServiceModal: false,
@@ -33,6 +34,10 @@ export default {
     seRawServices(state, payload) {
       state.selectedRawServices = payload
       state.selectedRawServicesBased = payload
+    },
+    seRawAdditionalDataServices(state, payload) {
+      state.selectedRawAdditionalDataServices = payload
+      state.selectedRawAdditionalDataServices = payload
     },
     setLoading(state, payload) {
       state.loading = payload
@@ -100,11 +105,13 @@ export default {
           queryFilter +
           state.sortListServicesValue
       )
+      // console.log('FFFFF', response)
       commit(
         'setMountedServices',
         response.data.map((elem) => elem.service_data)
       )
       commit('seRawServices', response.data)
+      commit('seRawAdditionalDataServices', response.additionalData)
 
       commit('setLoading', false)
     },

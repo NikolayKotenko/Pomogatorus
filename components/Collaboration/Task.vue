@@ -24,7 +24,7 @@
           />
         </div>
       </div>
-      <AddNewServiceButton
+      <UniversalAddInput
         :list-services-available-to-add="userObject.services"
         @add-service="addService"
       />
@@ -147,12 +147,12 @@ import TooltipStyled from "../Common/TooltipStyled.vue";
 import SelectStyled from "../Common/SelectStyled.vue";
 import { Service, ServiceDataConstructor, TaskData } from "~/helpers/constructors";
 import ServiceCard from "./ServiceCard.vue";
-import AddNewServiceButton from "~/components/Collaboration/AddNewServiceButton";
+import UniversalAddInput from "~/components/Common/UniversalAddInput";
 
 export default {
   name: "InviteUserModal",
   components: {
-    AddNewServiceButton,
+    UniversalAddInput,
     ServiceCard,
     TooltipStyled,
     ButtonStyled,

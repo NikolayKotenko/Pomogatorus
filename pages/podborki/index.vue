@@ -2,14 +2,14 @@
   <v-container class="podborki">
     <SearchStyled
       :is-class="'styleSearch'"
-      :is-placeholder="'Поиск тегов'"
-      :is-loading="$store.state.PopularSelectionsModule.loadingState"
-      :is-disabled="$store.state.PopularSelectionsModule.loadingState"
-      :is-items="$store.state.PopularSelectionsModule.list_selections"
       :is-clearable="true"
+      :is-disabled="$store.state.PopularSelectionsModule.loadingState"
+      :is-hide-selected="true"
       :is-item-text="'text'"
       :is-item-value="'text'"
-      :is-hide-selected="true"
+      :is-items="$store.state.PopularSelectionsModule.list_selections"
+      :is-loading="$store.state.PopularSelectionsModule.loadingState"
+      :is-placeholder="'Поиск тегов'"
       @update-search-input="localGetListItems"
       @click-clear="$store.dispatch('PopularSelectionsModule/getListSelections');"
     />
@@ -17,8 +17,8 @@
     <v-card
       v-for="(item, key) in $store.state.PopularSelectionsModule.list_selections"
       :key="key"
-      class="podborki__wrapper_list"
       :href="$route.path + '/' + item.code"
+      class="podborki__wrapper_list"
     >
       <v-img
         v-if="getPodborkiPhoto(item)"
@@ -96,6 +96,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
 .empty_placeholder{
   background-color: #D9D9D9;
   min-width: 254px;
@@ -107,10 +108,12 @@ export default {
   color: #FFFFFF;
   font-size: 1.3em;
 }
+
 .podborki {
   display: grid;
   grid-row-gap: 2em;
   align-content: baseline;
+
   &__wrapper_list {
     height: 210px;
     display: flex;
@@ -144,7 +147,8 @@ export default {
     }
   }
 }
-.podborki__wrapper_list__text{
+
+.podborki__wrapper_list__text {
   background-color: #D9D9D9;
   max-height: 85px;
   width: auto;
@@ -164,11 +168,13 @@ export default {
   }
 
 }
-@media screen and (max-width: 600px){
+
+@media screen and (max-width: 600px) {
   .podborki__wrapper_list__title {
-    font-size: 1em
-  };
-  .podborki__wrapper_list__compilation_info{
+    font-size: 1em;
+  }
+
+  .podborki__wrapper_list__compilation_info {
     display: grid;
     font-size: 0.8em;
   }
