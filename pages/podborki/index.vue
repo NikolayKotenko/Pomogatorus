@@ -21,25 +21,27 @@
       :href="$route.path + '/' + item.code"
     >
       <v-img
-        v-if="$store.getters.getImageByEClientFilesObj(item.e_client_files)"
-        :class="{'empty_placeholder': ! $store.getters.getImageByEClientFilesObj(item.e_client_files) }"
-        :src="$store.getters.getImageByEClientFilesObj(item.e_client_files)"
+        v-if="getPodborkiPhoto(item)"
+        cover
+        class="podborki_img"
+        :src="getPodborkiPhoto(item)"
       />
-      <div class="empty_placeholder">
+      <div
+        v-else
+        class="empty_placeholder"
+      >
         <span>Фото подборки</span>
       </div>
       <div class="main_info">
         <HashTagStyled
-          class="podborki__wrapper_list__title"
+          class="info_title"
           :text="item.name"
         />
-        <div>
-          <v-card-text
-            class="podborki__wrapper_list__text"
-            v-html="item.description"
-          />
-        </div>
-        <div class="podborki__wrapper_list__compilation_info">
+        <div
+          class="text_info"
+          v-html="item.description"
+        />
+        <div class="podborki_info">
           <span>Заполненых параметров: </span>
           <span>Всего статей: </span>
         </div>
@@ -76,7 +78,7 @@ export default {
     this.$store.dispatch('PopularSelectionsModule/getListSelections')
   },
   methods: {
-    async localGetListItems(searchString){
+    localGetListItems(searchString){
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
 
       this.debounceTimeout = setTimeout(async () => {
@@ -84,18 +86,21 @@ export default {
         await this.$store.dispatch('PopularSelectionsModule/getListSelections', payload)
       }, 1000)
     },
+    getPodborkiPhoto(elem) {
+      if (elem.e_client_files.length) {
+        return elem.e_client_files[0].url
+      }
+    },
   },
 }
 </script>
 
 <style scoped lang="scss">
-
 .empty_placeholder{
   background-color: #D9D9D9;
   min-width: 254px;
   min-height: 170px;
-  border-radius: 5px;
-  margin: 1em;
+  border-radius: 5px !important;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -107,28 +112,35 @@ export default {
   grid-row-gap: 2em;
   align-content: baseline;
   &__wrapper_list {
+    height: 210px;
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    grid-column-gap: 20px;
+    padding: 20px;
     &:hover {
       background-color: #FFF4CB;
       box-shadow: 0px 5px 20px 7px rgba(34, 60, 80, 0.2) !important;
     }
 
-    &__img {
-      min-width: 254px;
-      min-height: 170px;
+    .podborki_img {
+      border-radius: 5px !important;
+      max-width: 254px;
+      max-height: 170px;
     }
-    &__title {
-      display: flex;
-      margin: 1em;
-      font-size: 1.3em;
-    }
-    &__text {
+    .main_info {
+      display: grid;
+      grid-row-gap: 10px;
+      .info_title {
+        font-size: 1.5em;
+      }
+      .text_info {
+        background-color: #D9D9D9;
+        padding: 10px;
+        border-radius: 5px;
 
-    }
-    &__compilation_info {
-      margin: 1em;
+      }
+      .podborki_info {
+
+      }
     }
   }
 }
@@ -136,7 +148,6 @@ export default {
   background-color: #D9D9D9;
   max-height: 85px;
   width: auto;
-  margin: 1em;
   border-radius: 5px;
   display: -webkit-box;
   -webkit-line-clamp: 3;

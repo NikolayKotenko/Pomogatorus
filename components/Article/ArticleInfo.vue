@@ -60,7 +60,7 @@
     </div>
     <v-img
       :src="$store.getters.getImageByEClientFilesObj(article_data.e_client_files)"
-      class="mt-5"
+      class="article_img"
       contain
       max-width="1140"
     />
@@ -77,11 +77,10 @@
 <script>
 
 import TooltipStyled from '../Common/TooltipStyled.vue';
-import ProductsWidget from '../Common/ProductsWidget.vue';
 
 export default {
   name: 'ArticleInfo',
-  components: { ProductsWidget, TooltipStyled },
+  components: { TooltipStyled },
   props: ['article_data'],
   data: () => ({
     articleView: 'normal'
@@ -153,7 +152,10 @@ export default {
     &__right {
     }
   }
-
+  .article_img {
+    margin-top: 20px;
+    border-radius: 5px;
+  }
   &__anons {
     border-radius: 5px;
     background-color: #E3E3E3;

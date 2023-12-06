@@ -366,7 +366,7 @@ export default {
   watch: {
     answer: {
       handler() {
-        if (this.question_data.id_type_answer == '6') {
+        if (this.question_data.id_type_answer === '6') {
           if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
           this.debounceTimeout = setTimeout(() => {
             this.rangeError =
@@ -389,7 +389,7 @@ export default {
           this.check_status = false
           this.$nextTick(() => {
             // чтобы в слайдере не затерлось на null, т.к. там нужен массив
-            if (this.question_data.id_type_answer != '7') {
+            if (this.question_data.id_type_answer !== '7') {
               this.answer = null
             }
             this.detailed_response = ''
@@ -574,7 +574,7 @@ export default {
               },
               this.id_answer
             )
-            if (result.codeResponse != '202') {
+            if (result.codeResponse !== '202') {
               this.status_name = 'error'
             } else {
               this.status_name = 'success'
@@ -599,7 +599,7 @@ export default {
               detailed_response: this.detailed_response,
               attachment_files: ''
             })
-            if (result.codeResponse != '201') {
+            if (result.codeResponse !== '201') {
               this.status_name = 'error'
             } else {
               this.status_name = 'success'
@@ -722,7 +722,7 @@ export default {
       }
     },
     getValue_type_answer() {
-      if (this.question_data.id_type_answer == '7') {
+      if (this.question_data.id_type_answer === '7') {
         let parsed = null
         parsed = JSON.parse(JSON.parse(this.question_data.value_type_answer))
         if (Array.isArray(parsed)) {
@@ -812,16 +812,16 @@ export default {
 .question_wrapper {
   position: relative;
   padding: 20px;
-  border: 2px solid white;
   border-radius: 5px;
-  transition: background-color 0.6s ease-in-out;
-
+  background-color: #FFFFFF;
+  transition: all 0.4s ease-in-out;
   &__content {
     font-size: 1.1em;
   }
 
   &:hover {
     background-color: #FFF4CB;
+    box-shadow: 0px 5px 20px 7px rgba(34, 60, 80, 0.2) !important;
   }
 
   &__title {

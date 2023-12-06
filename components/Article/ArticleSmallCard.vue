@@ -49,6 +49,7 @@ export default {
   display: grid;
   grid-row-gap: 10px;
   padding: 10px;
+  border-radius: 5px !important;
   transition: all 0.4s ease-in-out !important;
   opacity: 0.6;
   max-width: 270px;

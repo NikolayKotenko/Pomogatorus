@@ -308,7 +308,7 @@ export default {
       transition: all 0.4s ease-in-out;
       margin-bottom: 10px;
       &:hover {
-        background: linear-gradient(0deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.15) 100%);
+        background: rgba(0, 0, 0, 0.05);
       }
     }
 
