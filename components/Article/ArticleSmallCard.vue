@@ -53,6 +53,7 @@ export default {
   transition: all 0.4s ease-in-out !important;
   opacity: 0.6;
   max-width: 270px;
+  max-height: 250px;
 
   &:hover {
 

@@ -7,7 +7,6 @@
     />
     <div class="content_wrapper">
       <div
-        v-if="$store.state.PopularSelectionsModule.questions.length"
         class="left_column"
       >
         <span class="title">
@@ -47,8 +46,18 @@
       is-collection
       :view-action="localViewAction"
     />
-    <v-overlay z-index="10" :value="$store.state.ArticleModule.refactoring_content">
-      <v-progress-circular :size="50" color="primary" indeterminate style="margin-top: 20px"/>
+    <v-overlay
+      :value="$store.state.PopularSelectionsModule.loadingState && $store.state.ArticleModule.refactoring_content"
+      absolute
+      class="overlay_style"
+      color="#F2F2F2"
+      opacity="100"
+    >
+      <v-progress-circular
+        color="#95D7AE"
+        indeterminate
+        size="64"
+      />
     </v-overlay>
   </v-container>
 </template>
@@ -129,8 +138,18 @@ export default {
   },
   async mounted() {
     this.$route.meta.title = this.mainTag?.name;
-    await this.$store.dispatch('PopularSelectionsModule/getArticlesInfo', this.$route.params.code);
-    await this.$store.dispatch('PopularSelectionsModule/getQuestionsInfo', this.$route.params.code);
+
+
+    this.$store.commit('PopularSelectionsModule/change_loadingState', true)
+    const getArticlesInfo = await this.$store.dispatch('PopularSelectionsModule/getArticlesInfo', this.$route.params.code);
+    const getQuestionsInfo = await this.$store.dispatch('PopularSelectionsModule/getQuestionsInfo', this.$route.params.code);
+    const promiseAll = Promise.all([getArticlesInfo, getQuestionsInfo]);
+    promiseAll.finally(() => {
+      setTimeout(() => {
+        this.$store.commit('PopularSelectionsModule/change_loadingState', false)
+      }, 1000)
+    });
+
     this.findQuestions();
   },
 
@@ -181,16 +200,15 @@ export default {
       display: grid;
       grid-row-gap: 20px;
       width: 100%;
-      .question_card {
-        //min-height: ;
-      }
     }
-
     .right_column {
       display: grid;
       grid-row-gap: 20px;
     }
 
+  }
+  .overlay_style {
+    transition: 0s !important;
   }
 
   //.auth_container {

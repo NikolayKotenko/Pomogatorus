@@ -84,20 +84,18 @@
           type="number"
           @input="$emit('update-price-field', $event)"
         >
-          <template v-slot:append>
-
+          <template #append>
             <DropDownMenuStyled>
-              <template v-slot:icon>
+              <template #icon>
                 <IconTooltip
                   :icon-text="'mdi-chart-timeline-variant'"
                   :text-tooltip="'sdfsdfdsfsfs'"
                 />
               </template>
-              <template v-slot:content>
+              <template #content>
                 <div>DADADADADADAD</div>
               </template>
             </DropDownMenuStyled>
-
           </template>
         </v-text-field>
         <InputStyled
@@ -155,16 +153,16 @@
 </template>
 
 <script>
-import index from "v-viewer";
-import InputStyled from "../Common/InputStyled.vue";
-import TooltipStyled from "../Common/TooltipStyled.vue";
-import { Service } from "../../helpers/constructors";
-import ButtonStyled from "../Common/ButtonStyled.vue";
-import IconTooltip from "../Common/IconTooltip.vue";
-import DropDownMenuStyled from "~/components/Common/DropDownMenuStyled";
+import index from 'v-viewer';
+import InputStyled from '../Common/InputStyled.vue';
+import TooltipStyled from '../Common/TooltipStyled.vue';
+import { Service } from '../../helpers/constructors';
+import ButtonStyled from '../Common/ButtonStyled.vue';
+import IconTooltip from '../Common/IconTooltip.vue';
+import DropDownMenuStyled from '~/components/Common/DropDownMenuStyled';
 
 export default {
-  name: "ServiceCard",
+  name: 'ServiceCard',
   components: { DropDownMenuStyled, ButtonStyled, TooltipStyled, InputStyled, IconTooltip },
   props: {
     serviceObject: {
@@ -191,7 +189,7 @@ export default {
   data() {
     return {
       isErrorMessagesPrice: [
-        value => (!!Number.parseInt(value) || value === "" || value === null) || "Должно быть числом"
+        value => (!!Number.parseInt(value) || value === '' || value === null) || 'Должно быть числом'
       ],
       delayUpdatingData: false
     };
@@ -202,7 +200,7 @@ export default {
     }
   },
   watch: {
-    "serviceObject.id": {
+    'serviceObject.id': {
       handler(newV, oldV) {
         if (!newV) return false;
         if (newV === oldV) return false;

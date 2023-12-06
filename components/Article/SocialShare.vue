@@ -7,51 +7,52 @@
       rel="stylesheet"
     >
 
-    <div
-      :class="{visible: tooltip_state}"
-      class="social-container__list-socials"
-      @mouseout="tooltip_state = false"
-      @mouseover="tooltip_state = true"
+    <DropDownMenuStyled
+      :is-top="true"
+      :is-offset-y="true"
     >
-      <ShareNetwork
-        v-for="network in networks"
-        :key="network.network"
-        :description="sharing.description"
-        :hashtags="sharing.hashtags"
-        :network="network.network"
-        :quote="sharing.quote"
-        :style="{backgroundColor: network.color}"
-        :text="network.text"
-        :title="sharing.title"
-        :twitter-user="sharing.twitterUser"
-        :url="sharing.url"
-        class="style_share"
+      <template
+        #icon
       >
-        <i
-          :class="network.icon"
-          :title="network.title"
+        <IconTooltip
+          :color-icon="'#000000'"
+          :is-top-tooltip="true"
+          :icon-text="'mdi-export-variant'"
+          :text-tooltip="'Поделиться статьёй'"
         />
-      </ShareNetwork>
-    </div>
-
-    <v-icon
-      class="social-container__button-state"
-      color="black"
-      size="24"
-      title="Поделится статьей"
-      @click="tooltip_state = true"
-      @mouseout="tooltip_state = false"
-      @mouseover="tooltip_state = true"
-    >
-      mdi-export-variant
-    </v-icon>
+      </template>
+      <template #content>
+        <ShareNetwork
+          v-for="network in networks"
+          :key="network.network"
+          :description="sharing.description"
+          :hashtags="sharing.hashtags"
+          :network="network.network"
+          :quote="sharing.quote"
+          :style="{backgroundColor: network.color}"
+          :text="network.text"
+          :title="sharing.title"
+          :twitter-user="sharing.twitterUser"
+          :url="sharing.url"
+          class="style_share"
+        >
+          <i
+            :class="network.icon"
+            :title="network.title"
+          />
+        </ShareNetwork>
+      </template>
+    </DropDownMenuStyled>
   </div>
 </template>
 
 <script>
+import DropDownMenuStyled from '../Common/DropDownMenuStyled.vue';
+import IconTooltip from '../Common/IconTooltip.vue';
+
 export default {
   name: 'SocialShare',
-  components: {},
+  components: { IconTooltip, DropDownMenuStyled },
   props: ['mouseStateEvent'],
   async asyncData({ $axios, store, params }) {
   },
@@ -106,7 +107,24 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
+
+i {
+  text-align: center;
+  background-color: #FFFFFF;
+
+
+  &.fa-odnoklassniki, &.fa-vk, &.fa-telegram, &.fa-whatsapp {
+    padding: 10px !important;
+    color: #857885;
+    transition: all 0.4s ease-in-out;
+    &:hover {
+      color: #95D7AE;
+    }
+  }
+}
+
+
 .tooltip-social {
   pointer-events: unset;
   background-color: white;
@@ -157,17 +175,7 @@ export default {
     z-index: 9;
     background: white;
 
-    .style_share {
 
-    }
-
-    i {
-      text-align: center;
-
-      &.fa-odnoklassniki, &.fa-vk, &.fa-telegram, &.fa-whatsapp {
-        color: #857885;
-      }
-    }
 
     //a[class^="share-network-"] {
     //  flex: none;

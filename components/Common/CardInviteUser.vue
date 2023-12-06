@@ -221,92 +221,92 @@
       >
         <!-- Функциональные иконки. -->
 
-        <!--        <section> -->
-        <!--          <div class="functional_icons"> -->
-        <!--            <template v-if="!getStateTetheredUserInObject"> -->
-        <!--              <ButtonStyled -->
-        <!--                :local-text="'Составить заявку'" -->
-        <!--                :local-class="'style_button'" -->
-        <!--                @click-button="openModal" -->
-        <!--              /> -->
-        <!--            </template> -->
-        <!--            <template v-else> -->
-        <!--              &lt;!&ndash; Разрешение на добавление других участников на объект. &ndash;&gt; -->
-        <!--              <TooltipStyled -->
-        <!--                :title="'Предоставить права для приглашения других пользователей'" -->
-        <!--              > -->
-        <!--                <v-icon size="44" disabled> -->
-        <!--                  mdi-account-multiple-check -->
-        <!--                </v-icon> -->
-        <!--              </TooltipStyled> -->
+        <section>
+          <div class="functional_icons">
+            <template v-if="!getStateTetheredUserInObject">
+              <ButtonStyled
+                :local-text="'Составить заявку'"
+                :local-class="'style_button'"
+                @click-button="openModal"
+              />
+            </template>
+            <!--              <template v-else> -->
+            <!--                &lt;!&ndash; Разрешение на добавление других участников на объект. &ndash;&gt; -->
+            <!--                <TooltipStyled -->
+            <!--                  :title="'Предоставить права для приглашения других пользователей'" -->
+            <!--                > -->
+            <!--                  <v-icon size="44" disabled> -->
+            <!--                    mdi-account-multiple-check -->
+            <!--                  </v-icon> -->
+            <!--                </TooltipStyled> -->
 
-        <!--              &lt;!&ndash; Просмотр заявки. &ndash;&gt; -->
-        <!--              &lt;!&ndash;              <TooltipStyled &ndash;&gt; -->
-        <!--              &lt;!&ndash;                :title="'Просмотр заявки'" &ndash;&gt; -->
-        <!--              &lt;!&ndash;              > &ndash;&gt; -->
-        <!--              &lt;!&ndash;                <v-icon &ndash;&gt; -->
-        <!--              &lt;!&ndash;                  size="44" &ndash;&gt; -->
-        <!--              &lt;!&ndash;                  @click="openModal" &ndash;&gt; -->
-        <!--              &lt;!&ndash;                > &ndash;&gt; -->
-        <!--              &lt;!&ndash;                  mdi-list-status &ndash;&gt; -->
-        <!--              &lt;!&ndash;                </v-icon> &ndash;&gt; -->
-        <!--              &lt;!&ndash;              </TooltipStyled> &ndash;&gt; -->
+            <!--                &lt;!&ndash; Просмотр заявки. &ndash;&gt; -->
+            <!--                &lt;!&ndash;              <TooltipStyled &ndash;&gt; -->
+            <!--                &lt;!&ndash;                :title="'Просмотр заявки'" &ndash;&gt; -->
+            <!--                &lt;!&ndash;              > &ndash;&gt; -->
+            <!--                &lt;!&ndash;                <v-icon &ndash;&gt; -->
+            <!--                &lt;!&ndash;                  size="44" &ndash;&gt; -->
+            <!--                &lt;!&ndash;                  @click="openModal" &ndash;&gt; -->
+            <!--                &lt;!&ndash;                > &ndash;&gt; -->
+            <!--                &lt;!&ndash;                  mdi-list-status &ndash;&gt; -->
+            <!--                &lt;!&ndash;                </v-icon> &ndash;&gt; -->
+            <!--                &lt;!&ndash;              </TooltipStyled> &ndash;&gt; -->
 
-        <!--              &lt;!&ndash; Отстранить пользователя (под капотом удалить все услуги). &ndash;&gt; -->
-        <!--              <v-dialog -->
-        <!--                v-model="showDeleteUserModal" -->
-        <!--                width="600" -->
-        <!--              > -->
-        <!--                <template #activator="{ on, attrs }"> -->
-        <!--                  <TooltipStyled -->
-        <!--                    :title="'Отстранить пользователя'" -->
-        <!--                  > -->
-        <!--                    <v-icon -->
-        <!--                      size="44" -->
-        <!--                      v-bind="attrs" -->
-        <!--                      v-on="on" -->
-        <!--                      @click="showDeleteUserModal = true" -->
-        <!--                    > -->
-        <!--                      mdi-account-remove -->
-        <!--                    </v-icon> -->
-        <!--                  </TooltipStyled> -->
-        <!--                </template> -->
-        <!--                <v-card class="application_card"> -->
-        <!--                  <div class="application_header"> -->
-        <!--                    <span class="header_title">Отстранить пользователя</span> -->
-        <!--                    <v-icon large @click="showDeleteUserModal = false"> -->
-        <!--                      mdi-close -->
-        <!--                    </v-icon> -->
-        <!--                  </div> -->
-        <!--                  <span>Вы действительно хотите отстранить пользователя -->
-        <!--                    {{ getValueField(userObject.middle_name) + ' ' + getValueField(userObject.first_name) }}? -->
-        <!--                  </span> -->
-        <!--                  <div class="services_buttons"> -->
-        <!--                    <div @click="localDeleteServiceUserByObject"> -->
-        <!--                      <ButtonStyled -->
-        <!--                        :local-text="'Подтвердить'" -->
-        <!--                        :local-class="'invite_button style_button'" -->
-        <!--                        :is-loading="$store.state.CollaborationModule.isLoading" -->
-        <!--                      /> -->
-        <!--                    </div> -->
-        <!--                    <div @click="showDeleteUserModal = false"> -->
-        <!--                      <ButtonStyled -->
-        <!--                        :local-text="'Отмена'" -->
-        <!--                        :local-class="'style_close'" -->
-        <!--                      /> -->
-        <!--                    </div> -->
-        <!--                  </div> -->
-        <!--                </v-card> -->
-        <!--              </v-dialog> -->
-        <!--            </template> -->
-        <!--            <TaskModal -->
-        <!--              ref="inviteUserModal" -->
-        <!--              :user-object="userObject" -->
-        <!--              :get-services-tethered-by-user-object="getServicesTetheredByUserObject" -->
-        <!--              :get-state-tethered-user-in-object="getStateTetheredUserInObject" -->
-        <!--            /> -->
-        <!--          </div> -->
-        <!--        </section> -->
+            <!--                &lt;!&ndash; Отстранить пользователя (под капотом удалить все услуги). &ndash;&gt; -->
+            <!--                <v-dialog -->
+            <!--                  v-model="showDeleteUserModal" -->
+            <!--                  width="600" -->
+            <!--                > -->
+            <!--                  <template #activator="{ on, attrs }"> -->
+            <!--                    <TooltipStyled -->
+            <!--                      :title="'Отстранить пользователя'" -->
+            <!--                    > -->
+            <!--                      <v-icon -->
+            <!--                        size="44" -->
+            <!--                        v-bind="attrs" -->
+            <!--                        v-on="on" -->
+            <!--                        @click="showDeleteUserModal = true" -->
+            <!--                      > -->
+            <!--                        mdi-account-remove -->
+            <!--                      </v-icon> -->
+            <!--                    </TooltipStyled> -->
+            <!--                  </template> -->
+            <!--                  <v-card class="application_card"> -->
+            <!--                    <div class="application_header"> -->
+            <!--                      <span class="header_title">Отстранить пользователя</span> -->
+            <!--                      <v-icon large @click="showDeleteUserModal = false"> -->
+            <!--                        mdi-close -->
+            <!--                      </v-icon> -->
+            <!--                    </div> -->
+            <!--                    <span>Вы действительно хотите отстранить пользователя -->
+            <!--                      {{ getValueField(userObject.middle_name) + ' ' + getValueField(userObject.first_name) }}? -->
+            <!--                    </span> -->
+            <!--                    <div class="services_buttons"> -->
+            <!--                      <div @click="localDeleteServiceUserByObject"> -->
+            <!--                        <ButtonStyled -->
+            <!--                          :local-text="'Подтвердить'" -->
+            <!--                          :local-class="'invite_button style_button'" -->
+            <!--                          :is-loading="$store.state.CollaborationModule.isLoading" -->
+            <!--                        /> -->
+            <!--                      </div> -->
+            <!--                      <div @click="showDeleteUserModal = false"> -->
+            <!--                        <ButtonStyled -->
+            <!--                          :local-text="'Отмена'" -->
+            <!--                          :local-class="'style_close'" -->
+            <!--                        /> -->
+            <!--                      </div> -->
+            <!--                    </div> -->
+            <!--                  </v-card> -->
+            <!--                </v-dialog> -->
+            <!--              </template> -->
+            <TaskModal
+              ref="inviteUserModal"
+              :user-object="userObject"
+              :get-services-tethered-by-user-object="getServicesTetheredByUserObject"
+              :get-state-tethered-user-in-object="getStateTetheredUserInObject"
+            />
+          </div>
+        </section>
       </section>
     </div>
   </v-container>

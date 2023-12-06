@@ -815,6 +815,7 @@ export default {
   border-radius: 5px;
   background-color: #FFFFFF;
   transition: all 0.4s ease-in-out;
+  height: auto;
   &__content {
     font-size: 1.1em;
   }
