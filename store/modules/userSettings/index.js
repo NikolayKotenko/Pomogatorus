@@ -84,7 +84,7 @@ export default {
         })
     },
     async getListServices({ commit, rootGetters }) {
-      if (! rootGetters.stateAuth) return false;
+      if (!rootGetters.stateAuth) return false
 
       const response = await Request.get(
         this.state.BASE_URL + '/dictionary/tags?filter[flag_service]=true'
@@ -152,11 +152,11 @@ export default {
     getCountServices(state) {
       return state.selectedServices.length
     },
-    getPriceByIdServices: (state) => (idServices) => {
-      const wtf = state.selectedRawServices.find(
+    getAdditionalDataByIdServices: (state) => (idServices) => {
+      const wtf = state.selectedRawAdditionalDataServices.filter(
         (elem) => elem.id_services === idServices
-      ).price
-      return wtf.toString()
+      )
+      return wtf
     },
     getFilteredListServicesByName(state) {
       if (!state.searchServiceByName) return state.selectedRawServicesBased

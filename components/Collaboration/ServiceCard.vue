@@ -81,6 +81,7 @@
           outlined
           persistent-placeholder
           placeholder="Договорная"
+          suffix="₽"
           type="number"
           @input="$emit('update-price-field', $event)"
         >
@@ -90,11 +91,23 @@
               <template v-slot:icon>
                 <IconTooltip
                   :icon-text="'mdi-chart-timeline-variant'"
-                  :text-tooltip="'sdfsdfdsfsfs'"
+                  :text-tooltip="'История цен'"
                 />
               </template>
               <template v-slot:content>
-                <div>DADADADADADAD</div>
+                <v-card class="pa-4">
+                  <h4 class="mb-2">
+                    {{ listAdditionalDataServices.length ?
+                    "Ваша история цены на услугу:" :
+                    "Здесь появится ваша история цен." }}
+                  </h4>
+                  <div class="wrapper_additional_data">
+                    <div v-for="(item, index) in listAdditionalDataServices" class="row_additional_data">
+                      <section> - {{ item.price }} ₽</section>
+                      <section> {{ item.created_at_date }}</section>
+                    </div>
+                  </div>
+                </v-card>
               </template>
             </DropDownMenuStyled>
 
@@ -167,6 +180,10 @@ export default {
   name: "ServiceCard",
   components: { DropDownMenuStyled, ButtonStyled, TooltipStyled, InputStyled, IconTooltip },
   props: {
+    listAdditionalDataServices: {
+      type: Array,
+      default: () => []
+    },
     serviceObject: {
       type: Object,
       default: () => new Service()
@@ -289,6 +306,17 @@ export default {
       font-weight: 700;
       text-decoration: underline;
     }
+  }
+}
+
+.wrapper_additional_data {
+  display: grid;
+  grid-row-gap: 5px;
+
+  .row_additional_data {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-row-gap: 1em;
   }
 }
 
