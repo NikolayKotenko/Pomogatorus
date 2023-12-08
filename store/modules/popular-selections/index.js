@@ -9,38 +9,28 @@ export default {
     main_tag: {},
     article: [],
     questions: [],
-    loadingState: false,
+    loadingState: true,
   },
   mutations: {
     setMainTag(state, result) {
       state.main_tag = {}
       state.main_tag = result
-
-      state.loadingState = false
     },
     setArticle(state, result) {
       state.article = []
       state.article = result
-
-      state.loadingState = false
     },
     setQuestions(state, result) {
       state.questions = []
       state.questions = result
-
-      state.loadingState = false
     },
     setPopularSelections(state, result) {
       state.popular_selections = {}
       state.popular_selections = result
-
-      state.loadingState = false
     },
     setListSelections(state, result) {
       state.list_selections = []
       state.list_selections = result
-
-      state.loadingState = false
     },
     setAnswer(state, payload) {
       const find = state.questions.find((elem) => elem.id === payload.id)
@@ -48,9 +38,14 @@ export default {
         find.answer = payload.answer
       }
     },
+    change_loadingState(state, payload) {
+      state.loadingState = payload
+    },
   },
   actions: {
     async getListSelections({ commit }, queryParams) {
+      commit('change_loadingState', true)
+
       const basedFilter = { public_field_filter: true }
       const query = constructFilterQuery({ ...basedFilter, ...queryParams })
 
@@ -58,11 +53,11 @@ export default {
         this.state.BASE_URL + '/dictionary/tags' + query
       )
       commit('setListSelections', response.data)
+
+      commit('change_loadingState', false)
       return response
     },
     async getSelections({ commit }, code) {
-      this.state.loadingState = true
-
       try {
         const response = await Request.get(
           `${this.state.BASE_URL}/entity/popular-selections/` + code
@@ -73,8 +68,6 @@ export default {
       }
     },
     async getMainTagInfo({ commit }, code) {
-      this.state.loadingState = true
-
       try {
         const response = await Request.get(
           `${this.state.BASE_URL}/dictionary/tags-by-code/` + code

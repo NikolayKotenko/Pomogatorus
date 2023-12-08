@@ -67,13 +67,6 @@
     height: auto;
     width: auto;
     align-content: baseline;
-    opacity: 0.6;
-    transition: opacity 0.4s;
-    //grid-template-rows: 300px auto;
-    &:hover {
-      opacity: 1;
-      transition: opacity 0.4s;
-    }
     &__title {
       font-size: 1.5em;
       font-weight: 700;
@@ -108,7 +101,7 @@
       padding: 1em;
       border-radius: 5px;
       background: #F2F2F2;
-      height: 80px;
+      height: 82px;
       font-size: 0.9em;
       font-weight: 400;
       overflow: hidden;

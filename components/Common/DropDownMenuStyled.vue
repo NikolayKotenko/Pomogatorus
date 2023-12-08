@@ -1,22 +1,27 @@
 <template>
-  <v-menu :close-on-content-click="false" left offset-y>
+  <v-menu
+    :left="isLeft"
+    :top="isTop"
+    :offset-y="isOffsetY"
+    :close-on-content-click="false"
+  >
     <template #activator="{ on, attrs }">
       <div
         v-bind="attrs"
         v-on="on"
       >
-        <slot name="icon"></slot>
+        <slot name="icon"/>
       </div>
     </template>
     <v-card class="pa-4">
-      <slot name="content"></slot>
+      <slot name="content"/>
     </v-card>
   </v-menu>
 </template>
 
 <script>
 export default {
-  name: "DropDownMenuStyled",
+  name: 'DropDownMenuStyled',
   props: {
     slotIcon: {
       type: Boolean,
@@ -25,7 +30,19 @@ export default {
     slotContent: {
       type: Boolean,
       default: false
-    }
+    },
+    isOffsetY: {
+      type: Boolean,
+      default: false
+    },
+    isTop: {
+      type: Boolean,
+      default: false
+    },
+    isLeft: {
+      type: Boolean,
+      default: false
+    },
   }
 };
 </script>

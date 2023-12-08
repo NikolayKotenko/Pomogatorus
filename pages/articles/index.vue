@@ -1,23 +1,23 @@
 <template>
   <v-container class="search_page">
     <div class="wrapper_search">
-      <SearchStyled
-        :class="'styleSearch'"
-        :is-placeholder="'Поиск тегов, статей'"
-        :is-loading="loading"
-        :is-disabled="loading"
-        :is-items="listVariables"
-        :is-clearable="true"
-        :is-item-text="'text'"
-        :is-item-value="'text'"
-        :is-hide-selected="false"
-        :is-custom-template-selections="true"
-        :internal-data="selectedChips"
-        @update-search-input="localGetListItems"
-        @change-search="setSelected"
-        @click-clear="getListBasedArticles(); selectedChips = ''"
-        @redirect="redirectData"
-      />
+      <!--      <SearchStyled -->
+      <!--        :class="'styleSearch'" -->
+      <!--        :is-placeholder="'Поиск тегов, статей'" -->
+      <!--        :is-loading="loading" -->
+      <!--        :is-disabled="loading" -->
+      <!--        :is-items="listVariables" -->
+      <!--        :is-clearable="true" -->
+      <!--        :is-item-text="'text'" -->
+      <!--        :is-item-value="'text'" -->
+      <!--        :is-hide-selected="false" -->
+      <!--        :is-custom-template-selections="true" -->
+      <!--        :internal-data="selectedChips" -->
+      <!--        @update-search-input="localGetListItems" -->
+      <!--        @change-search="setSelected" -->
+      <!--        @click-clear="getListBasedArticles(); selectedChips = ''" -->
+      <!--        @redirect="redirectData" -->
+      <!--      /> -->
       <!--      &lt;!&ndash;      <ChipsStyled &ndash;&gt; -->
       <!--      &lt;!&ndash;        :list-chips="$store.state.PopularSelectionsModule.list_selections.map((elem) => elem.name)" &ndash;&gt; -->
       <!--      &lt;!&ndash;        @click-chip="setChip" &ndash;&gt; -->
@@ -41,14 +41,12 @@
 <script>
 import Article from '@/components/Article/Article'
 import SearchStyled from '@/components/Common/SearchStyled.vue';
-import ChipsStyled from '@/components/Common/ChipsStyled.vue';
-import VerticalMenu from '@/components/VerticalMenu.vue';
 import Request from '~/services/request';
 import constructFilterQuery from '~/utils/constructFilterQuery';
 
 export default {
-  name: 'index.vue',
-  components: { ChipsStyled, Article , SearchStyled, VerticalMenu },
+  name: ['index.vue'],
+  components: { Article , SearchStyled  },
   data: () => ({
     selectedArticle: null,
     selectedChips: '',
@@ -63,7 +61,7 @@ export default {
     meta: []
   },
   async mounted() {
-    // await this.getListBasedArticles();
+    await this.getListBasedArticles();
     // await this.$store.dispatch('PopularSelectionsModule/getListSelections')
     this.loadComponent = true;
   },
@@ -71,7 +69,7 @@ export default {
     setSelected(selectedObj){
       this.selectedArticle = selectedObj;
     },
-    async localGetListItems(searchString){
+    localGetListItems(searchString){
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
 
       this.debounceTimeout = setTimeout(async () => {
@@ -105,10 +103,10 @@ export default {
       this.loading = true;
 
       const basedFilter = { activity: true };
-      const query = constructFilterQuery({ ...basedFilter, ...queryParams });
+      const query = constructFilterQuery({ ...basedFilter, ...queryParams,  });
 
       const response = await Request.get(
-        this.$store.state.BASE_URL + '/entity/articles' + query
+        this.$store.state.BASE_URL + '/entity/articles' + query + '&sort[created_at]=desc'
       );
       this.listArticles = response.data;
       this.loading = false;

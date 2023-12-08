@@ -1,44 +1,43 @@
 <template>
   <v-container class="podborki_detail">
-    <div v-if="main_tag.description" class="tag-template">
-      <VCard
-        class="mt-5 mb-5 pa-5"
-        style="word-break: break-word"
-        v-html="main_tag.description"
-      />
-    </div>
-    <!--    <div class='auth-template mt-5'> -->
-    <!--      <LoginAuth /> -->
-    <!--    </div> -->
+    <span
+      v-if="mainTag.description"
+      class="description"
+      v-html="mainTag.description"
+    />
     <div class="content_wrapper">
-      <div v-if="$store.state.PopularSelectionsModule.questions.length">
-        <h3 class="text_tag_question">
+      <div
+        class="left_column"
+      >
+        <span class="title">
           Вопросы по тегу:
           <HashTagStyled
-            :text="main_tag.name"
+            :text="mainTag.name"
           />
-        </h3>
-        <div v-for="(question, index) in $store.state.PopularSelectionsModule.questions">
-          <Question
-            :key="index"
-            :props-data="question"
-            :props-index="index + 1"
-            class="question_card"
-            @answer="setAnswer"
-          />
-        </div>
+        </span>
+        <Question
+          v-for="(question, index) in $store.state.PopularSelectionsModule.questions"
+          :key="index"
+          :props-data="question"
+          :props-index="index + 1"
+          class="question_card"
+          @answer="setAnswer"
+        />
       </div>
-      <div v-if="$store.state.PopularSelectionsModule.article.length" class="more_article">
-        <h3 class="text_tag_article">
+      <v-divider
+        v-if="$store.state.PopularSelectionsModule.article.length"
+        vertical
+      />
+      <div v-if="$store.state.PopularSelectionsModule.article.length" class="right_column">
+        <span class="title">
           Ещё статьи по тегу
-        </h3>
-        <div v-for="(article, index) in $store.state.PopularSelectionsModule.article">
-          <ArticleSmallCard
-            :key="index"
-            :article="article"
-            class="small_card"
-          />
-        </div>
+        </span>
+        <ArticleSmallCard
+          v-for="(article, index) in $store.state.PopularSelectionsModule.article"
+          :key="index"
+          :article="article"
+          class="small_card"
+        />
       </div>
     </div>
     <Biathlon
@@ -47,16 +46,24 @@
       is-collection
       :view-action="localViewAction"
     />
-    <v-overlay z-index="10" :value="$store.state.ArticleModule.refactoring_content">
-      <v-progress-circular :size="50" color="primary" indeterminate style="margin-top: 20px"/>
+    <v-overlay
+      :value="$store.state.PopularSelectionsModule.loadingState && $store.state.ArticleModule.refactoring_content"
+      absolute
+      class="overlay_style"
+      color="#F2F2F2"
+      opacity="100"
+    >
+      <v-progress-circular
+        color="#95D7AE"
+        indeterminate
+        size="64"
+      />
     </v-overlay>
   </v-container>
 </template>
 
 <script>
 import Question from '../../components/frontLayouts/Question';
-import LoginAuth from '../../components/frontLayouts/LoginAuth';
-import Article from '../../components/Article/Article';
 import Request from '../../services/request';
 import ArticleSmallCard from '../../components/Article/ArticleSmallCard.vue';
 import Biathlon from '../../components/Common/Biathlon.vue';
@@ -75,8 +82,8 @@ export default {
   async asyncData({ store, params }) {
     try {
       const request = await Request.get(`${store.state.BASE_URL}/dictionary/tags-by-code/${params.code}`, '', true)
-      const main_tag = request.data
-      return { main_tag }
+      const mainTag = request.data
+      return { mainTag }
     } catch (error) {
       console.warn(error.response.data.message)
     }
@@ -93,7 +100,7 @@ export default {
   }),
   head() {
     return {
-      title: `${this.main_tag?.seo_title}`,
+      title: `${this.mainTag?.seo_title}`,
       meta: [
         { charset: 'utf-8' },
         {
@@ -103,12 +110,12 @@ export default {
         {
           hid: 'keywords',
           name: 'keywords',
-          content: `${this.main_tag?.seo_keywords}`
+          content: `${this.mainTag?.seo_keywords}`
         },
         {
           hid: 'description',
           name: 'description',
-          content: `${this.main_tag?.seo_description}`
+          content: `${this.mainTag?.seo_description}`
         },
         {
           hid: 'theme-color',
@@ -130,9 +137,19 @@ export default {
   created() {
   },
   async mounted() {
-    this.$route.meta.title = this.main_tag?.name;
-    await this.$store.dispatch('PopularSelectionsModule/getArticlesInfo', this.$route.params.code);
-    await this.$store.dispatch('PopularSelectionsModule/getQuestionsInfo', this.$route.params.code);
+    this.$route.meta.title = this.mainTag?.name;
+
+
+    this.$store.commit('PopularSelectionsModule/change_loadingState', true)
+    const getArticlesInfo = await this.$store.dispatch('PopularSelectionsModule/getArticlesInfo', this.$route.params.code);
+    const getQuestionsInfo = await this.$store.dispatch('PopularSelectionsModule/getQuestionsInfo', this.$route.params.code);
+    const promiseAll = Promise.all([getArticlesInfo, getQuestionsInfo]);
+    promiseAll.finally(() => {
+      setTimeout(() => {
+        this.$store.commit('PopularSelectionsModule/change_loadingState', false)
+      }, 1000)
+    });
+
     this.findQuestions();
   },
 
@@ -159,52 +176,45 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/styles/lists';
 
-.podborki_detail {
+.title {
+  font-size: 1.5em !important;
+  font-weight: 700;
+}
 
+.podborki_detail {
+  display: grid;
+  row-gap: 20px;
+  .description {
+    background-color: #FFFFFF;
+    border-radius: 5px;
+    padding: 1em;
+  }
   .content_wrapper {
-    display: grid;
-    //grid-template-columns: (auto-fit (3fr 1fr));
-    grid-template-columns: 3fr 1fr;
-    row-gap: 1em;
-    column-gap: 1em;
+    display: flex;
+    grid-column-gap: 20px;
     @media screen and (max-width: 768px) {
       grid-template-columns: 1fr;
     }
-  }
 
-  .question_card {
-    margin-bottom: 1em;
-  }
-
-  .small_card {
-    margin-bottom: 1em;
-  }
-
-  .text_tag_question {
-    //margin: 1em 0 1em 1em;
-    font-size: 1.2em;
-    font-weight: 500;
-  }
-
-  .text_tag_article {
-    margin: 1em 0 1em 0;
-    font-size: 1.2em;
-    font-weight: 500;
-  }
-
-  .tag-template {
-    .textarea {
-      box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
-
-      padding: 1em;
-      word-break: break-word;
+    .left_column {
+      display: grid;
+      grid-row-gap: 20px;
+      width: 100%;
     }
+    .right_column {
+      display: grid;
+      grid-row-gap: 20px;
+    }
+
+  }
+  .overlay_style {
+    transition: 0s !important;
   }
 
-  .auth_container {
-    margin-right: auto !important;
-    margin: unset;
-  }
+  //.auth_container {
+  //  margin-right: auto !important;
+  //  margin: unset;
+  //}
 }
 @media only screen and (max-width: 768px){
   .text_tag_article {

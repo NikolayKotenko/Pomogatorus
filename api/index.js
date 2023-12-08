@@ -33,7 +33,7 @@ app.post('/auth/login', function (request, response) {
 
       // Set refresh token
       const refreshCookieObj = parseCookies(res.headers['set-cookie'][0])
-      const jwtRefreshTokenObj = parseJwt(refreshCookieObj['refreshToken'])
+      const jwtRefreshTokenObj = parseJwt(refreshCookieObj.refreshToken)
       // console.log('refreshCookieObj', refreshCookieObj)
       // console.log('jwtObj - ', jwtRefreshTokenObj)
       response.cookie('refreshToken', refreshCookieObj?.refreshToken, {
@@ -81,7 +81,7 @@ app.post('/auth/refresh', function (request, response) {
 
       // Set refresh token
       const refreshCookieObj = parseCookies(res.headers['set-cookie'][0])
-      const jwtRefreshTokenObj = parseJwt(refreshCookieObj['refreshToken'])
+      const jwtRefreshTokenObj = parseJwt(refreshCookieObj.refreshToken)
       // console.log('refreshCookieObj', refreshCookieObj)
       // console.log('jwtObj - ', jwtRefreshTokenObj)
       response.cookie('refreshToken', refreshCookieObj?.refreshToken, {
@@ -178,18 +178,19 @@ function getUrl(req, res) {
   const fullUrl = `${protocol}://${host}:${port}${url}`
   return fullUrl.includes('pomogatorus')
     ? 'https://api.agregatorus.com'
-    : 'https://api-test.agregatorus.com'
+    : 'https://api.agregatorus.com'
 }
 
 function parseCookies(cookieHeader) {
   const list = {}
   if (!cookieHeader) return list
 
-  cookieHeader.split(`;`).forEach(function (cookie) {
-    let [name, ...rest] = cookie.split(`=`)
+  cookieHeader.split(';').forEach(function (cookie) {
+    // eslint-disable-next-line prefer-const
+    let [name, ...rest] = cookie.split('=')
     name = name?.trim()
     if (!name) return
-    const value = rest.join(`=`).trim()
+    const value = rest.join('=').trim()
     if (!value) return
     list[name] = decodeURIComponent(value)
   })
@@ -200,9 +201,9 @@ function parseCookies(cookieHeader) {
 function parseJwt(token) {
   if (!token) return null
 
-  var base64Url = token.split('.')[1]
-  var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
-  var jsonPayload
+  const base64Url = token.split('.')[1]
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+  let jsonPayload
   try {
     jsonPayload = decodeURIComponent(
       atob(base64)
@@ -225,9 +226,11 @@ function parseJwt(token) {
   return JSON.parse(jsonPayload)
 }
 
+// eslint-disable-next-line camelcase
 function timeConverter(UNIX_timestamp) {
-  var a = new Date(UNIX_timestamp * 1000)
-  var months = [
+  // eslint-disable-next-line camelcase
+  const a = new Date(UNIX_timestamp * 1000)
+  const months = [
     'Jan',
     'Feb',
     'Mar',
@@ -241,13 +244,13 @@ function timeConverter(UNIX_timestamp) {
     'Nov',
     'Dec',
   ]
-  var year = a.getFullYear()
-  var month = months[a.getMonth()]
-  var date = a.getDate()
-  var hour = a.getHours()
-  var min = a.getMinutes()
-  var sec = a.getSeconds()
-  var time =
+  const year = a.getFullYear()
+  const month = months[a.getMonth()]
+  const date = a.getDate()
+  const hour = a.getHours()
+  const min = a.getMinutes()
+  const sec = a.getSeconds()
+  const time =
     date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec
   return time
 }

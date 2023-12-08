@@ -14,14 +14,13 @@
           class="list_elem_wrapper__img_container__img img-hover"
           cover
           height="100%"
-          max-width="300"
         />
       </div>
       <div
         class="list_elem_wrapper__short_info"
         @click="$store.dispatch('linkToArticle', article.id)"
       >
-        {{ preview }}
+        {{ article.short_header }}
       </div>
       <div class="list_elem_wrapper__buttons" @click="$event.stopPropagation()">
         <ViewsAndLikes :article="article"/>
@@ -47,17 +46,7 @@ export default {
   }),
 
   computed: {
-    preview() {
-      if (this.article.short_header) {
-        if (this.article.short_header.length > 50) {
-          return this.article.short_header.substring(0, 50) + '...';
-        } else {
-          return this.article.short_header;
-        }
-      } else {
-        return '';
-      }
-    }
+
   },
   methods: {
   }
