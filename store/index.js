@@ -13,13 +13,12 @@ import CollaborationModule from './modules/collaboration'
 import NomenclatureModule from './modules/nomenclature'
 import NotificationModule from './modules/notification'
 
-
 const createStore = () => {
   return new Vuex.Store({
     state: {
       BASE_URL:
         process.env.NODE_ENV === 'development'
-          ? 'https://api.agregatorus.com'
+          ? 'https://api-test.agregatorus.com'
           : 'https://api.agregatorus.com',
       show_header: false,
       breadcrumbs: [],
@@ -233,7 +232,7 @@ const createStore = () => {
         return response
       },
       async getListBroadcastSnippet({ commit, rootGetters }) {
-        if (! rootGetters.stateAuth) return false;
+        if (!rootGetters.stateAuth) return false
 
         const query = 'filter[broadcast_to_snippet]=true'
         const response = await Request.get(
