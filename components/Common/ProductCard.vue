@@ -304,6 +304,7 @@ export default {
     .photo {
       display: grid;
       max-height: 70px;
+      max-width: 70px;
       cursor: pointer;
       transition: all 0.4s ease-in-out;
       margin-bottom: 10px;

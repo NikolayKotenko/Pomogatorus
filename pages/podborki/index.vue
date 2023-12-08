@@ -47,6 +47,19 @@
         </div>
       </div>
     </v-card>
+    <v-overlay
+      :value="$store.state.PopularSelectionsModule.loadingState"
+      absolute
+      class="overlay_style"
+      color="#F2F2F2"
+      opacity="100"
+    >
+      <v-progress-circular
+        color="#95D7AE"
+        indeterminate
+        size="64"
+      />
+    </v-overlay>
   </v-container>
 </template>
 
