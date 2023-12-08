@@ -6,13 +6,13 @@
           <section>{{ iterationKey }}.</section>
           <section>{{ serviceObject.service_data.name }}</section>
           <DropDownMenuStyled>
-            <template v-slot:icon>
+            <template #icon>
               <IconTooltip
                 :icon-text="'mdi-help-circle-outline'"
                 :text-tooltip="'Описание услуги'"
               />
             </template>
-            <template v-slot:content>
+            <template #content>
               <span>{{ serviceObject.service_data.description }}</span>
             </template>
           </DropDownMenuStyled>
@@ -75,28 +75,31 @@
           @input="$emit('update-price-field', $event)"
         >
           <template #append>
-            <DropDownMenuStyled>
+            <DropDownMenuStyled :is-left="true">
               <template #icon>
                 <IconTooltip
                   :icon-text="'mdi-chart-timeline-variant'"
                   :text-tooltip="'История цен'"
                 />
               </template>
-              <template v-slot:content>
+              <template #content>
                 <h4 class="mb-2">
                   {{ listAdditionalDataServices.length ?
-                  "Ваша история цены на услугу:" :
-                  "Здесь появится ваша история цен." }}
+                    "Ваша история цены на услугу:" :
+                    "Здесь появится ваша история цен." }}
                 </h4>
                 <div class="wrapper_additional_data">
-                  <div v-for="(item, index) in listAdditionalDataServices" class="row_additional_data">
+                  <div
+                    v-for="(item, index) in listAdditionalDataServices"
+                    :key="index"
+                    class="row_additional_data"
+                  >
                     <section> - {{ item.price }} ₽</section>
                     <section> {{ item.created_at_date }}</section>
                   </div>
                 </div>
               </template>
             </DropDownMenuStyled>
-
           </template>
         </v-text-field>
         <InputStyled

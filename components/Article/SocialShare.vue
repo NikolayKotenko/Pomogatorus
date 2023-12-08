@@ -9,15 +9,14 @@
 
     <DropDownMenuStyled
       :is-top="true"
-      :is-offset-y="true"
     >
       <template
         #icon
       >
         <IconTooltip
           :color-icon="'#000000'"
-          :is-top-tooltip="true"
           :icon-text="'mdi-export-variant'"
+          :is-top-tooltip="true"
           :text-tooltip="'Поделиться статьёй'"
         />
       </template>
@@ -107,7 +106,7 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 
 i {
   text-align: center;
@@ -118,6 +117,7 @@ i {
     padding: 10px !important;
     color: #857885;
     transition: all 0.4s ease-in-out;
+
     &:hover {
       color: #95D7AE;
     }
@@ -143,12 +143,14 @@ i {
     justify-content: right !important;
     padding-left: 10px;
 
-    &:hover{
+    &:hover {
       color: #F6C5A7 !important;
     }
-    &:active{
+
+    &:active {
       color: #F79256 !important;
     }
+
     &::after {
       background-color: #FFFFFF !important;
     }
@@ -174,7 +176,6 @@ i {
     padding: 5px;
     z-index: 9;
     background: white;
-
 
 
     //a[class^="share-network-"] {

@@ -39,14 +39,14 @@
 </template>
 
 <script>
-import Article from '@/components/Article/Article'
+import Article from '@/components/Article/Article';
 import SearchStyled from '@/components/Common/SearchStyled.vue';
 import Request from '~/services/request';
 import constructFilterQuery from '~/utils/constructFilterQuery';
 
 export default {
-  name: ['index.vue'],
-  components: { Article , SearchStyled  },
+  name: 'index.vue',
+  components: { Article, SearchStyled },
   data: () => ({
     selectedArticle: null,
     selectedChips: '',
@@ -54,7 +54,7 @@ export default {
     listArticles: [],
     listVariables: [],
     loading: false,
-    debounceTimeout: null,
+    debounceTimeout: null
   }),
   head: {
     title: 'Статьи',
@@ -66,25 +66,25 @@ export default {
     this.loadComponent = true;
   },
   methods: {
-    setSelected(selectedObj){
+    setSelected(selectedObj) {
       this.selectedArticle = selectedObj;
     },
-    localGetListItems(searchString){
-      if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
+    localGetListItems(searchString) {
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
 
       this.debounceTimeout = setTimeout(async () => {
-        await this.getArticlesBySymbols(searchString)
-      }, 500)
+        await this.getArticlesBySymbols(searchString);
+      }, 500);
     },
     setChip(chip) {
-      this.selectedChips = chip
+      this.selectedChips = chip;
     },
-    redirectData(data){
-      if (data.category === 'Тэги'){
-        window.location.href = '/podborki/'+data.data.code
+    redirectData(data) {
+      if (data.category === 'Тэги') {
+        window.location.href = '/podborki/' + data.data.code;
       }
-      if (data.category === 'Статьи'){
-        window.location.href = '/articles/'+data.data.id;
+      if (data.category === 'Статьи') {
+        window.location.href = '/articles/' + data.data.id;
       }
     },
     async getArticlesBySymbols(symbols) {
@@ -95,15 +95,15 @@ export default {
       );
       this.listVariables = result.data;
 
-      const payload = (symbols) ? { name_or_tags: symbols } : null
-      await this.getListBasedArticles(payload)
+      const payload = (symbols) ? { name_or_tags: symbols } : null;
+      await this.getListBasedArticles(payload);
       this.loading = false;
     },
-    async getListBasedArticles(queryParams){
+    async getListBasedArticles(queryParams) {
       this.loading = true;
 
       const basedFilter = { activity: true };
-      const query = constructFilterQuery({ ...basedFilter, ...queryParams,  });
+      const query = constructFilterQuery({ ...basedFilter, ...queryParams });
 
       const response = await Request.get(
         this.$store.state.BASE_URL + '/entity/articles' + query + '&sort[created_at]=desc'
@@ -114,16 +114,17 @@ export default {
       return response;
     }
   }
-}
+};
 </script>
 
-<style lang='scss' scoped>
-.search_page{
+<style lang="scss" scoped>
+.search_page {
   display: grid;
   grid-row-gap: 2em;
   align-self: baseline;
   padding-top: unset;
 }
+
 .wrapper_search {
   width: 100%;
   margin: 0 !important;

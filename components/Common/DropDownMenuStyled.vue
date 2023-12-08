@@ -1,9 +1,9 @@
 <template>
   <v-menu
-    :left="isLeft"
-    :top="isTop"
-    :offset-y="isOffsetY"
     :close-on-content-click="false"
+    :left="isLeft"
+    :offset-y="isOffsetY"
+    :top="isTop"
   >
     <template #activator="{ on, attrs }">
       <div
@@ -33,7 +33,7 @@ export default {
     },
     isOffsetY: {
       type: Boolean,
-      default: false
+      default: true
     },
     isTop: {
       type: Boolean,
@@ -42,7 +42,7 @@ export default {
     isLeft: {
       type: Boolean,
       default: false
-    },
+    }
   }
 };
 </script>

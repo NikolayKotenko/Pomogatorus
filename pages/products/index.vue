@@ -39,8 +39,8 @@
       :data="item"
     />
     <v-pagination
-      color="#F79256"
       :length="6"
+      color="#F79256"
     />
   </v-container>
 </template>
@@ -51,21 +51,22 @@ import TooltipStyled from '../../components/Common/TooltipStyled.vue';
 import UniversalFilter from '../../components/Common/UniversalFilter.vue';
 
 export default {
-  name: ['Index'],
+  // eslint-disable-next-line vue/multi-word-component-names
+  name: 'index.vue',
   components: { UniversalFilter, TooltipStyled, ProductCard, SearchStyled },
   async mounted() {
-    await this.$store.dispatch('NomenclatureModule/getListNomenclature')
+    await this.$store.dispatch('NomenclatureModule/getListNomenclature');
   },
   methods: {
-    localGetListItems(){
+    localGetListItems() {
 
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
-.search_container{
+.search_container {
   display: flex;
   grid-column-gap: 1em;
 
