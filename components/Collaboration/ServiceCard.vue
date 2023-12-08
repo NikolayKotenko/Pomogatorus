@@ -3,30 +3,19 @@
     <div class="card_header">
       <div class="title_and_equip">
         <li class="service_title">
-          {{ iterationKey }}. {{ serviceObject.service_data.name }}
-          <TooltipStyled
-            :title="'Описание услуги'"
-          >
-            <v-menu
-              offset-overflow
-              offset-y
-            >
-              <template #activator="{ on, attrs }">
-                <v-icon
-                  color="#5D80B5"
-                  v-bind="attrs"
-                  v-on="on"
-                >
-                  mdi-help-circle-outline
-                </v-icon>
-              </template>
-              <v-list>
-                <div class="explain_info">
-                  <span>{{ serviceObject.service_data.description }}</span>
-                </div>
-              </v-list>
-            </v-menu>
-          </TooltipStyled>
+          <section>{{ iterationKey }}.</section>
+          <section>{{ serviceObject.service_data.name }}</section>
+          <DropDownMenuStyled>
+            <template v-slot:icon>
+              <IconTooltip
+                :icon-text="'mdi-help-circle-outline'"
+                :text-tooltip="'Описание услуги'"
+              />
+            </template>
+            <template v-slot:content>
+              <span>{{ serviceObject.service_data.description }}</span>
+            </template>
+          </DropDownMenuStyled>
         </li>
         <div v-if="isEquipmentExist" class="equipment">
           <div class="add_equipment">
@@ -95,19 +84,17 @@
                 />
               </template>
               <template v-slot:content>
-                <v-card class="pa-4">
-                  <h4 class="mb-2">
-                    {{ listAdditionalDataServices.length ?
-                    "Ваша история цены на услугу:" :
-                    "Здесь появится ваша история цен." }}
-                  </h4>
-                  <div class="wrapper_additional_data">
-                    <div v-for="(item, index) in listAdditionalDataServices" class="row_additional_data">
-                      <section> - {{ item.price }} ₽</section>
-                      <section> {{ item.created_at_date }}</section>
-                    </div>
+                <h4 class="mb-2">
+                  {{ listAdditionalDataServices.length ?
+                  "Ваша история цены на услугу:" :
+                  "Здесь появится ваша история цен." }}
+                </h4>
+                <div class="wrapper_additional_data">
+                  <div v-for="(item, index) in listAdditionalDataServices" class="row_additional_data">
+                    <section> - {{ item.price }} ₽</section>
+                    <section> {{ item.created_at_date }}</section>
                   </div>
-                </v-card>
+                </div>
               </template>
             </DropDownMenuStyled>
 
