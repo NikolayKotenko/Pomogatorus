@@ -16,13 +16,13 @@
       <v-tab
         :key="0"
       >
-        {{ isLoggedIn ? "Общая информация" : "Авторизация" }}
+        <span class="tab_header">{{ isLoggedIn ? "Общая информация" : "Авторизация" }}</span>
       </v-tab>
       <v-tab
         v-if="isLoggedIn"
         :key="1"
       >
-        Мои услуги
+        <span class="tab_header">Мои услуги</span>
         <v-badge
           :content="$store.getters['UserSettings/getCountServices']"
           :value="$store.getters['UserSettings/getCountServices']"
@@ -38,16 +38,16 @@
               @new-data="setData"
             />
           </div>
-          <LoginAuth v-else />
+          <LoginAuth v-else/>
         </div>
       </v-tab-item>
 
       <!-- Услуги -->
-
       <v-tab-item :key="1">
         <!-- Поиск | Сортировка -->
         <div class="search_sort">
           <SearchStyled
+            :class="'search_services'"
             :is-class="'styleSearch'"
             :is-clearable="true"
             :is-hide-selected="true"
@@ -83,7 +83,7 @@
               :iteration-key="index+1"
               :list-additional-data-services="$store.getters['UserSettings/getAdditionalDataByIdServices'](item.id_services)"
               :service-object="item"
-              @delete-one-service="deleteOneService(item)"
+              @delete-one-service="deleteOneService(item, $event)"
               @update-price-field="setPrice(item, $event)"
             />
           </div>
@@ -91,7 +91,7 @@
 
         <!-- Добавить услугу -->
         <UniversalAddInput
-          :list-services-available-to-add="$store.state.UserSettings.listServices"
+          :list-services-available-to-add="$store.getters['UserSettings/getListServicesExcludeAdded']"
           class="mt-5"
           @add-service="setServiceByUser"
         />
@@ -153,21 +153,21 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex';
 
-import LoginAuth from "../frontLayouts/LoginAuth";
-import ButtonStyled from "../Common/ButtonStyled.vue";
-import SearchStyled from "../Common/SearchStyled.vue";
-import InputStyled from "../Common/InputStyled.vue";
-import TooltipStyled from "../Common/TooltipStyled.vue";
-import UserFields from "./UserFields";
-import ServiceCard from "@/components/Collaboration/ServiceCard.vue";
-import UniversalAddInput from "@/components/Common/UniversalAddInput.vue";
-import { MtoMUsersServices } from "~/helpers/constructors";
-import SelectStyled from "~/components/Common/SelectStyled";
+import LoginAuth from '../frontLayouts/LoginAuth';
+import ButtonStyled from '../Common/ButtonStyled.vue';
+import SearchStyled from '../Common/SearchStyled.vue';
+import InputStyled from '../Common/InputStyled.vue';
+import TooltipStyled from '../Common/TooltipStyled.vue';
+import UserFields from './UserFields';
+import ServiceCard from '@/components/Collaboration/ServiceCard.vue';
+import UniversalAddInput from '@/components/Common/UniversalAddInput.vue';
+import { MtoMUsersServices } from '~/helpers/constructors';
+import SelectStyled from '~/components/Common/SelectStyled';
 
 export default {
-  name: "UserInfo",
+  name: 'UserInfo',
   components: {
     SelectStyled,
     TooltipStyled,
@@ -185,26 +185,26 @@ export default {
     isValid: false,
     tab: 0,
     loading: false,
-    serviceName: "",
-    servicePrice: "",
+    serviceName: '',
+    servicePrice: '',
     localSelectedService: null,
     isErrorMessagesPrice: [
-      v => Number.isInteger(v) || "Поле должно быть числом"
+      v => Number.isInteger(v) || 'Поле должно быть числом'
     ],
     debounceTimeout: null,
     arrSort: [
       {
-        "action": "По алфавиту",
-        "value": "&sort[name]=asc"
+        'action': 'По алфавиту',
+        'value': '&sort[name]=asc'
       },
       {
-        "action": "По дате",
-        "value": "&sort[created_at]=desc"
+        'action': 'По дате',
+        'value': '&sort[created_at]=desc'
       }
     ]
   }),
   async mounted() {
-    await this.$store.dispatch("UserSettings/getListServices");
+    await this.$store.dispatch('UserSettings/getListServices');
   },
   computed: {
     ...mapState({
@@ -221,10 +221,10 @@ export default {
   },
   methods: {
     closeDetail() {
-      this.$emit("close-detail");
+      this.$emit('close-detail');
     },
     logout() {
-      this.$store.dispatch("logout");
+      this.$store.dispatch('logout');
     },
     setChanged(value) {
       this.isChanged = value;
@@ -236,8 +236,8 @@ export default {
       this.isValid = value.isValid;
     },
     async saveUser() {
-      await this.$store.dispatch("UserSettings/updateUser", { userId: this.userData.id, data: this.data });
-      this.$toast.success("Данные сохранены", { duration: 5000 });
+      await this.$store.dispatch('UserSettings/updateUser', { userId: this.userData.id, data: this.data });
+      this.$toast.success('Данные сохранены', { duration: 5000 });
       this.closeDetail();
     },
     async setServiceByUser(serviceData) {
@@ -245,54 +245,52 @@ export default {
         return elem.id === serviceData.id;
       });
       if (checkExist) {
-        this.$toast.error("Такая услуга уже добавлена!");
+        this.$toast.error('Такая услуга уже добавлена!');
         return false;
       }
 
-      await this.$store.dispatch("UserSettings/addServicesAction", new MtoMUsersServices(serviceData.id));
-      await this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
-      this.$toast.success("Услуга добавлена");
+      await this.$store.dispatch('UserSettings/addServicesAction', new MtoMUsersServices(serviceData.id));
+      await this.$store.dispatch('UserSettings/getUserServices', this.userData.id);
+      this.$toast.success('Услуга добавлена');
     },
     checkServicesTab(tabId) {
       if (tabId === 1) {
-        this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
+        this.$store.dispatch('UserSettings/getUserServices', this.userData.id);
       }
     },
-    async deleteOneService(serviceRawObj) {
-      await this.$store.dispatch("UserSettings/deleteOneServiceAssignToUser", serviceRawObj.id_services);
-      await this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
-
-      this.$store.commit("UserSettings/changeStateDeleteServiceModal", false);
-      this.$toast.success("Услуга удалена");
+    async deleteOneService(serviceRawObj, event) {
+      await this.$store.dispatch('UserSettings/deleteOneServiceAssignToUser', serviceRawObj.id_services);
+      await this.$store.dispatch('UserSettings/getUserServices', this.userData.id);
+      this.$toast.success('Услуга удалена');
     },
     setPrice(object, price) {
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
       this.debounceTimeout = setTimeout(async () => {
-        await this.$store.dispatch("UserSettings/addServicesAction", new MtoMUsersServices(
+        await this.$store.dispatch('UserSettings/addServicesAction', new MtoMUsersServices(
           object.id_services,
           price
         ));
         this.$store.state.UserSettings.updatedEntryPrice = object.id;
-        await this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
-        this.$toast.success("Услуга обновлена");
+        await this.$store.dispatch('UserSettings/getUserServices', this.userData.id);
+        this.$toast.success('Услуга обновлена');
       }, 2000);
     },
     filterListService(string) {
       if (!string) {
-        string = "";
+        string = '';
       }
 
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
       this.debounceTimeout = setTimeout(async () => {
         this.$store.state.UserSettings.searchServiceByName = string;
-        await this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
+        await this.$store.dispatch('UserSettings/getUserServices', this.userData.id);
       }, 1000);
     },
     sortListServices(object) {
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
       this.debounceTimeout = setTimeout(async () => {
         this.$store.state.UserSettings.sortListServicesValue = object.value;
-        await this.$store.dispatch("UserSettings/getUserServices", this.userData.id);
+        await this.$store.dispatch('UserSettings/getUserServices', this.userData.id);
       }, 1000);
     }
   }
@@ -307,7 +305,12 @@ export default {
   grid-row-gap: 1em;
   flex-direction: column;
 
+  .tab_header {
+    font-size: 1.5em;
+  }
+
   .user_info_title {
+    font-size: 1.1em;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -327,6 +330,10 @@ export default {
     left: 0;
     bottom: 0;
     width: 100%;
+
+    .saveLogoutBtn {
+      font-size: 1em;
+    }
 
     .mobile_save_btn {
       max-width: 64px;
@@ -382,12 +389,18 @@ export default {
   grid-template-columns: 1fr 1fr;
   grid-column-gap: 2em;
   margin-bottom: 2em;
+  margin-top: 20px;
+
+  .search_services {
+    font-size: 1.5em !important;
+  }
 
   .wrapper_sort {
     display: grid;
     grid-template-columns: 1fr auto;
     grid-column-gap: 10px;
     align-items: center;
+    justify-self: end;
 
     .select_sort {
       margin-top: 0 !important;

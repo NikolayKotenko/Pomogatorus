@@ -12,7 +12,6 @@ export default {
     selectedRawAdditionalDataServices: [],
     selectedRawServicesBased: [],
     loading: false,
-    showDeleteOneServiceModal: false,
     searchServiceByName: '',
     sortListServicesValue: '',
     updatedEntryPrice: null,
@@ -41,9 +40,6 @@ export default {
     },
     setLoading(state, payload) {
       state.loading = payload
-    },
-    changeStateDeleteServiceModal(state, payload) {
-      state.showDeleteOneServiceModal = payload
     },
   },
   actions: {
@@ -101,7 +97,7 @@ export default {
       })
       const response = await Request.get(
         this.state.BASE_URL +
-          `/m-to-m/users-services` +
+          '/m-to-m/users-services' +
           queryFilter +
           state.sortListServicesValue
       )
@@ -166,6 +162,16 @@ export default {
         const needle = state.searchServiceByName.toLowerCase()
         return !!haystack.match(needle)
       })
+    },
+    getListServicesExcludeAdded(state) {
+      const arrA = state.listServices.map((elem) => elem.id)
+      const arrB = state.selectedRawServices.map((elem) => elem.id_services)
+      const differenceIds = arrA.filter((x) => !arrB.includes(x))
+      // console.log('difference', differenceIds)
+
+      return state.listServices.filter((elem) =>
+        differenceIds.includes(elem.id)
+      )
     },
   },
 }

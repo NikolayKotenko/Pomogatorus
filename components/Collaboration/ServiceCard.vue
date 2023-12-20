@@ -75,7 +75,11 @@
           @input="$emit('update-price-field', $event)"
         >
           <template #append>
-            <DropDownMenuStyled :is-left="true">
+            <DropDownMenuStyled
+              :is-left="true"
+              :nudge-bottom="30"
+              :nudge-right="15"
+            >
               <template #icon>
                 <IconTooltip
                   :icon-text="'mdi-chart-timeline-variant'"
@@ -83,19 +87,25 @@
                 />
               </template>
               <template #content>
-                <h4 class="mb-2">
-                  {{ listAdditionalDataServices.length ?
-                    "Ваша история цены на услугу:" :
-                    "Здесь появится ваша история цен." }}
-                </h4>
-                <div class="wrapper_additional_data">
-                  <div
-                    v-for="(item, index) in listAdditionalDataServices"
-                    :key="index"
-                    class="row_additional_data"
-                  >
-                    <section> - {{ item.price }} ₽</section>
-                    <section> {{ item.created_at_date }}</section>
+                <div class="additional_data">
+                  <h4 class="header_additional_data">
+                    <span>
+                      {{ listAdditionalDataServices.length ?
+                        "Ваша история цены на услугу:" :
+                        "Здесь появится ваша история цен." }}
+                    </span>
+                  </h4>
+                  <div class="wrapper_additional_data">
+                    <div
+                      v-for="(item, index) in listAdditionalDataServices"
+                      :key="index"
+                      class="row_additional_data"
+                    >
+                      <section> - {{ item.price }} ₽</section>
+                      <section class="last_entry">
+                        {{ item.created_at_date }}
+                      </section>
+                    </div>
                   </div>
                 </div>
               </template>
@@ -112,47 +122,44 @@
           class="quantity_field"
         />
       </div>
-      <v-dialog
-        v-model="$store.state.UserSettings.showDeleteOneServiceModal"
-        width="600"
-      >
-        <template #activator="{ on, attrs }">
-          <TooltipStyled :title="'Удалить услугу'">
-            <v-icon
-              color="#8A8784"
-              size="32"
-              v-bind="attrs"
-              v-on="on"
-            >
-              mdi-delete-outline
-            </v-icon>
-          </TooltipStyled>
-        </template>
-        <v-card class="delete_service_modal">
-          <div class="delete_service_header">
-            <span class="header_title">Удаление услуги</span>
-            <v-icon large @click="$store.commit('UserSettings/changeStateDeleteServiceModal', false)">
-              mdi-close
-            </v-icon>
-          </div>
-          <span>
-            Вы действительно хотите удалить услугу "{{ serviceObject.service_data.name }}"?
-          </span>
-          <div class="delete_service_buttons">
-            <ButtonStyled
-              :local-class="'invite_button style_button'"
-              :local-text="'Подтвердить'"
-              @click-button="$emit('delete-one-service')"
-            />
-            <ButtonStyled
-              :local-class="'style_close'"
-              :local-text="'Отмена'"
-              @click-button="$store.commit('UserSettings/changeStateDeleteServiceModal', false)"
-            />
-          </div>
-        </v-card>
-      </v-dialog>
+      <IconTooltip
+        :color-icon="'#8A8784'"
+        :icon-text="'mdi-delete-outline'"
+        :size-icon="'32'"
+        :text-tooltip="'Удалить услугу'"
+        @click-icon="showDeleteOneServiceModal = true"
+      />
     </div>
+
+    <v-dialog
+      v-model="showDeleteOneServiceModal"
+      width="600"
+    >
+      <v-card class="delete_service_modal">
+        <div class="delete_service_header">
+          <span class="header_title">Удаление услуги</span>
+          <v-icon large @click="showDeleteOneServiceModal = false">
+            mdi-close
+          </v-icon>
+        </div>
+        <span>
+          Вы действительно хотите удалить услугу "{{ serviceObject.service_data.name }}"?
+        </span>
+        <div class="delete_service_buttons">
+          <ButtonStyled
+            :is-loading="localLoading || isLoading"
+            :local-class="'invite_button style_button'"
+            :local-text="'Подтвердить'"
+            @click-button="localDeleteOneService"
+          />
+          <ButtonStyled
+            :local-class="'style_close'"
+            :local-text="'Отмена'"
+            @click-button="showDeleteOneServiceModal = false"
+          />
+        </div>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
@@ -199,7 +206,9 @@ export default {
       isErrorMessagesPrice: [
         value => (!!Number.parseInt(value) || value === '' || value === null) || 'Должно быть числом'
       ],
-      delayUpdatingData: false
+      delayUpdatingData: false,
+      showDeleteOneServiceModal: false,
+      localLoading: false
     };
   },
   computed: {
@@ -219,6 +228,15 @@ export default {
     }
   },
   methods: {
+    localDeleteOneService() {
+      this.$emit('delete-one-service', this.serviceObject);
+
+      this.localLoading = true;
+      setTimeout(() => {
+        this.showDeleteOneServiceModal = false;
+        this.localLoading = false;
+      }, 1000);
+    },
     setDelayUpdatingData() {
       this.delayUpdatingData = true;
       this.$refs.price_field.focus();
@@ -241,7 +259,7 @@ export default {
   .card_header {
     display: grid;
     grid-column-gap: 20px;
-    grid-template-columns: 2fr 0.8fr 0.1fr;
+    grid-template-columns: 50% auto min-content;
     align-items: center;
 
     .title_and_equip {
@@ -262,7 +280,8 @@ export default {
       grid-row-gap: 1em;
 
       .price_field {
-        max-width: 150px;
+        max-width: 260px;
+        width: 100%;
 
         .v-messages__message {
           color: green !important;
@@ -298,14 +317,27 @@ export default {
   }
 }
 
-.wrapper_additional_data {
-  display: grid;
-  grid-row-gap: 5px;
+.additional_data {
+  .header_additional_data {
+    margin-bottom: 2px;
+    display: inline-flex;
+    grid-column-gap: 10px;
+  }
 
-  .row_additional_data {
+  .wrapper_additional_data {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-row-gap: 1em;
+    grid-row-gap: 5px;
+    margin-top: 10px;
+
+    .row_additional_data {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-row-gap: 1em;
+
+      .last_entry {
+        margin-left: auto;
+      }
+    }
   }
 }
 

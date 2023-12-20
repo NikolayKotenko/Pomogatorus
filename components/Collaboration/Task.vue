@@ -63,8 +63,8 @@
               </v-icon>
             </div>
             <span>
-                Вы действительно хотите удалить исполнителя "{{ item.user_fio }}"?
-              </span>
+              Вы действительно хотите удалить исполнителя "{{ item.user_fio }}"?
+            </span>
             <div class="delete_user_buttons">
               <ButtonStyled
                 :local-class="'invite_button style_button'"
@@ -142,15 +142,15 @@
 </template>
 
 <script>
-import ButtonStyled from "../Common/ButtonStyled.vue";
-import TooltipStyled from "../Common/TooltipStyled.vue";
-import SelectStyled from "../Common/SelectStyled.vue";
-import { Service, ServiceDataConstructor, TaskData } from "~/helpers/constructors";
-import ServiceCard from "./ServiceCard.vue";
-import UniversalAddInput from "~/components/Common/UniversalAddInput";
+import ButtonStyled from '../Common/ButtonStyled.vue';
+import TooltipStyled from '../Common/TooltipStyled.vue';
+import SelectStyled from '../Common/SelectStyled.vue';
+import ServiceCard from './ServiceCard.vue';
+import { Service, ServiceDataConstructor, TaskData } from '~/helpers/constructors';
+import UniversalAddInput from '~/components/Common/UniversalAddInput';
 
 export default {
-  name: "InviteUserModal",
+  name: 'InviteUserModal',
   components: {
     UniversalAddInput,
     ServiceCard,
@@ -190,11 +190,11 @@ export default {
     if (this.currentTask) {
       this.taskData = this.currentTask;
     }
-    this.taskData.id_object = this.$store.getters["Objects/getIdCurrentObject"];
+    this.taskData.id_object = this.$store.getters['Objects/getIdCurrentObject'];
   },
   methods: {
     getValueField(str) {
-      return (str) || "";
+      return (str) || '';
     },
 
     closeDeleteOneUserModal() {
@@ -209,15 +209,15 @@ export default {
       if (!obj) return false;
 
       if (this.taskData.services.find(item => item.id_services === obj.id)) {
-        this.$toast.error("Такая услуга уже добавлена");
+        this.$toast.error('Такая услуга уже добавлена');
         return false;
       }
 
       this.taskData.services.push(new Service(
         obj.id,
         [],
-        "",
-        "1",
+        '',
+        '1',
         new ServiceDataConstructor(
           obj.code,
           obj.name,
@@ -225,7 +225,7 @@ export default {
         )
       ));
 
-      this.$toast.success("Услуга добавлена");
+      this.$toast.success('Услуга добавлена');
     },
 
     setPrice(index, price) {
@@ -234,34 +234,34 @@ export default {
 
     addUser() {
       if (this.taskData.ids_users.includes(this.selectedUser.id)) {
-        this.$toast.error("Исполнитель уже добавлен");
+        this.$toast.error('Исполнитель уже добавлен');
         return false;
       }
 
       this.taskData.ids_users.push(this.selectedUser.id);
       this.dataUsers.push(this.selectedUser);
 
-      this.$toast.success("Исполнитель добавлен");
+      this.$toast.success('Исполнитель добавлен');
     },
 
     async sendTask() {
       if (!this.taskData.services.length) {
-        this.$toast.info("Выберите услугу");
+        this.$toast.info('Выберите услугу');
         return false;
       }
 
       if (!this.taskData.ids_users.length) {
-        this.$toast.info("Добавьте исполнителя");
+        this.$toast.info('Добавьте исполнителя');
         return false;
       }
 
       const response = await this.$store.dispatch(
-        "CollaborationModule/setTaskByObject",
+        'CollaborationModule/setTaskByObject',
         this.taskData
       );
 
       this.$toast.success(response.message);
-      this.$emit("close-modal");
+      this.$emit('close-modal');
 
       // TODO: Доделать дестрой
       // this.dataUsers = ''
@@ -271,8 +271,7 @@ export default {
     deleteOneService(serviceToRemove) {
       this.taskData.services.splice(serviceToRemove, 1);
 
-      this.$store.commit("UserSettings/changeStateDeleteServiceModal", false);
-      this.$toast.success("Услуга удалена");
+      this.$toast.success('Услуга удалена');
     },
 
     deleteOneUser(idUserToRemove, dataUserToRemove) {
@@ -280,7 +279,7 @@ export default {
       this.dataUsers.splice(dataUserToRemove, 1);
 
       this.closeDeleteOneUserModal();
-      this.$toast.success("Исполнитель удален");
+      this.$toast.success('Исполнитель удален');
     }
   }
 };
