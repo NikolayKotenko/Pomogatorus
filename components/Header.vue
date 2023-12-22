@@ -74,7 +74,7 @@
       <!-- Личный кабинет всегда по правую сторону -->
       <v-toolbar-items class="header_right">
         <TooltipStyled :title="'Совместная работа над ' + $store.state.Objects.currentObject.name"
-                       class="current_object_btn">
+          class="current_object_btn">
           <v-menu
             :close-on-content-click="false"
             left
@@ -240,7 +240,7 @@ export default {
       if (this.$device.isDesktop) {
         let prevScrollpos = window.pageYOffset;
         const _this = this;
-        window.onscroll = function() {
+        window.onscroll = function () {
           const currentScrollPos = window.pageYOffset;
           if (prevScrollpos > currentScrollPos) {
             document.getElementById("navbar").style.top = "0";
@@ -257,16 +257,13 @@ export default {
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
 
       this.debounceTimeout = setTimeout(async () => {
-        await this.getListSearchedArticlesBySymbols(searchString);
+        await this.getLocalListSearchedBySymbols(searchString);
       }, 500);
     },
-    async getListSearchedArticlesBySymbols(symbols) {
-      const result = await Request.get(
-        `${this.$store.state.BASE_URL}/entity/articles/search/{q}?q=${symbols}`
-      );
+    async getLocalListSearchedBySymbols(symbols) {
+      const result = await this.$store.dispatch('getModifiedListSearched')
       this.listVariables = result.data;
     },
-
 
     setSelected(selectedObj) {
       this.selectedArticle = selectedObj;
@@ -277,7 +274,10 @@ export default {
       } else {
         this.$store.commit("CollaborationModule/changeStateCollaboration", state);
       }
-    }
+    },
+    
+
+
     // async getArticlesBySymbols(symbols) {
     //   this.loading = true;
     //
@@ -392,10 +392,12 @@ export default {
   font-weight: 400;
   text-transform: uppercase !important;
   letter-spacing: 0;
+
   //text-transform: uppercase !important;
   @media only screen and (min-width: 400px) {
     font-size: 1.25rem !important;
   }
+
   line-height: 1.5;
 }
 
@@ -403,6 +405,7 @@ export default {
   @media only screen and (max-width: 400px) {
     font-size: 1.25rem !important;
   }
+
   line-height: 1.5;
   letter-spacing: 1px;
   font-weight: lighter !important;

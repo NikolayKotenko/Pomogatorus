@@ -45,7 +45,7 @@ import Request from '~/services/request';
 import constructFilterQuery from '~/utils/constructFilterQuery';
 
 export default {
-  name: ['index.vue'],
+  name: 'index.vue',
   components: { Article , SearchStyled  },
   data: () => ({
     selectedArticle: null,
@@ -69,7 +69,7 @@ export default {
     setSelected(selectedObj){
       this.selectedArticle = selectedObj;
     },
-    localGetListItems(searchString){
+    localGetListItems(searchString){ 
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
 
       this.debounceTimeout = setTimeout(async () => {

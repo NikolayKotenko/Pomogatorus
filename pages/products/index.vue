@@ -51,7 +51,7 @@ import TooltipStyled from '../../components/Common/TooltipStyled.vue';
 import UniversalFilter from '../../components/Common/UniversalFilter.vue';
 
 export default {
-  name: ['Index'],
+  name: 'Index',
   components: { UniversalFilter, TooltipStyled, ProductCard, SearchStyled },
   async mounted() {
     await this.$store.dispatch('NomenclatureModule/getListNomenclature')

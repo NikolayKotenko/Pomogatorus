@@ -39,7 +39,7 @@
         />
       </div>
     </div>
-    <Biathlon
+        <Biathlon
       v-if="! $store.state.ArticleModule.refactoring_content"
       :article="article"
       :questions="computedQuestions"
@@ -167,8 +167,8 @@ export default {
         ? this.article._all_public_name_tags[0]
         : ''
     },
-    listArticlesExcludeCurrent() {
-      return this.$store.state.ArticleModule.list_filtered_articles.filter((obj) => {
+        listArticlesExcludeCurrent() {
+            return this.$store.state.ArticleModule.list_filtered_articles.filter((obj) => {
         return obj.id !== this.article.id
       })
     },

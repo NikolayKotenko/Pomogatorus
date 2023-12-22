@@ -475,7 +475,7 @@ $orange-color: #F79256;
 
   .user_info{
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 1.6fr 1.4fr 1fr;
     width: 100%;
     align-items: center;
     .access_rights{

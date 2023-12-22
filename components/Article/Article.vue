@@ -34,12 +34,13 @@
 
 <script>
 import ButtonStyled from '../Common/ButtonStyled.vue';
+import TooltipStyled from '../Common/TooltipStyled.vue';
 import ViewsAndLikes from '../Common/ViewsAndLikes.vue';
 import Author from './Author';
 
 export default {
   name: 'Article',
-  components: { ViewsAndLikes, ButtonStyled, Author },
+  components: { ViewsAndLikes, ButtonStyled, Author, TooltipStyled },
   props: ['article'],
   data: () => ({
     previewAuthor: true
