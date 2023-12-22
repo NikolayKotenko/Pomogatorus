@@ -30,14 +30,24 @@
     <!--        <v-icon class="selectIcon">mdi-select</v-icon> -->
     <!--      </template> -->
     <template v-if="isCustomTemplateSelections" #item="data">
-      <VListItemContent @click="watchDataRedirect(data.item)">
-        <VListItemTitle v-if="data.item.category === 'Тэги'">
-          <HashTagStyled :text="getTitleString(data.item.text)" />
-        </VListItemTitle>
-        <VListItemTitle v-else>
-          <span v-html="getTitleString(data.item.text)" />
-        </VListItemTitle>
-      </VListItemContent>
+      <v-list-item-content @click="watchDataRedirect(data.item)">
+        <span>Cтатьи</span>
+        <v-list-item-title v-if="data.category === 'Cтатьи'">
+          <span v-html="getTitleString(data.item.text)"/>
+        </v-list-item-title>
+        <span>Подборки</span>
+        <v-list-item-title v-if="data.item.category === 'Тэги'">
+          <span v-html="getTitleString(data.item.text)"/>
+        </v-list-item-title>
+        <span>Оборудование</span>
+        <v-list-item-title v-if="data.item.category === 'Оборудование'">
+          <span v-html="getTitleString(data.item.text)"/>
+        </v-list-item-title>
+        
+        <v-list-item-title v-else>
+          <span v-html="getTitleString(data.item.text)"/>
+        </v-list-item-title>
+      </v-list-item-content>
     </template>
     <template v-if="isCustomSearchSelections" #item="data">
       <div

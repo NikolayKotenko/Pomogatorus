@@ -51,6 +51,9 @@ export default {
     'vue-social-sharing/nuxt',
     //
     '@nuxtjs/toast',
+    '@nuxtus/nuxt-localtunnel',
+   
+    'nuxt-socket-io',
   ],
   serverMiddleware: ['~/api/index.js'],
 
@@ -74,7 +77,19 @@ export default {
     ],
     duration: 5000,
   },
+  localtunnel: {},
   // PWA module configuration: https://go.nuxtjs.dev/pwa
+  io: {
+    sockets: [
+      {
+        name: 'home',
+        url: 'http://192.168.1.221:5000',
+        vuex: {},
+        namespaces: {},
+      }
+    ]
+    // Options
+  },
   pwa: {
     manifest: {
       lang: 'en',

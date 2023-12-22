@@ -39,8 +39,8 @@
       :data="item"
     />
     <v-pagination
-      :length="6"
       color="#F79256"
+      :length="6"
     />
   </v-container>
 </template>

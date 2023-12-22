@@ -170,6 +170,7 @@ export default {
   max-height: 768px;
   width: 290px;
   min-width: 290px;
+  border-radius: 10px;
   //max-height: 500px;
   display: flex;
   flex-direction: column;

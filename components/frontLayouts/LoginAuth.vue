@@ -101,26 +101,34 @@
             contenteditable="false"
             @submit.prevent="localCreateUser(`component_wrapper-${index_component}`)"
           >
-            <div class="forms_input">
-              <v-text-field
-                v-model="email_user"
-                :class="'required'"
-                :rules="emailRules"
-                name="email"
-                placeholder="Введите почту"
-                required
-                single-line
-                type="email"
-              />
-              <v-text-field
-                v-model="name"
-                name="name"
-                placeholder="Как к вам обращаться?"
-                single-line
-                type="text"
-              />
+            <div class="pesonal_info">
+              <v-checkbox 
+                v-model="checkbox"
+                color="#95D7AE"
+        
+              >
+                <template v-slot:label>
+                  <div class="info_text">
+                    Я даю согласние на 
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on }">
+                        <a
+                          class="info_link"
+                          target="_blank"
+                          v-on="on"
+                          @click.stop
+                          color="#95D7AE"
+                        >
+                          обработку персональных данных.
+                        </a>
+                      </template>
+                      Откроется в новом окне
+                    </v-tooltip>
+                  </div>
+                </template>
+              </v-checkbox>
             </div>
-
+            
             <div class="quiz_container">
               <div class="quiz_title">
                 Чем планируете заниматься?
@@ -132,10 +140,76 @@
                 :false-value="0"
                 :label="type.text"
                 :true-value="1"
+                :disabled="! checkbox"
                 class="quiz_item"
                 color="#95D7AE"
-                dense
                 hide-details
+              />
+            </div>
+            
+            <div class="autorize_wrapper">
+              <v-btn
+                  class="autorize_btn"
+                  :disabled="! checkbox"
+                >
+        
+                  <div class="autorize_text">
+                    {{ authorizationSocials[0].text }}
+                  </div>
+              </v-btn>
+              <client-only>
+                <vue-telegram-login
+                  :disabled="! checkbox"
+                  mode="callback"
+                  telegram-login="PomogatorusBot"
+                  @callback="yourCallbackFunction"
+                />
+              </client-only>
+
+              <v-btn
+                :disabled="! checkbox"
+                class="autorize_btn"
+              >
+                
+                <div class="autorize_text">
+                  {{ authorizationSocials[2].text }}
+                </div>
+              </v-btn>
+              <v-btn
+                :disabled="! checkbox"
+                class="autorize_btn"
+                @click="registrationByMail = true"
+              >
+              
+                <div class="autorize_text">
+                  {{ authorizationSocials[3].text }}
+                </div>
+              </v-btn>
+            </div>
+
+
+            <div 
+              v-if="registrationByMail"
+              class="forms_input"
+            >
+              <v-text-field
+                v-model="email_user"
+                :class="'required'"
+                :rules="emailRules"
+                :disabled="! checkbox"
+                name="email"
+                placeholder="Введите почту"
+                required
+                single-line
+                type="email"
+              />
+              <v-text-field
+                v-model="name"
+                :disabled="! checkbox"
+                name="name"
+                placeholder="Как к вам обращаться?"
+                single-line
+                type="text"
               />
             </div>
 
@@ -145,6 +219,7 @@
                 :custom-slot="true"
                 :is-mobile="true"
                 :loading="loading"
+                :disabled="! checkbox"
                 local-class="style_button"
                 type="submit"
               >
@@ -153,21 +228,12 @@
               <ButtonStyled
                 v-if="!isMobile"
                 :loading="loading"
+                :is-disabled="! checkbox"
                 :local-text="'Зарегистрироваться'"
                 local-class="style_button"
                 type="submit"
               />
-              <v-btn
-                v-for="(item, index) in authorizationSocials"
-                :key="index"
-              >
-                <v-icon>
-                  {{ item.icon }}
-                </v-icon>
-                <div>
-                  {{ item.text }}
-                </div>
-              </v-btn>
+              
             </div>
           </v-form>
         </v-tab-item>
@@ -190,16 +256,25 @@
   </v-container>
 </template>
 
+<script src="https://vk.com/js/api/openapi.js?169" type="text/javascript"></script>
+
 <script>
 import { mapGetters } from 'vuex';
-
 import Request from '../../services/request';
 import ButtonStyled from '../Common/ButtonStyled.vue';
 import Logging from '@/services/logging';
 
-export default {
+let vueTelegramLogin
+if (process.client) {
+  vueTelegramLogin = require('vue-telegram-login').vueTelegramLogin
+  console.log(vueTelegramLogin)
+} else {
+  vueTelegramLogin = null
+}
+
+export default {  
   name: 'LoginAuth',
-  components: { ButtonStyled },
+  components: { ButtonStyled, vueTelegramLogin },
   data() {
     return {
       tab: 0,
@@ -249,21 +324,28 @@ export default {
       ],
       authorizationSocials: [
         {
+          text: 'Google',
+          key: 'gmail',
+          iconColor: '#EA4335'
+        },
+        {
           text: 'Telegram',
           key: 'tg',
-          icon: 'fab fa-lg fa-telegram'
+          iconColor: '#27A0E8',
         },
         {
           text: 'Вконтакте',
           key: 'vk',
-          icon: '@/assets/svg/vk_icon.svg'
+          iconColor: '#27A0E8'
         },
         {
-          text: 'Google',
-          key: 'gmail',
-          icon: '@/assets/svg/gmail_icon.svg'
+          text: 'Войти по почте',
+          key: 'email',
+          iconColor: '#000000'
         },
-      ]
+      ],
+      checkbox: false,
+      registrationByMail: false
     };
   },
   mounted() {
@@ -292,6 +374,12 @@ export default {
     }
   },
   methods: {
+    yourCallbackFunction (user) {
+      // gets user as an input
+      // id, first_name, last_name, username,
+      // photo_url, auth_date and hash
+      console.log(user)
+    },
     hasCookie() {
       if (Request.getAccessTokenInCookies() && this.$store.getters.stateAuth) {
         this.stateAuthBlock = false;
@@ -386,20 +474,31 @@ export default {
 
 .login {
   display: grid;
-  grid-row-gap: 40px;
+  grid-row-gap: 20px;
+
+  .pesonal_info {
+    display: flex;
+    align-items: center;
+    .info_text {
+      font-size: 1.3em;
+      font-weight: 700;
+      .info_link {
+        color: #F79256;
+        text-decoration-line: underline;
+      }
+    }
+  }
   .forms_input {
 
   }
 
   .quiz_container {
     display: grid;
-    grid-row-gap: 15px;
     .quiz_title {
       font-size: 1.5em;
       font-weight: 700;
     }
     .quiz_item {
-      background-color: #FFFFFF;
       border-radius: 5px;
       padding: 10px;
       transition: all 0.4s ease-in-out;
@@ -409,6 +508,21 @@ export default {
         box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 
       }
+    }
+  }
+  .autorize_wrapper {
+    display: flex;
+    grid-column-gap: 20px;
+    .autorize_btn{
+      border: 1px solid #8A8784;
+
+      .autorize_text {
+      font-size: 0.9em;
+      font-style: normal;
+      text-transform: none;
+      font-weight: 400;
+      letter-spacing: normal;
+    }
     }
   }
 }

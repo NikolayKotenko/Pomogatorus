@@ -37,6 +37,13 @@ const createStore = () => {
       /* HEADER */
       drawer: false,
       stateVerticalMenu: true,
+      listSearched: [{
+        category: '',
+        text: '',
+        query: '',
+        search: '',
+        data: {},
+      }],
 
       /* Objects */
       showCabinet: false,
@@ -161,6 +168,20 @@ const createStore = () => {
           },
         }
       },
+      getModifiedListSearched(state) {
+        return state.listSearched.map((elem) => {
+          elem.href = ''
+          if (elem.category === 'Статьи') {
+            elem.href = '/articles/' + elem.code
+          }
+          if (elem.category === 'Оборудование') {
+            elem.href = '/nomenclature/' + elem.code
+          }
+          if (elem.category === 'Подборки') {
+            elem.href = '/popular-selection/' + elem.code
+          }
+        })
+      },
     },
     mutations: {
       set_drawer(state, payload) {
@@ -218,6 +239,11 @@ const createStore = () => {
       set_modal_auth(state, payload) {
         state.listModal[0].isOpen = payload
       },
+
+      /* HEADERS */
+      set_list_searched(state, payload) {
+        state.listSearched = payload
+      }
     },
     actions: {
       // nuxtServerInit({dispatch}) {
@@ -255,6 +281,13 @@ const createStore = () => {
 
         return await Request.post(state.BASE_URL + '/entity/files', data, true)
       },
+
+      async getListSearched({ commit }, symbols) {
+        const response = await Request.get(
+          this.state.BASE_URL + '/entity/search/{q}?q=${symbols}'
+        );
+        commit('set_list_searched', response.data)
+      }
     },
     modules: {
       AuthModule,
