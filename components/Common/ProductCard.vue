@@ -1,9 +1,9 @@
 <template>
-  <v-container class="product_card_wrapper">
+  <div class="product_card_wrapper">
     <!-- Общая информация -->
     <v-img
-      class="empty_placeholder"
       :src="getMainProductPhoto"
+      class="empty_placeholder"
     />
     <div class="product_info">
       <div class="product_title">
@@ -76,9 +76,9 @@
                 </ViewerStyled>
                 <div class="main_photo_wrapper">
                   <v-img
+                    :src="getMainProductPhoto"
                     class="main_photo"
                     contain
-                    :src="getMainProductPhoto"
                   />
                 </div>
               </div>
@@ -173,7 +173,7 @@
         />
       </div>
     </div>
-  </v-container>
+  </div>
 </template>
 
 <script>
@@ -204,11 +204,10 @@ export default {
   },
   computed: {
     getMainProductPhoto() {
-      return this.data?._family?.photos[0].url
-    },
+      return this.data?._family?.photos[0].url;
+    }
   },
   async mounted() {
-    await this.$store.dispatch('NomenclatureModule/getListNomenclature');
   },
   methods: {
     changeFavoriteProduct() {
@@ -283,6 +282,7 @@ export default {
   width: 700px;
   height: 700px;
   padding: 20px;
+
   .card_name {
     font-size: 1.5em;
     font-weight: 700;
@@ -292,15 +292,18 @@ export default {
     display: flex;
     max-height: 220px;
     width: 100%;
+
     .main_photo_wrapper {
       display: flex;
       justify-content: center;
       width: 100%;
+
       .main_photo {
         height: auto;
         max-width: 300px;
       }
     }
+
     .photo {
       display: grid;
       max-height: 70px;
@@ -308,6 +311,7 @@ export default {
       cursor: pointer;
       transition: all 0.4s ease-in-out;
       margin-bottom: 10px;
+
       &:hover {
         background: rgba(0, 0, 0, 0.05);
       }

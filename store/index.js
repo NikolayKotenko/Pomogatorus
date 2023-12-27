@@ -37,13 +37,15 @@ const createStore = () => {
       /* HEADER */
       drawer: false,
       stateVerticalMenu: true,
-      listSearched: [{
-        category: '',
-        text: '',
-        query: '',
-        search: '',
-        data: {},
-      }],
+      listSearched: [
+        {
+          category: '',
+          text: '',
+          query: '',
+          search: '',
+          data: {},
+        },
+      ],
 
       /* Objects */
       showCabinet: false,
@@ -71,6 +73,9 @@ const createStore = () => {
       ],
       list_tags: [],
       list_broadcast_snippet: [],
+      currentPaginationData: {
+        hasMorePages: false,
+      },
     },
     getters: {
       getImageByEClientFilesObj: (state) => (eClientFilesObj) => {
@@ -168,19 +173,8 @@ const createStore = () => {
           },
         }
       },
-      getModifiedListSearched(state) {
-        return state.listSearched.map((elem) => {
-          elem.href = ''
-          if (elem.category === 'Статьи') {
-            elem.href = '/articles/' + elem.code
-          }
-          if (elem.category === 'Оборудование') {
-            elem.href = '/nomenclature/' + elem.code
-          }
-          if (elem.category === 'Подборки') {
-            elem.href = '/popular-selection/' + elem.code
-          }
-        })
+      statePaginationHasMorePage(state) {
+        return state.currentPaginationData.hasMorePages
       },
     },
     mutations: {
@@ -242,8 +236,22 @@ const createStore = () => {
 
       /* HEADERS */
       set_list_searched(state, payload) {
-        state.listSearched = payload
-      }
+        state.listSearched = payload.map((elem) => {
+          elem.href = ''
+          if (elem.category === 'Статьи') {
+            elem.href = '/articles/' + elem.code
+          }
+          if (elem.category === 'Оборудование') {
+            elem.href = '/nomenclature/' + elem.code
+          }
+          if (elem.category === 'Подборки') {
+            elem.href = '/popular-selection/' + elem.code
+          }
+        })
+      },
+      set_current_pagination_data(state, payload) {
+        state.currentPaginationData = payload
+      },
     },
     actions: {
       // nuxtServerInit({dispatch}) {
@@ -284,10 +292,11 @@ const createStore = () => {
 
       async getListSearched({ commit }, symbols) {
         const response = await Request.get(
-          this.state.BASE_URL + '/entity/search/{q}?q=${symbols}'
-        );
+          this.state.BASE_URL + `/entity/global-search/search/{q}?q=${symbols}`
+        )
+        console.log('response getListSearched', response)
         commit('set_list_searched', response.data)
-      }
+      },
     },
     modules: {
       AuthModule,

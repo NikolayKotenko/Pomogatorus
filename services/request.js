@@ -1,4 +1,4 @@
-import Logging from '@/services/logging'
+import Logging from '@/services/logging';
 // import Vue from "vue";
 // import auth from "@/middleware/redirectArticles.js"
 // import cookies from 'cookie-universal-nuxt'
@@ -130,7 +130,18 @@ export default class Request {
     }
     result = result.slice(0, -1)
 
-    // console.log("res", result);
+    // console.log("ConstructFilterQuery", result);
+    return '?' + result
+  }
+
+  static ConstructQuery(arrNameParam = []) {
+    let result = ''
+    for (const [key, value] of Object.entries(arrNameParam)) {
+      result += key + '=' + value + '&'
+    }
+    result = result.slice(0, -1)
+
+    // console.log('ConstructQuery', result)
     return '?' + result
   }
 }

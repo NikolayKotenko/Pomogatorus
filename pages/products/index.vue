@@ -38,28 +38,37 @@
       :key="item.id"
       :data="item"
     />
-    <v-pagination
-      color="#F79256"
-      :length="6"
-    />
+    <v-btn
+      :disabled="!$store.getters.statePaginationHasMorePage"
+      block
+      class="mt-5 mb-5"
+      elevation="2"
+      outlined
+      @click="getNextPageData"
+    >
+      {{ $store.getters.statePaginationHasMorePage ? "Показать еще" : "Показаны все элементы" }}
+    </v-btn>
   </v-container>
 </template>
 <script>
-import SearchStyled from '../../components/Common/SearchStyled.vue';
 import ProductCard from '../../components/Common/ProductCard.vue';
-import TooltipStyled from '../../components/Common/TooltipStyled.vue';
-import UniversalFilter from '../../components/Common/UniversalFilter.vue';
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'index.vue',
-  components: { UniversalFilter, TooltipStyled, ProductCard, SearchStyled },
+  components: { ProductCard },
   async mounted() {
-    await this.$store.dispatch('NomenclatureModule/getListNomenclature');
+    await this.getNextPageData();
   },
   methods: {
-    localGetListItems() {
-
+    async getNextPageData() {
+      const response = await this.$store.dispatch('NomenclatureModule/getListNomenclature', this.$route.query);
+      this.$router.replace({
+        query: {
+          cursor: response.paginationData.cursor
+        }
+      }).catch(() => {
+      });
     }
   }
 };
