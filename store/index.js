@@ -38,13 +38,7 @@ const createStore = () => {
       /* HEADER */
       drawer: false,
       stateVerticalMenu: true,
-      listSearched: [{
-        category: '',
-        text: '',
-        query: '',
-        search: '',
-        data: {},
-      }],
+      listSearched: [],
 
       /* Objects */
       showCabinet: false,
@@ -169,20 +163,6 @@ const createStore = () => {
           },
         }
       },
-      getModifiedListSearched(state) {
-        return state.listSearched.map((elem) => {
-          elem.href = ''
-          if (elem.category === 'Статьи') {
-            elem.href = '/articles/' + elem.code
-          }
-          if (elem.category === 'Оборудование') {
-            elem.href = '/nomenclature/' + elem.code
-          }
-          if (elem.category === 'Подборки') {
-            elem.href = '/popular-selection/' + elem.code
-          }
-        })
-      },
     },
     mutations: {
       set_drawer(state, payload) {
@@ -243,6 +223,36 @@ const createStore = () => {
 
       /* HEADERS */
       set_list_searched(state, payload) {
+
+        payload.map((elem) => {
+          elem.href = ''
+          if (elem.category === 'Статьи') {
+            elem.href = '/articles/' + elem.data.id
+          }
+          if (elem.category === 'Номенклатура') {
+            elem.href = '/nomenclature/' + elem.data.id
+          }
+          if (elem.category === 'Подборки') {
+            elem.href = '/podborki/' + elem.data.code
+          }
+        })
+
+        // payload.reduce((acc, elem)=> { 
+        //   acc[elem.category] = acc[elem.category] || []
+        //   acc[elem.category].push(elem)
+        //   return acc
+        // }, {})
+        // console.log('645', acc)
+        // var map = arr.reduce((r, i) => {
+        //   r[i.name] = r[i.name] || [];
+        //   r[i.name].push(i); 
+        //   return r;
+        // }, {});
+        // var arr1 = [];
+        // for (var key in map) {
+        //   arr1.push(map[key]);
+        // }
+        // console.log(arr1)
         state.listSearched = payload
       }
     },
@@ -285,7 +295,7 @@ const createStore = () => {
 
       async getListSearched({ commit }, symbols) {
         const response = await Request.get(
-          this.state.BASE_URL + '/entity/search/{q}?q=${symbols}'
+          this.state.BASE_URL + `/entity/global-search/search/{q}?q=${symbols}`
         );
         commit('set_list_searched', response.data)
       }
