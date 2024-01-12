@@ -1,5 +1,5 @@
 <template>
-  <v-card class="card_wrapper" elevation="3">
+  <v-card class="card_wrapper">
     <div class="card_header">
       <div class="title_and_equip">
         <li class="service_title">
@@ -254,7 +254,8 @@ export default {
 .card_wrapper {
   display: grid;
   //grid-row-gap: 10px;
-  padding: 15px 10px;
+  padding: 10px 10px;
+  height: 96px;
 
   .card_header {
     display: grid;
