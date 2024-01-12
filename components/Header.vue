@@ -41,7 +41,7 @@
           :class="'styleSearch'"
           :internal-data="selectedChips"
           :is-clearable="true"
-          :is-custom-template-selections="true"
+          :is-global-search="true"
           :is-disabled="loading"
           :is-hide-selected="false"
           :is-item-text="'text'"
@@ -52,11 +52,12 @@
           class="search"
           @update-search-input="localGetListItems"
           @change-search="setSelected"
+          @redirect="redirectData"
         />
         <!--          @click-clear="getListBasedArticles(); selectedChips = ''" -->
         <!--          @redirect="redirectData" -->
 
-        <!--        <v-toolbar-items class="header_center"> -->
+               <!-- <v-toolbar-items class="header_center"> -->
         <!--          <div v-for="item in $store.getters.menuItems" :key="item.title"> -->
         <!--            <v-btn -->
         <!--              v-if="item.visible" -->
@@ -157,7 +158,6 @@ export default {
       selectedChips: '',
       loadComponent: false,
       listArticles: [],
-      listVariables: [],
       loading: false,
       answersList: [
         {
@@ -263,7 +263,6 @@ export default {
         await this.$store.dispatch('getListSearched', searchString)
       }, 500);
     },
-
     setSelected(selectedObj) {
       this.selectedArticle = selectedObj;
     },
@@ -273,6 +272,17 @@ export default {
       } else {
         this.$store.commit('CollaborationModule/changeStateCollaboration', state);
       }
+    },
+    redirectData(data){
+      if (data.category === 'Подборки'){
+        window.location.href = data.href;
+      }
+      if (data.category === 'Статьи'){
+        window.location.href = data.href;
+      }
+      // if (data.category === 'Номенклатура'){
+      //   window.location.href = ''+data.href;
+      // }
     },
 
 
@@ -302,14 +312,8 @@ export default {
     //
     //   return response;
     // },
-    // redirectData(data){
-    //   if (data.category === 'Тэги'){
-    //     window.location.href = '/podborki/'+data.data.code
-    //   }
-    //   if (data.category === 'Статьи'){
-    //     window.location.href = '/articles/'+data.data.id;
-    //   }
-    // },
+
+
 
   }
 };

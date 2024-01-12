@@ -37,15 +37,7 @@ const createStore = () => {
       /* HEADER */
       drawer: false,
       stateVerticalMenu: true,
-      listSearched: [
-        {
-          category: '',
-          text: '',
-          query: '',
-          search: '',
-          data: {},
-        },
-      ],
+      listSearched: [],
 
       /* Objects */
       showCabinet: false,
@@ -236,22 +228,38 @@ const createStore = () => {
 
       /* HEADERS */
       set_list_searched(state, payload) {
-        state.listSearched = payload.map((elem) => {
+
+        payload.map((elem) => {
           elem.href = ''
           if (elem.category === 'Статьи') {
-            elem.href = '/articles/' + elem.code
+            elem.href = '/articles/' + elem.data.id
           }
-          if (elem.category === 'Оборудование') {
-            elem.href = '/nomenclature/' + elem.code
+          if (elem.category === 'Номенклатура') {
+            elem.href = '/nomenclature/' + elem.data.id
           }
           if (elem.category === 'Подборки') {
-            elem.href = '/popular-selection/' + elem.code
+            elem.href = '/podborki/' + elem.data.code
           }
         })
-      },
-      set_current_pagination_data(state, payload) {
-        state.currentPaginationData = payload
-      },
+
+        // payload.reduce((acc, elem)=> {
+        //   acc[elem.category] = acc[elem.category] || []
+        //   acc[elem.category].push(elem)
+        //   return acc
+        // }, {})
+        // console.log('645', acc)
+        // var map = arr.reduce((r, i) => {
+        //   r[i.name] = r[i.name] || [];
+        //   r[i.name].push(i);
+        //   return r;
+        // }, {});
+        // var arr1 = [];
+        // for (var key in map) {
+        //   arr1.push(map[key]);
+        // }
+        // console.log(arr1)
+        state.listSearched = payload
+      }
     },
     actions: {
       // nuxtServerInit({dispatch}) {
@@ -293,8 +301,7 @@ const createStore = () => {
       async getListSearched({ commit }, symbols) {
         const response = await Request.get(
           this.state.BASE_URL + `/entity/global-search/search/{q}?q=${symbols}`
-        )
-        console.log('response getListSearched', response)
+        );
         commit('set_list_searched', response.data)
       },
     },

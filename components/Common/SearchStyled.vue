@@ -21,7 +21,7 @@
     :rounded="isRounded"
     :search-input.sync="localSearchInputSync"
     background-color="#ffffff"
-    color="#000000"
+    color="#95D7AE"
     @change="$emit('change-search', localSelected)"
     @click:clear="$emit('click-clear')"
     @update:search-input="$emit('update-search-input', localSearchInputSync)"
@@ -29,7 +29,26 @@
     <!--      <template v-slot:append> -->
     <!--        <v-icon class="selectIcon">mdi-select</v-icon> -->
     <!--      </template> -->
-    <template v-if="isCustomTemplateSelections" #item="data">
+    <template
+      v-if="isGlobalSearch" 
+      #item="data"
+    >
+      <v-list-item-content 
+        class="search_item"
+        @click="watchDataRedirect(data.item)"
+      >
+        <span
+           v-html="getTitleString(data.item.text)"
+        />
+        <span 
+          style="font-size: 0.8em; color: #B6B6B6;"
+        >
+           - {{ data.item.category }}
+        </span>
+      </v-list-item-content >
+      
+    </template>
+    <!-- <template v-if="isCustomTemplateSelections" #item="data">
       <v-list-item-content @click="watchDataRedirect(data.item)">
         <span>Cтатьи</span>
         <v-list-item-title v-if="data.category === 'Cтатьи'">
@@ -48,8 +67,8 @@
           <span v-html="getTitleString(data.item.text)"/>
         </v-list-item-title>
       </v-list-item-content>
-    </template>
-    <template v-if="isCustomSearchSelections" #item="data">
+    </template> -->
+    <!-- <template v-if="isCustomSearchSelections" #item="data">
       <div
         class="search_user_invite"
         @click="stopInput($event)"
@@ -58,7 +77,7 @@
           :user-object="data.item"
         />
       </div>
-    </template>
+    </template> -->
   </VCombobox>
 </template>
 
@@ -145,6 +164,10 @@ export default {
     isLoading: {
       type: Boolean,
       default: false
+    },
+    isGlobalSearch: {
+      type: Boolean,
+      default: false
     }
   },
   data: () => ({
@@ -183,6 +206,7 @@ export default {
   },
   methods: {
     watchDataRedirect(data) {
+      console.log('123', data)
       this.$emit("redirect", data);
     },
     getTitleString(text) {
@@ -218,6 +242,10 @@ export default {
 <style lang="scss" scoped>
 .v-text-field--rounded {
   border-radius: 5px !important;
+}
+
+.search_item {
+  display: inline;
 }
 
 .search_user_invite {
