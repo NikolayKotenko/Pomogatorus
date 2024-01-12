@@ -21,7 +21,7 @@
     :rounded="isRounded"
     :search-input.sync="localSearchInputSync"
     background-color="#ffffff"
-    color="#000000"
+    color="#95D7AE"
     @change="$emit('change-search', localSelected)"
     @click:clear="$emit('click-clear')"
     @update:search-input="$emit('update-search-input', localSearchInputSync)"
@@ -34,9 +34,10 @@
       #item="data"
     >
       <v-list-item-content 
+        class="search_item"
         @click="watchDataRedirect(data.item)"
       >
-        <v-list-item-title
+        <span
            v-html="getTitleString(data.item.text)"
         />
         <span 
@@ -241,6 +242,10 @@ export default {
 <style lang="scss" scoped>
 .v-text-field--rounded {
   border-radius: 5px !important;
+}
+
+.search_item {
+  display: inline;
 }
 
 .search_user_invite {
