@@ -24,17 +24,12 @@
     <div class="product_buttons">
       <div class="product_icons">
         <!-- Избранное -->
-        <TooltipStyled
-          :is-top="true"
-          :title="'Добавить в избранное'"
-        >
-          <v-icon
-            size="36"
-            @click="changeFavoriteProduct"
-          >
-            mdi-heart-outline
-          </v-icon>
-        </TooltipStyled>
+        <IconTooltip
+          :color-icon="'#000000'"
+          :size-icon="36"
+          :icon-text="'mdi-heart-outline'"
+          :text-tooltip="'Добавить в избранное'"
+        />
 
         <!-- Модальное окно. Детальная карточка товара -->
         <TooltipStyled
@@ -50,6 +45,7 @@
                 size="36"
                 v-bind="attrs"
                 v-on="on"
+                color="#000000"
               >
                 mdi-list-box-outline
               </v-icon>
@@ -143,24 +139,19 @@
         </TooltipStyled>
 
         <!-- Ссылка на маркетплейс -->
-        <TooltipStyled
-          :is-top="true"
-          :title="'Перейти в Яндекс Маркет'"
-        >
-          <v-icon size="36">
-            mdi-store-outline
-          </v-icon>
-        </TooltipStyled>
-
+        <IconTooltip
+          :color-icon="'#000000'"
+          :size-icon="36"
+          :icon-text="'mdi-store-outline'"
+          :text-tooltip="'Перейти в Яндекс Маркет'"
+        />
         <!-- Модальное окно эксплуатации -->
-        <TooltipStyled
-          :is-top="true"
-          :title="'Подробнее об эксплуатации'"
-        >
-          <v-icon size="36">
-            mdi-file-cog-outline
-          </v-icon>
-        </TooltipStyled>
+        <IconTooltip
+          :color-icon="'#000000'"
+          :size-icon="36"
+          :icon-text="'mdi-file-cog-outline'"
+          :text-tooltip="'Подробнее об эксплуатации'"
+        />
       </div>
       <div class="product_detail_buttons">
         <SelectStyled
@@ -181,10 +172,11 @@ import SelectStyled from './SelectStyled.vue';
 import TooltipStyled from './TooltipStyled.vue';
 import ButtonStyled from './ButtonStyled.vue';
 import ViewerStyled from './ViewerStyled.vue';
+import IconTooltip from './IconTooltip.vue';
 
 export default {
   name: 'ProductCard',
-  components: { ViewerStyled, ButtonStyled, TooltipStyled, SelectStyled },
+  components: { ViewerStyled, ButtonStyled, TooltipStyled, SelectStyled, IconTooltip },
   props: {
     data: {
       type: Object,

@@ -74,51 +74,47 @@
 
       <!-- Личный кабинет всегда по правую сторону -->
       <v-toolbar-items class="header_right">
-        <TooltipStyled :title="'Совместная работа над ' + $store.state.Objects.currentObject.name"
-          class="current_object_btn">
-          <v-menu
-            :close-on-content-click="false"
-            left
-            offset-y
-            @input="openCollaborationModule($event)"
-          >
-            <template #activator="{ on, attrs }">
-              <div
-                style="display: inline-flex; grid-column-gap: 5px"
-                v-bind="attrs"
-                v-on="on"
-              >
-                <v-icon large v-bind="attrs" v-on="on">
-                  mdi-account-group-outline
-                </v-icon>
-              </div>
-            </template>
-            <Collaboration v-if="$store.state.CollaborationModule.stateCollaborationMenu" />
-          </v-menu>
-        </TooltipStyled>
-        <TooltipStyled :title="'Текущий объект'" class="current_object_btn">
-          <v-menu :close-on-content-click="false" left offset-y>
-            <template #activator="{ on, attrs }">
-              <div
-                style="display: inline-flex; grid-column-gap: 5px"
-                v-bind="attrs"
-                v-on="on"
-              >
-                <v-badge
-                  :content="$store.getters['Objects/getCountObject']"
-                  :value="$store.getters['Objects/getCountObject']"
-                  color="#95D7AE"
-                  overlap
-                >
-                  <v-icon large v-bind="attrs" v-on="on">
-                    mdi-home-edit-outline
-                  </v-icon>
-                </v-badge>
-              </div>
-            </template>
-            <CurrentObjects />
-          </v-menu>
-        </TooltipStyled>
+        <DropDownMenuStyled
+          :is-offset-y="true"
+          :is-left="true"
+        >
+          <template #icon>
+            <IconTooltip
+              :color-icon="'#FFFFFF'"
+              :size-icon="32"
+              :icon-text="'mdi-account-group-outline'"
+              :text-tooltip="'Совместная работа над ' + $store.state.Objects.currentObject.name"
+            />
+          </template>
+          <template #content>
+            <Collaboration/>
+          </template>
+        </DropDownMenuStyled>
+
+        <DropDownMenuStyled
+          :is-offset-y="true"
+          :is-left="true"
+        >
+          <template #icon>
+            <v-badge
+              :content="$store.getters['Objects/getCountObject']"
+              :value="$store.getters['Objects/getCountObject']"
+              color="#95D7AE"
+              overlap
+            >
+              <IconTooltip
+                :color-icon="'#FFFFFF'"
+                :size-icon="32"
+                :icon-text="'mdi-home-edit-outline'"
+                :text-tooltip="'Текущий объект'"
+              />
+            </v-badge>
+          </template>
+          <template #content>
+            <CurrentObjects/>
+          </template>
+        </DropDownMenuStyled>
+        
         <TooltipStyled :title="'Личный кабинет'">
           <template>
             <v-btn
@@ -127,7 +123,7 @@
               text
               @click="$store.commit('set_modal_auth', true)"
             >
-              <v-icon large>
+              <v-icon size="32">
                 mdi-account
               </v-icon>
             </v-btn>
@@ -146,10 +142,11 @@ import CurrentObjects from "./Widgets/CurrentObjects.vue";
 import Collaboration from "./Modals/Collaboration.vue";
 import SearchStyled from "./Common/SearchStyled.vue";
 import IconTooltip from "./Common/IconTooltip.vue";
+import DropDownMenuStyled from "./Common/DropDownMenuStyled.vue";
 
 export default {
   name: "Header",
-  components: { SearchStyled, Collaboration, CurrentObjects, TooltipStyled, IconTooltip },
+  components: { SearchStyled, Collaboration, CurrentObjects, TooltipStyled, IconTooltip, DropDownMenuStyled },
   data() {
     return {
       debounceTimeout: null,
