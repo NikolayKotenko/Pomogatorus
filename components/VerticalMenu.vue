@@ -47,6 +47,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'assets/styles/style';
 
 .menu_container {
   height: auto;
@@ -88,7 +89,7 @@ export default {
     background-color: #FFFFFF;
     border-radius: 10px;
     .btn .icon {
-      color: #95D7AE !important;
+      color: $green-color !important;
     }
   }
 }

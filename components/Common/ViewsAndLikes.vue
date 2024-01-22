@@ -174,6 +174,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'assets/styles/style';
 .views_and_likes_wrapper {
   display: grid;
   align-items: center;
@@ -200,7 +201,7 @@ body .icons {
   }
 
   &:active, &.active {
-    color: #F79256 !important;
+    color: $orange-color !important;
   }
 }
 

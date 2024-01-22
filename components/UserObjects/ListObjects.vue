@@ -301,7 +301,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import 'assets/styles/userObjects';
+@import 'assets/styles/style';
 
 .static_search_breadcrumbs {
   position: sticky;
@@ -364,7 +364,7 @@ export default {
     box-shadow: 0px 3px 8px 2px rgba(34, 60, 80, 0.2);
     font-size: 1.25rem;
     color: black;
-    transition: all 0.4s ease-in-out;
+    transition: $transition;
     align-items: center;
 
     &:hover {
@@ -436,7 +436,7 @@ export default {
   border: 1px solid #d9d9d9;
   border-radius: 5px;
   box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.25);
-  transition: all 0.4s ease-in-out !important;
+  transition: $transition !important;
 
   &:hover {
     box-shadow: 0px 5px 20px 7px rgba(34, 60, 80, 0.2) !important;

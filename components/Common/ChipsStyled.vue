@@ -78,6 +78,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'assets/styles/style';
 
 .styleChip_container {
   margin: 1em 0;
@@ -91,21 +92,19 @@ export default {
   //overflow: hidden;
   //text-overflow: ellipsis;
 
-  border-radius: 3px;
-  background: #D9D9D9 !important;
+  border-radius: 5px;
+  background: #FFFFFF !important;
   font-size: 1.3em;
   font-weight: 300;
   padding: 0.5em;
-  transition: 0.4s;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  transition: $transition;
 
   &:hover {
-    background: #95D7AE !important;
-    transition: 0.4s;
+    background: $hover-color !important;
+    
   }
 
-  &:active {
-    color: #000000 !important;
-  }
 }
 
 </style>

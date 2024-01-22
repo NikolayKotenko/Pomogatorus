@@ -226,6 +226,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'assets/styles/style';
+
 .product_card_wrapper {
   display: inline-flex;
   grid-column-gap: 20px;
@@ -236,7 +238,7 @@ export default {
   margin-top: 20px;
   background-color: #FFFFFF;
   border-radius: 5px;
-  transition: all 0.4s ease-in-out;
+  transition: $transition;
 
   &:hover {
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
@@ -306,7 +308,7 @@ export default {
       max-height: 70px;
       max-width: 70px;
       cursor: pointer;
-      transition: all 0.4s ease-in-out;
+      transition: $transition;
       margin-bottom: 10px;
       &:hover {
         background: rgba(0, 0, 0, 0.05);

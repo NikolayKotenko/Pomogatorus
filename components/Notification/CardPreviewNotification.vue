@@ -69,13 +69,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'assets/styles/style';
+
 .card_wrapper {
   padding: 15px;
   border-radius: 10px !important;
   display: grid;
   grid-row-gap: 15px;
   background-color: #FFFFFF;
-  transition: all 0.4s ease-in-out;
+  transition: $transition;
   &:hover {
     background-color: #FFF4CB;
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);

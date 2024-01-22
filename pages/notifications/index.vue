@@ -133,34 +133,34 @@ export default {
   async mounted() {
     await this.$store.dispatch('NotificationModule/getListTasks')
 
-    // this.socket = this.$nuxtSocket({
-    //   name: 'home',
-    //   channel: '/index',
+    this.socket = this.$nuxtSocket({
+      name: 'home',
+      channel: '/index',
 
-    //   reconnection: false
-    // })
-    // this.socket.on('someEvent', (msg, cb) => {
-    //   console.log('its working');
-    // })
+      reconnection: false
+    })
+    this.socket.on('someEvent', (msg, cb) => {
+      console.log('its working');
+    })
   },
 
   methods: {
     setObjTask(obj) {
       this.objTask = obj
     },
-    // method1() {
-    //   this.socket.emit('method1', {
-    //     hello: 'world'
-    //   }, (resp) => {
+    method1() {
+      this.socket.emit('method1', {
+        hello: 'world'
+      }, (resp) => {
         
-    //   })
-    // },
-    // async getMessage() {
-    //   console.log('1234', this.messageRxd);
-    //   this.messageRxd = await this.socket.emitP('getMessage' , {
-    //     id: 'abc123'
-    //   })
-    // }
+      })
+    },
+    async getMessage() {
+      console.log('1234', this.messageRxd);
+      this.messageRxd = await this.socket.emitP('getMessage' , {
+        id: 'abc123'
+      })
+    }
   },
 
 }

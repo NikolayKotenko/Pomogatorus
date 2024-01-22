@@ -24,12 +24,12 @@
             class="menu"
             @click="$store.state.stateVerticalMenu = !$store.state.stateVerticalMenu"
           >
-            <v-icon
-              color="#ffffff"
-              size="32"
-            >
-              mdi-menu
-            </v-icon>
+            <IconTooltip
+              :size-icon="'32'"
+              :color-icon="'#FFFFFF'"
+              :icon-text="'mdi-menu'"
+              :text-tooltip="'Меню'"
+            />
           </div>
           <div class="logo_wrapper">
             <v-img
@@ -145,10 +145,11 @@ import TooltipStyled from "./Common/TooltipStyled";
 import CurrentObjects from "./Widgets/CurrentObjects.vue";
 import Collaboration from "./Modals/Collaboration.vue";
 import SearchStyled from "./Common/SearchStyled.vue";
+import IconTooltip from "./Common/IconTooltip.vue";
 
 export default {
   name: "Header",
-  components: { SearchStyled, Collaboration, CurrentObjects, TooltipStyled },
+  components: { SearchStyled, Collaboration, CurrentObjects, TooltipStyled, IconTooltip },
   data() {
     return {
       debounceTimeout: null,
@@ -317,6 +318,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'assets/styles/style';
 .v-btn:not(.v-btn--round).v-size--default {
   padding: 0 !important;
   min-width: 0;
@@ -334,7 +336,7 @@ export default {
   position: sticky;
   top: 0;
   z-index: 100;
-  transition: all 0.4s ease-in-out;
+  transition: $transition;
   height: 64px !important;
 
   &.isMobile {

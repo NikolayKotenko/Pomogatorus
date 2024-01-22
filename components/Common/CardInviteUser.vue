@@ -424,6 +424,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'assets/styles/style';
+
 $grey-color: #857885;
 $orange-color: #F79256;
 .user_card {
@@ -466,7 +468,7 @@ $orange-color: #F79256;
   width: 100%;
   max-width: 1080px;
   border-radius: 5px;
-  transition: all 0.4s ease-in-out;
+  transition: $transition;
   cursor: default;
   &:hover {
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);

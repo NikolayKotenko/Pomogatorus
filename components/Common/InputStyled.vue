@@ -178,6 +178,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'assets/styles/style';
 
 .v-text-field--rounded {
   border-radius: 10px !important;
@@ -188,7 +189,7 @@ export default {
   margin-bottom: 1em !important;
 
   &.primary--text {
-    color: #95D7AE !important;
+    color: $green-color !important;
   }
 }
 

@@ -73,6 +73,7 @@ export default {
 </script>
 
 <style lang='scss' scoped>
+@import 'assets/styles/style';
 
 .btnStyled {
   font-weight: 400;
@@ -83,11 +84,10 @@ export default {
   border-radius: 5px;
   border: 1px solid #857885;
   box-shadow: rgba(0, 0, 0, 0.25);
-  transition: 0.4s;
+  transition: $transition;
 
   &:hover {
     background: darken(#ffffff, 5%);
-    transition: 0.4s;
   }
 
 }
@@ -100,27 +100,26 @@ export default {
 }
 
 .v-btn.style_button {
-  background-color: #ffffff !important;
-  color: #000000;
-  border: 1px solid rgba(149, 215, 174, 1);
-
+  background-color: $background-element-color !important;
+  color: $black-text-color;
+  border: 1px solid $green-color;
+  transition: $transition;
   &:hover {
-    background: #95D7AE !important;
-    transition: 0.4s;
+    background: $green-color !important;
   }
 }
 
 
 .style_close {
-  background: #FFFFFF !important;
-  color: #000000;
-  border: 1px solid rgba(247, 146, 86, 1);
+  background: $background-element-color !important;
+  color: $black-text-color;
+  border: 1px solid $orange-color;
   margin-left: auto;
-
+  transition: $transition;
   &:hover {
-    background: #F79256 !important;
+    background: $orange-color !important;
     color: #000000;
-    transition: 0.4s;
+  
   }
 }
 </style>

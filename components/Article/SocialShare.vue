@@ -108,6 +108,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import 'assets/styles/style';
 
 i {
   text-align: center;
@@ -117,9 +118,9 @@ i {
   &.fa-odnoklassniki, &.fa-vk, &.fa-telegram, &.fa-whatsapp {
     padding: 10px !important;
     color: #857885;
-    transition: all 0.4s ease-in-out;
+    transition: $transition;
     &:hover {
-      color: #95D7AE;
+      color: $green-color;
     }
   }
 }
@@ -147,7 +148,7 @@ i {
       color: #F6C5A7 !important;
     }
     &:active{
-      color: #F79256 !important;
+      color: $orange-color !important;
     }
     &::after {
       background-color: #FFFFFF !important;

@@ -256,6 +256,7 @@ export default {
 </style>
 
 <style lang="scss">
+@import 'assets/styles/style';
 
 // TODO: Эти стили изменяют вообще все инпуты в приложении, надо выносить под какой-то класс
 //.v-menu__content { display:none !important; }
@@ -322,7 +323,7 @@ export default {
   .mdi-close {
     font-size: 1em;
     align-content: center;
-    color: #F79256 !important;
+    color: $orange-color !important;
   }
 }
 </style>

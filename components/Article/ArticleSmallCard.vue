@@ -45,12 +45,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'assets/styles/style';
 .article_small_card {
   display: grid;
   grid-row-gap: 10px;
   padding: 10px;
   border-radius: 5px !important;
-  transition: all 0.4s ease-in-out !important;
+  transition: $transition;
   opacity: 0.6;
   max-width: 270px;
   max-height: 250px;

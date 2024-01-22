@@ -471,6 +471,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'assets/styles/style';
 
 .login {
   display: grid;
@@ -483,7 +484,7 @@ export default {
       font-size: 1.3em;
       font-weight: 700;
       .info_link {
-        color: #F79256;
+        color: $orange-color;
         text-decoration-line: underline;
       }
     }
@@ -501,7 +502,7 @@ export default {
     .quiz_item {
       border-radius: 5px;
       padding: 10px;
-      transition: all 0.4s ease-in-out;
+      transition: $transition;
       font-size: 1.2em;
 
       &:hover {

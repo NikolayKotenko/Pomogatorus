@@ -299,6 +299,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'assets/styles/style';
+
 .user_info_wrapper {
   height: 100%;
   padding: 20px 30px;

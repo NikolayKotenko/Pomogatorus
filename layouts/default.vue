@@ -196,7 +196,7 @@ body {
 }
 
 .app {
-  background: #F2F2F2 !important;
+  background: $background-color !important;
 }
 
 ::v-deep .v-btn {

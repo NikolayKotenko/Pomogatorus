@@ -241,6 +241,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'assets/styles/style';
+
 .roles_wrapper {
 
   .roles_wrapper_title {
@@ -250,10 +252,12 @@ export default {
 }
 </style>
 <style lang="scss">
+@import 'assets/styles/style';
+
 .roles_style {
   border-radius: 5px;
   padding: 10px;
-  transition: all 0.4s ease-in-out;
+  transition: $transition;
   font-size: 1.2em;
 
   &:hover {
