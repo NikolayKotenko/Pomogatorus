@@ -119,6 +119,24 @@ export default {
         resolve()
       })
     },
+    nomenclatureFromServer({ commit, state }, params) {
+      return new Promise((resolve) => {
+        const { index, component } = params
+
+        state.loadingModalList = true
+
+        const data = {
+          name: 'nomenclature',
+          id: component.id,
+          nomenclatures_id: component.nomenclatures_id,
+          index_nomenclature: component.index_nomenclature,
+        }
+
+        commit('changeSelectedComponent', { data, index, component })
+        state.loadingModalList = false
+        resolve()
+      })
+    },
     imageFromServer({ commit, state }, params) {
       return new Promise((resolve) => {
         const { index, component } = params
