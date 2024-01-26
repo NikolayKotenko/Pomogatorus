@@ -1,12 +1,24 @@
 <template>
-  <div class="w-slider-wrapper">
+  <div :class="{'hovered-widget': getIsAnswered}" class="w-slider-wrapper">
     <div class="w-slider-wrapper-label">
-      Оборудование
+      <v-badge
+        :content="getVisibleNomenclature"
+        :value="getVisibleNomenclature"
+        color="#95D7AE"
+      >
+        Оборудование
+      </v-badge>
     </div>
     <div class="w-slider-wrapper-separator"/>
 
     <div class="w-slider-wrapper-slider-container">
-      <VueSlickCarousel v-if="nomenclatureList.length" v-bind="sliderOptions" @click.stop.prevent>
+      <VueSlickCarousel
+        v-if="nomenclatureList.length"
+        ref="v-carousel"
+        v-bind="sliderOptions"
+        @beforeChange="changeSlide"
+        @init="onInitCarousel"
+      >
         <div
           v-for="(slide, index) in nomenclatureList"
           :key="index"
@@ -61,11 +73,11 @@
     </div>
 
     <div class="w-slider-wrapper-info">
-      <template v-if="isLoadingDetail">
+      <template v-if="getCurrentNomenclature.isLoading">
         <ShimmerNomenclatureWidget/>
       </template>
 
-      <template v-else-if="!currentNomenclature || !Object.keys(currentNomenclature).length">
+      <template v-else-if="!getCurrentNomenclature || !Object.keys(getCurrentNomenclature).length">
         <span class="c-slider-error">Ошибка получения данных</span>
 
         <v-icon class="mt-1" color="orange">
@@ -75,7 +87,9 @@
 
       <template v-else>
         <div class="w-slider-wrapper-info__wrapper">
-          <div class="w-slider-wrapper-info__wrapper__label"/>
+          <div class="w-slider-wrapper-info__wrapper__label">
+            {{ getCurrentNomenclature.data.name }}
+          </div>
 
           <ul class="w-slider-wrapper-info__wrapper__list">
             <li
@@ -87,7 +101,7 @@
                 <span class="w-slider-option__label">{{ option.label }}: </span>
                 <span
                   class="w-slider-option__value"
-                >{{ currentNomenclature.data[option.value] ? currentNomenclature.data[option.value] : mockData[option.value]
+                >{{ getCurrentNomenclature.data[option.value] ? getCurrentNomenclature.data[option.value] : mockData[option.value]
                 }}</span>
               </span>
             </li>
@@ -95,16 +109,19 @@
 
           <div class="w-slider-wrapper-info__wrapper__bot">
             <ButtonStyled
-              :local-class="'style_button'"
+              :local-class="'style_button widget-button more-button'"
               :local-text="'Подробнее'"
+              unset-width
               @click-button="onCLickNomenclature"
             />
 
             <ButtonStyled
-              :local-class="checkIsFavorite ? 'style_button' : ''"
+              :local-class="(checkIsFavorite ? 'style_button ' : '') + 'widget-button like-button'"
+              custom-slot
+              unset-width
               @click-button="onClickLike"
             >
-              <v-icon :color="checkIsFavorite ? '#95D7AE' : 'gray'">
+              <v-icon :color="checkIsFavorite ? '#95D7AE' : '#B3B3B3'">
                 mdi-heart
               </v-icon>
             </ButtonStyled>
@@ -122,6 +139,8 @@ import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
 import ShimmerNomenclatureWidget from '../Shimmers/ShimmerNomenclatureWidget'
 import ButtonStyled from '../Common/ButtonStyled'
 
+import Request from '@/services/request'
+
 export default {
   name: 'NomenclatureWidget',
   components: {
@@ -133,19 +152,21 @@ export default {
     nomenclatureList: [
       {
         isLoading: true,
+        hide: true,
         data: null
       },
       {
         isLoading: true,
+        hide: true,
         data: null
       },
       {
         isLoading: true,
+        hide: true,
         data: null
       }
     ],
-    currentNomenclature: {},
-    isLoadingDetail: true,
+    currentNomenclatureIndex: 0,
 
     mockData: {
       montage: 'настенный',
@@ -177,9 +198,42 @@ export default {
     }
   }),
   computed: {
+    getIsAnswered() {
+      return this.$store.state.ArticleModule.isAnswered
+    },
     checkIsFavorite() {
-      return false
+      if (!this.getCurrentNomenclature || !Object.keys(this.getCurrentNomenclature).length) {
+        return false
+      }
+      return this.getCurrentNomenclature?.isLiked
+    },
+    getVisibleNomenclature() {
+      return this.nomenclatureList.filter((elem) => !elem?.hide).length
+    },
+    getCurrentNomenclature() {
+      if (!this.nomenclatureList.length) {
+        return {}
+      }
+
+      if (this.currentNomenclatureIndex > this.nomenclatureList) {
+        return this.nomenclatureList[0] ?? {}
+      }
+
+      return this.nomenclatureList[this.currentNomenclatureIndex]
     }
+  },
+  watch: {
+    'getIsAnswered': {
+      handler(v) {
+        if (v) {
+          this.resetData()
+          this.getNomenclature('start')
+        }
+      }
+    }
+  },
+  mounted() {
+    this.getNomenclature('start')
   },
   methods: {
     getPhoto(slide) {
@@ -191,8 +245,62 @@ export default {
         return null
       }
     },
+    async getNomenclature(type) {
+      const url = this.$store.state.BASE_URL + '/entity/nomenclature'
+      const { data } = await Request.get(url)
+
+      if (type === 'start') {
+        this.nomenclatureList = data.map((elem, index) => {
+          return { isLoading: false, data: elem, isLiked: false }
+        })
+      }
+
+      if (type === 'nextPage') {
+        const transformedArr = data.map((elem) => {
+          return { isLoading: false, data: elem, isLiked: false }
+        })
+        this.nomenclatureList.push(...transformedArr)
+      }
+    },
+    resetData() {
+      this.nomenclatureList = [
+        {
+          isLoading: true,
+          hide: true,
+          data: null
+        },
+        {
+          isLoading: true,
+          hide: true,
+          data: null
+        },
+        {
+          isLoading: true,
+          hide: true,
+          data: null
+        }
+      ]
+
+      this.currentNomenclatureIndex = 0
+    },
+
+    onInitCarousel() {
+      if (process.client) {
+        this.$nextTick(() => {
+        })
+      }
+    },
+    changeSlide(oldSlideIndex, newSliderIndex) {
+      this.currentNomenclatureIndex = newSliderIndex
+
+      if (newSliderIndex === this.nomenclatureList.length - 2) {
+        this.getNomenclature('nextPage')
+      }
+    },
 
     onClickLike() {
+      // TODO: Функционал лайков
+      this.getCurrentNomenclature.isLiked = !this.getCurrentNomenclature.isLiked
     },
     onCLickNomenclature() {
     }

@@ -14,8 +14,13 @@ export default {
     answers: [],
     totalImages: [],
     indexImage: 0,
+
+    isAnswered: false,
   },
   mutations: {
+    set_is_answered(state, payload) {
+      state.isAnswered = payload
+    },
     set_answers(state, payload) {
       state.answers = payload
     },
@@ -178,6 +183,13 @@ export default {
             reject(error)
           })
       })
+    },
+    setIsAnswered({ commit }) {
+      commit('set_is_answered', true)
+
+      setTimeout(() => {
+        commit('set_is_answered', false)
+      }, 2000)
     },
     linkToArticle(_, articleId) {
       window.location.href = '/articles/' + articleId

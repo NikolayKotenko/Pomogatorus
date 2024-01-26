@@ -2,9 +2,12 @@
   <div class="wrapper_current_object">
     <CurrentObjects ref="object-widget" class="current_local_object"/>
 
-    <transition name="slide-fade">
-      <NomenclatureWidget v-show="isObjectLoaded" ref="nomenclature-widget" class="nomenclature-widget"/>
-    </transition>
+    <NomenclatureWidget
+      ref="nomenclature-widget"
+      :class="{'show-widget': isObjectLoaded}"
+      class="nomenclature-widget"
+      style="top: 0;"
+    />
   </div>
 </template>
 
@@ -35,13 +38,12 @@ export default {
           setTimeout(() => {
             const object = this.$refs['object-widget'] ? this.$refs['object-widget'].$el : null
 
-            console.log(object)
             if (!object) {
               return
             }
 
             const objectHeight = object.offsetHeight
-            const gap = 40
+            const gap = 40 // Отступ виджета от другого
 
             const nomenclature = this.$refs['nomenclature-widget'] ? this.$refs['nomenclature-widget'].$el : null
 
@@ -81,21 +83,15 @@ export default {
   }
 }
 
-.slide-fade-enter-active {
-  transition: all .8s ease;
-}
-
-.slide-fade-leave-active {
-  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
-}
-
-.slide-fade-enter, .slide-fade-leave-to {
-  transform: translateY(30px);
-  opacity: 0;
-}
-
 .nomenclature-widget {
   position: absolute;
   top: 0;
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.show-widget {
+  opacity: 1;
+  transform: translateY(0);
 }
 </style>
