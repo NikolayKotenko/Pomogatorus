@@ -54,22 +54,6 @@
           @change-search="setSelected"
           @redirect="redirectData"
         />
-        <!--          @click-clear="getListBasedArticles(); selectedChips = ''" -->
-        <!--          @redirect="redirectData" -->
-
-               <!-- <v-toolbar-items class="header_center"> -->
-        <!--          <div v-for="item in $store.getters.menuItems" :key="item.title"> -->
-        <!--            <v-btn -->
-        <!--              v-if="item.visible" -->
-        <!--              :href="item.path" -->
-        <!--              class="text-capitalize link_btn" -->
-        <!--              style="margin-right: 2em;" -->
-        <!--              text -->
-        <!--            > -->
-        <!--              <span :class="{activeElement: getCurrentRoute.title === item.title}">{{ item.title }}</span> -->
-        <!--            </v-btn> -->
-        <!--          </div> -->
-        <!--        </v-toolbar-items> -->
       </template>
 
       <!-- Личный кабинет всегда по правую сторону -->

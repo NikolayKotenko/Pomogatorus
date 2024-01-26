@@ -9,28 +9,123 @@
       </div>
     </template>
 
-    <!-- Блок с услугами. -->
-    <div class="services_table">
-      <div class="info_wrapper">
-        <span class="info_title">Услуги: </span>
-        <div class="service_card_wrapper">
-          <ServiceCard
-            v-for="(item, index) in taskData.services"
-            :key="index"
-            :iteration-key="index+1"
-            :service-object="item"
-            @delete-one-service="deleteOneService(index)"
-            @update-price-field="setPrice(index, $event)"
+    <v-tabs
+      color="black"
+      grow
+    >
+      <v-tab :key="0">Услуги</v-tab>
+      <v-tab :key="1">Рекомендованные специалисты</v-tab>
+      <v-tab :key="2">Приглашенные специалисты</v-tab>
+      <v-tab :key="3">Заявка</v-tab>
+      
+      <!-- Блок с услугами. -->
+      <v-tab-item :key="0">
+        <div class="services_table">
+          <div class="info_wrapper">
+            <span class="info_title">Услуги: </span>
+            <div class="service_card_wrapper">
+              <ServiceCard
+                v-for="(item, index) in taskData.services"
+                :key="index"
+                :iteration-key="index+1"
+                :service-object="item"
+                @delete-one-service="deleteOneService(index)"
+                @update-price-field="setPrice(index, $event)"
+              />
+            </div>
+          </div>
+          <UniversalAddInput
+            :list-services-available-to-add="userObject.services"
+            @add-service="addService"
           />
         </div>
-      </div>
-      <UniversalAddInput
-        :list-services-available-to-add="userObject.services"
-        @add-service="addService"
-      />
-    </div>
+      </v-tab-item>
+      
+    <!-- Блок с рекомендованными пользователями. -->
+      <v-tab-item :key="1">
+        <v-simple-table>
+          <template v-slot:default>
+            <thead>
+              <tr>
+                <th class="text-left">
+                  Специалисты
+                </th>
+                <th class="text-left">
+                  Совпадение по услугам
+                </th>
+                <th class="text-left">
+                  Совпадение по брендам
+                </th>
+                <th class="text-left">
+                  Действие
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="(item, index) in dataUsers"
+                :key="index"
+              >
+                <td>Иванов иван</td>
+                <td>66% - 2 из 3</td>
+                <td>66% - 2 из 3</td>
+                <td>
+                  <IconTooltip
+                    :size-icon="'32'"
+                    :color-icon="'#B3B3B3'"
+                    :icon-text="'mdi-plus-circle-outline'"
+                    :text-tooltip="'Добавить в заявку'"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </template>
+        </v-simple-table>
+      </v-tab-item>
 
-    <!-- Блок с пользователями. -->
+      <!-- Блок с приглашенными пользователями. -->
+      <v-tab-item :key="2">
+        <v-simple-table>
+          <template v-slot:default>
+            <thead>
+              <tr>
+                <th class="text-left">
+                  Специалисты
+                </th>
+                <th class="text-left">
+                  Совпадение по услугам
+                </th>
+                <th class="text-left">
+                  Совпадение по брендам
+                </th>
+                <th class="text-left">
+                  Действие
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="(item, index) in dataUsers"
+                :key="index"
+              >
+                <td>Иванов иван</td>
+                <td>66% - 2 из 3</td>
+                <td>66% - 2 из 3</td>
+                <td>
+                  <IconTooltip
+                    :size-icon="'32'"
+                    :color-icon="'#B3B3B3'"
+                    :icon-text="'mdi-minus-circle-outline'"
+                    :text-tooltip="'Убрать из заявки'"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </template>
+        </v-simple-table>
+      </v-tab-item>
+    </v-tabs>  
+
     <div class="info_wrapper">
       <span class="info_title">Исполнители: </span>
       <div
@@ -148,6 +243,7 @@ import SelectStyled from "../Common/SelectStyled.vue";
 import { Service, ServiceDataConstructor, TaskData } from "~/helpers/constructors";
 import ServiceCard from "./ServiceCard.vue";
 import UniversalAddInput from "~/components/Common/UniversalAddInput";
+import IconTooltip from "../Common/IconTooltip.vue";
 
 export default {
   name: "InviteUserModal",
@@ -156,7 +252,8 @@ export default {
     ServiceCard,
     TooltipStyled,
     ButtonStyled,
-    SelectStyled
+    SelectStyled,
+    IconTooltip
   },
   props: {
     getStateTetheredUserInObject: {

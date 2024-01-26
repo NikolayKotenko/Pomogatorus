@@ -166,7 +166,7 @@
                 />
               </client-only>
               
-              <script src="https://yastatic.net/s3/passport-sdk/autofill/v1/sdk-suggest-with-polyfills-latest.js"></script>
+              <!-- <script src="https://yastatic.net/s3/passport-sdk/autofill/v1/sdk-suggest-with-polyfills-latest.js"></script>
               
               <script>
                 window.onload = function() {
@@ -192,7 +192,7 @@
                   .catch(error => console.log('Обработка ошибки', error))
                 }
 
-              </script>
+              </script> -->
                                     
               <v-btn
                 :disabled="! checkbox"
