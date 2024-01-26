@@ -1,17 +1,20 @@
 <template>
   <div class="views_and_likes_wrapper">
     <TooltipStyled :is-top="true" :title="'Кол-во просмотров'">
-      <div class="views_wrapper"
-           :class="{'animation_pulse': animationViews}"
+      <div
+        class="wrapper"
+        :class="{'animation_pulse': animationViews}"
       >
-        <v-icon class="icons" :class="{'hover': animationViews}">mdi-eye-outline</v-icon>
+        <v-icon class="icons" :class="{'hover': animationViews}">
+          mdi-eye-outline
+        </v-icon>
         <span>{{ getViews }}</span>
       </div>
     </TooltipStyled>
 
     <TooltipStyled :is-top="true" :title="'Понравилось'">
       <div
-        class="likes_wrapper_wrapper"
+        class="wrapper"
         @click="setLikesDislikes(stateLike ? null : 1)"
       >
         <v-icon :class="{active: stateLike}" class="icons">
@@ -23,7 +26,7 @@
 
     <TooltipStyled :is-top="true" :title="'Не понравилось'">
       <div
-        class="likes_wrapper_wrapper"
+        class="wrapper"
         @click="setLikesDislikes(stateDislike ? null : 0)"
       >
         <v-icon :class="{active: stateDislike}" class="icons">
@@ -36,11 +39,11 @@
 </template>
 
 <script>
-import TooltipStyled from "@/components/Common/TooltipStyled";
-import Request from "~/services/request";
+import TooltipStyled from '@/components/Common/TooltipStyled';
+import Request from '~/services/request';
 
 export default {
-  name: "ViewsAndLikes",
+  name: 'ViewsAndLikes',
   components: { TooltipStyled },
   props: {
     article: {
@@ -51,12 +54,6 @@ export default {
     viewAction: {
       type: Boolean,
       default: false
-    }
-  },
-  watch: {
-    "viewAction": function(newVal, oldVal) {
-      if (!newVal) return false;
-      this.setViews();
     }
   },
   data: () => ({
@@ -103,11 +100,17 @@ export default {
       }
     }
   },
+  watch: {
+    'viewAction': function(newVal, oldVal) {
+      if (!newVal) return false;
+      this.setViews();
+    }
+  },
   mounted() {
   },
   methods: {
     async setLikesDislikes(likeOrDislikeOrNull) {
-      //Если не авторизован выкидываем модалку авторизации
+      // Если не авторизован выкидываем модалку авторизации
       if (!this.$store.getters.stateAuth) {
         this.$store.state.listModal[0].isOpen = true;
         return false;
@@ -124,7 +127,7 @@ export default {
       }
       // Если запись НЕ существует, то создаем новую запись
       else {
-        await Request.post(this.$store.state.BASE_URL + "/m-to-m/users-likes", {
+        await Request.post(this.$store.state.BASE_URL + '/m-to-m/users-likes', {
           id_user: this.$store.getters.getUserId,
           id_article: this.computedArticle.id,
           likes_or_dislikes: likeOrDislikeOrNull
@@ -133,7 +136,7 @@ export default {
 
       // Запрашиваем новые данные с бэка, чтобы обновить computedArticle
       const { data } = await Request.get(
-        this.$store.state.BASE_URL + "/entity/articles/" + this.computedArticle.id
+        this.$store.state.BASE_URL + '/entity/articles/' + this.computedArticle.id
       );
       this.computedArticle = data;
     },
@@ -141,7 +144,7 @@ export default {
       if (!this.$store.getters.stateAuth) return false;
 
       this.runAnimationViews();
-      const response = await Request.post(this.$store.state.BASE_URL + "/entity/views", {
+      const response = await Request.post(this.$store.state.BASE_URL + '/entity/views', {
         id_article: this.computedArticle.id
       });
       // Если существует запись, то обновляем
@@ -154,7 +157,7 @@ export default {
 
       // Запрашиваем новые данные с бэка, чтобы обновить computedArticle
       const { data } = await Request.get(
-        this.$store.state.BASE_URL + "/entity/articles/" + this.computedArticle.id
+        this.$store.state.BASE_URL + '/entity/articles/' + this.computedArticle.id
       );
       this.computedArticle = data;
     },
@@ -176,12 +179,15 @@ export default {
   align-items: center;
   grid-template-columns: repeat(3, 1fr);
   grid-column-gap: 1em;
-
+  .wrapper {
+    display: flex;
+    grid-column-gap: 5px;
+    align-items: center;
+  }
 }
 
-.views_wrapper, .likes_wrapper, .dislike_wrapper {
-  align-items: center;
-}
+
+
 
 .hover{
   color: #F6C5A7 !important;

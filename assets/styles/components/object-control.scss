@@ -1,13 +1,15 @@
 .object-wrapper {
   display: flex;
   flex-direction: column;
-  padding: 0 40px 0 40px;
+  padding: 0 20px ;
+  height: 100%;
 
   &-top {
     display: inline-flex;
     //grid-template-columns: 30% 1fr;
     //column-gap: 10rem;
     padding: 20px 0 !important;
+    align-items: center;
     position: sticky;
     background: #FFFFFF;
     top: 0;
@@ -35,6 +37,7 @@
 
     &__map {
       width: 100%;
+      height: 26px;
     }
 
     &__share {
@@ -239,4 +242,9 @@
 
 .object-wrapper-main--mobile--move {
   padding-top: 0 !important;
+}
+
+.object_products {
+  display: grid;
+  grid-row-gap: 20px;
 }

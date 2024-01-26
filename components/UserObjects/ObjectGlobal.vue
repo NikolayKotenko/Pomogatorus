@@ -69,60 +69,89 @@
       </div>
     </div>
 
-    <v-card-text
-      ref="scrollParent"
-      :class="{'object-wrapper-main--mobile': isMobile, 'object-wrapper-main--mobile--move': isMoving}"
-      class="object-wrapper-main"
-      style="height: 1200px;"
-    >
-      <div ref="docContent" class="object-wrapper-documents">
-        <div class="object-wrapper-documents__img-container">
-          <span>Фото объекта</span>
-          <div
-            :class="{'dropzone-empty': ! $store.getters.getMainPhotoObject(object) }"
-            class="list-files-styled-wrapper img-activator"
-          >
-            <img
-              v-if="$store.getters.getMainPhotoObject(object)"
-              :src="$store.state.BASE_URL + $store.getters.getMainPhotoObject(object).full_path"
-              :title="$store.getters.getMainPhotoObject(object).title_image"
-              class="img-hover"
-              height="100%"
-              style="object-fit: cover"
-              width="100%"
-            >
-            <span v-else class="empty-placeholder">Здесь будут фото вашего объекта</span>
+    <v-tabs color="#000000">
+      <v-tab :key="0">
+        Параметры объекта
+      </v-tab>
+      <v-tab :key="1">
+        Избранное оборудование
+      </v-tab>
+      <v-tab :key="2">
+        Купленное оборудование
+      </v-tab>
+      <v-tab :key="3">
+        Установленное оборудование
+      </v-tab>
+
+      <!-- Параметры объекта -->
+      <v-tab-item :key="0">
+        <v-card-text
+          ref="scrollParent"
+          :class="{'object-wrapper-main--mobile': isMobile, 'object-wrapper-main--mobile--move': isMoving}"
+          class="object-wrapper-main"
+          style="height: 1200px;"
+        >
+          <div ref="docContent" class="object-wrapper-documents">
+            <div class="object-wrapper-documents__img-container">
+              <span>Фото объекта</span>
+              <div
+                :class="{'dropzone-empty': ! $store.getters.getMainPhotoObject(object) }"
+                class="list-files-styled-wrapper img-activator"
+              >
+                <img
+                  v-if="$store.getters.getMainPhotoObject(object)"
+                  :src="$store.state.BASE_URL + $store.getters.getMainPhotoObject(object).full_path"
+                  :title="$store.getters.getMainPhotoObject(object).title_image"
+                  class="img-hover"
+                  height="100%"
+                  style="object-fit: cover"
+                  width="100%"
+                >
+                <span v-else class="empty-placeholder">Здесь будут фото вашего объекта</span>
+              </div>
+            </div>
+
+            <div class="object-wrapper-documents__docs">
+              <span>Прикрепленные документы</span>
+              <ListFilesStyled
+                v-if="objectData.id"
+                :data="object"
+                :id-object="objectData.id"
+                @remove-from-global="removeFromGlobal"
+              />
+            </div>
           </div>
-        </div>
 
-        <div class="object-wrapper-documents__docs">
-          <span>Прикрепленные документы</span>
-          <ListFilesStyled
-            v-if="objectData.id"
-            :data="object"
-            :id-object="objectData.id"
-            @remove-from-global="removeFromGlobal"
-          />
-        </div>
-      </div>
+          <div class="object-wrapper-tabs">
+            <TabsCustom
+              ref="tabContent"
+              :data-object="object"
+              :deleted-file="deletedFile"
+              @update-prop="setField"
+              @update-file="setFileField"
+              @change-tab="changeTab"
+              @remove-file="removeFile"
+              @focus-out-field="animationSaveBtn"
+            />
 
-      <div class="object-wrapper-tabs">
-        <TabsCustom
-          ref="tabContent"
-          :data-object="object"
-          :deleted-file="deletedFile"
-          @update-prop="setField"
-          @update-file="setFileField"
-          @change-tab="changeTab"
-          @remove-file="removeFile"
-          @focus-out-field="animationSaveBtn"
-        />
+            <div :class="{'show-more': showMore}" class="more-arrow">
+              <img alt="more" src="@/assets/svg/chevron-more.svg" @click="scrollBot">
+            </div>
+          </div>
+        </v-card-text>
+      </v-tab-item>
 
-        <div :class="{'show-more': showMore}" class="more-arrow">
-          <img alt="more" src="@/assets/svg/chevron-more.svg" @click="scrollBot">
-        </div>
-      </div>
-    </v-card-text>
+      <!-- Оборудование на объекте -->
+      <v-tab-item :key="1">
+        <v-container class="object_products"/>
+      </v-tab-item>
+      <v-tab-item :key="2">
+        <v-container class="object_products"/>
+      </v-tab-item>
+      <v-tab-item :key="3">
+        <v-container class="object_products"/>
+      </v-tab-item>
+    </v-tabs>
 
     <div class="object-wrapper-footer">
       <template v-if="isMobile">
@@ -130,7 +159,7 @@
           <ButtonStyled
             :custom-slot="true"
             :is-animation="animationBtn"
-            :is-loading="isLoading"
+            :is-loading="isLoadingObjects"
             :is-mobile="true"
             local-class="style_button"
             @click-button="closeModal"
@@ -164,6 +193,7 @@
         <v-dialog
           v-model="stateTagsTechBlock"
           width="1080"
+
         >
           <v-card>
             <v-card-title class="d-flex justify-end">
@@ -182,7 +212,7 @@
         <div class="object-wrapper-footer__left">
           <ButtonStyled
             :is-animation="animationBtn"
-            :is-loading="isLoading"
+            :is-loading="isLoadingObjects"
             local-class="style_button"
             local-text="Сохранить изменения"
             @click-button="onSave"
@@ -209,22 +239,26 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
-import Vue from 'vue'
-import TabsCustom from '../Common/TabsCustom'
-import SelectObjectStyled from '../Common/SelectObjectStyled'
-import SelectGeo from '../Common/SelectGeo'
-import ButtonStyled from '../Common/ButtonStyled'
-import TooltipStyled from '../Common/TooltipStyled.vue'
-import CopyLinkButton from '../Common/CopyLinkButton.vue'
-import ListFilesStyled from '~/components/Common/ListFilesStyled'
-import Collaboration from '~/components/Modals/Collaboration'
-import InputStyled from '~/components/Common/InputStyled'
-import TagsTechBlock from '~/components/Widgets/TagsTechBlock'
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex';
+import Vue from 'vue';
+import TabsCustom from '../Common/TabsCustom';
+import SelectObjectStyled from '../Common/SelectObjectStyled';
+import SelectGeo from '../Common/SelectGeo';
+import ButtonStyled from '../Common/ButtonStyled';
+import TooltipStyled from '../Common/TooltipStyled.vue';
+import CopyLinkButton from '../Common/CopyLinkButton.vue';
+import SearchStyled from '../Common/SearchStyled.vue';
+import ProductCard from '../Common/ProductCard.vue';
+import ListFilesStyled from '~/components/Common/ListFilesStyled';
+import Collaboration from '~/components/Modals/Collaboration';
+import InputStyled from '~/components/Common/InputStyled';
+import TagsTechBlock from '~/components/Widgets/TagsTechBlock';
 
 export default {
   name: 'ObjectGlobal',
   components: {
+    ProductCard,
+    SearchStyled,
     TagsTechBlock,
     InputStyled,
     CopyLinkButton,
@@ -260,47 +294,47 @@ export default {
   watch: {
     'objectData': {
       handler(v) {
-        if (!v) return false
+        if (!v) return false;
 
-        this.object = v
+        this.object = v;
       }
     },
     'getUserId': {
       handler(oldV, newV) {
         if (oldV !== newV && !this.listObjects.length) {
-          this.getListObjectsByUserId(this.getUserId)
+          this.getListObjectsByUserId();
         }
       }
     }
   },
   mounted() {
-    this.getObjectFromProp()
+    this.getObjectFromProp();
 
     // eslint-disable-next-line nuxt/no-env-in-hooks
     if (process.client && this.$refs.scrollParent) {
-      const tabContent = this.$refs.scrollParent
-      tabContent.addEventListener('scroll', this.scrollWindow)
+      const tabContent = this.$refs.scrollParent;
+      tabContent.addEventListener('scroll', this.scrollWindow);
       if (this.isMobile) {
-        tabContent.addEventListener('scroll', this.scrollHeader, false)
+        tabContent.addEventListener('scroll', this.scrollHeader, false);
       }
-      this.scrollWindow()
+      this.scrollWindow();
     }
   },
   computed: {
-    ...mapState('Objects', ['isLoading', 'listObjects']),
+    ...mapState('Objects', ['isLoadingObjects', 'listObjects']),
     ...mapGetters(['getUserId']),
 
     notEmptyObject() {
-      return !!Object.keys(this.object).length
+      return !!Object.keys(this.object).length;
     },
     getCoords() {
-      return this.object?.long && this.object?.lat ? [this.object.lat, this.object.long] : [55.753215, 37.622504]
+      return this.object?.long && this.object?.lat ? [this.object.lat, this.object.long] : [55.753215, 37.622504];
     },
     showMore() {
-      return ((this.parentHeight + this.scrollHeight + this.minHeightInput) <= this.maxScroll)
+      return ((this.parentHeight + this.scrollHeight + this.minHeightInput) <= this.maxScroll);
     },
     isMobile() {
-      return this.$device.isMobile
+      return this.$device.isMobile;
     }
   },
   methods: {
@@ -312,124 +346,124 @@ export default {
         top: this.scrollHeight + this.minHeightInput + 20,
         left: 0,
         behavior: 'smooth'
-      })
+      });
     },
     scrollHeader() {
-      const st = this.$refs.scrollParent.scrollTop
+      const st = this.$refs.scrollParent.scrollTop;
 
       if (!this.showMore) {
-        return
+        return;
       }
 
       if (st > this.startScroll) {
         // console.log('down')
-        this.isMoving = true
+        this.isMoving = true;
       } else if (st < this.startScroll) {
         // console.log('up')
-        this.isMoving = false
+        this.isMoving = false;
       }
-      this.startScroll = st <= 0 ? 0 : st // For Mobile or negative scrolling
+      this.startScroll = st <= 0 ? 0 : st; // For Mobile or negative scrolling
     },
     scrollWindow() {
       setTimeout(() => {
         if (this.$refs.scrollParent) {
-          this.maxScroll = this.$refs.scrollParent.scrollHeight
-          this.scrollHeight = this.$refs.scrollParent.scrollTop
-          this.parentHeight = this.$refs.scrollParent.offsetHeight
+          this.maxScroll = this.$refs.scrollParent.scrollHeight;
+          this.scrollHeight = this.$refs.scrollParent.scrollTop;
+          this.parentHeight = this.$refs.scrollParent.offsetHeight;
         }
-      }, 400)
+      }, 400);
     },
     changeTab() {
-      this.scrollWindow()
+      this.scrollWindow();
     },
     async onSave() {
-      this.$toast.success('Данные сохранены',{ duration: 5000 })
-      await this.saveObjData({ id: this.object.id, keys: this.updateProperties })
+      this.$toast.success('Данные сохранены', { duration: 5000 });
+      await this.saveObjData({ id: this.object.id, keys: this.updateProperties });
       // Для обновления списка который прокидываем в SelectObjectStyled
-      await this.getListObjectsByUserId(this.getUserId)
+      await this.getListObjectsByUserId();
       // Для переключения режима редактирования выбора того же селекта
-      this.stateSelectEditNameObject = true
-      this.closeModal()
+      this.stateSelectEditNameObject = true;
+      this.closeModal();
     },
     closeModal() {
-      this.$emit('close-modal')
+      this.$emit('close-modal');
     },
     animationSaveBtn() {
-      this.animationBtn = true
-      if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
+      this.animationBtn = true;
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
       this.debounceTimeout = setTimeout(() => {
-        this.animationBtn = false
-      }, 2000)
+        this.animationBtn = false;
+      }, 2000);
     },
     setNameField(name) {
-      this.object.name = name
-      this.updateProperties.name = name
+      this.object.name = name;
+      this.updateProperties.name = name;
     },
     setStateSelectedEditName() {
       if (!this.stateSelectEditNameObject) {
-        this.onSave()
+        this.onSave();
       }
-      this.stateSelectEditNameObject = !this.stateSelectEditNameObject
+      this.stateSelectEditNameObject = !this.stateSelectEditNameObject;
     },
     setField(data) {
-      this.object[data.key] = data.value
-      this.updateProperties[data.key] = data.value
+      this.object[data.key] = data.value;
+      this.updateProperties[data.key] = data.value;
     },
     setFileField(data) {
       if (!this.object[data.key]) {
-        Vue.set(this.object, data.key, [data.value])
+        Vue.set(this.object, data.key, [data.value]);
       } else {
-        this.object[data.key].push(data.value)
+        this.object[data.key].push(data.value);
       }
-      this.updateProperties[data.key] = data.value
+      this.updateProperties[data.key] = data.value;
     },
     removeFile(data) {
-      const index = this.object[data.key].findIndex(file => file.id === data.value)
+      const index = this.object[data.key].findIndex(file => file.id === data.value);
 
       if (index !== -1) {
-        this.object[data.key].splice(index, 1)
+        this.object[data.key].splice(index, 1);
       }
     },
     removeFromGlobal(data) {
-      this.removeFile(data)
+      this.removeFile(data);
 
-      this.deletedFile = data.value
+      this.deletedFile = data.value;
     },
     getObjectFromProp() {
-      this.object = this.objectData
+      this.object = this.objectData;
     },
     async callback(value) {
-      if (!value) return false
+      if (!value) return false;
 
-      this.setLoadingData(true)
-      this.object = value
+      this.setLoadingData(true);
+      this.object = value;
 
       // Не нужно выставлять текущий объект
       // await this.$store.dispatch("Objects/setCurrentObject", value);
 
       // TODO: Отрефакторить, но завтра сдаваться
       this.$nextTick(() => {
-        this.setLoadingData(false)
-      })
+        this.setLoadingData(false);
+      });
 
       // Событие изменение селекта прокидываем выше
-      this.$emit('change-select-object', value)
+      this.$emit('change-select-object', value);
     },
     setAddressMap(data) {
-      this.object.address = data.address
-      this.object.lat = data.coords[0]
-      this.object.long = data.coords[1]
+      this.object.address = data.address;
+      this.object.lat = data.coords[0];
+      this.object.long = data.coords[1];
 
-      this.updateProperties.address = data.address
-      this.updateProperties.lat = data.coords[0]
-      this.updateProperties.long = data.coords[1]
+      this.updateProperties.address = data.address;
+      this.updateProperties.lat = data.coords[0];
+      this.updateProperties.long = data.coords[1];
     }
   },
   destroyed() {
     // eslint-disable-next-line nuxt/no-env-in-hooks
     if (process.client) {
-      window.removeEventListener('scroll', this.scrollWindow)
+      window.removeEventListener('scroll', this.scrollWindow);
     }
   }
-}
+};
 </script>

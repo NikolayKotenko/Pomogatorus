@@ -4,7 +4,7 @@ export default function constructFilterQuery(arrNameParam = [], innerArr) {
   if (Array.isArray(arrNameParam)) {
     arrNameParam.forEach((param) => {
       for (let [key, value] of Object.entries(param)) {
-        result += 'filter[' + key + '][]=' + value + '&'
+        result += 'filter[' + key + ']' + (innerArr ? '[]' : '') + '=' + value + '&'
       }
     })
 

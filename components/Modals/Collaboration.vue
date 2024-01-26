@@ -1,6 +1,9 @@
 <template>
   <v-container class="collaboration">
     <section class="header">
+      <span class="header_title">
+        Совместная работа над объектом "{{ $store.state.Objects.currentObject.name }}"
+      </span>
       <SearchStyled
         :is-clearable="true"
         :is-custom-search-selections="true"
@@ -9,7 +12,6 @@
         :is-item-text="'email'"
         :is-item-value="'id'"
         :is-items="$store.state.CollaborationModule.listMembers"
-        :is-loading="$store.state.CollaborationModule.isLoading"
         :is-outlined="false"
         :is-placeholder="'Пригласить новых участников'"
         :is-rounded="true"
@@ -25,6 +27,19 @@
         :user-object="item"
         class="invite_user"
       />
+      <v-overlay
+        :value="$store.state.CollaborationModule.isLoading"
+        absolute
+        class="overlay_style"
+        color="#F2F2F2"
+        opacity="100"
+      >
+        <v-progress-circular
+          color="#95D7AE"
+          indeterminate
+          size="64"
+        />
+      </v-overlay>
     </div>
     <!--    <div v-if="$store.getters['CollaborationModule/getFilteredListByRoleExperts'].length"> -->
     <!--      <span class="category_user">Знакомые специалисты</span> -->
@@ -37,7 +52,7 @@
     <!--      /> -->
     <!--    </div> -->
     <div v-if="$store.getters['CollaborationModule/getFilteredListByRoleUsers'].length">
-      <span class="category_user">Приглащенные пользователи</span>
+      <span class="category_user">Приглашенные пользователи</span>
       <hr>
       <CardInviteUser
         v-for="(item) in $store.getters['CollaborationModule/getFilteredListByRoleUsers']"
@@ -45,17 +60,29 @@
         :user-object="item"
         class="invite_user"
       />
+      <v-overlay
+        :value="$store.state.CollaborationModule.isLoading"
+        absolute
+        class="overlay_style"
+        color="#F2F2F2"
+        opacity="100"
+      >
+        <v-progress-circular
+          color="#95D7AE"
+          indeterminate
+          size="64"
+        />
+      </v-overlay>
     </div>
   </v-container>
 </template>
 
 <script>
-import SearchStyled from '~/components/Common/SearchStyled';
-import CardInviteUser from '~/components/Common/CardInviteUser';
+import SearchStyled from "~/components/Common/SearchStyled";
+import CardInviteUser from "~/components/Common/CardInviteUser";
 
 export default {
-  // eslint-disable-next-line vue/multi-word-component-names
-  name: 'Collaboration',
+  name: "Collaboration",
   components: {
     SearchStyled,
     CardInviteUser
@@ -66,20 +93,14 @@ export default {
     };
   },
   async mounted() {
-    await this.$store.dispatch('CollaborationModule/getListMembersByFilter', { id_object: this.$store.getters['Objects/getIdCurrentObject'] });
   },
   methods: {
     async localGetListUsers(phrase) {
-      if (!phrase) {
-        await this.$store.dispatch('CollaborationModule/getListMembersByFilter', { id_object: this.$store.getters['Objects/getIdCurrentObject'] });
-        return false;
-      }
+      await this.$store.dispatch("CollaborationModule/getSearchedListMembers", phrase);
 
-      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+      if (phrase) return false;
 
-      this.debounceTimeout = setTimeout(async () => {
-        await this.$store.dispatch('CollaborationModule/getSearchedListMembers', phrase);
-      }, 2000);
+      await this.$store.dispatch("CollaborationModule/getListMembersByFilter", { id_object: this.$store.getters["Objects/getIdCurrentObject"] });
     }
 
   }
@@ -88,20 +109,21 @@ export default {
 
 <style lang="scss" scoped>
 .collaboration {
-  padding: 15px;
+  padding: 20px;
   //position: absolute;
   //top: 0;
   //right: 0;
   //z-index: 9999;
   background-color: white;
   overflow: auto;
-  width: 1000px;
+  width: 1080px;
   max-height: 650px;
-  box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+  box-shadow: -2px 2px 4px 0px rgba(0, 0, 0, 0.25), 2px 2px 4px 0px rgba(0, 0, 0, 0.25);
 
 
   .header {
-    display: inline-flex;
+    display: grid;
+    grid-row-gap: 1em;
     width: 100%;
     grid-column-gap: 1em;
     margin-bottom: 2em;
@@ -111,6 +133,10 @@ export default {
     top: 0;
     z-index: 9;
 
+    .header_title {
+      font-size: 1.5em;
+      font-weight: 700;
+    }
 
     .invite_input {
     }
@@ -133,7 +159,8 @@ export default {
 .category_user {
   font-size: 1.13em;
 }
-.invite_user{
+
+.invite_user {
   margin-top: 20px;
 }
 </style>

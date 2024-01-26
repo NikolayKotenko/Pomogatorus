@@ -1,5 +1,6 @@
 import _clone from '../../../helpers/deepClone'
 import Request from '@/services/request'
+import { MtoMUsersServices } from '~/helpers/constructors'
 
 export default {
   namespaced: true,
@@ -7,6 +8,13 @@ export default {
     isUpdating: false,
     listServices: [],
     selectedServices: [],
+    selectedRawServices: [],
+    selectedRawAdditionalDataServices: [],
+    selectedRawServicesBased: [],
+    loading: false,
+    searchServiceByName: '',
+    sortListServicesValue: '',
+    updatedEntryPrice: null,
   },
   mutations: {
     setIsUpdating(state, payload) {
@@ -22,20 +30,38 @@ export default {
     setMountedServices(state, payload) {
       state.selectedServices = payload
     },
+    seRawServices(state, payload) {
+      state.selectedRawServices = payload
+      state.selectedRawServicesBased = payload
+    },
+    seRawAdditionalDataServices(state, payload) {
+      state.selectedRawAdditionalDataServices = payload
+      state.selectedRawAdditionalDataServices = payload
+    },
+    setLoading(state, payload) {
+      state.loading = payload
+    },
   },
   actions: {
-    addServicesAction({ commit, state }, payload) {
-      const checkExist = state.selectedServices.some((elem) => {
-        return elem.id === payload.id
-      })
-      if (checkExist) return true
-
-      commit('addServices', payload)
-      return false
+    async addServicesAction(
+      { commit, rootGetters, state },
+      obj = new MtoMUsersServices()
+    ) {
+      const objMToMUsersServices = {
+        id_user: rootGetters.getUserId,
+        id_services: obj.id_services,
+        price: obj.price,
+      }
+      await Request.post(
+        `${this.state.BASE_URL}/m-to-m/users-services`,
+        objMToMUsersServices
+      )
     },
 
     async updateUser({ commit }, payload) {
       const { userId, data } = payload
+
+      if (!userId) return false
 
       commit('setIsUpdating', true)
 
@@ -53,42 +79,99 @@ export default {
           commit('setIsUpdating', false)
         })
     },
-    async getListServices({ commit }) {
+    async getListServices({ commit, rootGetters }) {
+      if (!rootGetters.stateAuth) return false
+
       const response = await Request.get(
         this.state.BASE_URL + '/dictionary/tags?filter[flag_service]=true'
       )
       commit('setListServices', response.data)
     },
-    async getUserServices({ commit }, payload) {
+    async getUserServices({ commit, state }, idUser) {
+      commit('setLoading', true)
+
+      const queryFilter = Request.ConstructFilterQuery({
+        id_user: idUser,
+        once_entry: true,
+        name: state.searchServiceByName,
+      })
       const response = await Request.get(
         this.state.BASE_URL +
-          `/m-to-m/users-services?filter[id_user]=${payload}`
+          '/m-to-m/users-services' +
+          queryFilter +
+          state.sortListServicesValue
       )
-      if (response.data.length) {
-        commit(
-          'setMountedServices',
-          response.data.map((elem) => elem._services)
-        )
-      }
+      // console.log('FFFFF', response)
+      commit(
+        'setMountedServices',
+        response.data.map((elem) => elem.service_data)
+      )
+      commit('seRawServices', response.data)
+      commit('seRawAdditionalDataServices', response.additionalData)
+
+      commit('setLoading', false)
     },
+
+    // Нам не нужно обновление записи, нам нужно хранить хронологию изменения цены
+    // async updatePriceService({ commit }, payload) {
+    //   const { id } = payload
+    //
+    //   console.log('updatePriceService payload', payload)
+    //
+    //   const response = await Request.put(
+    //     this.state.BASE_URL + `/m-to-m/users-services/${id}`,
+    //     payload
+    //   )
+    //   console.log('updatePriceService res', response)
+    // },
 
     async deleteEntriesServicesByUser({ rootGetters }) {
       const response = await Request.delete(
         `${this.state.BASE_URL}/m-to-m/delete-all-services-by-user/${rootGetters.getUserId}`
       )
     },
-    async setTetherUsersServices({ commit, rootGetters }, arr) {
-      for (const obj of arr) {
-        const objMToMUsersServices = {
+    async deleteOneServiceAssignToUser({ commit, rootGetters }, idService) {
+      commit('setLoading', true)
+
+      const response = await Request.delete(
+        `${this.state.BASE_URL}/m-to-m/delete-one-service-assign-to-user`,
+        {
           id_user: rootGetters.getUserId,
-          id_services: obj.id,
+          id_services: idService,
         }
-        const response = await Request.post(
-          `${this.state.BASE_URL}/m-to-m/users-services`,
-          objMToMUsersServices
-        )
-      }
+      )
+
+      commit('setLoading', false)
     },
   },
-  getters: {},
+  getters: {
+    getCountServices(state) {
+      return state.selectedServices.length
+    },
+    getAdditionalDataByIdServices: (state) => (idServices) => {
+      const wtf = state.selectedRawAdditionalDataServices.filter(
+        (elem) => elem.id_services === idServices
+      )
+      return wtf
+    },
+    getFilteredListServicesByName(state) {
+      if (!state.searchServiceByName) return state.selectedRawServicesBased
+
+      return state.selectedRawServicesBased.filter((elem) => {
+        const haystack = elem.service_data.name.toLowerCase()
+        const needle = state.searchServiceByName.toLowerCase()
+        return !!haystack.match(needle)
+      })
+    },
+    getListServicesExcludeAdded(state) {
+      const arrA = state.listServices.map((elem) => elem.id)
+      const arrB = state.selectedRawServices.map((elem) => elem.id_services)
+      const differenceIds = arrA.filter((x) => !arrB.includes(x))
+      // console.log('difference', differenceIds)
+
+      return state.listServices.filter((elem) =>
+        differenceIds.includes(elem.id)
+      )
+    },
+  },
 }

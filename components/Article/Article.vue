@@ -4,13 +4,8 @@
     @click="$store.dispatch('linkToArticle', article.id)"
   >
     <div class="list_elem_wrapper">
-      <div class="list_elem_wrapper__preview_content__short_info__title_info">
-        <h2 class="list_elem_wrapper__preview_content__short_info__title_info__title">
-          {{ article.name }}
-        </h2>
-      </div>
-      <div class="list_elem_wrapper__tag_container">
-        <a v-for="(tag, key) in article._all_tags" :href="'/podborki/'+tag.code">#{{ tag.name }}</a>
+      <div class="list_elem_wrapper__title">
+        {{ article.name }}
       </div>
       <div class="list_elem_wrapper__img_container img-container">
         <v-img
@@ -19,57 +14,40 @@
           class="list_elem_wrapper__img_container__img img-hover"
           cover
           height="100%"
-          max-width="300"
         />
       </div>
-      <div class="list_elem_wrapper__preview_content" @click="$store.dispatch('linkToArticle', article.id)">
-        <div
-          class="list_elem_wrapper__preview_content__short_info"
-        >
-          <h4
-            v-if="article.short_header"
-            class="list_elem_wrapper__preview_content__short_info__short"
-          >
-            {{ preview }}
-          </h4>
-        </div>
-        <div class="list_elem_wrapper__preview_content__buttons" @click="$event.stopPropagation()">
-          <ViewsAndLikes :article="article"></ViewsAndLikes>
-          <h4 class="list_elem_wrapper__preview_content__short_info__title_info__time">
-            {{ article.updated_at }}
-          </h4>
-        </div>
-
+      <div
+        class="list_elem_wrapper__short_info"
+        @click="$store.dispatch('linkToArticle', article.id)"
+      >
+        {{ article.short_header }}
+      </div>
+      <div class="list_elem_wrapper__buttons" @click="$event.stopPropagation()">
+        <ViewsAndLikes :article="article"/>
+        <h4 class="list_elem_wrapper__buttons__time">
+          {{ article.updated_at }}
+        </h4>
       </div>
     </div>
   </v-card>
 </template>
 
 <script>
-import Author from "./Author";
-import ButtonStyled from "../Common/ButtonStyled.vue";
-import ViewsAndLikes from "../Common/ViewsAndLikes.vue";
+import ButtonStyled from '../Common/ButtonStyled.vue';
+import TooltipStyled from '../Common/TooltipStyled.vue';
+import ViewsAndLikes from '../Common/ViewsAndLikes.vue';
+import Author from './Author';
 
 export default {
-  name: "Article",
-  components: { ViewsAndLikes, ButtonStyled, Author },
-  props: ["article"],
+  name: 'Article',
+  components: { ViewsAndLikes, ButtonStyled, Author, TooltipStyled },
+  props: ['article'],
   data: () => ({
     previewAuthor: true
   }),
 
   computed: {
-    preview() {
-      if (this.article.short_header) {
-        if (this.article.short_header.length > 50) {
-          return this.article.short_header.substring(0, 50) + "...";
-        } else {
-          return this.article.short_header;
-        }
-      } else {
-        return "";
-      }
-    }
+
   },
   methods: {
   }

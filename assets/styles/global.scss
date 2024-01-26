@@ -2,6 +2,10 @@ input:focus::placeholder {
   color: transparent !important;
 }
 
+.v-application p {
+  margin: 0 !important;
+}
+
 .v-dialog {
   max-width: 1080px !important;
   border-radius: 5px;
@@ -61,15 +65,7 @@ $max-width: 1140px;
     overflow: hidden;
   }
 
-  .img-hover {
-    transition: transform 1s ease-in-out;
-  }
 
-  &:hover {
-    .img-hover {
-      transform: scale(1.1)
-    }
-  }
 }
 
 .animation_save {

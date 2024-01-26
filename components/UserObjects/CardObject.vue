@@ -121,9 +121,7 @@ export default {
     }
   },
   watch: {},
-  mounted() {
-    this.$store.dispatch('getListBroadcastSnippet');
-  },
+  mounted() {},
   methods: {
     async setObject() {
       await this.$store.dispatch('Objects/setCurrentObject', this.object_data);
@@ -148,7 +146,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  margin: 0 10px 0 10px;
+  //margin: 0 10px 0 10px;
   border-radius: 5px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   transition: all 0.4s ease-in-out !important;

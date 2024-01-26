@@ -17,32 +17,79 @@
 
       <!-- Desktop -->
       <template v-if="!isMobile">
-        <v-toolbar-items class="header_center">
-          <div v-for="item in $store.getters.menuItems" :key="item.title">
-            <v-btn
-              v-if="item.visible"
-              :href="item.path"
-              class="text-capitalize link_btn"
-              style="margin-right: 2em;"
-              text
+        <div
+          class="header_left"
+        >
+          <div
+            class="menu"
+            @click="$store.state.stateVerticalMenu = !$store.state.stateVerticalMenu"
+          >
+            <v-icon
+              color="#ffffff"
+              size="32"
             >
-              <span :class="{activeElement: getCurrentRoute.title === item.title}">{{ item.title }}</span>
-            </v-btn>
+              mdi-menu
+            </v-icon>
           </div>
-        </v-toolbar-items>
+          <div class="logo_wrapper">
+            <v-img
+              :src="require(`~/assets/svg/logo.svg`)"
+            />
+          </div>
+        </div>
+        <SearchStyled
+          :class="'styleSearch'"
+          :internal-data="selectedChips"
+          :is-clearable="true"
+          :is-global-search="true"
+          :is-disabled="loading"
+          :is-hide-selected="false"
+          :is-item-text="'text'"
+          :is-item-value="'text'"
+          :is-items="$store.state.listSearched"
+          :is-loading="loading"
+          :is-placeholder="'Поиск'"
+          class="search"
+          @update-search-input="localGetListItems"
+          @change-search="setSelected"
+          @redirect="redirectData"
+        />
+        <!--          @click-clear="getListBasedArticles(); selectedChips = ''" -->
+        <!--          @redirect="redirectData" -->
+
+               <!-- <v-toolbar-items class="header_center"> -->
+        <!--          <div v-for="item in $store.getters.menuItems" :key="item.title"> -->
+        <!--            <v-btn -->
+        <!--              v-if="item.visible" -->
+        <!--              :href="item.path" -->
+        <!--              class="text-capitalize link_btn" -->
+        <!--              style="margin-right: 2em;" -->
+        <!--              text -->
+        <!--            > -->
+        <!--              <span :class="{activeElement: getCurrentRoute.title === item.title}">{{ item.title }}</span> -->
+        <!--            </v-btn> -->
+        <!--          </div> -->
+        <!--        </v-toolbar-items> -->
       </template>
 
       <!-- Личный кабинет всегда по правую сторону -->
       <v-toolbar-items class="header_right">
-        <TooltipStyled :title="'Совместная работа над ' + $store.state.Objects.currentObject.name" class="current_object_btn">
+        <TooltipStyled
+          :title="'Совместная работа над ' + $store.state.Objects.currentObject.name"
+          class="current_object_btn"
+        >
           <v-menu
             :close-on-content-click="false"
             left
             offset-y
-            @input="$store.commit('CollaborationModule/changeStateCollaboration', $event)"
+            @input="openCollaborationModule($event)"
           >
             <template #activator="{ on, attrs }">
-              <div style="display: inline-flex; grid-column-gap: 5px" v-bind="attrs" v-on="on">
+              <div
+                style="display: inline-flex; grid-column-gap: 5px"
+                v-bind="attrs"
+                v-on="on"
+              >
                 <v-icon large v-bind="attrs" v-on="on">
                   mdi-account-group-outline
                 </v-icon>
@@ -54,11 +101,15 @@
         <TooltipStyled :title="'Текущий объект'" class="current_object_btn">
           <v-menu :close-on-content-click="false" left offset-y>
             <template #activator="{ on, attrs }">
-              <div style="display: inline-flex; grid-column-gap: 5px" v-bind="attrs" v-on="on">
+              <div
+                style="display: inline-flex; grid-column-gap: 5px"
+                v-bind="attrs"
+                v-on="on"
+              >
                 <v-badge
                   :content="$store.getters['Objects/getCountObject']"
                   :value="$store.getters['Objects/getCountObject']"
-                  bordered
+                  color="#95D7AE"
                   overlap
                 >
                   <v-icon large v-bind="attrs" v-on="on">
@@ -76,7 +127,7 @@
               :color="listModal[0].isOpen ? '#fafad2' : 'white'"
               class="text-capitalize link_btn"
               text
-              @click="openModals"
+              @click="$store.commit('set_modal_auth', true)"
             >
               <v-icon large>
                 mdi-account
@@ -90,26 +141,64 @@
 </template>
 
 <script>
-// eslint-disable-next-line vue/multi-word-component-names,vue/no-reserved-component-names
-import { mapState } from 'vuex'
-import TooltipStyled from './Common/TooltipStyled'
-import CurrentObjects from './Widgets/CurrentObjects.vue'
+import { mapState } from 'vuex';
+import TooltipStyled from './Common/TooltipStyled';
+import CurrentObjects from './Widgets/CurrentObjects.vue';
 import Collaboration from './Modals/Collaboration.vue';
+import SearchStyled from './Common/SearchStyled.vue';
 
 export default {
-  // eslint-disable-next-line vue/multi-word-component-names,vue/no-reserved-component-names
   name: 'Header',
-  components: { Collaboration, CurrentObjects, TooltipStyled },
+  components: { SearchStyled, Collaboration, CurrentObjects, TooltipStyled },
   data() {
     return {
       debounceTimeout: null,
       stateCurrentObject: false,
-    }
+      selectedArticle: null,
+      selectedChips: '',
+      loadComponent: false,
+      listArticles: [],
+      loading: false,
+      answersList: [
+        {
+          category: 'Пользователи',
+          data: {},
+          query: '',
+          search: '',
+          text: '',
+          isAuthorized: null
+        },
+        {
+          category: 'Подборки',
+          data: {},
+          query: '',
+          search: '',
+          text: '',
+          isAuthorized: null
+        },
+        {
+          category: 'Оборудование',
+          data: {},
+          query: '',
+          search: '',
+          text: '',
+          isAuthorized: null
+        },
+        {
+          category: 'Объекты',
+          data: {},
+          query: '',
+          search: '',
+          text: '',
+          isAuthorized: null
+        }
+      ]
+    };
   },
   mounted() {
     // eslint-disable-next-line nuxt/no-env-in-hooks
     if (!process.server) {
-      this.onScroll()
+      this.onScroll();
     }
   },
   // eslint-disable-next-line vue/order-in-components
@@ -120,60 +209,117 @@ export default {
     }),
 
     isMobile() {
-      return this.$device.isMobile
+      return this.$device.isMobile;
     },
     getCurrentRoute() {
       if (this.listModal[0].isOpen) {
         return {
           path: '',
           title: 'Личный кабинет'
-        }
+        };
       }
       return this.$store.getters.menuItems.find((elem) => {
-        return this.$route.path.match(elem.path)
-      })
+        return this.$route.path.match(elem.path);
+      });
     }
   },
   methods: {
     showDrawer() {
-      this.$store.commit('set_drawer', !this.drawer)
-    },
-    openModals() {
-      // TODO: Продумать логику открывания модалки независимо от индексa
-      this.listModal[0].isOpen = !this.listModal[0].isOpen
+      this.$store.commit('set_drawer', !this.drawer);
     },
     // openObject() {
     //   this.$emit("open_object", this.$store.state.listObjects.currentObject)
     //   console.log('work')
     // },
     setHeader(value) {
-      if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
       this.debounceTimeout = setTimeout(() => {
-        this.$store.commit('change_show_header', value)
-      })
+        this.$store.commit('change_show_header', value);
+      });
     },
     onScroll() {
       if (this.$device.isDesktop) {
-        let prevScrollpos = window.pageYOffset
-        const _this = this
+        let prevScrollpos = window.pageYOffset;
+        const _this = this;
         window.onscroll = function() {
-          const currentScrollPos = window.pageYOffset
+          const currentScrollPos = window.pageYOffset;
           if (prevScrollpos > currentScrollPos) {
-            document.getElementById('navbar').style.top = '0'
-            _this.setHeader(true)
+            document.getElementById('navbar').style.top = '0';
+            _this.setHeader(true);
           } else {
-            document.getElementById('navbar').style.top = '-70px'
-            _this.setHeader(false)
+            document.getElementById('navbar').style.top = '-70px';
+            _this.setHeader(false);
           }
-          prevScrollpos = currentScrollPos
-        }
+          prevScrollpos = currentScrollPos;
+        };
       }
-    }
+    },
+    localGetListItems(searchString) {
+      if (!searchString) return false;
+
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+
+      this.debounceTimeout = setTimeout(async () => {
+        await this.$store.dispatch('getListSearched', searchString)
+      }, 500);
+    },
+    setSelected(selectedObj) {
+      this.selectedArticle = selectedObj;
+    },
+    openCollaborationModule(state) {
+      if (!this.$store.getters.stateAuth) {
+        this.$store.commit('set_modal_auth', state);
+      } else {
+        this.$store.commit('CollaborationModule/changeStateCollaboration', state);
+      }
+    },
+    redirectData(data){
+      if (data.category === 'Подборки'){
+        window.location.href = data.href;
+      }
+      if (data.category === 'Статьи'){
+        window.location.href = data.href;
+      }
+      // if (data.category === 'Номенклатура'){
+      //   window.location.href = ''+data.href;
+      // }
+    },
+
+
+    // async getArticlesBySymbols(symbols) {
+    //   this.loading = true;
+    //
+    //   const result = await Request.get(
+    //     `${this.$store.state.BASE_URL}/entity/articles/search/{q}?q=${symbols}`
+    //   );
+    //   this.listVariables = result.data;
+    //
+    //   const payload = (symbols) ? { name_or_tags: symbols } : null
+    //   await this.getListBasedArticles(payload)
+    //   this.loading = false;
+    // },
+    // async getListBasedArticles(queryParams){
+    //   this.loading = true;
+    //
+    //   const basedFilter = { activity: true };
+    //   const query = constructFilterQuery({ ...basedFilter, ...queryParams });
+    //
+    //   const response = await Request.get(
+    //     this.$store.state.BASE_URL + '/entity/articles' + query
+    //   );
+    //   this.listArticles = response.data;
+    //   this.loading = false;
+    //
+    //   return response;
+    // },
+
+
+
   }
-}
+};
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .v-btn:not(.v-btn--round).v-size--default {
   padding: 0 !important;
   min-width: 0;
@@ -211,25 +357,49 @@ export default {
   }
 }
 
+.header_left {
+  position: fixed;
+  left: 0;
+  padding-left: 20px;
+  display: flex;
+  align-items: center;
+  grid-column-gap: 20px;
+
+  .menu {
+    cursor: pointer;
+  }
+
+  .logo_wrapper {
+    @media only screen and (max-width: 1600px) {
+      display: none;
+    }
+  }
+}
+
 .header_center {
   flex: 1;
   align-items: center;
 }
 
 .header_right {
+  position: fixed;
+  right: 0;
   display: flex;
   grid-column-gap: 20px;
   margin-left: auto;
+  padding-right: 20px;
 }
 
 .link_btn {
   font-weight: 400;
   text-transform: uppercase !important;
   letter-spacing: 0;
+
   //text-transform: uppercase !important;
   @media only screen and (min-width: 400px) {
     font-size: 1.25rem !important;
   }
+
   line-height: 1.5;
 }
 
@@ -237,6 +407,7 @@ export default {
   @media only screen and (max-width: 400px) {
     font-size: 1.25rem !important;
   }
+
   line-height: 1.5;
   letter-spacing: 1px;
   font-weight: lighter !important;
@@ -245,5 +416,11 @@ export default {
 .custom_grid_system {
   align-items: center;
   padding-left: 10px;
+}
+
+.search {
+  max-width: 750px;
+  max-height: 40px;
+
 }
 </style>

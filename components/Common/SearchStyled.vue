@@ -5,7 +5,7 @@
     :class="isClass"
     :clearable="(localSearchInputSync || localSelected) ? isClearable : false"
     :dense="isDense"
-    :disabled="false"
+    :disabled="isLoading"
     :filled="isFilled"
     :hide-details="isHideDetails"
     :hide-no-data="isHideNoData"
@@ -13,13 +13,15 @@
     :item-text="isItemText"
     :item-value="isItemValue"
     :items="isItems"
-    :loading="false"
+    :loading="isLoading"
     :menu-props="(computedSearchInputState && compareSearchStringAndExistEntry) ? {} : {value: false}"
     :outlined="isOutlined"
     :placeholder="isPlaceholder"
     :return-object="isReturnObject"
     :rounded="isRounded"
     :search-input.sync="localSearchInputSync"
+    background-color="#ffffff"
+    color="#95D7AE"
     @change="$emit('change-search', localSelected)"
     @click:clear="$emit('click-clear')"
     @update:search-input="$emit('update-search-input', localSearchInputSync)"
@@ -27,17 +29,46 @@
     <!--      <template v-slot:append> -->
     <!--        <v-icon class="selectIcon">mdi-select</v-icon> -->
     <!--      </template> -->
-    <template v-if="isCustomTemplateSelections" #item="data">
-      <VListItemContent @click="watchDataRedirect(data.item)">
-        <VListItemTitle v-if="data.item.category === 'Тэги'">
-          <HashTagStyled :text="getTitleString(data.item.text)"/>
-        </VListItemTitle>
-        <VListItemTitle v-else>
-          <span v-html="getTitleString(data.item.text)"/>
-        </VListItemTitle>
-      </VListItemContent>
+    <template
+      v-if="isGlobalSearch" 
+      #item="data"
+    >
+      <v-list-item-content 
+        class="search_item"
+        @click="watchDataRedirect(data.item)"
+      >
+        <span
+           v-html="getTitleString(data.item.text)"
+        />
+        <span 
+          style="font-size: 0.8em; color: #B6B6B6;"
+        >
+           - {{ data.item.category }}
+        </span>
+      </v-list-item-content >
+      
     </template>
-    <template v-if="isCustomSearchSelections" #item="data">
+    <!-- <template v-if="isCustomTemplateSelections" #item="data">
+      <v-list-item-content @click="watchDataRedirect(data.item)">
+        <span>Cтатьи</span>
+        <v-list-item-title v-if="data.category === 'Cтатьи'">
+          <span v-html="getTitleString(data.item.text)"/>
+        </v-list-item-title>
+        <span>Подборки</span>
+        <v-list-item-title v-if="data.item.category === 'Тэги'">
+          <span v-html="getTitleString(data.item.text)"/>
+        </v-list-item-title>
+        <span>Оборудование</span>
+        <v-list-item-title v-if="data.item.category === 'Оборудование'">
+          <span v-html="getTitleString(data.item.text)"/>
+        </v-list-item-title>
+        
+        <v-list-item-title v-else>
+          <span v-html="getTitleString(data.item.text)"/>
+        </v-list-item-title>
+      </v-list-item-content>
+    </template> -->
+    <!-- <template v-if="isCustomSearchSelections" #item="data">
       <div
         class="search_user_invite"
         @click="stopInput($event)"
@@ -46,21 +77,21 @@
           :user-object="data.item"
         />
       </div>
-    </template>
+    </template> -->
   </VCombobox>
 </template>
 
 <script>
-import CardInviteUser from './CardInviteUser.vue';
-import HashTagStyled from '~/components/Common/HashTagStyled'
+import CardInviteUser from "./CardInviteUser.vue";
+import HashTagStyled from "~/components/Common/HashTagStyled";
 
 export default {
-  name: 'SearchStyled',
+  name: "SearchStyled",
   components: { CardInviteUser, HashTagStyled },
   props: {
     isClass: {
       type: String,
-      default: ''
+      default: ""
     },
     isOutlined: {
       type: Boolean,
@@ -84,7 +115,7 @@ export default {
     },
     isPlaceholder: {
       type: String,
-      default: ''
+      default: ""
     },
     isHideNoData: {
       type: Boolean,
@@ -100,11 +131,11 @@ export default {
     },
     isItemText: {
       type: String,
-      default: ''
+      default: ""
     },
     isItemValue: {
       type: String,
-      default: ''
+      default: ""
     },
     isReturnObject: {
       type: Boolean,
@@ -129,88 +160,102 @@ export default {
     isCustomSearchSelections: {
       type: Boolean,
       default: false
+    },
+    isLoading: {
+      type: Boolean,
+      default: false
+    },
+    isGlobalSearch: {
+      type: Boolean,
+      default: false
     }
   },
   data: () => ({
-    localSearchInputSync: '',
+    localSearchInputSync: "",
     localSelected: null
   }),
   computed: {
     currentData: {
       get() {
         if (this.internalData) {
-          return this.internalData
+          return this.internalData;
         }
-        return this.localSelected
+        return this.localSelected;
       },
       set(value) {
-        this.localSelected = value
+        this.localSelected = value;
       }
     },
     computedSearchInputState() {
-      if (!this.localSearchInputSync) return false
+      if (!this.localSearchInputSync) return false;
 
-      return (this.localSearchInputSync.length > 2)
+      return (this.localSearchInputSync.length > 2);
     },
     compareSearchStringAndExistEntry() {
-      if (!this.localSelected) return true
+      if (!this.localSelected) return true;
 
-      return this.localSelected[this.isItemText] !== this.localSearchInputSync
+      return this.localSelected[this.isItemText] !== this.localSearchInputSync;
     }
   },
   watch: {
     internalData: function(newVal, oldVal) {
-      if (!newVal) return false
+      if (!newVal) return false;
 
-      this.$emit('update-search-input', newVal)
+      this.$emit("update-search-input", newVal);
     }
   },
   methods: {
     watchDataRedirect(data) {
-      this.$emit('redirect', data)
+      console.log('123', data)
+      this.$emit("redirect", data);
     },
     getTitleString(text) {
-      const { start, middle, end } = this.getMaskedCharacters(text)
-      return `${start}${this.genHighlight(middle)}${end}`
+      const { start, middle, end } = this.getMaskedCharacters(text);
+      return `${start}${this.genHighlight(middle)}${end}`;
     },
 
     // Вспомогательные функции
     getMaskedCharacters(text) {
-      const searchInput = (this.localSearchInputSync || '').toString().toLocaleLowerCase()
-      const index = text.toLocaleLowerCase().indexOf(searchInput)
+      const searchInput = (this.localSearchInputSync || "").toString().toLocaleLowerCase();
+      const index = text.toLocaleLowerCase().indexOf(searchInput);
 
-      if (index < 0) return { start: text, middle: '', end: '' }
+      if (index < 0) return { start: text, middle: "", end: "" };
 
-      const start = text.slice(0, index)
-      const middle = text.slice(index, index + searchInput.length)
-      const end = text.slice(index + searchInput.length)
-      return { start, middle, end }
+      const start = text.slice(0, index);
+      const middle = text.slice(index, index + searchInput.length);
+      const end = text.slice(index + searchInput.length);
+      return { start, middle, end };
     },
     genHighlight(text) {
-      return `<span class='v-list-item__mask'>${text}</span>`
+      return `<span class="v-list-item__mask">${text}</span>`;
     },
     stopInput(e) {
-      console.log('1', e);
+      console.log("1", e);
       e.stopPropagation();
       e.preventDefault();
-      console.log('2', e);
-    },
+      console.log("2", e);
+    }
   }
-}
+};
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .v-text-field--rounded {
   border-radius: 5px !important;
 }
-.search_user_invite{
+
+.search_item {
+  display: inline;
+}
+
+.search_user_invite {
   width: 100%;
   max-width: 850px;
   cursor: default;
 }
 </style>
 
-<style lang='scss'>
+<style lang="scss">
 
 // TODO: Эти стили изменяют вообще все инпуты в приложении, надо выносить под какой-то класс
 //.v-menu__content { display:none !important; }
@@ -219,10 +264,11 @@ export default {
 //  min-height: 60px !important;
 //}
 .v-ripple__container {
-  display:none !important;
+  display: none !important;
 }
 
 .styleSearch {
+
   &.primary--text {
     color: #95D7AE !important;
   }
@@ -232,16 +278,16 @@ export default {
   //min-width: 1144px;
 
   .v-input__slot {
-    height: 60px;
+    height: 40px;
   }
 
   .v-select__selections {
-    height: 60px;
+    height: 40px;
   }
 
   .v-input__append-inner {
     .v-input__icon--append {
-      margin-top: 8px;
+      //margin-top: 8px;
     }
 
     //height: 60px;
@@ -255,9 +301,12 @@ export default {
     color: #37392E !important;
 
     input {
-      margin: 10px 0 !important;
-      padding: 15px 0;
+      color: black;
+    }
 
+    input::placeholder {
+      color: #878787;
+      font-size: 0.8em;
 
     }
   }
@@ -272,7 +321,6 @@ export default {
 
   .mdi-close {
     font-size: 1em;
-    margin-top: 20px;
     align-content: center;
     color: #F79256 !important;
   }

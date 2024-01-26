@@ -1,20 +1,57 @@
 <template>
   <div class="modal_wrapper">
-    <!-- Если загрузка объектов true    -->
-    <template v-if="isLoadingObjects">
-      <VProgressCircular
-        v-if="$store.getters.stateAuth"
-        :size="50"
-        color="primary"
-        indeterminate
-        style="margin: 20px auto 40px auto"
-      />
-    </template>
+    <template>
+      <v-card
+        v-show="$store.getters.stateAuth"
+        class="static_search_breadcrumbs"
+        elevation="5"
+        outlined
+        shaped
+      >
+        <div class="wrapper_chips">
+          <!-- Быстрые чипсы -->
+          <ChipsStyled
+            :data="selectedQueryChips"
+            :is-filter="true"
+            :is-multiple="true"
+            :list-chips="computedListChips"
+            class="chips_list_object"
+            @update-chips="setQueryChips"
+          />
 
-    <!-- Если загрузка объектов false    -->
-    <template v-else>
-      <div v-if="$store.getters['Objects/stateFilledListObjects']" class="card_object flex-grow-1 flex-shrink-1">
-        <div v-if="listObjects.length" class="card_object_container">
+          <TooltipStyled
+            :is-top="true"
+            :title="'Контекст работы'"
+          >
+            <v-icon
+              color="#5D80B5"
+            >
+              mdi-help-circle-outline
+            </v-icon>
+          </TooltipStyled>
+        </div>
+        <!-- Поиск -->
+        <SearchStyled
+          :class="'styleSearch'"
+          :internal-data="querySearchData.value"
+          :is-clearable="true"
+          :is-custom-template-selections="true"
+          :is-disabled="isLoadingObjects"
+          :is-hide-selected="false"
+          :is-item-text="'text'"
+          :is-item-value="'text'"
+          :is-loading="isLoadingObjects"
+          :is-placeholder="'Поиск по имени, адресу, заметкам'"
+          :is-return-object="true"
+          style="max-height: 61px"
+          @update-search-input="setQuerySearchData"
+        />
+      </v-card>
+      <div
+        v-if="$store.getters['Objects/stateFilledListObjects'] && !$store.state.Objects.isLoadingObjects"
+        class="card_object flex-grow-1 flex-shrink-1"
+      >
+        <div class="card_object_container">
           <CardObject
             v-for="(object, index) in listObjects"
             :key="index"
@@ -22,15 +59,10 @@
             @open-detail="openDetail"
           />
         </div>
-
-        <!-- TODO: Что показывать когда объектов еще нет??? -->
-        <div v-else>
-          Создайте объект!
-        </div>
       </div>
       <v-sheet
         v-for="n in 3"
-        v-if="! $store.getters['Objects/stateFilledListObjects'] && ! $store.getters.stateAuth"
+        v-if="!$store.getters.stateAuth || $store.state.Objects.isLoadingObjects"
         :key="n"
         class="pa-3"
         @click="$store.dispatch('callModalAuth')"
@@ -42,7 +74,6 @@
           />
         </TooltipStyled>
       </v-sheet>
-
       <div v-if="$store.getters.stateAuth" class="new_object_wrapper custom_grid_system">
         <!--        <v-divider class="new_obj_divider"></v-divider> -->
         <div class="new_object">
@@ -56,7 +87,7 @@
               </div>
               <VTextField
                 v-model="newObjName"
-                :loading="loading_objects"
+                :loading="isLoadingObjects"
                 auto-grow
                 class="text_field"
                 clearable
@@ -73,7 +104,7 @@
           <div class="new_object_button">
             <ButtonStyled
               :is-disabled="!newObjName"
-              :is-loading="loading_objects"
+              :is-loading="isLoadingObjects"
               :local-text="'Создать объект'"
               local-class="style_button"
               @click-button="onCreateNewObject"
@@ -106,30 +137,64 @@ import ButtonStyled from '../Common/ButtonStyled.vue';
 import ObjectGlobal from './ObjectGlobal';
 import CardObject from './CardObject.vue';
 import TooltipStyled from '@/components/Common/TooltipStyled';
+import ChipsStyled from '~/components/Common/ChipsStyled';
+import SearchStyled from '~/components/Common/SearchStyled';
 
 export default {
   name: 'ListObjects',
-  components: { TooltipStyled, ButtonStyled, CardObject, ObjectGlobal },
+  components: { ChipsStyled, TooltipStyled, ButtonStyled, CardObject, ObjectGlobal, SearchStyled },
   data: () => ({
     object: {},
     newObjAddress: '',
     newObjName: '',
     showDetail: false,
     detailData: {},
-    debounceTimeout: null
+    debounceTimeout: null,
+    selectedQueryChips: [],
+    listQueryFilters: [
+      {
+        text: 'Мои объекты',
+        value: 'home_owner=true'
+      },
+      {
+        text: 'Где я работаю',
+        value: 'home_worker=true'
+      }
+    ],
+    querySearchData: {
+      baseQuery: 'search=',
+      value: ''
+    },
+    allQueryFilters: []
   }),
   watch: {
     'getUserId': {
       handler(val) {
-        this.localGetListObjects(val);
-      },
-      immediate: true
-    }
-  },
-  async mounted() {
+        this.setAllQuery();
+      }
+    },
+    // '$store.state.AuthModule.userData.objects_context': {
+    //   handler(newVal, oldVal) {
+    //     console.log('asd', newVal)
+    //     if (!newVal) {
+    //       console.log('asd', newVal)
+    //       this.selectedQueryChips = [];
+    //       newVal.forEach((elem) => {
+    //         if (elem.search) {
+    //           this.querySearchData.value = elem.search;
+    //         } else {
+    //           this.selectedQueryChips.push(Object.keys(elem) + '=' + Object.values(elem));
+    //         }
+    //         console.log('asd', newVal)
+    //       });
+    //       console.log('asd', newVal)
+    //     }
+    //     console.log('asd', newVal)
+    //   }
+    // }
   },
   computed: {
-    ...mapState('Objects', ['listObjects', 'isLoadingObjects', 'loading_objects']),
+    ...mapState('Objects', ['listObjects', 'isLoadingObjects']),
     ...mapState(['userData']),
     ...mapGetters(['getUserId']),
 
@@ -143,20 +208,23 @@ export default {
 
     isMobile() {
       return this.$device.isMobile;
+    },
+    computedListChips() {
+      return this.listQueryFilters;
     }
   },
   methods: {
     ...mapActions('Objects', ['createNewObject', 'getListObjectsByUserId']),
 
     async onCreateNewObject() {
-      this.$toast.success('Объект создан',{ duration: 5000 })
+      this.$toast.success('Объект создан', { duration: 5000 });
       await this.createNewObject({
         address: this.newObjAddress,
         name: this.newObjName
       });
       this.newObjAddress = '';
 
-      await this.getListObjectsByUserId(this.getUserId);
+      await this.getListObjectsByUserId();
     },
     closeDetailObj() {
       this.showDetail = false;
@@ -177,17 +245,56 @@ export default {
       this.updateProperties.lat = data.coords[0];
       this.updateProperties.long = data.coords[1];
     },
-    async localGetListObjects(idUser) {
+    setQueryChips(nameChip) {
+      console.log('setQueryChips', nameChip);
+      this.selectedQueryChips = [];
+      nameChip.forEach((value) => {
+        this.selectedQueryChips.push(value);
+      });
+      this.setAllQuery();
+    },
+    setQuerySearchData(string) {
+      console.log(string);
+      this.querySearchData.value = (string) || '';
+      this.setAllQuery();
+    },
+    setAllQuery() {
+      const value1 = this.selectedQueryChips;
+      const value2 = (this.querySearchData.value) ? this.querySearchData.baseQuery + this.querySearchData.value : null;
+
+      const calcQueryFilters = [];
+      calcQueryFilters.push(...value1);
+      if (value2) {
+        calcQueryFilters.push(value2);
+      }
+
+      this.allQueryFilters = [];
+      calcQueryFilters.forEach((string) => {
+        const params = string.split('=');
+        this.allQueryFilters.push({
+          [params[0]]: params[1]
+        });
+      });
+
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
       this.debounceTimeout = setTimeout(async () => {
-        const response = await this.$store.dispatch('Objects/getListObjectsByUserId', idUser)
 
-        console.log('response getListObjectsByUserId', response)
-        if (response.codeResponse > 400) {
-          await this.$store.dispatch('callModalAuth')
-          this.$store.commit('Objects/setLoadingObjects', false)
+        if (this.allQueryFilters.length) {
+          const responseUserData = await this.$store.dispatch('UserSettings/updateUser', {
+            userId: this.$store.getters.getUserId,
+            data: {
+              objects_context: JSON.stringify(this.allQueryFilters)
+            }
+          });
+          console.log('responseUserData', responseUserData);
         }
-      }, 1000);
+
+        const responseListObjects = await this.$store.dispatch('Objects/getListObjectsByUserId', this.allQueryFilters);
+        if (responseListObjects.codeResponse > 400) {
+          await this.$store.dispatch('callModalAuth');
+          this.$store.commit('Objects/setLoadingObjects', false);
+        }
+      }, 500);
     }
   }
 };
@@ -195,6 +302,33 @@ export default {
 
 <style lang="scss">
 @import 'assets/styles/userObjects';
+
+.static_search_breadcrumbs {
+  position: sticky;
+  display: block;
+  top: 1px;
+  background: white;
+  z-index: 9;
+  padding: 15px;
+
+  .wrapper_chips {
+    display: inline-flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .styleSearch {
+    font-size: 1.3em !important;
+  }
+}
+
+.chips_list_object {
+  margin-top: 0 !important;
+
+  .styleChip {
+    font-size: 1.1em;
+  }
+}
 
 .modal_wrapper {
   padding: 0 !important;
@@ -212,10 +346,10 @@ export default {
 .card_object {
   display: flex;
   flex-direction: column;
-  row-gap: 25px;
+  row-gap: 0 !important;
 
   &_container {
-    padding: 20px 0 90px 0;
+    padding: 20px 0 25% 0;
   }
 }
 

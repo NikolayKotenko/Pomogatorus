@@ -1,14 +1,25 @@
 export default class Logging {
-  //Если удобно пользоваться конструктором
+  // Если удобно пользоваться конструктором
   constructor(request) {
-    const { message, data, meta, links, codeResponse, systemErrors } = request
+    const {
+      message,
+      data,
+      additionalData,
+      meta,
+      links,
+      codeResponse,
+      systemErrors,
+      paginationData,
+    } = request
 
     this.message = message
     this.data = data
+    this.additionalData = additionalData
     this.meta = meta
     this.links = links
     this.codeResponse = codeResponse
     this.systemErrors = systemErrors
+    this.paginationData = paginationData
   }
 
   /**

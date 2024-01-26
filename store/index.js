@@ -11,6 +11,7 @@ import Tabs from './modules/tabs'
 import Objects from './modules/objects'
 import CollaborationModule from './modules/collaboration'
 import NomenclatureModule from './modules/nomenclature'
+import NotificationModule from './modules/notification'
 
 const createStore = () => {
   return new Vuex.Store({
@@ -35,6 +36,8 @@ const createStore = () => {
 
       /* HEADER */
       drawer: false,
+      stateVerticalMenu: true,
+      listSearched: [],
 
       /* Objects */
       showCabinet: false,
@@ -62,6 +65,9 @@ const createStore = () => {
       ],
       list_tags: [],
       list_broadcast_snippet: [],
+      currentPaginationData: {
+        hasMorePages: false,
+      },
     },
     getters: {
       getImageByEClientFilesObj: (state) => (eClientFilesObj) => {
@@ -106,7 +112,7 @@ const createStore = () => {
           {
             title: 'Статьи',
             path: '/articles',
-            icon: 'mdi-message-text',
+            icon: 'mdi-card-text-outline',
             visible: true,
           },
           {
@@ -125,6 +131,12 @@ const createStore = () => {
             title: 'Оборудование',
             path: '/products',
             icon: 'mdi-store-cog-outline',
+            visible: true,
+          },
+          {
+            title: 'Уведомления',
+            path: '/notifications',
+            icon: 'mdi-bell-outline',
             visible: true,
           },
           {
@@ -152,6 +164,9 @@ const createStore = () => {
             Authorization: 'Bearer ' + Request.getAccessTokenInCookies(),
           },
         }
+      },
+      statePaginationHasMorePage(state) {
+        return state.currentPaginationData.hasMorePages
       },
     },
     mutations: {
@@ -207,9 +222,44 @@ const createStore = () => {
         state.list_broadcast_snippet = []
         state.list_broadcast_snippet = payload
       },
-      setModalAuth(state, payload) {
+      set_modal_auth(state, payload) {
         state.listModal[0].isOpen = payload
       },
+
+      /* HEADERS */
+      set_list_searched(state, payload) {
+
+        payload.map((elem) => {
+          elem.href = ''
+          if (elem.category === 'Статьи') {
+            elem.href = '/articles/' + elem.data.id
+          }
+          if (elem.category === 'Номенклатура') {
+            elem.href = '/nomenclature/' + elem.data.id
+          }
+          if (elem.category === 'Подборки') {
+            elem.href = '/podborki/' + elem.data.code
+          }
+        })
+
+        // payload.reduce((acc, elem)=> {
+        //   acc[elem.category] = acc[elem.category] || []
+        //   acc[elem.category].push(elem)
+        //   return acc
+        // }, {})
+        // console.log('645', acc)
+        // var map = arr.reduce((r, i) => {
+        //   r[i.name] = r[i.name] || [];
+        //   r[i.name].push(i);
+        //   return r;
+        // }, {});
+        // var arr1 = [];
+        // for (var key in map) {
+        //   arr1.push(map[key]);
+        // }
+        // console.log(arr1)
+        state.listSearched = payload
+      }
     },
     actions: {
       // nuxtServerInit({dispatch}) {
@@ -223,7 +273,9 @@ const createStore = () => {
         commit('set_list_tags', response.data)
         return response
       },
-      async getListBroadcastSnippet({ commit }) {
+      async getListBroadcastSnippet({ commit, rootGetters }) {
+        if (!rootGetters.stateAuth) return false
+
         const query = 'filter[broadcast_to_snippet]=true'
         const response = await Request.get(
           this.state.BASE_URL + '/dictionary/object-properties?' + query
@@ -245,6 +297,13 @@ const createStore = () => {
 
         return await Request.post(state.BASE_URL + '/entity/files', data, true)
       },
+
+      async getListSearched({ commit }, symbols) {
+        const response = await Request.get(
+          this.state.BASE_URL + `/entity/global-search/search/{q}?q=${symbols}`
+        );
+        commit('set_list_searched', response.data)
+      },
     },
     modules: {
       AuthModule,
@@ -257,6 +316,7 @@ const createStore = () => {
       Objects,
       CollaborationModule,
       NomenclatureModule,
+      NotificationModule,
     },
   })
 }

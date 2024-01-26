@@ -1,13 +1,14 @@
 <template>
   <v-btn
-    :class='computedClass'
-    :disabled='isDisabled'
-    :href='href'
-    :loading='isLoading'
+    :class="computedClass"
+    :disabled="isDisabled"
+    :href="href"
+    :loading="isLoading"
+    :nuxt="isNuxtLink"
     @click="$emit('click-button')"
   >
-    <template v-if='customSlot'>
-      <slot></slot>
+    <template v-if="customSlot">
+      <slot/>
     </template>
     <template v-else>
       {{ localText }}
@@ -43,6 +44,10 @@ export default {
       type: Boolean,
       default: false
     },
+    isNuxtLink: {
+      type: Boolean,
+      default: false
+    },
     localText: {
       type: String,
       default: ''
@@ -54,13 +59,17 @@ export default {
     isMobile: {
       type: Boolean,
       default: false
+    },
+    unsetWidth: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
     computedClass() {
       const basedClass = 'btnStyled'
       const animatedClass = (this.isAnimation) ? 'animation_save' : ''
-      const mobileClass = this.isMobile ? '' : 'desktop_style'
+      const mobileClass = this.isMobile || this.unsetWidth ? '' : 'desktop_style'
       return `${basedClass} ${mobileClass} ${this.localClass} ${animatedClass}`
     }
   }
@@ -95,7 +104,7 @@ export default {
 }
 
 .v-btn.style_button {
-  background-color: #ffffff;
+  background-color: #ffffff !important;
   color: #000000;
   border: 1px solid rgba(149, 215, 174, 1);
 

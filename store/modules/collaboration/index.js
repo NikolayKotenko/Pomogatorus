@@ -9,6 +9,7 @@ export default {
     listSearchedMembers: [],
     listInviteIdUsers: [],
     stateCollaborationMenu: false,
+    debounceTimeout: null,
   },
   mutations: {
     setLoading(state, payload) {
@@ -37,36 +38,75 @@ export default {
         this.state.BASE_URL + '/users/invite-user-to-object',
         object
       )
+
+      return response
+    },
+    async setTaskByObject({ dispatch }, object) {
+      const response = await Request.post(
+        this.state.BASE_URL + '/entity/request-for-work',
+        object
+      )
+
+      return response
+    },
+    async deleteServiceUserByObject({ dispatch, commit }, object) {
+      commit('setLoading', true)
+
+      const response = await Request.delete(
+        this.state.BASE_URL + '/m-to-m/delete-one-service',
+        object
+      )
       if (response.codeResponse < 400) {
-        await dispatch('CollaborationModule/getListMembersByFilter', {
+        await dispatch('getListMembersByFilter', {
           id_object: object.id_object,
         })
       }
-      console.log(response)
+
+      commit('setLoading', false)
       return response
     },
-    async getSearchedListMembers({ commit }, string) {
+    async getRequestForWorkList() {
+      const response = await Request.get(
+        this.state.BASE_URL + '/entity/request-for-work/'
+      )
+      return response
+    },
+    getSearchedListMembers({ commit, state }, string) {
       if (!string) return false
 
-      const response = await Request.get(
-        this.state.BASE_URL + '/users/get-list-users/search?q=' + string
-      )
-      const result = response.data.map((elem) => elem.data) // Преобразуем из поисковой структуры в обычный массив
-
-      commit('setSearchedMembersList', result)
-      commit('setLoading', false)
-      return response
-    },
-    async getListMembersByFilter({ commit }, Obj) {
       commit('setLoading', true)
 
-      const query = Request.ConstructFilterQuery(Obj) // query = ?filter[id_object]=2
-      const response = await Request.get(
-        this.state.BASE_URL + '/users/get-list-users' + query
-      )
-      commit('setMembersList', response.data)
-      commit('setLoading', false)
-      return response
+      if (state.debounceTimeout) clearTimeout(state.debounceTimeout);
+      state.debounceTimeout = setTimeout(async () => {
+
+        const response = await Request.get(
+          this.state.BASE_URL + '/users/get-list-users/search?q=' + string
+        )
+        const result = response.data.map((elem) => elem.data) // Преобразуем из поисковой структуры в обычный массив
+
+        commit('setSearchedMembersList', result)
+        commit('setLoading', false)
+
+        return response
+      }, 1000);
+    },
+    getListMembersByFilter({ commit, state }, Obj) {
+      if (!Obj) return false;
+      if (!Obj.id_object) return false;
+
+      commit('setLoading', true)
+
+      if (state.debounceTimeout) clearTimeout(state.debounceTimeout);
+      state.debounceTimeout = setTimeout(async () => {
+
+        const query = Request.ConstructFilterQuery(Obj) // query = ?filter[id_object]=2
+        const response = await Request.get(
+          this.state.BASE_URL + '/users/get-list-users' + query
+        )
+        commit('setMembersList', response.data)
+        commit('setLoading', false)
+        return response
+      }, 1000);
     },
     async saveObjData({ commit }, payload) {
       commit('setLoading', true)
@@ -77,6 +117,7 @@ export default {
 
       commit('setLoading', false)
     },
+
   },
   getters: {
     getFilteredListByRoleExperts(state) {

@@ -43,11 +43,61 @@
                 <span class="name">
                   - {{ getValueField(item.name) }}
                 </span>
+                <TooltipStyled
+                  :title="'Описание услуги'"
+                >
+                  <v-menu
+                    offset-overflow
+                    offset-y
+                  >
+                    <template #activator="{ on, attrs }">
+                      <v-icon
+                        small
+                        v-bind="attrs"
+                        color="#5D80B5"
+                        v-on="on"
+                      >
+                        mdi-help-circle-outline
+                      </v-icon>
+                    </template>
+                    <v-list>
+                      <div class="explain_info">
+                        <span>{{ getValueField(item.description) }}</span>
+                      </div>
+                    </v-list>
+                  </v-menu>
+                </TooltipStyled>
               </div>
             </section>
             <section>
-              <span class="type">Оказываемые услуги: </span>
-              <span/>
+              <span class="type">Оказываемые услуги на объекте: </span>
+              <div v-for="(item, index) in getServicesTetheredByUserObject.slice(0, 3)" :key="index" class="list_services">
+                <span class="name">- {{ item.name }}</span>
+                <TooltipStyled
+                  :title="'Описание услуги'"
+                >
+                  <v-menu
+                    offset-overflow
+                    offset-y
+                  >
+                    <template #activator="{ on, attrs }">
+                      <v-icon
+                        small
+                        v-bind="attrs"
+                        color="#5D80B5"
+                        v-on="on"
+                      >
+                        mdi-help-circle-outline
+                      </v-icon>
+                    </template>
+                    <v-list>
+                      <div class="explain_info">
+                        <span>{{ getValueField(item.description) }}</span>
+                      </div>
+                    </v-list>
+                  </v-menu>
+                </TooltipStyled>
+              </div>
             </section>
             <section class="brands">
               <span class="type">Используемые бренды: </span>
@@ -61,31 +111,33 @@
     <!-- Invite USER CARD -->
     <div class="user_info">
       <section class="main_info">
-        <section>
+        <section style="display: flex;">
           <span class="user_name">{{ getValueField(userObject.middle_name) + ' ' + getValueField(userObject.first_name) }}</span>
-          <v-menu
-            offset-overflow
-            offset-y
-          >
-            <template #activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                color="#5D80B5"
-                v-on="on"
-              >
-                mdi-swap-horizontal-circle-outline
-              </v-icon>
-            </template>
-            <v-list>
-              <div class="explain_info">
-                <div>
-                  <span style="font-weight: 500">Пользователь рекомендуется на основании выполненных услуг на других объектах: </span>
-                  <li>БАНЯ Куса, Красные орлы 7 - Монтаж унитаза</li>
-                  <li>БАНЯ Куса, Красные орлы 7 - Монтаж водонагревателя</li>
-                </div>
-              </div>
-            </v-list>
-          </v-menu>
+          <!--          <TooltipStyled :title="'Основания для рекомендации'"> -->
+          <!--            <v-menu -->
+          <!--              offset-overflow -->
+          <!--              offset-y -->
+          <!--            > -->
+          <!--              <template #activator="{ on, attrs }"> -->
+          <!--                <v-icon -->
+          <!--                  v-bind="attrs" -->
+          <!--                  color="#5D80B5" -->
+          <!--                  v-on="on" -->
+          <!--                > -->
+          <!--                  mdi-swap-horizontal-circle-outline -->
+          <!--                </v-icon> -->
+          <!--              </template> -->
+          <!--              <v-list> -->
+          <!--                <div class="explain_info"> -->
+          <!--                  <div> -->
+          <!--                    <span style="font-weight: 500">Пользователь рекомендуется на основании выполненных услуг на других объектах: </span> -->
+          <!--                    <li>БАНЯ Куса, Красные орлы 7 - Монтаж унитаза</li> -->
+          <!--                    <li>БАНЯ Куса, Красные орлы 7 - Монтаж водонагревателя</li> -->
+          <!--                  </div> -->
+          <!--                </div> -->
+          <!--              </v-list> -->
+          <!--            </v-menu> -->
+          <!--          </TooltipStyled> -->
         </section>
         <section class="brands">
           <span class="type">Используемые бренды: </span>
@@ -98,32 +150,68 @@
         </section>
       </section>
       <section class="services">
-        <section v-if="">
+        <section v-if="!getStateTetheredUserInObject">
           <span class="type">Рекомендуемые услуги: </span>
           <div v-for="(item, index) in getLimitedServices" :key="index" class="list_services">
             <span class="name">
               - {{ getValueField(item.name) }}
             </span>
-            <v-menu
-              offset-overflow
-              offset-y
+            <TooltipStyled
+              :title="'Описание услуги'"
             >
-              <template #activator="{ on, attrs }">
-                <v-icon
-                  small
-                  v-bind="attrs"
-                  color="#5D80B5"
-                  v-on="on"
-                >
-                  mdi-help-circle-outline
-                </v-icon>
-              </template>
-              <v-list>
-                <div class="explain_info">
-                  <span>{{ getValueField(item.description) }}</span>
-                </div>
-              </v-list>
-            </v-menu>
+              <v-menu
+                offset-overflow
+                offset-y
+              >
+                <template #activator="{ on, attrs }">
+                  <v-icon
+                    small
+                    v-bind="attrs"
+                    color="#5D80B5"
+                    v-on="on"
+                  >
+                    mdi-help-circle-outline
+                  </v-icon>
+                </template>
+                <v-list>
+                  <div class="explain_info">
+                    <span>{{ getValueField(item.description) }}</span>
+                  </div>
+                </v-list>
+              </v-menu>
+            </TooltipStyled>
+          </div>
+        </section>
+        <section v-else>
+          <span class="type">Оказываемые услуги: </span>
+          <div v-for="(item, index) in getServicesTetheredByUserObject.slice(0, 3)" :key="index" class="list_services">
+            <span class="name">
+              - {{ getValueField(item.name) }}
+            </span>
+            <TooltipStyled
+              :title="'Описание услуги'"
+            >
+              <v-menu
+                offset-overflow
+                offset-y
+              >
+                <template #activator="{ on, attrs }">
+                  <v-icon
+                    small
+                    v-bind="attrs"
+                    color="#5D80B5"
+                    v-on="on"
+                  >
+                    mdi-help-circle-outline
+                  </v-icon>
+                </template>
+                <v-list>
+                  <div class="explain_info">
+                    <span>{{ getValueField(item.description) }}</span>
+                  </div>
+                </v-list>
+              </v-menu>
+            </TooltipStyled>
           </div>
         </section>
       </section>
@@ -131,132 +219,111 @@
         v-if="SearchStyled"
         class="application"
       >
-        <!-- Модальное окно "Составление заявки" по клику на кнопку "Отправить заявку". -->
-        <template v-if="!getStateTetheredUserInObject">
-          <v-dialog
-            v-model="showModal"
-            width="600"
-          >
-            <template #activator="{ on, attrs }">
-              <div
-                v-bind="attrs"
-                v-on="on"
-              >
-                <ButtonStyled
-                  :local-text="'Отправить заявку'"
-                  :local-class="'invite_button style_button'"
-                  @click="openModal"
-                />
-              </div>
-            </template>
-            <v-card class="application_card">
-              <div class="application_title">
-                <h3>Составление заявки</h3>
-                <v-icon @click="closeModal">
-                  mdi-close
-                </v-icon>
-              </div>
-              <div>
-                <span>Пригласить {{ getValueField(userObject.middle_name) + ' ' + getValueField(userObject.first_name) }} в качестве: </span>
-              </div>
-              <SelectStyled
-                class="services_select"
-                :items="userObject.services"
-                :item-text="'name'"
-                :item-value="'id'"
-                :is-solo="true"
-                :is-multiple="true"
-                :is-chips="true"
-                @update-input="setSelectedServicesIdsLocal"
-              />
-              <div class="services_buttons">
-                <div @click="sendApplication">
-                  <ButtonStyled
-                    :local-text="'Отправить заявку'"
-                    :local-class="'invite_button style_button'"
-                  />
-                </div>
-                <div @click="closeModal">
-                  <ButtonStyled
-                    :local-text="'Отмена'"
-                    :local-class="'style_close'"
-                  />
-                </div>
-              </div>
-            </v-card>
-          </v-dialog>
-        </template>
+        <!-- Функциональные иконки. -->
 
-        <!-- Модальное окно "Просмотр заявки" по клику на кнопку "Посмотреть заявку". -->
-        <template v-else>
-          <v-dialog
-            v-model="showModal"
-            width="600"
-          >
-            <template #activator="{ on, attrs }">
-              <div
-                v-bind="attrs"
-                v-on="on"
-              >
-                <ButtonStyled
-                  :local-text="'Поcмотреть заявку'"
-                  :local-class="'invite_button style_button'"
-                  @click="openModal"
-                />
-              </div>
-            </template>
-            <v-card class="application_card">
-              <div class="application_title">
-                <h3>Просмотр заявки</h3>
-                <v-icon @click="closeModal">
-                  mdi-close
-                </v-icon>
-              </div>
-              <div>
-                <span>Пользователь
-                  {{ getValueField(userObject.middle_name) + ' ' + getValueField(userObject.first_name) }}
-                  приглашен в качестве исполнителя услуг: </span>
-              </div>
-              <SelectStyled
-                class="services_select"
-                :items="userObject.services"
-                :item-text="'name'"
-                :item-value="'id'"
-                :is-solo="true"
-                :is-multiple="true"
-                :is-chips="true"
-                @update-input="setSelectedServicesIdsLocal"
+        <section>
+          <div class="functional_icons">
+            <template v-if="!getStateTetheredUserInObject">
+              <ButtonStyled
+                :local-text="'Составить заявку'"
+                :local-class="'style_button'"
+                @click-button="openModal"
               />
-              <div class="services_buttons">
-                <div @click="sendApplication">
-                  <ButtonStyled
-                    :local-text="'Сохранить'"
-                    :local-class="'invite_button style_button'"
-                  />
-                </div>
-                <div @click="removeApplication">
-                  <ButtonStyled
-                    :local-text="'Отстранить'"
-                    :local-class="'style_close'"
-                  />
-                </div>
-              </div>
-            </v-card>
-          </v-dialog>
-        </template>
+            </template>
+            <!--              <template v-else> -->
+            <!--                &lt;!&ndash; Разрешение на добавление других участников на объект. &ndash;&gt; -->
+            <!--                <TooltipStyled -->
+            <!--                  :title="'Предоставить права для приглашения других пользователей'" -->
+            <!--                > -->
+            <!--                  <v-icon size="44" disabled> -->
+            <!--                    mdi-account-multiple-check -->
+            <!--                  </v-icon> -->
+            <!--                </TooltipStyled> -->
+
+            <!--                &lt;!&ndash; Просмотр заявки. &ndash;&gt; -->
+            <!--                &lt;!&ndash;              <TooltipStyled &ndash;&gt; -->
+            <!--                &lt;!&ndash;                :title="'Просмотр заявки'" &ndash;&gt; -->
+            <!--                &lt;!&ndash;              > &ndash;&gt; -->
+            <!--                &lt;!&ndash;                <v-icon &ndash;&gt; -->
+            <!--                &lt;!&ndash;                  size="44" &ndash;&gt; -->
+            <!--                &lt;!&ndash;                  @click="openModal" &ndash;&gt; -->
+            <!--                &lt;!&ndash;                > &ndash;&gt; -->
+            <!--                &lt;!&ndash;                  mdi-list-status &ndash;&gt; -->
+            <!--                &lt;!&ndash;                </v-icon> &ndash;&gt; -->
+            <!--                &lt;!&ndash;              </TooltipStyled> &ndash;&gt; -->
+
+            <!--                &lt;!&ndash; Отстранить пользователя (под капотом удалить все услуги). &ndash;&gt; -->
+            <!--                <v-dialog -->
+            <!--                  v-model="showDeleteUserModal" -->
+            <!--                  width="600" -->
+            <!--                > -->
+            <!--                  <template #activator="{ on, attrs }"> -->
+            <!--                    <TooltipStyled -->
+            <!--                      :title="'Отстранить пользователя'" -->
+            <!--                    > -->
+            <!--                      <v-icon -->
+            <!--                        size="44" -->
+            <!--                        v-bind="attrs" -->
+            <!--                        v-on="on" -->
+            <!--                        @click="showDeleteUserModal = true" -->
+            <!--                      > -->
+            <!--                        mdi-account-remove -->
+            <!--                      </v-icon> -->
+            <!--                    </TooltipStyled> -->
+            <!--                  </template> -->
+            <!--                  <v-card class="application_card"> -->
+            <!--                    <div class="application_header"> -->
+            <!--                      <span class="header_title">Отстранить пользователя</span> -->
+            <!--                      <v-icon large @click="showDeleteUserModal = false"> -->
+            <!--                        mdi-close -->
+            <!--                      </v-icon> -->
+            <!--                    </div> -->
+            <!--                    <span>Вы действительно хотите отстранить пользователя -->
+            <!--                      {{ getValueField(userObject.middle_name) + ' ' + getValueField(userObject.first_name) }}? -->
+            <!--                    </span> -->
+            <!--                    <div class="services_buttons"> -->
+            <!--                      <div @click="localDeleteServiceUserByObject"> -->
+            <!--                        <ButtonStyled -->
+            <!--                          :local-text="'Подтвердить'" -->
+            <!--                          :local-class="'invite_button style_button'" -->
+            <!--                          :is-loading="$store.state.CollaborationModule.isLoading" -->
+            <!--                        /> -->
+            <!--                      </div> -->
+            <!--                      <div @click="showDeleteUserModal = false"> -->
+            <!--                        <ButtonStyled -->
+            <!--                          :local-text="'Отмена'" -->
+            <!--                          :local-class="'style_close'" -->
+            <!--                        /> -->
+            <!--                      </div> -->
+            <!--                    </div> -->
+            <!--                  </v-card> -->
+            <!--                </v-dialog> -->
+            <!--              </template> -->
+            <TaskModal
+              ref="inviteUserModal"
+              :user-object="userObject"
+              :get-services-tethered-by-user-object="getServicesTetheredByUserObject"
+              :get-state-tethered-user-in-object="getStateTetheredUserInObject"
+            />
+          </div>
+        </section>
       </section>
     </div>
   </v-container>
 </template>
 
 <script>
+import { mapGetters, mapState } from 'vuex';
+import InviteUserModal from '../Collaboration/Task.vue';
+import TaskModal from '../Collaboration/TaskModal.vue';
 import SelectStyled from './SelectStyled.vue';
 import SearchStyled from './SearchStyled.vue';
 import ButtonStyled from './ButtonStyled.vue';
+import TooltipStyled from './TooltipStyled.vue';
 
 export default {
   name: 'CardInviteUser',
-  components: { ButtonStyled, SelectStyled },
+  components: { TaskModal, InviteUserModal, TooltipStyled, ButtonStyled, SelectStyled },
   props: {
     userObject: {
       type: Object,
@@ -266,17 +333,16 @@ export default {
   },
   data() {
     return {
-      showModal: false,
-      userAccess: [
-        { access: 'Полный доступ',value: 1 },
-        { access: 'Может редактировать',value: 2 },
-        { access: 'Может комментировать',value: 3 },
-        { access: 'Может смотреть',value: 4 },
-      ],
+      showDeleteUserModal: false,
       selectedServicesIdsLocal: [],
+      localSelectedServices: null,
+
     }
   },
   computed: {
+    ...mapState('CollaborationModule', ['listMembers']),
+    ...mapState('Objects', ['currentObject']),
+
     SearchStyled() {
       return SearchStyled
     },
@@ -291,6 +357,27 @@ export default {
         return object.id === this.$store.getters['Objects/getIdCurrentObject']
       })
     },
+    getServicesTetheredByUserObject() {
+      const currentObject = this.userObject.services_objects
+        .filter((obj) => obj.id === this.$store.getters['Objects/getIdCurrentObject'])[0];
+
+      if (!currentObject) return []
+
+      if (!currentObject.m_to_m_users_services_objects) return []
+
+      const idsServices = currentObject.m_to_m_users_services_objects
+        .filter((obj) => obj.id_user === this.userObject.id)
+        .map((obj) => obj.id_services)
+
+      return this.userObject.services.filter((obj) => {
+        return idsServices.includes(obj.id)
+      })
+    },
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.selectedServicesIdsLocal = this.getServicesTetheredByUserObject.map((obj) => obj.id)
+    });
   },
 
   methods: {
@@ -299,37 +386,40 @@ export default {
     },
     openModal() {
       this.$store.commit('UserSettings/setListServices', [])
-      this.showModal = true
+
+      this.$refs.inviteUserModal.openModal()
     },
     closeModal() {
-      this.showModal = false
+      this.$refs.inviteUserModal.closeModal()
     },
-    async sendApplication() {
+
+    async localDeleteServiceUserByObject() {
+      let response = null;
       for (const idServices of this.selectedServicesIdsLocal) {
-        await this.$store.dispatch(
-          'CollaborationModule/setUserByObject',
+        response = await this.$store.dispatch(
+          'CollaborationModule/deleteServiceUserByObject',
           {
             id_user: this.userObject.id,
             id_object: this.$store.getters['Objects/getIdCurrentObject'],
             id_services: idServices,
           })
       }
-      this.$toast.success('Заявка составлена',{ duration: 5000 })
-      this.closeModal()
-    },
-    removeApplication() {
-      const deleteItem = this.$store.getters['CollaborationModule/getFilteredListByRoleUsers'].splice(0, 2)
+      if (! response) return false;
+
+      if (response.codeResponse >= 400) return false;
+
       this.$toast.success('Пользователь отстранён',{ duration: 5000 })
       this.closeModal()
     },
     setSelectedServicesIdsLocal(selectedServices) {
-      this.selectedServicesIdsLocal = selectedServices.map(elem => elem.id)
+      if ( ! selectedServices ) return false
+
+      this.selectedServicesIdsLocal = [];
+      this.selectedServicesIdsLocal.push(selectedServices.id);
+
 
     }
   },
-  getters: {
-
-  }
 };
 </script>
 
@@ -357,22 +447,14 @@ $orange-color: #F79256;
   }
 }
 .application {
-  padding-top: 20px ;
+
 }
-.application_card {
-  padding: 20px;
-  .application_title {
-    display: flex;
-    justify-content: space-between;
-  }
-  .services_select {
-    padding: 20px 0;
-  }
-  .services_buttons {
-    display: flex;
-    justify-content: space-between;
-  }
+.functional_icons{
+  display: flex;
+  justify-content: flex-end;
+  grid-column-gap: 1em;
 }
+
 .avatar_fio{
   font-size: 2em;
   color: #FFFFFF;
@@ -382,7 +464,7 @@ $orange-color: #F79256;
   grid-column-gap: 1em;
   align-items: center;
   width: 100%;
-  max-width: 1000px;
+  max-width: 1080px;
   border-radius: 5px;
   transition: all 0.4s ease-in-out;
   cursor: default;
@@ -393,7 +475,7 @@ $orange-color: #F79256;
 
   .user_info{
     display: grid;
-    grid-template-columns: 1.2fr 1fr 0.7fr;
+    grid-template-columns: 1.6fr 1.4fr 1fr;
     width: 100%;
     align-items: center;
     .access_rights{
@@ -419,13 +501,14 @@ $orange-color: #F79256;
   font-size: 0.88em;
 }
 
-.services{
-  .list_services{
+.list_services{
+  display: flex;
+  align-items: center;
 
-
-  }
 
 }
+
+.services{}
 .explain_info{
   padding: 20px;
   max-width: 500px;

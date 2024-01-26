@@ -1,8 +1,9 @@
 <template>
-  <v-container class="product_card_wrapper">
+  <div class="product_card_wrapper">
+    <!-- Общая информация -->
     <v-img
+      :src="getMainProductPhoto"
       class="empty_placeholder"
-      src="https://baxi.ru/upload/iblock/0d1/ECO_Nova_001.png"
     />
     <div class="product_info">
       <div class="product_title">
@@ -18,11 +19,14 @@
         </li>
       </div>
     </div>
+
+    <!-- Меню Кнопок -->
     <div class="product_buttons">
       <div class="product_icons">
+        <!-- Избранное -->
         <TooltipStyled
-          :title="'Добавить в избранное'"
           :is-top="true"
+          :title="'Добавить в избранное'"
         >
           <v-icon
             size="36"
@@ -31,9 +35,11 @@
             mdi-heart-outline
           </v-icon>
         </TooltipStyled>
+
+        <!-- Модальное окно. Детальная карточка товара -->
         <TooltipStyled
-          :title="'Подробнее о товаре'"
           :is-top="true"
+          :title="'Подробнее о товаре'"
         >
           <v-dialog
             v-model="showModal"
@@ -48,77 +54,137 @@
                 mdi-list-box-outline
               </v-icon>
             </template>
+
             <v-card class="detail_card_product">
-              <h2>{{ data.name }}</h2>
+              <div class="card_name">
+                {{ data.name }}
+              </div>
+
+              <!-- Фотографии Оборудования -->
               <div class="product_photos">
-                <v-img
-                  class="main_photo"
-                  src="https://baxi.ru/upload/iblock/0d1/ECO_Nova_001.png"
-                />
-              </div>
-              <v-divider/>
-              <div class="list_characters">
-                <li>Артикул: {{ data.vendor_code }}</li>
-                <li
-                  v-for="(character, index) in data._nomenclature_characteristics"
-                  :key="index"
+                <ViewerStyled
+                  :images="data._family.photos"
+                  class="photos_container"
                 >
-                  {{ character.name }}: {{ character.value }}{{ character.postfix }}
-                </li>
-              </div>
-              <div class="detail_card_buttons">
-                <div>
-                  <SelectStyled
-                    :is-solo="true"
-                    :placeholder="'Выберите действие'"
+                  <img
+                    v-for="(image, index) in data._family.photos"
+                    :key="index"
+                    :src="image.url"
+                    alt=""
+                    class="photo"
+                  >
+                </ViewerStyled>
+                <div class="main_photo_wrapper">
+                  <v-img
+                    :src="getMainProductPhoto"
+                    class="main_photo"
+                    contain
                   />
                 </div>
-                <div @click="closeModal">
+              </div>
+              <v-divider/>
+
+              <!-- Инфорамация об Оборудовании -->
+              <div class="product_detail_info">
+                <v-tabs color="#95D7AE" vertical>
+                  <v-tab :key="0">
+                    Описание
+                  </v-tab>
+                  <v-tab :key="1">
+                    Характеристики
+                  </v-tab>
+                  <v-tab :key="2">
+                    Документация
+                  </v-tab>
+                  <v-tab-item :key="0">
+                    <div>
+                      <span class="product_description">
+                        {{ data._family.description }}
+                      </span>
+                    </div>
+                  </v-tab-item>
+                  <v-tab-item :key="1">
+                    <div class="product_characteristics">
+                      <li>Артикул: {{ data.vendor_code }}</li>
+                      <li
+                        v-for="(character, index) in data._nomenclature_characteristics"
+                        :key="index"
+                      >
+                        {{ character.name }}: {{ character.value }}{{ character.postfix }}
+                      </li>
+                    </div>
+                  </v-tab-item>
+                  <v-tab-item :key="2">
+                    <div class="product_documents"/>
+                  </v-tab-item>
+                </v-tabs>
+              </div>
+
+              <!-- Функциональные кнопки -->
+              <div class="product_detail_buttons">
+                <SelectStyled
+                  :is-solo="true"
+                  :item-text="'action'"
+                  :item-value="'value'"
+                  :items="actionsWithProduct"
+                  :placeholder="'Выберите действие'"
+                  class="function_btn"
+                />
+                <div>
                   <ButtonStyled
+                    :local-class="'style_close'"
                     :local-text="'Закрыть'"
-                    local-class="style_close"
+                    @click-button="closeModal"
                   />
                 </div>
               </div>
             </v-card>
           </v-dialog>
         </TooltipStyled>
+
+        <!-- Ссылка на маркетплейс -->
         <TooltipStyled
-          :title="'Перейти в Яндекс Маркет'"
           :is-top="true"
+          :title="'Перейти в Яндекс Маркет'"
         >
           <v-icon size="36">
-            mdi-heart-outline
+            mdi-store-outline
           </v-icon>
         </TooltipStyled>
+
+        <!-- Модальное окно эксплуатации -->
         <TooltipStyled
-          :title="'Подробнее об эксплуатации'"
           :is-top="true"
+          :title="'Подробнее об эксплуатации'"
         >
           <v-icon size="36">
             mdi-file-cog-outline
           </v-icon>
         </TooltipStyled>
       </div>
-      <div class="product_function_btn">
+      <div class="product_detail_buttons">
         <SelectStyled
-          class=""
           :is-solo="true"
+          :item-text="'action'"
+          :item-value="'value'"
+          :items="actionsWithProduct"
           :placeholder="'Выберите действие'"
+          class="function_btn"
         />
       </div>
     </div>
-  </v-container>
+  </div>
 </template>
 
 <script>
 import SelectStyled from './SelectStyled.vue';
 import TooltipStyled from './TooltipStyled.vue';
 import ButtonStyled from './ButtonStyled.vue';
+import ViewerStyled from './ViewerStyled.vue';
 
 export default {
   name: 'ProductCard',
-  components: { ButtonStyled, TooltipStyled, SelectStyled },
+  components: { ViewerStyled, ButtonStyled, TooltipStyled, SelectStyled },
   props: {
     data: {
       type: Object,
@@ -128,28 +194,38 @@ export default {
   data() {
     return {
       showModal: false,
+      actionsWithProduct: [
+        { action: 'Зарегистрировать покупку', value: 1 },
+        { action: 'Оформить акт установки', value: 2 },
+        { action: 'Оформить акт тех.обслуживания', value: 3 },
+        { action: 'Оформить акт утилизации', value: 4 }
+      ]
+    };
+  },
+  computed: {
+    getMainProductPhoto() {
+      return this.data?._family?.photos[0].url;
     }
   },
   async mounted() {
-    await this.$store.dispatch('NomenclatureModule/getListNomenclature')
   },
   methods: {
-    changeFavoriteProduct(){
-      this.$toast.success('Добавленно в избранное', { duration: 5000 })
+    changeFavoriteProduct() {
+      this.$toast.success('Добавленно в избранное', { duration: 5000 });
     },
     openModal() {
-      this.showModal = true
+      this.showModal = true;
     },
     closeModal() {
-      this.showModal = false
-    },
-  },
+      this.showModal = false;
+    }
+  }
 
-}
+};
 </script>
 
 <style lang="scss" scoped>
-.product_card_wrapper{
+.product_card_wrapper {
   display: inline-flex;
   grid-column-gap: 20px;
   justify-content: space-between;
@@ -157,39 +233,40 @@ export default {
   height: 180px;
   padding: 20px;
   margin-top: 20px;
+  background-color: #FFFFFF;
   border-radius: 5px;
   transition: all 0.4s ease-in-out;
+
   &:hover {
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
     background-color: #FFF4CB;
   }
 
-  .product_info{
+  .product_info {
     display: grid;
     margin-right: auto;
 
-    .product_info_list{
+    .product_info_list {
       font-size: 0.8em;
       color: #8A8784;
       margin-top: auto;
     }
   }
-  .product_buttons{
+
+  .product_buttons {
     display: grid;
 
     .product_icons {
       display: inline-flex;
       margin-bottom: auto;
-      justify-content: end;
-    }
-    .product_function_btn{
-      margin-top: auto;
+      justify-content: flex-end;
     }
   }
 }
-.empty_placeholder{
+
+.empty_placeholder {
   background-color: #FFFFFF;
-  background-size: cover;
+  background-size: contain;
   height: 100%;
   max-height: 140px;
   max-width: 140px;
@@ -198,25 +275,76 @@ export default {
   justify-content: center;
   align-items: center;
 }
-.detail_card_product{
+
+.detail_card_product {
   display: inline-grid;
-  width: 675px;
+  grid-row-gap: 20px;
+  width: 700px;
   height: 700px;
   padding: 20px;
+
+  .card_name {
+    font-size: 1.5em;
+    font-weight: 700;
+  }
+
   .product_photos {
     display: flex;
-    justify-content: center;
-    .main_photo{
-      background-size: cover;
-      max-width: 350px;
-      height: 100%;
-      max-height: 220px;
+    max-height: 220px;
+    width: 100%;
+
+    .main_photo_wrapper {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+
+      .main_photo {
+        height: auto;
+        max-width: 300px;
+      }
+    }
+
+    .photo {
+      display: grid;
+      max-height: 70px;
+      max-width: 70px;
+      cursor: pointer;
+      transition: all 0.4s ease-in-out;
+      margin-bottom: 10px;
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.05);
+      }
+    }
+
+  }
+
+  .product_detail_info {
+    height: 200px;
+
+    .product_description {
+      font-size: 0.9em;
+    }
+
+    .product_characteristics {
+      font-size: 0.9em;
+      color: #8A8784;
+      margin-top: auto;
     }
   }
-  .detail_card_buttons {
-    display: flex;
-    justify-content: space-between;
-    align-items: end;
-  }
+
+}
+
+.product_detail_buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+
+}
+
+.function_btn {
+  width: 320px;
+  max-width: 320px;
+  margin-bottom: 0;
 }
 </style>

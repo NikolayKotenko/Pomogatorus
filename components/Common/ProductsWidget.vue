@@ -85,40 +85,43 @@ export default {
   name: 'ProductsWidget',
   components: { TooltipStyled },
   async mounted() {
-    await this.$store.dispatch('NomenclatureModule/getListNomenclature')
+    await this.$store.dispatch('NomenclatureModule/getListNomenclature');
   },
   methods: {
     changeFavoriteProduct() {
-      this.$toast.success('Добавленно в избранное', { duration: 5000 })
+      this.$toast.success('Добавленно в избранное', { duration: 5000 });
     },
     addBoughtProduct() {
-      this.$toast.success('Добавленно в купленное', { duration: 5000 })
+      this.$toast.success('Добавленно в купленное', { duration: 5000 });
     },
     addInstalledProduct() {
-      this.$toast.success('Добавленно в установленное', { duration: 5000 })
+      this.$toast.success('Добавленно в установленное', { duration: 5000 });
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
 .products_wrapper {
   padding: 20px 0;
 
-  .main_title{
+  .main_title {
     font-size: 1.2em;
     font-weight: 500;
   }
+
   .item_container {
     margin: 12px;
-    width: 250px;
-    height: 250px;
+    width: 230px;
+    height: 230px;
+
     .img_product {
       background-size: cover;
       height: 100%;
       border-radius: 5px;
       box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
     }
+
     .hover_content {
       height: 100%;
       background: rgba(0, 0, 0, 0.50);
@@ -127,21 +130,26 @@ export default {
       bottom: 0;
       justify-content: center;
       border-radius: 5px;
+
       .info_container {
         display: grid;
         grid-row-gap: 1em;
-        .title{
+
+        .title {
           color: #FFFFFF;
           font-size: 1em;
         }
+
         .options_container {
           display: grid;
-          .options{
+
+          .options {
             color: #FFFFFF;
             font-size: 0.8em;
           }
         }
-        .icons{
+
+        .icons {
           display: flex;
           grid-column-gap: 1em;
         }
