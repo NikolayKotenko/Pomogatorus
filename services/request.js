@@ -1,4 +1,4 @@
-import Logging from '@/services/logging';
+import Logging from '@/services/logging'
 // import Vue from "vue";
 // import auth from "@/middleware/redirectArticles.js"
 // import cookies from 'cookie-universal-nuxt'
@@ -69,19 +69,19 @@ export default class Request {
   }
 
   static async get(url, params = null) {
-    return this.request(url, params, 'GET', '')
+    return await this.request(url, params, 'GET', '')
   }
 
   static async post(url, params, formData) {
-    return this.request(url, params, 'POST', formData)
+    return await this.request(url, params, 'POST', formData)
   }
 
   static async put(url, params = null) {
-    return this.request(url, params, 'PUT', '')
+    return await this.request(url, params, 'PUT', '')
   }
 
   static async delete(url, params) {
-    return this.request(url, params, 'DELETE')
+    return await this.request(url, params, 'DELETE')
   }
 
   static bodyFormData(paramBody) {

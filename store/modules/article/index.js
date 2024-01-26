@@ -14,8 +14,13 @@ export default {
     answers: [],
     totalImages: [],
     indexImage: 0,
+
+    isAnswered: false,
   },
   mutations: {
+    set_is_answered(state, payload) {
+      state.isAnswered = payload
+    },
     set_answers(state, payload) {
       state.answers = payload
     },
@@ -119,6 +124,24 @@ export default {
         resolve()
       })
     },
+    nomenclatureFromServer({ commit, state }, params) {
+      return new Promise((resolve) => {
+        const { index, component } = params
+
+        state.loadingModalList = true
+
+        const data = {
+          name: 'nomenclature',
+          id: component.id,
+          nomenclatures_id: component.nomenclatures_id,
+          index_nomenclature: component.index_nomenclature,
+        }
+
+        commit('changeSelectedComponent', { data, index, component })
+        state.loadingModalList = false
+        resolve()
+      })
+    },
     imageFromServer({ commit, state }, params) {
       return new Promise((resolve) => {
         const { index, component } = params
@@ -160,6 +183,13 @@ export default {
             reject(error)
           })
       })
+    },
+    setIsAnswered({ commit }) {
+      commit('set_is_answered', true)
+
+      setTimeout(() => {
+        commit('set_is_answered', false)
+      }, 2000)
     },
     linkToArticle(_, articleId) {
       window.location.href = '/articles/' + articleId
