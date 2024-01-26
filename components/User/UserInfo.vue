@@ -29,6 +29,17 @@
           color="#95D7AE"
         />
       </v-tab>
+      <v-tab
+        v-if="isLoggedIn && userData.installation_engineering_systems === 1"
+        :key="2"
+      >
+        Портфель брендов
+        <v-badge
+          :content="$store.getters['UserSettings/getCountServices']"
+          :value="$store.getters['UserSettings/getCountServices']"
+          color="#95D7AE"
+        />
+      </v-tab>
       <!-- Общая информация -->
       <v-tab-item :key="0">
         <div class="card_object pt-5 pb-5">
@@ -94,6 +105,27 @@
           class="mt-5"
           @add-service="setServiceByUser"
         />
+      </v-tab-item>
+
+      <!-- Портфель брендов -->
+      <v-tab-item :key="2" class="brands_tab">
+        <span class="title">Бренды с которыми вы работаете</span>
+        <v-card class="brand_wrapper" outlined height="60">
+          <div class="brand_info">
+            <v-img
+              :src="require(`~/assets/svg/baxi_logo.svg`)"
+              class="brand_img"
+              contain
+            ></v-img>
+            <span class="brand_text">Установленно оборудования Baxi: 23</span>
+          </div>
+          <IconTooltip
+            :size-icon="'24'"
+            :color-icon="'#B3B3B3'"
+            :icon-text="'mdi-close'"
+            :text-tooltip="'Удалить бренд'"
+          />
+        </v-card>
       </v-tab-item>
     </v-tabs>
 
@@ -164,6 +196,7 @@ import ServiceCard from "@/components/Collaboration/ServiceCard.vue";
 import UniversalAddInput from "@/components/Common/UniversalAddInput.vue";
 import { MtoMUsersServices } from "~/helpers/constructors";
 import SelectStyled from "~/components/Common/SelectStyled";
+import IconTooltip from '../Common/IconTooltip.vue';
 
 export default {
   name: 'UserInfo',
@@ -176,7 +209,8 @@ export default {
     UserFields,
     LoginAuth,
     ServiceCard,
-    UniversalAddInput
+    UniversalAddInput,
+    IconTooltip
   },
   data: () => ({
     isChanged: false,
@@ -334,6 +368,35 @@ export default {
     }
   }
 }
+
+
+.brands_tab {
+  display: grid;
+  grid-row-gap: 10px;
+  .title {
+  font-size: 1.5em !important;
+  font-weight: 700;
+}
+  .brand_wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 1em;
+
+    .brand_info {
+      display: flex;
+      align-items: center;
+      .brand_img {
+        max-height: 24px;
+        margin-right: 50px;
+      }
+    }
+    
+}
+}
+
+
 
 .close {
   max-height: 45px;

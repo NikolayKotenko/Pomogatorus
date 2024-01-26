@@ -81,7 +81,7 @@
           <template #icon>
             <IconTooltip
               :color-icon="'#FFFFFF'"
-              :size-icon="32"
+              :size-icon="'32'"
               :icon-text="'mdi-account-group-outline'"
               :text-tooltip="'Совместная работа над ' + $store.state.Objects.currentObject.name"
             />
@@ -104,7 +104,7 @@
             >
               <IconTooltip
                 :color-icon="'#FFFFFF'"
-                :size-icon="32"
+                :size-icon="'32'"
                 :icon-text="'mdi-home-edit-outline'"
                 :text-tooltip="'Текущий объект'"
               />

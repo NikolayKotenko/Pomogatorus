@@ -165,7 +165,35 @@
                   @callback="yourCallbackFunction"
                 />
               </client-only>
+              
+              <script src="https://yastatic.net/s3/passport-sdk/autofill/v1/sdk-suggest-with-polyfills-latest.js"></script>
+              
+              <script>
+                window.onload = function() {
+                  window.YaAuthSuggest.init(
+                    {
+                      client_id: '308333aa11da48e1b90f34c8eeb9ba17',
+                      response_type: 'token',
+                      redirect_uri: 'http://192.168.0.126:5000/articles'
+                    },
+                    'http://192.168.0.126:5000/articles',
+                    {
+                      view: "button",
+                      parentId: "buttonContainerId",
+                      buttonSize: 'm',
+                      buttonView: 'icon',
+                      buttonTheme: 'light',
+                      buttonBorderRadius: "5",
+                      buttonIcon: 'yaEng',
+                    }
+                  )
+                  .then(({handler}) => handler())
+                  .then(data => console.log('Сообщение с токеном', data))
+                  .catch(error => console.log('Обработка ошибки', error))
+                }
 
+              </script>
+                                    
               <v-btn
                 :disabled="! checkbox"
                 class="autorize_btn"
@@ -258,6 +286,8 @@
 
 <script src="https://vk.com/js/api/openapi.js?169" type="text/javascript"></script>
 
+
+
 <script>
 import { mapGetters } from 'vuex';
 import Request from '../../services/request';
@@ -271,6 +301,7 @@ if (process.client) {
 } else {
   vueTelegramLogin = null
 }
+
 
 export default {  
   name: 'LoginAuth',
@@ -465,7 +496,8 @@ export default {
       const elem = document.getElementById(`component_wrapper-${this.index_component}`);
       elem.remove();
       this.$store.dispatch('deleteComponent', this.index_component);
-    }
+    },
+  
   }
 };
 </script>

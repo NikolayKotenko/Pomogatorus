@@ -1,5 +1,5 @@
 <template>
-  <VForm v-model="isFormValid">
+  <v-form v-model="isFormValid">
     <!--  MOBILE  -->
     <template v-if="isMobile">
       <InputStyled
@@ -49,8 +49,8 @@
 
     <!--  DESKTOP  -->
     <template v-else>
-      <VRow>
-        <VCol>
+      <v-row>
+        <v-col>
           <InputStyled
             :class="'styleTextField'"
             :data="form.first_name"
@@ -58,8 +58,8 @@
             :is-outlined="true"
             @update-input="setFirstNameData"
           />
-        </VCol>
-        <VCol>
+        </v-col>
+        <v-col>
           <InputStyled
             :class="'styleTextField'"
             :data="form.middle_name"
@@ -67,8 +67,8 @@
             :is-outlined="true"
             @update-input="setMiddleNameData"
           />
-        </VCol>
-        <VCol>
+        </v-col>
+        <v-col>
           <InputStyled
             :class="'styleTextField'"
             :data="form.last_name"
@@ -76,11 +76,11 @@
             :is-outlined="true"
             @update-input="setLastNameData"
           />
-        </VCol>
-      </VRow>
+        </v-col>
+      </v-row>
 
-      <VRow>
-        <VCol>
+      <v-row>
+        <v-col>
           <InputStyled
             :class="'styleTextField'"
             :data="form.email"
@@ -90,8 +90,8 @@
             color="#95D7AE"
             @update-input="setEmailData"
           />
-        </VCol>
-        <VCol>
+        </v-col>
+        <v-col>
           <!--          TODO: Разобраться с маской телефона. После использовать компонент "InputStyled" -->
           <VTextField
             v-model="form.telephone"
@@ -102,13 +102,18 @@
             outlined
             @change="setData"
           />
-        </VCol>
-      </VRow>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          
+        </v-col>
+      </v-row>
     </template>
 
     <div class="roles_wrapper">
       <span class="roles_wrapper_title">Кто вы?</span>
-      <VCheckbox
+      <v-checkbox
         v-for="(type, index) in types"
         :key="index"
         v-model.number="form[type.key]"
@@ -123,7 +128,7 @@
         @change="setData"
       />
     </div>
-  </VForm>
+  </v-form>
 </template>
 
 <script>
