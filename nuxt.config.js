@@ -52,7 +52,6 @@ export default {
     //
     '@nuxtjs/toast',
     '@nuxtus/nuxt-localtunnel',
-   
     'nuxt-socket-io',
   ],
   serverMiddleware: ['~/api/index.js'],
@@ -86,8 +85,8 @@ export default {
         url: 'http://192.168.1.221:5000',
         vuex: {},
         namespaces: {},
-      }
-    ]
+      },
+    ],
     // Options
   },
   pwa: {

@@ -87,8 +87,8 @@
             local-class="style_button"
             @click-button="state_tech_task_block = !state_tech_task_block"
           >
-            <span>{{ state_tech_task_block ? "Скрыть&nbsp; ТЗ" : "Создать ТЗ" }}</span>
-            <v-icon>{{ state_tech_task_block ? "mdi-chevron-up" : "mdi-chevron-down" }}</v-icon>
+            <span>{{ state_tech_task_block ? 'Скрыть&nbsp; ТЗ' : 'Создать ТЗ' }}</span>
+            <v-icon>{{ state_tech_task_block ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
           </ButtonStyled>
         </TooltipStyled>
       </div>
@@ -98,11 +98,11 @@
 </template>
 
 <script>
-import SelectObjectStyled from '../Common/SelectObjectStyled';
-import Collaboration from '../Modals/Collaboration.vue';
-import TooltipStyled from '~/components/Common/TooltipStyled';
-import ButtonStyled from '~/components/Common/ButtonStyled';
-import TagsTechBlock from '~/components/Widgets/TagsTechBlock';
+import SelectObjectStyled from '../Common/SelectObjectStyled'
+import Collaboration from '../Modals/Collaboration.vue'
+import TooltipStyled from '~/components/Common/TooltipStyled'
+import ButtonStyled from '~/components/Common/ButtonStyled'
+import TagsTechBlock from '~/components/Widgets/TagsTechBlock'
 
 export default {
   name: 'CurrentObjects',
@@ -123,46 +123,50 @@ export default {
         state: false,
         message: ''
       }
-    };
+    }
   },
   computed: {
     stateCurrentObject() {
-      return this.object_data.id === this.$store.state.Objects.currentObject?.id;
+      return this.object_data.id === this.$store.state.Objects.currentObject?.id
     },
     stateFilledImageObject() {
-      if (!this.object_data?.('osnovnoe-foto-obekta')) return false;
+      if (!this.object_data?.('osnovnoe-foto-obekta')) return false
 
-      return this.object_data['osnovnoe-foto-obekta'].length;
+      return this.object_data['osnovnoe-foto-obekta'].length
     }
   },
   watch: {
     '$store.getters.stateAuth': {
       handler(state) {
         if (state) {
-          this.$store.dispatch('getListBroadcastSnippet');
+          this.$store.dispatch('getListBroadcastSnippet')
         } else {
-          this.$store.commit('set_list_broadcast_snippet', []);
+          this.$store.commit('set_list_broadcast_snippet', [])
         }
       }
-    },
+    }
   },
   mounted() {
-    this.$store.dispatch('getListBroadcastSnippet');
+    this.getSnippet()
   },
   methods: {
     callAuthModal() {
-      if (this.$store.getters.stateAuth) return false;
+      if (this.$store.getters.stateAuth) return false
 
-      this.$store.state.listModal[0].isOpen = true;
+      this.$store.state.listModal[0].isOpen = true
     },
     async callback(data) {
-      await this.$store.dispatch('Objects/setCurrentObject', data);
+      await this.$store.dispatch('Objects/setCurrentObject', data)
+    },
+
+    async getSnippet() {
+      await this.$store.dispatch('getListBroadcastSnippet')
     }
   }
-};
+}
 </script>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 @import "@/assets/styles/global.scss";
 
 .current_object {
