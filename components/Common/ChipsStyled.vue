@@ -1,27 +1,29 @@
 <template>
-  <v-chip-group v-model="currentData"
-                :multiple="isMultiple"
-                :show-arrows="true"
-                class="styleChip_container"
+  <v-chip-group
+    v-model="currentData"
+    :multiple="isMultiple"
+    :show-arrows="true"
+    class="styleChip_container"
   >
-    <v-chip v-for="(object, key) in listChips"
-            :key="key"
-            :filter="isFilter"
-            :large="isLarge"
-            :outlined="isOutlined"
-            :small="isSmall"
-            :value="object.value"
-            class="styleChip"
-            @click="$emit('click-chip', object)"
+    <v-chip
+      v-for="(object, key) in listChips"
+      :key="key"
+      :filter="isFilter"
+      :large="isLarge"
+      :outlined="isOutlined"
+      :small="isSmall"
+      :value="object[valueField]"
+      class="styleChip"
+      @click="$emit('click-chip', object)"
     >
-      {{ object.text }}
+      {{ object[textField] }}
     </v-chip>
   </v-chip-group>
 </template>
 
 <script>
 export default {
-  name: "ChipsStyled",
+  name: 'ChipsStyled',
   props: {
     listChips: {
       type: Array,
@@ -29,7 +31,7 @@ export default {
     },
     isClass: {
       type: String,
-      default: ""
+      default: ''
     },
     isColumn: {
       type: Boolean,
@@ -37,7 +39,7 @@ export default {
     },
     localText: {
       type: String,
-      default: ""
+      default: ''
     },
     isOutlined: {
       type: Boolean,
@@ -62,6 +64,14 @@ export default {
     data: {
       type: Array,
       default: () => []
+    },
+    textField: {
+      type: String,
+      default: 'text'
+    },
+    valueField: {
+      type: String,
+      default: 'value'
     }
   },
   computed: {
@@ -70,7 +80,7 @@ export default {
         return this.data;
       },
       set(value) {
-        this.$emit("update-chips", value);
+        this.$emit('update-chips', value);
       }
     }
   }
@@ -91,8 +101,9 @@ export default {
   //overflow: hidden;
   //text-overflow: ellipsis;
 
+  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
   border-radius: 3px;
-  background: #D9D9D9 !important;
+  background: #FFFFFF !important;
   font-size: 1.3em;
   font-weight: 300;
   padding: 0.5em;
@@ -103,8 +114,8 @@ export default {
     transition: 0.4s;
   }
 
-  &:active {
-    color: #000000 !important;
+  &.v-slide-item--active.v-chip--active {
+    background-color: #95D7AE !important;
   }
 }
 

@@ -7,6 +7,7 @@ export default {
   state: {
     isUpdating: false,
     listServices: [],
+    listCities: [],
     selectedServices: [],
     selectedRawServices: [],
     selectedRawAdditionalDataServices: [],
@@ -15,6 +16,48 @@ export default {
     searchServiceByName: '',
     sortListServicesValue: '',
     updatedEntryPrice: null,
+    debounceTimeout: null,
+    selectedRange: 0,
+    rangeArea: ['0', '100', '200', '300', '500', '1000'],
+    computedListChips: [
+      {
+        id: 1627,
+        code: 'moskva',
+        city: 'Москва',
+        country: 'Россия',
+        address: 'г Москва',
+        region: 'Москва',
+        kladr_id: '7700000000000',
+        postal_code: '101000',
+        timezone: 'UTC+3',
+        dregions: {
+          id: 77,
+          code: 'g-moskva',
+          name: 'Москва',
+          name_with_type: 'г Москва',
+          code_subject: '77',
+        },
+      },
+      {
+        id: 2182,
+        code: 'celyabinsk',
+        city: 'Челябинск',
+        country: 'Россия',
+        address: 'г Челябинск',
+        region: 'Челябинская',
+        kladr_id: '7400000100000',
+        postal_code: '454000',
+        timezone: 'UTC+5',
+        dregions: {
+          id: 74,
+          code: 'celyabinskaya-obl',
+          name: 'Челябинская',
+          name_with_type: 'Челябинская обл',
+          code_subject: '74',
+        },
+      },
+    ],
+    selectedCity: [],
   },
   mutations: {
     setIsUpdating(state, payload) {
@@ -23,6 +66,10 @@ export default {
     setListServices(state, payload) {
       state.listServices = []
       state.listServices = payload
+    },
+    setListCities(state, payload) {
+      state.listCities = []
+      state.listCities = payload
     },
     addServices(state, payload) {
       state.selectedServices.push(payload)
@@ -143,6 +190,49 @@ export default {
 
       commit('setLoading', false)
     },
+    getListCitiesBySearch({ commit, state }, string) {
+      if (!string) return false
+
+      commit('setLoading', true)
+
+      if (state.debounceTimeout) clearTimeout(state.debounceTimeout)
+      state.debounceTimeout = setTimeout(async () => {
+        const response = await Request.get(
+          this.state.BASE_URL + '/dictionary/cities/search?q=' + string
+        )
+        commit('setListCities', response.data)
+        commit('setLoading', false)
+      }, 2000)
+    },
+
+    /* MapServiceArea */
+    localSetChips({ commit, state }, arrIdSCity) {
+      if (!arrIdSCity.length) return false
+
+      state.selectedCity = []
+      arrIdSCity.forEach((idCity) => {
+        const findObj = state.computedListChips.find(
+          (elem) => elem.id === idCity
+        )
+        console.log('localSetChips', findObj)
+        state.selectedCity.push(findObj)
+      })
+    },
+    setSelectedCity({ commit, state }, obj) {
+      if (!obj) return false
+      if (typeof obj !== 'object') return false
+
+      console.log('setSelectedCity', obj)
+
+      state.selectedCity.push(obj)
+
+      const existObj = state.computedListChips.find(
+        (elem) => elem.id === obj.id
+      )
+      if (existObj) return false
+
+      state.computedListChips.unshift(obj)
+    },
   },
   getters: {
     getCountServices(state) {
@@ -172,6 +262,13 @@ export default {
       return state.listServices.filter((elem) =>
         differenceIds.includes(elem.id)
       )
+    },
+    getIdsSelectedCities(state) {
+      if (!state.selectedCity.length) return []
+      return state.selectedCity.map((elem) => elem.id)
+    },
+    getRangeSlider(state) {
+      return state.rangeArea[state.selectedRange]
     },
   },
 }

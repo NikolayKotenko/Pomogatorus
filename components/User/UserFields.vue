@@ -123,16 +123,19 @@
         @change="setData"
       />
     </div>
+
+    <MapServiceArea/>
   </VForm>
 </template>
 
 <script>
 import { mapState } from 'vuex';
 import InputStyled from '../Common/InputStyled.vue';
+import MapServiceArea from '~/components/Widgets/MapServiceArea';
 
 export default {
   name: 'UserFields',
-  components: { InputStyled },
+  components: { MapServiceArea, InputStyled },
   data: () => ({
     isFormValid: false,
     form: {
