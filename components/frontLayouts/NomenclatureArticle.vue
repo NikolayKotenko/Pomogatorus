@@ -47,7 +47,7 @@
               </template>
 
               <!--     NO PHOTO     -->
-              <template>
+              <template v-else>
                 <img :alt="slide.data.name" draggable="false" src="https://baxi.ru/photo/ECO_Nova_004.png">
               </template>
               <!--     TODO: Убрать моковую картинку         -->
@@ -242,7 +242,7 @@ export default {
       const url = (slide?._family?.photos && slide?._family?.photos[0]) ?? null
 
       if (url) {
-        return this.$store.state.BASE_URL + url
+        return this.$store.state.BASE_URL + url?.full_path
       } else {
         return null
       }
