@@ -105,9 +105,7 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col>
-
-        </v-col>
+        <v-col/>
       </v-row>
     </template>
 
@@ -128,8 +126,8 @@
         @change="setData"
       />
     </div>
+    <MapServiceArea/>
   </v-form>
-  <MapServiceArea/>
 </template>
 
 <script>

@@ -17,9 +17,7 @@
         <slot name="icon"/>
       </div>
     </template>
-    <v-card class="pa-4">
-      <slot name="content"/>
-    </v-card>
+    <slot name="content"/>
   </v-menu>
 </template>
 

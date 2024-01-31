@@ -255,7 +255,7 @@ export default {
   display: grid;
   //grid-row-gap: 10px;
   padding: 10px 10px;
-  height: 96px;
+  //height: 96px;
 
   .card_header {
     display: grid;

@@ -12,12 +12,19 @@
     <v-tabs
       color="black"
       grow
-
     >
-      <v-tab :key="0">Услуги</v-tab>
-      <v-tab :key="1">Рекомендованные специалисты</v-tab>
-      <v-tab :key="2">Приглашенные специалисты</v-tab>
-      <v-tab :key="3">Заявка</v-tab>
+      <v-tab :key="0">
+        Услуги
+      </v-tab>
+      <v-tab :key="1">
+        Рекомендованные специалисты
+      </v-tab>
+      <v-tab :key="2">
+        Приглашенные специалисты
+      </v-tab>
+      <v-tab :key="3">
+        Заявка
+      </v-tab>
 
       <!-- Блок с услугами. -->
       <v-tab-item :key="0">
@@ -55,14 +62,12 @@
             />
           </div>
         </div>
-
-
       </v-tab-item>
 
-    <!-- Блок с рекомендованными пользователями. -->
+      <!-- Блок с рекомендованными пользователями. -->
       <v-tab-item :key="1">
         <v-simple-table>
-          <template v-slot:default>
+          <template #default>
             <thead>
               <tr>
                 <th class="text-left">
@@ -89,9 +94,9 @@
                 <td>66% - 2 из 3</td>
                 <td>
                   <IconTooltip
-                    :size-icon="'32'"
                     :color-icon="'#B3B3B3'"
                     :icon-text="'mdi-plus-circle-outline'"
+                    :size-icon="'32'"
                     :text-tooltip="'Добавить в заявку'"
                   />
                 </td>
@@ -132,8 +137,8 @@
                   </v-icon>
                 </div>
                 <span>
-                    Вы действительно хотите удалить исполнителя "{{ item.user_fio }}"?
-                  </span>
+                  Вы действительно хотите удалить исполнителя "{{ item.user_fio }}"?
+                </span>
                 <div class="delete_user_buttons">
                   <ButtonStyled
                     :local-class="'invite_button style_button'"
@@ -178,13 +183,12 @@
             />
           </div>
         </div>
-
       </v-tab-item>
 
       <!-- Блок с приглашенными пользователями. -->
       <v-tab-item :key="2">
         <v-simple-table>
-          <template v-slot:default>
+          <template #default>
             <thead>
               <tr>
                 <th class="text-left">
@@ -211,9 +215,9 @@
                 <td>66% - 2 из 3</td>
                 <td>
                   <IconTooltip
-                    :size-icon="'32'"
                     :color-icon="'#B3B3B3'"
                     :icon-text="'mdi-minus-circle-outline'"
+                    :size-icon="'32'"
                     :text-tooltip="'Убрать из заявки'"
                   />
                 </td>
@@ -223,7 +227,6 @@
         </v-simple-table>
       </v-tab-item>
     </v-tabs>
-
 
 
     <!-- Блок с кнопками. -->
@@ -245,7 +248,7 @@
 <script>
 import ButtonStyled from '../Common/ButtonStyled.vue';
 import TooltipStyled from '../Common/TooltipStyled.vue';
-import SelectStyled from '../Common/SelectStyled.vue';
+import IconTooltip from '../Common/IconTooltip.vue';
 import ServiceCard from './ServiceCard.vue';
 import { Service, ServiceDataConstructor, TaskData } from '~/helpers/constructors';
 import UniversalAddInput from '~/components/Common/UniversalAddInput';
@@ -257,7 +260,6 @@ export default {
     ServiceCard,
     TooltipStyled,
     ButtonStyled,
-    SelectStyled,
     IconTooltip
   },
   props: {
