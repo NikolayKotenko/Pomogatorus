@@ -27,7 +27,14 @@
     @update:search-input="$emit('update-search-input', localSearchInputSync)"
   >
     <template v-if="isIconPrepend" #prepend-inner>
-      <v-icon class="selectIcon">
+      <v-progress-circular
+        v-if="isLoading"
+        class="mr-1"
+        color="#95D7AE"
+        indeterminate
+        size="25"
+      />
+      <v-icon v-else class="selectIcon">
         {{ iconPrepend }}
       </v-icon>
     </template>

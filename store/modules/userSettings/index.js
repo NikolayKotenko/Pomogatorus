@@ -7,19 +7,7 @@ export default {
   state: {
     isUpdating: false,
     listServices: [],
-    listCities: [],
-    selectedServices: [],
-    selectedRawServices: [],
-    selectedRawAdditionalDataServices: [],
-    selectedRawServicesBased: [],
-    loading: false,
-    searchServiceByName: '',
-    sortListServicesValue: '',
-    updatedEntryPrice: null,
-    debounceTimeout: null,
-    selectedRange: 0,
-    rangeArea: ['0', '100', '200', '300', '500', '1000'],
-    computedListChips: [
+    listCities: [
       {
         id: 1627,
         code: 'moskva',
@@ -57,6 +45,17 @@ export default {
         },
       },
     ],
+    selectedServices: [],
+    selectedRawServices: [],
+    selectedRawAdditionalDataServices: [],
+    selectedRawServicesBased: [],
+    loading: false,
+    searchServiceByName: '',
+    sortListServicesValue: '',
+    updatedEntryPrice: null,
+    debounceTimeout: null,
+    selectedRange: 0,
+    rangeArea: ['0', '100', '200', '300', '500', '1000'],
     selectedCity: [],
   },
   mutations: {
@@ -105,12 +104,17 @@ export default {
       )
     },
 
-    async updateUser({ commit }, payload) {
+    async updateUser({ commit, getters }, payload) {
       const { userId, data } = payload
 
       if (!userId) return false
 
       commit('setIsUpdating', true)
+
+      // Добавляем данные по региону, радиусу обслуживания
+      data.ids_cities = getters.getIdsSelectedCities
+      data.range_area = getters.getRangeSlider
+      // console.log('updateUser data', data)
 
       await Request.put(
         `${this.state.BASE_URL}/users/update-user-data/${userId}`,
@@ -192,6 +196,7 @@ export default {
     },
     getListCitiesBySearch({ commit, state }, string) {
       if (!string) return false
+      if (state.listCities.some((elem) => elem.address === string)) return false
 
       commit('setLoading', true)
 
@@ -206,32 +211,31 @@ export default {
     },
 
     /* MapServiceArea */
-    localSetChips({ commit, state }, arrIdSCity) {
-      if (!arrIdSCity.length) return false
+    localSetChips({ commit, state }, objCity) {
+      // console.log('localSetChips objCity', objCity)
 
-      state.selectedCity = []
-      arrIdSCity.forEach((idCity) => {
-        const findObj = state.computedListChips.find(
-          (elem) => elem.id === idCity
-        )
-        console.log('localSetChips', findObj)
-        state.selectedCity.push(findObj)
-      })
-    },
-    setSelectedCity({ commit, state }, obj) {
-      if (!obj) return false
-      if (typeof obj !== 'object') return false
-
-      console.log('setSelectedCity', obj)
-
-      state.selectedCity.push(obj)
-
-      const existObj = state.computedListChips.find(
-        (elem) => elem.id === obj.id
+      const existEntry = state.selectedCity.find(
+        (elem) => elem.id === objCity.id
       )
-      if (existObj) return false
+      if (existEntry) {
+        state.selectedCity = state.selectedCity.filter(
+          (elem) => elem.id !== objCity.id
+        )
+      } else {
+        state.selectedCity.push(objCity)
+      }
+      // console.log('localSetChips state.selectedCity', state.selectedCity)
+    },
+    setSelectedCity({ commit, state }, objCity) {
+      if (!objCity) return false
+      if (typeof objCity !== 'object') return false
 
-      state.computedListChips.unshift(obj)
+      const existEntry = state.selectedCity.find(
+        (elem) => elem.id === objCity.id
+      )
+      if (existEntry) return false
+
+      state.selectedCity.push(objCity)
     },
   },
   getters: {

@@ -8,7 +8,6 @@
       :icon-prepend="'mdi-magnify'"
       :is-clearable="true"
       :is-custom-template-selections="true"
-      :is-hide-selected="true"
       :is-icon-prepend="true"
       :is-item-text="'address'"
       :is-item-value="'id'"
@@ -24,14 +23,13 @@
 
     <ChipsStyled
       :data="$store.getters['UserSettings/getIdsSelectedCities']"
-      :is-filter="true"
       :is-multiple="true"
       :is-outlined="true"
-      :list-chips="$store.state.UserSettings.computedListChips"
+      :list-chips="$store.state.UserSettings.selectedCity"
       :text-field="'city'"
       :value-field="'id'"
       class="chips_list mt-2"
-      @update-chips="$store.dispatch('UserSettings/localSetChips', $event)"
+      @click-chip="$store.dispatch('UserSettings/localSetChips', $event)"
     />
 
     <h4 class="mt-5">
@@ -58,6 +56,20 @@ export default {
   components: { SearchStyled, ChipsStyled },
   data: () => ({}),
   computed: {},
+  mounted() {
+
+    const existedEntry = this.$store.state.AuthModule.userData.range_area;
+    const userSettingsRangeArea = this.$store.state.UserSettings.rangeArea;
+    if (existedEntry) {
+      const indexRangeArea = userSettingsRangeArea.findIndex((elem) => elem === existedEntry);
+      this.$store.state.UserSettings.selectedRange = indexRangeArea;
+    }
+
+    const existedCities = this.$store.state.AuthModule.userData.cities;
+    if (existedCities) {
+      this.$store.state.UserSettings.selectedCity = existedCities;
+    }
+  },
   methods: {
     async localGetListCities(string) {
       await this.$store.dispatch('UserSettings/getListCitiesBySearch', string);
@@ -70,7 +82,6 @@ export default {
 .map_service_area {
   margin: 10px 1px;
   padding: 10px 15px;
-  margin-bottom: 500px;
 
   .chips_list {
     font-size: 0.8em;

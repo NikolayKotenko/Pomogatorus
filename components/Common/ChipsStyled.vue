@@ -103,7 +103,6 @@ export default {
 
   box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
   border-radius: 3px;
-  background: #FFFFFF !important;
   font-size: 1.3em;
   font-weight: 300;
   padding: 0.5em;
@@ -114,7 +113,7 @@ export default {
     transition: 0.4s;
   }
 
-  &.v-slide-item--active.v-chip--active {
+  &.v-chip.v-chip--outlined.v-chip.v-chip {
     background-color: #95D7AE !important;
   }
 }
