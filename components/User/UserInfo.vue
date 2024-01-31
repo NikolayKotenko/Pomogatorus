@@ -112,12 +112,47 @@
         <span class="title">Бренды с которыми вы работаете</span>
         <v-card class="brand_wrapper" outlined height="60">
           <div class="brand_info">
+            <span style="font-size: 1.5em; margin-right: 10px;">1. </span>
             <v-img
               :src="require(`~/assets/svg/baxi_logo.svg`)"
               class="brand_img"
               contain
             ></v-img>
             <span class="brand_text">Установленно оборудования Baxi: 23</span>
+          </div>
+          <IconTooltip
+            :size-icon="'24'"
+            :color-icon="'#B3B3B3'"
+            :icon-text="'mdi-close'"
+            :text-tooltip="'Удалить бренд'"
+          />
+        </v-card>
+        <v-card class="brand_wrapper" outlined height="60">
+          <div class="brand_info">
+            <span style="font-size: 1.5em; margin-right: 10px;">2. </span>
+            <v-img
+              :src="require(`~/assets/svg/navien_logo.svg`)"
+              class="brand_img"
+              contain
+            ></v-img>
+            <span class="brand_text">Установленно оборудования Navien: 23</span>
+          </div>
+          <IconTooltip
+            :size-icon="'24'"
+            :color-icon="'#B3B3B3'"
+            :icon-text="'mdi-close'"
+            :text-tooltip="'Удалить бренд'"
+          />
+        </v-card>
+        <v-card class="brand_wrapper" outlined height="60">
+          <div class="brand_info">
+            <span style="font-size: 1.5em; margin-right: 10px;">3. </span>
+            <v-img
+              :src="require(`~/assets/svg/ariston_logo.svg`)"
+              class="brand_img"
+              contain
+            ></v-img>
+            <span class="brand_text">Установленно оборудования Ariston: 23</span>
           </div>
           <IconTooltip
             :size-icon="'24'"

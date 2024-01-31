@@ -12,6 +12,7 @@
     <v-tabs
       color="black"
       grow
+      
     >
       <v-tab :key="0">Услуги</v-tab>
       <v-tab :key="1">Рекомендованные специалисты</v-tab>
@@ -39,6 +40,23 @@
             @add-service="addService"
           />
         </div>
+        
+        <!-- Блок с примечанием. -->
+        <div class="info_wrapper">
+          <span class="info_title">Примечание: </span>
+          <div class="textarea_style">
+            <v-textarea
+              v-model="taskData.notes"
+              :hide-details="true"
+              clearable
+              color="#000000"
+              label="Введите примечание"
+              outlined
+            />
+          </div>
+        </div>
+
+      
       </v-tab-item>
       
     <!-- Блок с рекомендованными пользователями. -->
@@ -81,6 +99,86 @@
             </tbody>
           </template>
         </v-simple-table>
+
+        <div class="info_wrapper">
+          <span class="info_title">Исполнители: </span>
+          <div 
+            v-for="(item, index) in dataUsers"
+            :key="index"
+            class="user_info"
+          >
+            <li>{{ item.user_fio }}</li>
+            <v-dialog
+              v-model="showDeleteOneUserModal"
+              width="600"
+            >
+              <template #activator="{ on, attrs }">
+                <TooltipStyled :title="'Удалить исполнителя'">
+                  <v-icon
+                    color="#8A8784"
+                    size="32"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    mdi-delete-outline
+                  </v-icon>
+                </TooltipStyled>
+              </template>
+              <v-card class="delete_user_modal">
+                <div class="delete_user_header">
+                  <span class="header_title">Удаление исполнителя</span>
+                  <v-icon large @click="closeDeleteOneUserModal">
+                    mdi-close
+                  </v-icon>
+                </div>
+                <span>
+                    Вы действительно хотите удалить исполнителя "{{ item.user_fio }}"?
+                  </span>
+                <div class="delete_user_buttons">
+                  <ButtonStyled
+                    :local-class="'invite_button style_button'"
+                    :local-text="'Подтвердить'"
+                    @click-button="deleteOneUser(taskData.ids_users.item, index)"
+                  />
+                  <ButtonStyled
+                    :local-class="'style_close'"
+                    :local-text="'Отмена'"
+                    @click-button="closeDeleteOneUserModal"
+                  />
+                </div>
+              </v-card>
+            </v-dialog>
+          </div>
+          <div class="add_users_wrapper">
+            <TooltipStyled
+              :is-top="true"
+              :title="'Добавить исполнителя'"
+            >
+              <v-icon
+                color="#95D7AE"
+                size="34"
+                @click="addUser"
+              >
+                mdi-plus-circle-outline
+              </v-icon>
+            </TooltipStyled>
+            <v-combobox
+              :hide-details="true"
+              :item-text="'user_fio'"
+              :item-value="'id'"
+              :items="$store.state.CollaborationModule.listMembers"
+              class="search_service"
+              clearable
+              hide-selected
+              label="Добавить исполнителя"
+              outlined
+              return-object
+              solo
+              @change="setSelectedUsersIdsLocal"
+            />
+          </div>
+        </div>
+
       </v-tab-item>
 
       <!-- Блок с приглашенными пользователями. -->
@@ -126,99 +224,7 @@
       </v-tab-item>
     </v-tabs>  
 
-    <div class="info_wrapper">
-      <span class="info_title">Исполнители: </span>
-      <div
-        v-for="(item, index) in dataUsers"
-        :key="index"
-        class="user_info"
-      >
-        <li>{{ item.user_fio }}</li>
-        <v-dialog
-          v-model="showDeleteOneUserModal"
-          width="600"
-        >
-          <template #activator="{ on, attrs }">
-            <TooltipStyled :title="'Удалить исполнителя'">
-              <v-icon
-                color="#8A8784"
-                size="32"
-                v-bind="attrs"
-                v-on="on"
-              >
-                mdi-delete-outline
-              </v-icon>
-            </TooltipStyled>
-          </template>
-          <v-card class="delete_user_modal">
-            <div class="delete_user_header">
-              <span class="header_title">Удаление исполнителя</span>
-              <v-icon large @click="closeDeleteOneUserModal">
-                mdi-close
-              </v-icon>
-            </div>
-            <span>
-                Вы действительно хотите удалить исполнителя "{{ item.user_fio }}"?
-              </span>
-            <div class="delete_user_buttons">
-              <ButtonStyled
-                :local-class="'invite_button style_button'"
-                :local-text="'Подтвердить'"
-                @click-button="deleteOneUser(taskData.ids_users.item, index)"
-              />
-              <ButtonStyled
-                :local-class="'style_close'"
-                :local-text="'Отмена'"
-                @click-button="closeDeleteOneUserModal"
-              />
-            </div>
-          </v-card>
-        </v-dialog>
-      </div>
-      <div class="add_users_wrapper">
-        <TooltipStyled
-          :is-top="true"
-          :title="'Добавить исполнителя'"
-        >
-          <v-icon
-            color="#95D7AE"
-            size="34"
-            @click="addUser"
-          >
-            mdi-plus-circle-outline
-          </v-icon>
-        </TooltipStyled>
-        <v-combobox
-          :hide-details="true"
-          :item-text="'user_fio'"
-          :item-value="'id'"
-          :items="$store.state.CollaborationModule.listMembers"
-          class="search_service"
-          clearable
-          hide-selected
-          label="Добавить исполнителя"
-          outlined
-          return-object
-          solo
-          @change="setSelectedUsersIdsLocal"
-        />
-      </div>
-    </div>
-
-    <!-- Блок с примечанием. -->
-    <div class="info_wrapper">
-      <span class="info_title">Примечание: </span>
-      <div class="textarea_style">
-        <v-textarea
-          v-model="taskData.notes"
-          :hide-details="true"
-          clearable
-          color="#000000"
-          label="Введите примечание"
-          outlined
-        />
-      </div>
-    </div>
+   
 
     <!-- Блок с кнопками. -->
     <div class="footer_buttons">
@@ -280,7 +286,8 @@ export default {
       taskData: new TaskData(),
       dataUsers: [],
       showDeleteOneUserModal: false,
-      selectedUser: {}
+      selectedUser: {},
+      e1: 0
     };
   },
   mounted() {
@@ -451,6 +458,7 @@ $borderRadius: 5px;
     box-shadow: $shadowBox;
     border-radius: $borderRadius;
     padding: 10px;
+    margin-bottom: 20px;
 
     .services_table_elem {
       display: flex;

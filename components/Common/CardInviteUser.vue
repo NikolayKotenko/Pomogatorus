@@ -1,112 +1,24 @@
 <template>
   <v-container class="card_invite_user">
     <!-- Карточка пользователя по клику на Аватар. -->
-    <v-menu offset-y>
-      <template #activator="{ on, attrs }">
-        <v-avatar
-          color="#5D80B5"
-          size="80"
-          v-bind="attrs"
-          v-on="on"
-        >
-          <span class="avatar_fio">И</span>
-        </v-avatar>
+    
+    <DropDownMenuStyled
+      :is-offset-y="true"
+      :is-left="true"
+    >
+      <template #icon>
+        <v-avatar size="70">
+                        <v-img 
+                            src="https://www.wrestlezone.com/wp-content/uploads/sites/8/2023/12/kurt-angle-meme-machine.jpg?resize=1024,576"
+                        />
+                    </v-avatar>
       </template>
-      <v-list>
-        <div class="user_card">
-          <div class="main_info">
-            <div class="avatar">
-              <v-avatar
-                color="#5D80B5"
-                size="80"
-              >
-                <span class="avatar_fio">И</span>
-              </v-avatar>
-            </div>
-            <div class="user_info">
-              <span class="user_name">{{ getValueField(userObject.middle_name) + ' ' + getValueField(userObject.first_name) }}</span>
-              <section class="user_company">
-                <v-icon>mdi-home-account</v-icon>
-                <span class="type">Компания: </span>
-                <span class="name">{{ getCompanyName }}</span>
-              </section>
-              <section class="mail">
-                {{ getValueField(userObject.email) }}
-              </section>
-            </div>
-          </div>
-          <v-divider style="margin: 20px 0"/>
-          <div class="user_services">
-            <section>
-              <span class="type">Услуги: </span>
-              <div v-for="(item, index) in userObject.services" :key="index" class="list_services">
-                <span class="name">
-                  - {{ getValueField(item.name) }}
-                </span>
-                <TooltipStyled
-                  :title="'Описание услуги'"
-                >
-                  <v-menu
-                    offset-overflow
-                    offset-y
-                  >
-                    <template #activator="{ on, attrs }">
-                      <v-icon
-                        small
-                        v-bind="attrs"
-                        color="#5D80B5"
-                        v-on="on"
-                      >
-                        mdi-help-circle-outline
-                      </v-icon>
-                    </template>
-                    <v-list>
-                      <div class="explain_info">
-                        <span>{{ getValueField(item.description) }}</span>
-                      </div>
-                    </v-list>
-                  </v-menu>
-                </TooltipStyled>
-              </div>
-            </section>
-            <section>
-              <span class="type">Оказываемые услуги на объекте: </span>
-              <div v-for="(item, index) in getServicesTetheredByUserObject.slice(0, 3)" :key="index" class="list_services">
-                <span class="name">- {{ item.name }}</span>
-                <TooltipStyled
-                  :title="'Описание услуги'"
-                >
-                  <v-menu
-                    offset-overflow
-                    offset-y
-                  >
-                    <template #activator="{ on, attrs }">
-                      <v-icon
-                        small
-                        v-bind="attrs"
-                        color="#5D80B5"
-                        v-on="on"
-                      >
-                        mdi-help-circle-outline
-                      </v-icon>
-                    </template>
-                    <v-list>
-                      <div class="explain_info">
-                        <span>{{ getValueField(item.description) }}</span>
-                      </div>
-                    </v-list>
-                  </v-menu>
-                </TooltipStyled>
-              </div>
-            </section>
-            <section class="brands">
-              <span class="type">Используемые бренды: </span>
-              <span class="name">Baxi, Navien, Bosch</span>
-            </section>
-          </div>
-        </div>
-      </v-list>
-    </v-menu>
+      <template #content>
+        <MiniUserCard :user-object="userObject">
+
+        </MiniUserCard>
+      </template>
+    </DropDownMenuStyled>
 
     <!-- Invite USER CARD -->
     <div class="user_info">
@@ -320,10 +232,14 @@ import SelectStyled from './SelectStyled.vue';
 import SearchStyled from './SearchStyled.vue';
 import ButtonStyled from './ButtonStyled.vue';
 import TooltipStyled from './TooltipStyled.vue';
+import DropDownMenuStyled from './DropDownMenuStyled.vue';
+import IconTooltip from './IconTooltip.vue';
+import MiniUserCard from '../User/MiniUserCard.vue';
+
 
 export default {
   name: 'CardInviteUser',
-  components: { TaskModal, InviteUserModal, TooltipStyled, ButtonStyled, SelectStyled },
+  components: { TaskModal, InviteUserModal, TooltipStyled, ButtonStyled, SelectStyled, DropDownMenuStyled, IconTooltip, MiniUserCard},
   props: {
     userObject: {
       type: Object,

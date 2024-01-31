@@ -26,7 +26,7 @@
         <!-- Избранное -->
         <IconTooltip
           :color-icon="'#000000'"
-          :size-icon="36"
+          :size-icon="'36'"
           :icon-text="'mdi-heart-outline'"
           :text-tooltip="'Добавить в избранное'"
         />
@@ -141,14 +141,14 @@
         <!-- Ссылка на маркетплейс -->
         <IconTooltip
           :color-icon="'#000000'"
-          :size-icon="36"
+          :size-icon="'36'"
           :icon-text="'mdi-store-outline'"
           :text-tooltip="'Перейти в Яндекс Маркет'"
         />
         <!-- Модальное окно эксплуатации -->
         <IconTooltip
           :color-icon="'#000000'"
-          :size-icon="36"
+          :size-icon="'36'"
           :icon-text="'mdi-file-cog-outline'"
           :text-tooltip="'Подробнее об эксплуатации'"
         />
