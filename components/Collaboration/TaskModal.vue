@@ -1,7 +1,8 @@
 <template>
   <v-dialog
     v-model="showModal"
-    width="760"
+    class="modal"
+    width="850"
     persistent
   >
     <Task
@@ -51,9 +52,9 @@ export default {
       this.showModal = true
     },
   }
-}
+} 
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 
 </style>

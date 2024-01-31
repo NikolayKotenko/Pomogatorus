@@ -241,23 +241,6 @@ const createStore = () => {
             elem.href = '/podborki/' + elem.data.code
           }
         })
-
-        // payload.reduce((acc, elem)=> {
-        //   acc[elem.category] = acc[elem.category] || []
-        //   acc[elem.category].push(elem)
-        //   return acc
-        // }, {})
-        // console.log('645', acc)
-        // var map = arr.reduce((r, i) => {
-        //   r[i.name] = r[i.name] || [];
-        //   r[i.name].push(i);
-        //   return r;
-        // }, {});
-        // var arr1 = [];
-        // for (var key in map) {
-        //   arr1.push(map[key]);
-        // }
-        // console.log(arr1)
         state.listSearched = payload
       }
     },

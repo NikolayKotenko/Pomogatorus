@@ -9,14 +9,15 @@
 
     <DropDownMenuStyled
       :is-top="true"
+      :is-offset-y="true"
     >
       <template
         #icon
       >
         <IconTooltip
           :color-icon="'#000000'"
-          :icon-text="'mdi-export-variant'"
           :is-top-tooltip="true"
+          :icon-text="'mdi-export-variant'"
           :text-tooltip="'Поделиться статьёй'"
         />
       </template>
@@ -106,7 +107,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
+@import 'assets/styles/style';
 
 i {
   text-align: center;
@@ -116,10 +118,9 @@ i {
   &.fa-odnoklassniki, &.fa-vk, &.fa-telegram, &.fa-whatsapp {
     padding: 10px !important;
     color: #857885;
-    transition: all 0.4s ease-in-out;
-
+    transition: $transition;
     &:hover {
-      color: #95D7AE;
+      color: $green-color;
     }
   }
 }
@@ -146,11 +147,9 @@ i {
     &:hover {
       color: #F6C5A7 !important;
     }
-
-    &:active {
-      color: #F79256 !important;
+    &:active{
+      color: $orange-color !important;
     }
-
     &::after {
       background-color: #FFFFFF !important;
     }

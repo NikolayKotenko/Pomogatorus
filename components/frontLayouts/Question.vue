@@ -785,7 +785,7 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-@import 'assets/styles/fileChips';
+@import 'assets/styles/style';
 
 @media only screen and (max-width: 600px) {
   .file_input {
@@ -796,7 +796,7 @@ export default {
 
 .list-enter-active,
 .list-leave-active {
-  transition: all 0.8s;
+  transition: $transition;
 }
 
 .list-enter,
@@ -806,7 +806,7 @@ export default {
 }
 
 .slide-fade-enter-active {
-  transition: all 0.8s ease;
+  transition: $transition;
 }
 
 .slide-fade-leave-active {
@@ -825,7 +825,7 @@ export default {
   padding: 20px;
   border-radius: 5px;
   background-color: #FFFFFF;
-  transition: all 0.4s ease-in-out;
+  transition: $transition;
   height: auto;
 
   &__content {
@@ -859,7 +859,7 @@ export default {
 
     &__question {
       flex: 1;
-      transition: all 0.4s ease-in-out;
+      transition: $transition;
       padding-bottom: 10px;
       color: #000000 !important;
     }
@@ -883,7 +883,7 @@ export default {
 
 .helper_wrapper__help {
   opacity: 0;
-  transition: 0.2s ease-in-out;
+  transition: $transition;
 }
 
 .help_img {

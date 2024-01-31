@@ -24,12 +24,12 @@
             class="menu"
             @click="$store.state.stateVerticalMenu = !$store.state.stateVerticalMenu"
           >
-            <v-icon
-              color="#ffffff"
-              size="32"
-            >
-              mdi-menu
-            </v-icon>
+            <IconTooltip
+              :size-icon="'32'"
+              :color-icon="'#FFFFFF'"
+              :icon-text="'mdi-menu'"
+              :text-tooltip="'Меню'"
+            />
           </div>
           <div class="logo_wrapper">
             <v-img
@@ -54,73 +54,51 @@
           @change-search="setSelected"
           @redirect="redirectData"
         />
-        <!--          @click-clear="getListBasedArticles(); selectedChips = ''" -->
-        <!--          @redirect="redirectData" -->
-
-               <!-- <v-toolbar-items class="header_center"> -->
-        <!--          <div v-for="item in $store.getters.menuItems" :key="item.title"> -->
-        <!--            <v-btn -->
-        <!--              v-if="item.visible" -->
-        <!--              :href="item.path" -->
-        <!--              class="text-capitalize link_btn" -->
-        <!--              style="margin-right: 2em;" -->
-        <!--              text -->
-        <!--            > -->
-        <!--              <span :class="{activeElement: getCurrentRoute.title === item.title}">{{ item.title }}</span> -->
-        <!--            </v-btn> -->
-        <!--          </div> -->
-        <!--        </v-toolbar-items> -->
       </template>
 
       <!-- Личный кабинет всегда по правую сторону -->
       <v-toolbar-items class="header_right">
-        <TooltipStyled
-          :title="'Совместная работа над ' + $store.state.Objects.currentObject.name"
-          class="current_object_btn"
+        <DropDownMenuStyled
+          :is-offset-y="true"
+          :is-left="true"
         >
-          <v-menu
-            :close-on-content-click="false"
-            left
-            offset-y
-            @input="openCollaborationModule($event)"
-          >
-            <template #activator="{ on, attrs }">
-              <div
-                style="display: inline-flex; grid-column-gap: 5px"
-                v-bind="attrs"
-                v-on="on"
-              >
-                <v-icon large v-bind="attrs" v-on="on">
-                  mdi-account-group-outline
-                </v-icon>
-              </div>
-            </template>
-            <Collaboration v-if="$store.state.CollaborationModule.stateCollaborationMenu"/>
-          </v-menu>
-        </TooltipStyled>
-        <TooltipStyled :title="'Текущий объект'" class="current_object_btn">
-          <v-menu :close-on-content-click="false" left offset-y>
-            <template #activator="{ on, attrs }">
-              <div
-                style="display: inline-flex; grid-column-gap: 5px"
-                v-bind="attrs"
-                v-on="on"
-              >
-                <v-badge
-                  :content="$store.getters['Objects/getCountObject']"
-                  :value="$store.getters['Objects/getCountObject']"
-                  color="#95D7AE"
-                  overlap
-                >
-                  <v-icon large v-bind="attrs" v-on="on">
-                    mdi-home-edit-outline
-                  </v-icon>
-                </v-badge>
-              </div>
-            </template>
+          <template #icon>
+            <IconTooltip
+              :color-icon="'#FFFFFF'"
+              :size-icon="'32'"
+              :icon-text="'mdi-account-group-outline'"
+              :text-tooltip="'Совместная работа над ' + $store.state.Objects.currentObject.name"
+            />
+          </template>
+          <template #content>
+            <Collaboration/>
+          </template>
+        </DropDownMenuStyled>
+
+        <DropDownMenuStyled
+          :is-offset-y="true"
+          :is-left="true"
+        >
+          <template #icon>
+            <v-badge
+              :content="$store.getters['Objects/getCountObject']"
+              :value="$store.getters['Objects/getCountObject']"
+              color="#95D7AE"
+              overlap
+            >
+              <IconTooltip
+                :color-icon="'#FFFFFF'"
+                :size-icon="'32'"
+                :icon-text="'mdi-home-edit-outline'"
+                :text-tooltip="'Текущий объект'"
+              />
+            </v-badge>
+          </template>
+          <template #content>
             <CurrentObjects/>
-          </v-menu>
-        </TooltipStyled>
+          </template>
+        </DropDownMenuStyled>
+
         <TooltipStyled :title="'Личный кабинет'">
           <template>
             <v-btn
@@ -129,7 +107,7 @@
               text
               @click="$store.commit('set_modal_auth', true)"
             >
-              <v-icon large>
+              <v-icon size="32">
                 mdi-account
               </v-icon>
             </v-btn>
@@ -141,15 +119,18 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
-import TooltipStyled from './Common/TooltipStyled';
-import CurrentObjects from './Widgets/CurrentObjects.vue';
-import Collaboration from './Modals/Collaboration.vue';
-import SearchStyled from './Common/SearchStyled.vue';
+import { mapState } from "vuex";
+import Request from "../services/request";
+import TooltipStyled from "./Common/TooltipStyled";
+import CurrentObjects from "./Widgets/CurrentObjects.vue";
+import Collaboration from "./Modals/Collaboration.vue";
+import SearchStyled from "./Common/SearchStyled.vue";
+import IconTooltip from "./Common/IconTooltip.vue";
+import DropDownMenuStyled from "./Common/DropDownMenuStyled.vue";
 
 export default {
-  name: 'Header',
-  components: { SearchStyled, Collaboration, CurrentObjects, TooltipStyled },
+  name: "Header",
+  components: { SearchStyled, Collaboration, CurrentObjects, TooltipStyled, IconTooltip, DropDownMenuStyled },
   data() {
     return {
       debounceTimeout: null,
@@ -320,6 +301,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'assets/styles/style';
 .v-btn:not(.v-btn--round).v-size--default {
   padding: 0 !important;
   min-width: 0;
@@ -337,7 +319,7 @@ export default {
   position: sticky;
   top: 0;
   z-index: 100;
-  transition: all 0.4s ease-in-out;
+  transition: $transition;
   height: 64px !important;
 
   &.isMobile {

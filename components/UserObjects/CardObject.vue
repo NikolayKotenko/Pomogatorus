@@ -141,6 +141,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'assets/styles/style';
+
 .card_obj {
   display: flex;
   justify-content: space-between;
@@ -149,7 +151,7 @@ export default {
   //margin: 0 10px 0 10px;
   border-radius: 5px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  transition: all 0.4s ease-in-out !important;
+  transition: $transition !important;
 
   &:hover {
     box-shadow: 0px 5px 20px 7px rgba(34, 60, 80, 0.2) !important;

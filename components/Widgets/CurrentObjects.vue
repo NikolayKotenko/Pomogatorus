@@ -167,7 +167,7 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-@import "@/assets/styles/global.scss";
+@import "@/assets/styles/style";
 
 .current_object {
   height: auto;
@@ -181,7 +181,7 @@ export default {
   align-self: baseline;
   grid-row-gap: 1em;
   padding: 20px !important;
-  transition: all 0.4s ease-in-out !important;
+  transition: $transition !important;
   background: white;
   overflow-y: overlay;
 

@@ -70,8 +70,14 @@
                     is-top
                   >
                     <template>
-                      <v-radio-group :value="getAnswer(item)" readonly success>
-                        <v-radio :ripple="false" :value="getAnswer(item)" readonly @click="scrollToQuestion(item)" />
+                      <v-radio-group  :value="getAnswer(item)" readonly success>
+                        <v-radio  
+                          class="biathlon_radio_style" 
+                          :ripple="false" 
+                          :value="getAnswer(item)" 
+                          readonly 
+                          @click="scrollToQuestion(item)" 
+                        />
                       </v-radio-group>
                     </template>
                   </TooltipStyled>
@@ -208,13 +214,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'assets/styles/style';
+
 .biathlon_wrapper {
   position: fixed;
   z-index: 9;
   width: 100vw;
   left: 0;
   bottom: 0;
-  background-color: #FFFFFF;
+  background-color: $background-element-color;
   height: 80px;
   display: flex;
   justify-content: center;
@@ -264,6 +272,7 @@ export default {
 
     .biathlon_sheet {
       max-width: 400px;
+
     }
   }
 

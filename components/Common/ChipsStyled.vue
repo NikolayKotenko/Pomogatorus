@@ -88,6 +88,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'assets/styles/style';
 
 .styleChip_container {
   margin: 1em 0;
@@ -101,12 +102,13 @@ export default {
   //overflow: hidden;
   //text-overflow: ellipsis;
 
-  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
-  border-radius: 3px;
+  border-radius: 5px;
+  background: #FFFFFF !important;
   font-size: 1.3em;
   font-weight: 300;
   padding: 0.5em;
-  transition: 0.4s;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  transition: $transition;
 
   &:hover {
     background: #95D7AE !important;
@@ -115,7 +117,9 @@ export default {
 
   &.v-chip.v-chip--outlined.v-chip.v-chip {
     background-color: #95D7AE !important;
+
   }
+
 }
 
 </style>

@@ -183,6 +183,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'assets/styles/style';
 
 $grey-color: #8A8784;
 
@@ -216,7 +217,7 @@ $grey-color: #8A8784;
         border-radius: 5px;
         display: flex;
         grid-column-gap: 15px;
-        transition: all 0.4s ease-in-out;
+        transition: $transition;
         cursor: pointer;
         &:hover {
           background-color: #FFF4CB;
@@ -242,14 +243,14 @@ $grey-color: #8A8784;
             display: flex;
             grid-column-gap: 30px;
             .accept_btn {
-              transition: all 0.4s ease-in-out;
+              transition: $transition;
               &:hover {
                 scale: 1.1;
               }
             }
             .reject_btn {
               color: $grey-color;
-              transition: all 0.4s ease-in-out;
+              transition: $transition;
               &:hover {
                 scale: 1.1;
               }

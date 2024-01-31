@@ -53,6 +53,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'assets/styles/style';
+
 .link {
   color: #000000 !important;
   cursor: pointer;
@@ -62,7 +64,7 @@ export default {
      color: #F6C5A7 !important;
    }
   &:active{
-     color: #F79256 !important;
+     color: $orange-color !important;
    }
 }
 </style>

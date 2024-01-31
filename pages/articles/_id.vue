@@ -473,6 +473,8 @@ export default {
 </script>
 
 <style lang='scss' scoped>
+@import 'assets/styles/style';
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s;
@@ -496,7 +498,7 @@ export default {
   flex-direction: column;
 
   &__subHeader {
-    transition: all 0.4s ease-in-out;
+    transition: $transition;
     box-shadow: 0px 7px 10px 2px rgba(34, 60, 80, 0.2);
     padding: 10px;
     position: fixed;

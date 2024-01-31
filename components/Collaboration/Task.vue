@@ -9,121 +9,222 @@
       </div>
     </template>
 
-    <!-- Блок с услугами. -->
-    <div class="services_table">
-      <div class="info_wrapper">
-        <span class="info_title">Услуги: </span>
-        <div class="service_card_wrapper">
-          <ServiceCard
-            v-for="(item, index) in taskData.services"
-            :key="index"
-            :iteration-key="index+1"
-            :service-object="item"
-            @delete-one-service="deleteOneService(index)"
-            @update-price-field="setPrice(index, $event)"
+    <v-tabs
+      color="black"
+      grow
+
+    >
+      <v-tab :key="0">Услуги</v-tab>
+      <v-tab :key="1">Рекомендованные специалисты</v-tab>
+      <v-tab :key="2">Приглашенные специалисты</v-tab>
+      <v-tab :key="3">Заявка</v-tab>
+
+      <!-- Блок с услугами. -->
+      <v-tab-item :key="0">
+        <div class="services_table">
+          <div class="info_wrapper">
+            <span class="info_title">Услуги: </span>
+            <div class="service_card_wrapper">
+              <ServiceCard
+                v-for="(item, index) in taskData.services"
+                :key="index"
+                :iteration-key="index+1"
+                :service-object="item"
+                @delete-one-service="deleteOneService(index)"
+                @update-price-field="setPrice(index, $event)"
+              />
+            </div>
+          </div>
+          <UniversalAddInput
+            :list-services-available-to-add="userObject.services"
+            @add-service="addService"
           />
         </div>
-      </div>
-      <UniversalAddInput
-        :list-services-available-to-add="userObject.services"
-        @add-service="addService"
-      />
-    </div>
 
-    <!-- Блок с пользователями. -->
-    <div class="info_wrapper">
-      <span class="info_title">Исполнители: </span>
-      <div
-        v-for="(item, index) in dataUsers"
-        :key="index"
-        class="user_info"
-      >
-        <li>{{ item.user_fio }}</li>
-        <v-dialog
-          v-model="showDeleteOneUserModal"
-          width="600"
-        >
-          <template #activator="{ on, attrs }">
-            <TooltipStyled :title="'Удалить исполнителя'">
-              <v-icon
-                color="#8A8784"
-                size="32"
-                v-bind="attrs"
-                v-on="on"
+        <!-- Блок с примечанием. -->
+        <div class="info_wrapper">
+          <span class="info_title">Примечание: </span>
+          <div class="textarea_style">
+            <v-textarea
+              v-model="taskData.notes"
+              :hide-details="true"
+              clearable
+              color="#000000"
+              label="Введите примечание"
+              outlined
+            />
+          </div>
+        </div>
+
+
+      </v-tab-item>
+
+    <!-- Блок с рекомендованными пользователями. -->
+      <v-tab-item :key="1">
+        <v-simple-table>
+          <template v-slot:default>
+            <thead>
+              <tr>
+                <th class="text-left">
+                  Специалисты
+                </th>
+                <th class="text-left">
+                  Совпадение по услугам
+                </th>
+                <th class="text-left">
+                  Совпадение по брендам
+                </th>
+                <th class="text-left">
+                  Действие
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="(item, index) in dataUsers"
+                :key="index"
               >
-                mdi-delete-outline
+                <td>Иванов иван</td>
+                <td>66% - 2 из 3</td>
+                <td>66% - 2 из 3</td>
+                <td>
+                  <IconTooltip
+                    :size-icon="'32'"
+                    :color-icon="'#B3B3B3'"
+                    :icon-text="'mdi-plus-circle-outline'"
+                    :text-tooltip="'Добавить в заявку'"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </template>
+        </v-simple-table>
+
+        <div class="info_wrapper">
+          <span class="info_title">Исполнители: </span>
+          <div
+            v-for="(item, index) in dataUsers"
+            :key="index"
+            class="user_info"
+          >
+            <li>{{ item.user_fio }}</li>
+            <v-dialog
+              v-model="showDeleteOneUserModal"
+              width="600"
+            >
+              <template #activator="{ on, attrs }">
+                <TooltipStyled :title="'Удалить исполнителя'">
+                  <v-icon
+                    color="#8A8784"
+                    size="32"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    mdi-delete-outline
+                  </v-icon>
+                </TooltipStyled>
+              </template>
+              <v-card class="delete_user_modal">
+                <div class="delete_user_header">
+                  <span class="header_title">Удаление исполнителя</span>
+                  <v-icon large @click="closeDeleteOneUserModal">
+                    mdi-close
+                  </v-icon>
+                </div>
+                <span>
+                    Вы действительно хотите удалить исполнителя "{{ item.user_fio }}"?
+                  </span>
+                <div class="delete_user_buttons">
+                  <ButtonStyled
+                    :local-class="'invite_button style_button'"
+                    :local-text="'Подтвердить'"
+                    @click-button="deleteOneUser(taskData.ids_users.item, index)"
+                  />
+                  <ButtonStyled
+                    :local-class="'style_close'"
+                    :local-text="'Отмена'"
+                    @click-button="closeDeleteOneUserModal"
+                  />
+                </div>
+              </v-card>
+            </v-dialog>
+          </div>
+          <div class="add_users_wrapper">
+            <TooltipStyled
+              :is-top="true"
+              :title="'Добавить исполнителя'"
+            >
+              <v-icon
+                color="#95D7AE"
+                size="34"
+                @click="addUser"
+              >
+                mdi-plus-circle-outline
               </v-icon>
             </TooltipStyled>
-          </template>
-          <v-card class="delete_user_modal">
-            <div class="delete_user_header">
-              <span class="header_title">Удаление исполнителя</span>
-              <v-icon large @click="closeDeleteOneUserModal">
-                mdi-close
-              </v-icon>
-            </div>
-            <span>
-              Вы действительно хотите удалить исполнителя "{{ item.user_fio }}"?
-            </span>
-            <div class="delete_user_buttons">
-              <ButtonStyled
-                :local-class="'invite_button style_button'"
-                :local-text="'Подтвердить'"
-                @click-button="deleteOneUser(taskData.ids_users.item, index)"
-              />
-              <ButtonStyled
-                :local-class="'style_close'"
-                :local-text="'Отмена'"
-                @click-button="closeDeleteOneUserModal"
-              />
-            </div>
-          </v-card>
-        </v-dialog>
-      </div>
-      <div class="add_users_wrapper">
-        <TooltipStyled
-          :is-top="true"
-          :title="'Добавить исполнителя'"
-        >
-          <v-icon
-            color="#95D7AE"
-            size="34"
-            @click="addUser"
-          >
-            mdi-plus-circle-outline
-          </v-icon>
-        </TooltipStyled>
-        <v-combobox
-          :hide-details="true"
-          :item-text="'user_fio'"
-          :item-value="'id'"
-          :items="$store.state.CollaborationModule.listMembers"
-          class="search_service"
-          clearable
-          hide-selected
-          label="Добавить исполнителя"
-          outlined
-          return-object
-          solo
-          @change="setSelectedUsersIdsLocal"
-        />
-      </div>
-    </div>
+            <v-combobox
+              :hide-details="true"
+              :item-text="'user_fio'"
+              :item-value="'id'"
+              :items="$store.state.CollaborationModule.listMembers"
+              class="search_service"
+              clearable
+              hide-selected
+              label="Добавить исполнителя"
+              outlined
+              return-object
+              solo
+              @change="setSelectedUsersIdsLocal"
+            />
+          </div>
+        </div>
 
-    <!-- Блок с примечанием. -->
-    <div class="info_wrapper">
-      <span class="info_title">Примечание: </span>
-      <div class="textarea_style">
-        <v-textarea
-          v-model="taskData.notes"
-          :hide-details="true"
-          clearable
-          color="#000000"
-          label="Введите примечание"
-          outlined
-        />
-      </div>
-    </div>
+      </v-tab-item>
+
+      <!-- Блок с приглашенными пользователями. -->
+      <v-tab-item :key="2">
+        <v-simple-table>
+          <template v-slot:default>
+            <thead>
+              <tr>
+                <th class="text-left">
+                  Специалисты
+                </th>
+                <th class="text-left">
+                  Совпадение по услугам
+                </th>
+                <th class="text-left">
+                  Совпадение по брендам
+                </th>
+                <th class="text-left">
+                  Действие
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="(item, index) in dataUsers"
+                :key="index"
+              >
+                <td>Иванов иван</td>
+                <td>66% - 2 из 3</td>
+                <td>66% - 2 из 3</td>
+                <td>
+                  <IconTooltip
+                    :size-icon="'32'"
+                    :color-icon="'#B3B3B3'"
+                    :icon-text="'mdi-minus-circle-outline'"
+                    :text-tooltip="'Убрать из заявки'"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </template>
+        </v-simple-table>
+      </v-tab-item>
+    </v-tabs>
+
+
 
     <!-- Блок с кнопками. -->
     <div class="footer_buttons">
@@ -156,7 +257,8 @@ export default {
     ServiceCard,
     TooltipStyled,
     ButtonStyled,
-    SelectStyled
+    SelectStyled,
+    IconTooltip
   },
   props: {
     getStateTetheredUserInObject: {
@@ -183,7 +285,8 @@ export default {
       taskData: new TaskData(),
       dataUsers: [],
       showDeleteOneUserModal: false,
-      selectedUser: {}
+      selectedUser: {},
+      e1: 0
     };
   },
   mounted() {
@@ -353,6 +456,7 @@ $borderRadius: 5px;
     box-shadow: $shadowBox;
     border-radius: $borderRadius;
     padding: 10px;
+    margin-bottom: 20px;
 
     .services_table_elem {
       display: flex;
