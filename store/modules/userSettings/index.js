@@ -271,6 +271,9 @@ export default {
       if (!state.selectedCity.length) return []
       return state.selectedCity.map((elem) => elem.id)
     },
+    getStateSelectedCities(state) {
+      return Boolean(state.selectedCity.length)
+    },
     getRangeSlider(state) {
       return state.rangeArea[state.selectedRange]
     },

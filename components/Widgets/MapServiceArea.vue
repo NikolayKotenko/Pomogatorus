@@ -37,6 +37,7 @@
     </h4>
     <v-slider
       v-model="$store.state.UserSettings.selectedRange"
+      :disabled="!$store.getters['UserSettings/getStateSelectedCities']"
       :max="5"
       :tick-labels="$store.state.UserSettings.rangeArea"
       color="#95D7AE"

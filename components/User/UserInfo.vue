@@ -111,54 +111,54 @@
       <!-- Портфель брендов -->
       <v-tab-item :key="2" class="brands_tab">
         <span class="title">Бренды с которыми вы работаете</span>
-        <v-card class="brand_wrapper" outlined height="60">
+        <v-card class="brand_wrapper" height="60" outlined>
           <div class="brand_info">
             <span style="font-size: 1.5em; margin-right: 10px;">1. </span>
             <v-img
               :src="require(`~/assets/svg/baxi_logo.svg`)"
               class="brand_img"
               contain
-            ></v-img>
+            />
             <span class="brand_text">Установленно оборудования Baxi: 23</span>
           </div>
           <IconTooltip
-            :size-icon="'24'"
             :color-icon="'#B3B3B3'"
             :icon-text="'mdi-close'"
+            :size-icon="'24'"
             :text-tooltip="'Удалить бренд'"
           />
         </v-card>
-        <v-card class="brand_wrapper" outlined height="60">
+        <v-card class="brand_wrapper" height="60" outlined>
           <div class="brand_info">
             <span style="font-size: 1.5em; margin-right: 10px;">2. </span>
             <v-img
               :src="require(`~/assets/svg/navien_logo.svg`)"
               class="brand_img"
               contain
-            ></v-img>
+            />
             <span class="brand_text">Установленно оборудования Navien: 23</span>
           </div>
           <IconTooltip
-            :size-icon="'24'"
             :color-icon="'#B3B3B3'"
             :icon-text="'mdi-close'"
+            :size-icon="'24'"
             :text-tooltip="'Удалить бренд'"
           />
         </v-card>
-        <v-card class="brand_wrapper" outlined height="60">
+        <v-card class="brand_wrapper" height="60" outlined>
           <div class="brand_info">
             <span style="font-size: 1.5em; margin-right: 10px;">3. </span>
             <v-img
               :src="require(`~/assets/svg/ariston_logo.svg`)"
               class="brand_img"
               contain
-            ></v-img>
+            />
             <span class="brand_text">Установленно оборудования Ariston: 23</span>
           </div>
           <IconTooltip
-            :size-icon="'24'"
             :color-icon="'#B3B3B3'"
             :icon-text="'mdi-close'"
+            :size-icon="'24'"
             :text-tooltip="'Удалить бренд'"
           />
         </v-card>
@@ -222,17 +222,17 @@
 <script>
 import { mapState } from 'vuex';
 
-import LoginAuth from "../frontLayouts/LoginAuth";
-import ButtonStyled from "../Common/ButtonStyled.vue";
-import SearchStyled from "../Common/SearchStyled.vue";
-import InputStyled from "../Common/InputStyled.vue";
-import TooltipStyled from "../Common/TooltipStyled.vue";
-import UserFields from "./UserFields";
-import ServiceCard from "@/components/Collaboration/ServiceCard.vue";
-import UniversalAddInput from "@/components/Common/UniversalAddInput.vue";
-import { MtoMUsersServices } from "~/helpers/constructors";
-import SelectStyled from "~/components/Common/SelectStyled";
+import LoginAuth from '../frontLayouts/LoginAuth';
+import ButtonStyled from '../Common/ButtonStyled.vue';
+import SearchStyled from '../Common/SearchStyled.vue';
+import InputStyled from '../Common/InputStyled.vue';
+import TooltipStyled from '../Common/TooltipStyled.vue';
 import IconTooltip from '../Common/IconTooltip.vue';
+import UserFields from './UserFields';
+import ServiceCard from '@/components/Collaboration/ServiceCard.vue';
+import UniversalAddInput from '@/components/Common/UniversalAddInput.vue';
+import { MtoMUsersServices } from '~/helpers/constructors';
+import SelectStyled from '~/components/Common/SelectStyled';
 
 export default {
   name: 'UserInfo',
@@ -416,10 +416,12 @@ export default {
 .brands_tab {
   display: grid;
   grid-row-gap: 10px;
+
   .title {
-  font-size: 1.5em !important;
-  font-weight: 700;
-}
+    font-size: 1.5em !important;
+    font-weight: 700;
+  }
+
   .brand_wrapper {
     display: flex;
     justify-content: space-between;
@@ -430,15 +432,15 @@ export default {
     .brand_info {
       display: flex;
       align-items: center;
+
       .brand_img {
         max-height: 24px;
         margin-right: 50px;
       }
     }
 
+  }
 }
-}
-
 
 
 .close {
