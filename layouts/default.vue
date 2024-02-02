@@ -11,7 +11,9 @@
         class="fixed_left_menu"
       />
       <Nuxt class="custom_grid_system main__left_column"/>
-      <WrapperStickyCurrentObject v-if="! listExcludedRightColumn && $device.isDesktop"/>
+
+      <!--   WIDGETS   -->
+      <WrapperStickyCurrentObject v-if="!listExcludedRightColumn && $device.isDesktop"/>
     </v-main>
 
     <!-- КАСКАДНЫЕ МОДАЛКИ -->
@@ -27,16 +29,11 @@
 <script>
 
 import { mapState } from 'vuex'
-import Header from '../components/Header'
 import SubHeader from '../components/SubHeader'
-import ListObjects from '../components/UserObjects/ListObjects'
-import ObjectDetail from '../components/UserObjects/ObjectDetail'
 import Right from '../components/CascadModels/Right'
-import CurrentObjects from '../components/Widgets/CurrentObjects'
 
 import BurgerMenu from '../components/BurgerMenu'
 import VerticalMenu from '../components/VerticalMenu.vue'
-import Biathlon from '../components/Common/Biathlon.vue'
 import WrapperStickyCurrentObject from '../components/Widgets/WrapperStickyCurrentObject.vue'
 import Request from '@/services/request'
 import Logging from '@/services/logging'
@@ -45,15 +42,10 @@ export default {
   name: 'DefaultLayout',
   components: {
     WrapperStickyCurrentObject,
-    Biathlon,
     VerticalMenu,
     BurgerMenu,
     Right,
-    SubHeader,
-    Header,
-    ListObjects,
-    ObjectDetail,
-    CurrentObjects
+    SubHeader
   },
   data() {
     return {
@@ -68,7 +60,7 @@ export default {
           text: 'Эти статьи помогут вам подобрать решение для вашей проблемы'
         }
       ],
-      articles_breadcrumbs: [],
+      articles_breadcrumbs: []
     }
   },
   async fetch() {
@@ -77,8 +69,8 @@ export default {
       url: `${this.$store.state.BASE_URL}/entity/articles/`
     }
     try {
-      const articles_request = await this.$axios(options)
-      this.articles_breadcrumbs = articles_request.data.data.map((elem) => {
+      const articlesRequest = await this.$axios(options)
+      this.articles_breadcrumbs = articlesRequest.data.data.map((elem) => {
         return {
           url: `https://pomogatorus.ru/articles/${elem.id}`,
           text: elem.preview
@@ -120,20 +112,6 @@ export default {
       }
     ]
   },
-  watch:{
-    '$store.getters.getUserId': {
-      handler(value) {
-        this.$store.dispatch('Objects/getListObjectsByUserId');
-      }
-    }
-  },
-  mounted() {
-    this.fuckinMiddleware()
-    window.onNuxtReady((app) => {
-      // console.log('Nuxt ready!')
-      this.loadComponent = true
-    })
-  },
   computed: {
     ...mapState({
       listModal: state => state.listModal
@@ -157,6 +135,20 @@ export default {
       })
     }
   },
+  watch: {
+    '$store.getters.getUserId': {
+      handler(value) {
+        this.$store.dispatch('Objects/getListObjectsByUserId')
+      }
+    }
+  },
+  mounted() {
+    this.fuckinMiddleware()
+    window.onNuxtReady((app) => {
+      // console.log('Nuxt ready!')
+      this.loadComponent = true
+    })
+  },
   methods: {
     async fuckinMiddleware() {
       if (this.$route.query.userEmail) {
@@ -166,10 +158,11 @@ export default {
       } else {
         if (Request.getAccessTokenInCookies() && this.$route.query.agent) {
           this.$store.commit('change_agent_utm', this.$route.query.agent)
-          const wtf = Request.get(this.$store.state.BASE_URL + '/entity/articles', this.$route.query)
+          Request.get(this.$store.state.BASE_URL + '/entity/articles', this.$route.query)
         }
         if (!Request.getAccessTokenInCookies()) {
           const refreshResponse = await this.$store.dispatch('refreshTokens')
+          console.log('if (!Request.getAccessTokenInCookies())', refreshResponse)
 
           if (Logging.checkExistErr(refreshResponse)) console.log(refreshResponse.message)
           // return redirect('/login')
@@ -179,8 +172,8 @@ export default {
       }
 
       this.$store.commit('change_refactoring_content', false)
-    },
-  },
+    }
+  }
 
 }
 </script>

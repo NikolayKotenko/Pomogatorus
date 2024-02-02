@@ -43,8 +43,8 @@
     <Biathlon
       v-if="! $store.state.ArticleModule.refactoring_content"
       :questions="$store.state.PopularSelectionsModule.questions"
-      is-collection
       :view-action="localViewAction"
+      is-collection
     />
     <v-overlay
       :value="$store.state.PopularSelectionsModule.loadingState && $store.state.ArticleModule.refactoring_content"
@@ -63,13 +63,13 @@
 </template>
 
 <script>
-import Question from '../../components/frontLayouts/Question';
-import Request from '../../services/request';
-import ArticleSmallCard from '../../components/Article/ArticleSmallCard.vue';
-import Biathlon from '../../components/Common/Biathlon.vue';
-import article from '../../store/modules/article';
-import podborki from './index.vue';
-import HashTagStyled from '~/components/Common/HashTagStyled';
+import Question from '../../components/frontLayouts/Question'
+import Request from '../../services/request'
+import ArticleSmallCard from '../../components/Article/ArticleSmallCard.vue'
+import Biathlon from '../../components/Common/Biathlon.vue'
+import article from '../../store/modules/article'
+import podborki from './index.vue'
+import HashTagStyled from '~/components/Common/HashTagStyled'
 
 export default {
   name: '_code.vue',
@@ -137,30 +137,30 @@ export default {
   created() {
   },
   async mounted() {
-    this.$route.meta.title = this.mainTag?.name;
+    this.$route.meta.title = this.mainTag?.name
 
 
     this.$store.commit('PopularSelectionsModule/change_loadingState', true)
-    const getArticlesInfo = await this.$store.dispatch('PopularSelectionsModule/getArticlesInfo', this.$route.params.code);
-    const getQuestionsInfo = await this.$store.dispatch('PopularSelectionsModule/getQuestionsInfo', this.$route.params.code);
-    const promiseAll = Promise.all([getArticlesInfo, getQuestionsInfo]);
+    const getArticlesInfo = await this.$store.dispatch('PopularSelectionsModule/getArticlesInfo', this.$route.params.code)
+    const getQuestionsInfo = await this.$store.dispatch('PopularSelectionsModule/getQuestionsInfo', this.$route.params.code)
+    const promiseAll = Promise.all([getArticlesInfo, getQuestionsInfo])
     promiseAll.finally(() => {
       setTimeout(() => {
         this.$store.commit('PopularSelectionsModule/change_loadingState', false)
       }, 1000)
-    });
+    })
 
-    this.findQuestions();
+    this.findQuestions()
   },
 
   methods: {
     findQuestions() {
       if (!this.data_of_components.length) {
-        return;
+        return
       }
       this.computedQuestions = this.data_of_components.filter(elem => {
-        return elem.data.component.name === 'questions';
-      });
+        return elem.data.component.name === 'questions'
+      })
 
     },
     setAnswer(data) {
@@ -170,10 +170,10 @@ export default {
 
     }
   }
-};
+}
 </script>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 @import '@/assets/styles/lists';
 
 .title {
@@ -184,11 +184,13 @@ export default {
 .podborki_detail {
   display: grid;
   row-gap: 20px;
+
   .description {
     background-color: #FFFFFF;
     border-radius: 5px;
     padding: 1em;
   }
+
   .content_wrapper {
     display: flex;
     grid-column-gap: 20px;
@@ -201,12 +203,14 @@ export default {
       grid-row-gap: 20px;
       width: 100%;
     }
+
     .right_column {
       display: grid;
       grid-row-gap: 20px;
     }
 
   }
+
   .overlay_style {
     transition: 0s !important;
   }
@@ -216,7 +220,8 @@ export default {
   //  margin: unset;
   //}
 }
-@media only screen and (max-width: 768px){
+
+@media only screen and (max-width: 768px) {
   .text_tag_article {
     padding-left: 8px;
   }

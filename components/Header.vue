@@ -8,7 +8,7 @@
     elevate-on-scroll
   >
     <v-container class="d-flex custom_grid_system">
-      <v-app-bar-nav-icon v-if="isMobile" @click="showDrawer" />
+      <v-app-bar-nav-icon v-if="isMobile" @click="showDrawer"/>
       <v-toolbar-title v-if="isMobile">
         <router-link :to="getCurrentRoute.path" style="color: unset; text-decoration: unset">
           {{ getCurrentRoute.title }}
@@ -98,7 +98,7 @@
             <CurrentObjects/>
           </template>
         </DropDownMenuStyled>
-        
+
         <TooltipStyled :title="'Личный кабинет'">
           <template>
             <v-btn
@@ -136,41 +136,41 @@ export default {
       debounceTimeout: null,
       stateCurrentObject: false,
       selectedArticle: null,
-      selectedChips: "",
+      selectedChips: '',
       loadComponent: false,
       listArticles: [],
       loading: false,
       answersList: [
         {
-          category: "Пользователи",
+          category: 'Пользователи',
           data: {},
-          query: "",
-          search: "",
-          text: "",
+          query: '',
+          search: '',
+          text: '',
           isAuthorized: null
         },
         {
-          category: "Подборки",
+          category: 'Подборки',
           data: {},
-          query: "",
-          search: "",
-          text: "",
+          query: '',
+          search: '',
+          text: '',
           isAuthorized: null
         },
         {
-          category: "Оборудование",
+          category: 'Оборудование',
           data: {},
-          query: "",
-          search: "",
-          text: "",
+          query: '',
+          search: '',
+          text: '',
           isAuthorized: null
         },
         {
-          category: "Объекты",
+          category: 'Объекты',
           data: {},
-          query: "",
-          search: "",
-          text: "",
+          query: '',
+          search: '',
+          text: '',
           isAuthorized: null
         }
       ]
@@ -195,8 +195,8 @@ export default {
     getCurrentRoute() {
       if (this.listModal[0].isOpen) {
         return {
-          path: "",
-          title: "Личный кабинет"
+          path: '',
+          title: 'Личный кабинет'
         };
       }
       return this.$store.getters.menuItems.find((elem) => {
@@ -206,7 +206,7 @@ export default {
   },
   methods: {
     showDrawer() {
-      this.$store.commit("set_drawer", !this.drawer);
+      this.$store.commit('set_drawer', !this.drawer);
     },
     // openObject() {
     //   this.$emit("open_object", this.$store.state.listObjects.currentObject)
@@ -215,27 +215,29 @@ export default {
     setHeader(value) {
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
       this.debounceTimeout = setTimeout(() => {
-        this.$store.commit("change_show_header", value);
+        this.$store.commit('change_show_header', value);
       });
     },
     onScroll() {
       if (this.$device.isDesktop) {
         let prevScrollpos = window.pageYOffset;
         const _this = this;
-        window.onscroll = function () {
+        window.onscroll = function() {
           const currentScrollPos = window.pageYOffset;
           if (prevScrollpos > currentScrollPos) {
-            document.getElementById("navbar").style.top = "0";
+            document.getElementById('navbar').style.top = '0';
             _this.setHeader(true);
           } else {
-            document.getElementById("navbar").style.top = "-70px";
+            document.getElementById('navbar').style.top = '-70px';
             _this.setHeader(false);
           }
           prevScrollpos = currentScrollPos;
         };
       }
     },
-    async localGetListItems(searchString) {
+    localGetListItems(searchString) {
+      if (!searchString) return false;
+
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
 
       this.debounceTimeout = setTimeout(async () => {
@@ -247,9 +249,9 @@ export default {
     },
     openCollaborationModule(state) {
       if (!this.$store.getters.stateAuth) {
-        this.$store.commit("set_modal_auth", state);
+        this.$store.commit('set_modal_auth', state);
       } else {
-        this.$store.commit("CollaborationModule/changeStateCollaboration", state);
+        this.$store.commit('CollaborationModule/changeStateCollaboration', state);
       }
     },
     redirectData(data){
@@ -291,8 +293,8 @@ export default {
     //
     //   return response;
     // },
-    
-      
+
+
 
   }
 };

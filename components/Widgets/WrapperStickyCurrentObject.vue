@@ -1,19 +1,68 @@
 <template>
   <div class="wrapper_current_object">
-    <CurrentObjects class="current_local_object"/>
+    <CurrentObjects ref="object-widget" class="current_local_object"/>
+
+    <NomenclatureWidget
+      ref="nomenclature-widget"
+      :class="{'show-widget': isObjectLoaded}"
+      class="nomenclature-widget"
+      style="top: 0;"
+    />
   </div>
 </template>
 
 <script>
-import CurrentObjects from './CurrentObjects.vue';
+import CurrentObjects from './CurrentObjects.vue'
+import NomenclatureWidget from './NomenclatureWidget'
 
 export default {
   name: 'WrapperStickyCurrentObject',
-  components: { CurrentObjects }
-};
+  components: { NomenclatureWidget, CurrentObjects },
+  data: () => ({
+    isObjectLoaded: false
+  }),
+  watch: {
+    '$store.state.Objects.isLoadingObjects': {
+      handler(v) {
+        if (v) {
+          this.getNomenclaturePosition()
+        }
+      }
+    }
+  },
+  methods: {
+    getNomenclaturePosition() {
+      if (process.client) {
+        this.$nextTick(() => {
+          // Отложенная загрузка виджета через 5 сек
+          setTimeout(() => {
+            const object = this.$refs['object-widget'] ? this.$refs['object-widget'].$el : null
+
+            if (!object) {
+              return
+            }
+
+            const objectHeight = object.offsetHeight
+            const gap = 40 // Отступ виджета от другого
+
+            const nomenclature = this.$refs['nomenclature-widget'] ? this.$refs['nomenclature-widget'].$el : null
+
+            if (!nomenclature) {
+              return
+            }
+
+            nomenclature.style.top = `${objectHeight + gap}px`
+
+            this.isObjectLoaded = true
+          }, 5000)
+        })
+      }
+    }
+  }
+}
 </script>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 @media (min-width: 1233px) {
   .wrapper_current_object {
     display: block;
@@ -32,5 +81,17 @@ export default {
     //right: -320px;
     position: absolute;
   }
+}
+
+.nomenclature-widget {
+  position: absolute;
+  top: 0;
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.show-widget {
+  opacity: 1;
+  transform: translateY(0);
 }
 </style>

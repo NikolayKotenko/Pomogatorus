@@ -12,7 +12,6 @@
         :is-item-text="'email'"
         :is-item-value="'id'"
         :is-items="$store.state.CollaborationModule.listMembers"
-        :is-loading="$store.state.CollaborationModule.isLoading"
         :is-outlined="false"
         :is-placeholder="'Пригласить новых участников'"
         :is-rounded="true"

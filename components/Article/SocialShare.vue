@@ -144,7 +144,7 @@ i {
     justify-content: right !important;
     padding-left: 10px;
 
-    &:hover{
+    &:hover {
       color: #F6C5A7 !important;
     }
     &:active{
@@ -175,7 +175,6 @@ i {
     padding: 5px;
     z-index: 9;
     background: white;
-
 
 
     //a[class^="share-network-"] {

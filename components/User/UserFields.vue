@@ -105,9 +105,7 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col>
-          
-        </v-col>
+        <v-col/>
       </v-row>
     </template>
 
@@ -128,16 +126,18 @@
         @change="setData"
       />
     </div>
+    <MapServiceArea/>
   </v-form>
 </template>
 
 <script>
 import { mapState } from 'vuex';
 import InputStyled from '../Common/InputStyled.vue';
+import MapServiceArea from '~/components/Widgets/MapServiceArea';
 
 export default {
   name: 'UserFields',
-  components: { InputStyled },
+  components: { MapServiceArea, InputStyled },
   data: () => ({
     isFormValid: false,
     form: {

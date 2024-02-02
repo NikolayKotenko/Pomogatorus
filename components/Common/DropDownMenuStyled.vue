@@ -1,9 +1,13 @@
 <template>
   <v-menu
-    :left="isLeft"
-    :top="isTop"
-    :offset-y="isOffsetY"
+    :close-on-click="closeOnClickOutside"
     :close-on-content-click="false"
+    :left="isLeft"
+    :nudge-bottom="nudgeBottom"
+    :nudge-right="nudgeRight"
+    :offset-y="isOffsetY"
+    :top="isTop"
+    bottom
   >
     <template #activator="{ on, attrs }">
       <div
@@ -31,7 +35,7 @@ export default {
     },
     isOffsetY: {
       type: Boolean,
-      default: false
+      default: true
     },
     isTop: {
       type: Boolean,
@@ -41,6 +45,18 @@ export default {
       type: Boolean,
       default: false
     },
+    nudgeBottom: {
+      type: Number,
+      default: 0
+    },
+    nudgeRight: {
+      type: Number,
+      default: 0
+    },
+    closeOnClickOutside: {
+      type: Boolean,
+      default: true
+    }
   }
 };
 </script>

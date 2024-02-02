@@ -59,13 +59,17 @@ export default {
     isMobile: {
       type: Boolean,
       default: false
+    },
+    unsetWidth: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
     computedClass() {
       const basedClass = 'btnStyled'
       const animatedClass = (this.isAnimation) ? 'animation_save' : ''
-      const mobileClass = this.isMobile ? '' : 'desktop_style'
+      const mobileClass = this.isMobile || this.unsetWidth ? '' : 'desktop_style'
       return `${basedClass} ${mobileClass} ${this.localClass} ${animatedClass}`
     }
   }

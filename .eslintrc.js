@@ -88,12 +88,5 @@ module.exports = {
         selfClosingTag: 'never',
       },
     ],
-    'vue/v-on-event-hyphenation': [
-      'error',
-      'always',
-      {
-        autofix: true,
-      },
-    ],
   },
 }

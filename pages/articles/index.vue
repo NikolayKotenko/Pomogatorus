@@ -69,7 +69,7 @@ export default {
     setSelected(selectedObj){
       this.selectedArticle = selectedObj;
     },
-    localGetListItems(searchString){ 
+    localGetListItems(searchString){
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
 
       this.debounceTimeout = setTimeout(async () => {
@@ -103,7 +103,7 @@ export default {
       this.loading = true;
 
       const basedFilter = { activity: true };
-      const query = constructFilterQuery({ ...basedFilter, ...queryParams,  });
+      const query = constructFilterQuery({ ...basedFilter, ...queryParams });
 
       const response = await Request.get(
         this.$store.state.BASE_URL + '/entity/articles' + query + '&sort[created_at]=desc'

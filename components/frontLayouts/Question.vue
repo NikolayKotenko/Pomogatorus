@@ -309,13 +309,13 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import Answers from '../../services/answers/answers'
 import CompareArrays from '../../utils/compareArrays'
 import AuthModal from '../Modals/AuthModal'
 import InputStyled from '../Common/InputStyled'
 import TextAreaStyled from '../Common/TextAreaStyled'
 import TooltipStyled from '../Common/TooltipStyled.vue'
 import DropzoneInput from '../Common/DropzoneInput'
+import Answers from '@/services/answers/answers'
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -505,7 +505,7 @@ export default {
         this.data_env.data[dataEnv.data.data.column] = JSON.stringify(this.answer)
       } else if (!this.answer && this.detailed_response) {
         if (this.value_type_answer && this.value_type_answer.length) {
-          if (this.value_type_answer[0]?.dataEnv) {
+          if (this.value_type_answer[0]?.dataEnv?.data?.data?.column) {
             this.data_env = {
               model: this.value_type_answer[0].dataEnv.data.model,
               controller: this.value_type_answer[0].dataEnv.data.controller,
@@ -521,7 +521,7 @@ export default {
         }
       } else if (typeof this.answer === 'string') {
         if (this.value_type_answer && this.value_type_answer.length) {
-          if (this.value_type_answer[0]?.dataEnv) {
+          if (this.value_type_answer[0]?.dataEnv?.data?.data?.column) {
             this.data_env = {
               model: this.value_type_answer[0].dataEnv.data.model,
               controller: this.value_type_answer[0].dataEnv.data.controller,
@@ -534,15 +534,17 @@ export default {
           }
         }
       } else if (this.answer?.dataEnv) {
-        this.data_env = {
-          model: this.answer.dataEnv.data.model,
-          controller: this.answer.dataEnv.data.controller,
-          name: this.answer.dataEnv.data.name,
-          data: {
-            id: this.$store.state.Objects.currentObject.id
+        if (this.answer?.dataEnv?.data?.data?.column) {
+          this.data_env = {
+            model: this.answer.dataEnv.data.model,
+            controller: this.answer.dataEnv.data.controller,
+            name: this.answer.dataEnv.data.name,
+            data: {
+              id: this.$store.state.Objects.currentObject.id
+            }
           }
+          this.data_env.data[this.answer.dataEnv.data.data.column] = JSON.stringify(this.answer)
         }
-        this.data_env.data[this.answer.dataEnv.data.data.column] = JSON.stringify(this.answer)
       }
     },
 
@@ -556,7 +558,13 @@ export default {
     sendAnswer(dataEnv) {
       this.status_name = 'sending'
       this.$nextTick(async () => {
-        this.setDataEnv(dataEnv)
+        try {
+          this.setDataEnv(dataEnv)
+        } catch (e) {
+          this.status_name = 'error'
+          console.warn(e)
+        }
+
         if (this.id_answer) {
           try {
             const result = await Answers.update(
@@ -574,7 +582,7 @@ export default {
               },
               this.id_answer
             )
-            if (result.codeResponse !== '202') {
+            if (result.codeResponse !== 202) {
               this.status_name = 'error'
             } else {
               this.status_name = 'success'
@@ -590,8 +598,8 @@ export default {
             const result = await Answers.create({
               id_type_answer: this.question_data.id_type_answer,
               id_question: this.question_data.id,
-              id_user: this.$store.state.AuthModule.userData.id,
-              id_object: this.$store.state.Objects.currentObject.id,
+              id_user: this.$store.state.AuthModule.userData?.id,
+              id_object: this.$store.state.Objects.currentObject?.id,
               code_agent: this.agentCode,
               id_article: this.$route.params.id,
               value_answer: JSON.stringify(this.answer),
@@ -599,7 +607,8 @@ export default {
               detailed_response: this.detailed_response,
               attachment_files: ''
             })
-            if (result.codeResponse !== '201') {
+
+            if (result.codeResponse !== 201) {
               this.status_name = 'error'
             } else {
               this.status_name = 'success'
@@ -611,6 +620,8 @@ export default {
             console.warn(e)
           }
         }
+
+        await this.$store.dispatch('setIsAnswered')
 
         // AFTER WE CREATE WE SAVE OUR ANSWER TO STORE
         const files = structuredClone(this.files)
@@ -816,6 +827,7 @@ export default {
   background-color: #FFFFFF;
   transition: $transition;
   height: auto;
+
   &__content {
     font-size: 1.1em;
   }

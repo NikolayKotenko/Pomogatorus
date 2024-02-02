@@ -12,13 +12,20 @@
     <v-tabs
       color="black"
       grow
-      
     >
-      <v-tab :key="0">Услуги</v-tab>
-      <v-tab :key="1">Рекомендованные специалисты</v-tab>
-      <v-tab :key="2">Приглашенные специалисты</v-tab>
-      <v-tab :key="3">Заявка</v-tab>
-      
+      <v-tab :key="0">
+        Услуги
+      </v-tab>
+      <v-tab :key="1">
+        Рекомендованные специалисты
+      </v-tab>
+      <v-tab :key="2">
+        Приглашенные специалисты
+      </v-tab>
+      <v-tab :key="3">
+        Заявка
+      </v-tab>
+
       <!-- Блок с услугами. -->
       <v-tab-item :key="0">
         <div class="services_table">
@@ -40,7 +47,7 @@
             @add-service="addService"
           />
         </div>
-        
+
         <!-- Блок с примечанием. -->
         <div class="info_wrapper">
           <span class="info_title">Примечание: </span>
@@ -55,14 +62,12 @@
             />
           </div>
         </div>
-
-      
       </v-tab-item>
-      
-    <!-- Блок с рекомендованными пользователями. -->
+
+      <!-- Блок с рекомендованными пользователями. -->
       <v-tab-item :key="1">
         <v-simple-table>
-          <template v-slot:default>
+          <template #default>
             <thead>
               <tr>
                 <th class="text-left">
@@ -89,9 +94,9 @@
                 <td>66% - 2 из 3</td>
                 <td>
                   <IconTooltip
-                    :size-icon="'32'"
                     :color-icon="'#B3B3B3'"
                     :icon-text="'mdi-plus-circle-outline'"
+                    :size-icon="'32'"
                     :text-tooltip="'Добавить в заявку'"
                   />
                 </td>
@@ -102,7 +107,7 @@
 
         <div class="info_wrapper">
           <span class="info_title">Исполнители: </span>
-          <div 
+          <div
             v-for="(item, index) in dataUsers"
             :key="index"
             class="user_info"
@@ -132,8 +137,8 @@
                   </v-icon>
                 </div>
                 <span>
-                    Вы действительно хотите удалить исполнителя "{{ item.user_fio }}"?
-                  </span>
+                  Вы действительно хотите удалить исполнителя "{{ item.user_fio }}"?
+                </span>
                 <div class="delete_user_buttons">
                   <ButtonStyled
                     :local-class="'invite_button style_button'"
@@ -178,13 +183,12 @@
             />
           </div>
         </div>
-
       </v-tab-item>
 
       <!-- Блок с приглашенными пользователями. -->
       <v-tab-item :key="2">
         <v-simple-table>
-          <template v-slot:default>
+          <template #default>
             <thead>
               <tr>
                 <th class="text-left">
@@ -211,9 +215,9 @@
                 <td>66% - 2 из 3</td>
                 <td>
                   <IconTooltip
-                    :size-icon="'32'"
                     :color-icon="'#B3B3B3'"
                     :icon-text="'mdi-minus-circle-outline'"
+                    :size-icon="'32'"
                     :text-tooltip="'Убрать из заявки'"
                   />
                 </td>
@@ -222,9 +226,8 @@
           </template>
         </v-simple-table>
       </v-tab-item>
-    </v-tabs>  
+    </v-tabs>
 
-   
 
     <!-- Блок с кнопками. -->
     <div class="footer_buttons">
@@ -243,22 +246,20 @@
 </template>
 
 <script>
-import ButtonStyled from "../Common/ButtonStyled.vue";
-import TooltipStyled from "../Common/TooltipStyled.vue";
-import SelectStyled from "../Common/SelectStyled.vue";
-import { Service, ServiceDataConstructor, TaskData } from "~/helpers/constructors";
-import ServiceCard from "./ServiceCard.vue";
-import UniversalAddInput from "~/components/Common/UniversalAddInput";
-import IconTooltip from "../Common/IconTooltip.vue";
+import ButtonStyled from '../Common/ButtonStyled.vue';
+import TooltipStyled from '../Common/TooltipStyled.vue';
+import IconTooltip from '../Common/IconTooltip.vue';
+import ServiceCard from './ServiceCard.vue';
+import { Service, ServiceDataConstructor, TaskData } from '~/helpers/constructors';
+import UniversalAddInput from '~/components/Common/UniversalAddInput';
 
 export default {
-  name: "InviteUserModal",
+  name: 'InviteUserModal',
   components: {
     UniversalAddInput,
     ServiceCard,
     TooltipStyled,
     ButtonStyled,
-    SelectStyled,
     IconTooltip
   },
   props: {
@@ -294,11 +295,11 @@ export default {
     if (this.currentTask) {
       this.taskData = this.currentTask;
     }
-    this.taskData.id_object = this.$store.getters["Objects/getIdCurrentObject"];
+    this.taskData.id_object = this.$store.getters['Objects/getIdCurrentObject'];
   },
   methods: {
     getValueField(str) {
-      return (str) || "";
+      return (str) || '';
     },
 
     closeDeleteOneUserModal() {
@@ -313,15 +314,15 @@ export default {
       if (!obj) return false;
 
       if (this.taskData.services.find(item => item.id_services === obj.id)) {
-        this.$toast.error("Такая услуга уже добавлена");
+        this.$toast.error('Такая услуга уже добавлена');
         return false;
       }
 
       this.taskData.services.push(new Service(
         obj.id,
         [],
-        "",
-        "1",
+        '',
+        '1',
         new ServiceDataConstructor(
           obj.code,
           obj.name,
@@ -329,7 +330,7 @@ export default {
         )
       ));
 
-      this.$toast.success("Услуга добавлена");
+      this.$toast.success('Услуга добавлена');
     },
 
     setPrice(index, price) {
@@ -338,34 +339,34 @@ export default {
 
     addUser() {
       if (this.taskData.ids_users.includes(this.selectedUser.id)) {
-        this.$toast.error("Исполнитель уже добавлен");
+        this.$toast.error('Исполнитель уже добавлен');
         return false;
       }
 
       this.taskData.ids_users.push(this.selectedUser.id);
       this.dataUsers.push(this.selectedUser);
 
-      this.$toast.success("Исполнитель добавлен");
+      this.$toast.success('Исполнитель добавлен');
     },
 
     async sendTask() {
       if (!this.taskData.services.length) {
-        this.$toast.info("Выберите услугу");
+        this.$toast.info('Выберите услугу');
         return false;
       }
 
       if (!this.taskData.ids_users.length) {
-        this.$toast.info("Добавьте исполнителя");
+        this.$toast.info('Добавьте исполнителя');
         return false;
       }
 
       const response = await this.$store.dispatch(
-        "CollaborationModule/setTaskByObject",
+        'CollaborationModule/setTaskByObject',
         this.taskData
       );
 
       this.$toast.success(response.message);
-      this.$emit("close-modal");
+      this.$emit('close-modal');
 
       // TODO: Доделать дестрой
       // this.dataUsers = ''
@@ -375,8 +376,7 @@ export default {
     deleteOneService(serviceToRemove) {
       this.taskData.services.splice(serviceToRemove, 1);
 
-      this.$store.commit("UserSettings/changeStateDeleteServiceModal", false);
-      this.$toast.success("Услуга удалена");
+      this.$toast.success('Услуга удалена');
     },
 
     deleteOneUser(idUserToRemove, dataUserToRemove) {
@@ -384,7 +384,7 @@ export default {
       this.dataUsers.splice(dataUserToRemove, 1);
 
       this.closeDeleteOneUserModal();
-      this.$toast.success("Исполнитель удален");
+      this.$toast.success('Исполнитель удален');
     }
   }
 };

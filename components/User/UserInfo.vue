@@ -16,13 +16,13 @@
       <v-tab
         :key="0"
       >
-        {{ isLoggedIn ? "Общая информация" : "Авторизация" }}
+        <span class="tab_header">{{ isLoggedIn ? "Общая информация" : "Авторизация" }}</span>
       </v-tab>
       <v-tab
         v-if="isLoggedIn"
         :key="1"
       >
-        Мои услуги
+        <span class="tab_header">Мои услуги</span>
         <v-badge
           :content="$store.getters['UserSettings/getCountServices']"
           :value="$store.getters['UserSettings/getCountServices']"
@@ -54,11 +54,11 @@
       </v-tab-item>
 
       <!-- Услуги -->
-
       <v-tab-item :key="1">
         <!-- Поиск | Сортировка -->
         <div class="search_sort">
           <SearchStyled
+            :class="'search_services'"
             :is-class="'styleSearch'"
             :is-clearable="true"
             :is-hide-selected="true"
@@ -92,8 +92,9 @@
               :is-loading="$store.state.UserSettings.loading"
               :is-quantity-exist="false"
               :iteration-key="index+1"
+              :list-additional-data-services="$store.getters['UserSettings/getAdditionalDataByIdServices'](item.id_services)"
               :service-object="item"
-              @delete-one-service="deleteOneService(item)"
+              @delete-one-service="deleteOneService(item, $event)"
               @update-price-field="setPrice(item, $event)"
             />
           </div>
@@ -101,7 +102,7 @@
 
         <!-- Добавить услугу -->
         <UniversalAddInput
-          :list-services-available-to-add="$store.state.UserSettings.listServices"
+          :list-services-available-to-add="$store.getters['UserSettings/getListServicesExcludeAdded']"
           class="mt-5"
           @add-service="setServiceByUser"
         />
@@ -110,54 +111,54 @@
       <!-- Портфель брендов -->
       <v-tab-item :key="2" class="brands_tab">
         <span class="title">Бренды с которыми вы работаете</span>
-        <v-card class="brand_wrapper" outlined height="60">
+        <v-card class="brand_wrapper" height="60" outlined>
           <div class="brand_info">
             <span style="font-size: 1.5em; margin-right: 10px;">1. </span>
             <v-img
               :src="require(`~/assets/svg/baxi_logo.svg`)"
               class="brand_img"
               contain
-            ></v-img>
+            />
             <span class="brand_text">Установленно оборудования Baxi: 23</span>
           </div>
           <IconTooltip
-            :size-icon="'24'"
             :color-icon="'#B3B3B3'"
             :icon-text="'mdi-close'"
+            :size-icon="'24'"
             :text-tooltip="'Удалить бренд'"
           />
         </v-card>
-        <v-card class="brand_wrapper" outlined height="60">
+        <v-card class="brand_wrapper" height="60" outlined>
           <div class="brand_info">
             <span style="font-size: 1.5em; margin-right: 10px;">2. </span>
             <v-img
               :src="require(`~/assets/svg/navien_logo.svg`)"
               class="brand_img"
               contain
-            ></v-img>
+            />
             <span class="brand_text">Установленно оборудования Navien: 23</span>
           </div>
           <IconTooltip
-            :size-icon="'24'"
             :color-icon="'#B3B3B3'"
             :icon-text="'mdi-close'"
+            :size-icon="'24'"
             :text-tooltip="'Удалить бренд'"
           />
         </v-card>
-        <v-card class="brand_wrapper" outlined height="60">
+        <v-card class="brand_wrapper" height="60" outlined>
           <div class="brand_info">
             <span style="font-size: 1.5em; margin-right: 10px;">3. </span>
             <v-img
               :src="require(`~/assets/svg/ariston_logo.svg`)"
               class="brand_img"
               contain
-            ></v-img>
+            />
             <span class="brand_text">Установленно оборудования Ariston: 23</span>
           </div>
           <IconTooltip
-            :size-icon="'24'"
             :color-icon="'#B3B3B3'"
             :icon-text="'mdi-close'"
+            :size-icon="'24'"
             :text-tooltip="'Удалить бренд'"
           />
         </v-card>
@@ -221,17 +222,17 @@
 <script>
 import { mapState } from 'vuex';
 
-import LoginAuth from "../frontLayouts/LoginAuth";
-import ButtonStyled from "../Common/ButtonStyled.vue";
-import SearchStyled from "../Common/SearchStyled.vue";
-import InputStyled from "../Common/InputStyled.vue";
-import TooltipStyled from "../Common/TooltipStyled.vue";
-import UserFields from "./UserFields";
-import ServiceCard from "@/components/Collaboration/ServiceCard.vue";
-import UniversalAddInput from "@/components/Common/UniversalAddInput.vue";
-import { MtoMUsersServices } from "~/helpers/constructors";
-import SelectStyled from "~/components/Common/SelectStyled";
+import LoginAuth from '../frontLayouts/LoginAuth';
+import ButtonStyled from '../Common/ButtonStyled.vue';
+import SearchStyled from '../Common/SearchStyled.vue';
+import InputStyled from '../Common/InputStyled.vue';
+import TooltipStyled from '../Common/TooltipStyled.vue';
 import IconTooltip from '../Common/IconTooltip.vue';
+import UserFields from './UserFields';
+import ServiceCard from '@/components/Collaboration/ServiceCard.vue';
+import UniversalAddInput from '@/components/Common/UniversalAddInput.vue';
+import { MtoMUsersServices } from '~/helpers/constructors';
+import SelectStyled from '~/components/Common/SelectStyled';
 
 export default {
   name: 'UserInfo',
@@ -304,8 +305,8 @@ export default {
       this.isValid = value.isValid;
     },
     async saveUser() {
-      await this.$store.dispatch("UserSettings/updateUser", { userId: this.userData.id, data: this.data });
-      this.$toast.success("Данные сохранены", { duration: 5000 });
+      await this.$store.dispatch('UserSettings/updateUser', { userId: this.userData.id, data: this.data });
+      this.$toast.success('Данные сохранены', { duration: 5000 });
       this.closeDetail();
     },
     async setServiceByUser(serviceData) {
@@ -326,12 +327,10 @@ export default {
         this.$store.dispatch('UserSettings/getUserServices', this.userData.id);
       }
     },
-    async deleteOneService(serviceRawObj) {
+    async deleteOneService(serviceRawObj, event) {
       await this.$store.dispatch('UserSettings/deleteOneServiceAssignToUser', serviceRawObj.id_services);
       await this.$store.dispatch('UserSettings/getUserServices', this.userData.id);
-
-      this.$store.commit("UserSettings/changeStateDeleteServiceModal", false);
-      this.$toast.success("Услуга удалена");
+      this.$toast.success('Услуга удалена');
     },
     setPrice(object, price) {
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
@@ -377,7 +376,12 @@ export default {
   grid-row-gap: 1em;
   flex-direction: column;
 
+  .tab_header {
+    font-size: 1.5em;
+  }
+
   .user_info_title {
+    font-size: 1.1em;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -398,6 +402,10 @@ export default {
     bottom: 0;
     width: 100%;
 
+    .saveLogoutBtn {
+      font-size: 1em;
+    }
+
     .mobile_save_btn {
       max-width: 64px;
     }
@@ -408,10 +416,12 @@ export default {
 .brands_tab {
   display: grid;
   grid-row-gap: 10px;
+
   .title {
-  font-size: 1.5em !important;
-  font-weight: 700;
-}
+    font-size: 1.5em !important;
+    font-weight: 700;
+  }
+
   .brand_wrapper {
     display: flex;
     justify-content: space-between;
@@ -422,15 +432,15 @@ export default {
     .brand_info {
       display: flex;
       align-items: center;
+
       .brand_img {
         max-height: 24px;
         margin-right: 50px;
       }
     }
-    
-}
-}
 
+  }
+}
 
 
 .close {
@@ -481,12 +491,18 @@ export default {
   grid-template-columns: 1fr 1fr;
   grid-column-gap: 2em;
   margin-bottom: 2em;
+  margin-top: 20px;
+
+  .search_services {
+    font-size: 1.5em !important;
+  }
 
   .wrapper_sort {
     display: grid;
     grid-template-columns: 1fr auto;
     grid-column-gap: 10px;
     align-items: center;
+    justify-self: end;
 
     .select_sort {
       margin-top: 0 !important;

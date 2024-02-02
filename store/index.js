@@ -13,13 +13,12 @@ import CollaborationModule from './modules/collaboration'
 import NomenclatureModule from './modules/nomenclature'
 import NotificationModule from './modules/notification'
 
-
 const createStore = () => {
   return new Vuex.Store({
     state: {
       BASE_URL:
         process.env.NODE_ENV === 'development'
-          ? 'https://api.agregatorus.com'
+          ? 'https://api-test.agregatorus.com'
           : 'https://api.agregatorus.com',
       show_header: false,
       breadcrumbs: [],
@@ -66,6 +65,9 @@ const createStore = () => {
       ],
       list_tags: [],
       list_broadcast_snippet: [],
+      currentPaginationData: {
+        hasMorePages: false,
+      },
     },
     getters: {
       getImageByEClientFilesObj: (state) => (eClientFilesObj) => {
@@ -163,6 +165,9 @@ const createStore = () => {
           },
         }
       },
+      statePaginationHasMorePage(state) {
+        return state.currentPaginationData.hasMorePages
+      },
     },
     mutations: {
       set_drawer(state, payload) {
@@ -252,7 +257,7 @@ const createStore = () => {
         return response
       },
       async getListBroadcastSnippet({ commit, rootGetters }) {
-        if (! rootGetters.stateAuth) return false;
+        if (!rootGetters.stateAuth) return false
 
         const query = 'filter[broadcast_to_snippet]=true'
         const response = await Request.get(
@@ -281,7 +286,7 @@ const createStore = () => {
           this.state.BASE_URL + `/entity/global-search/search/{q}?q=${symbols}`
         );
         commit('set_list_searched', response.data)
-      }
+      },
     },
     modules: {
       AuthModule,

@@ -5,7 +5,7 @@
     :class="isClass"
     :clearable="(localSearchInputSync || localSelected) ? isClearable : false"
     :dense="isDense"
-    :disabled="isLoading"
+    :disabled="isDisabled"
     :filled="isFilled"
     :hide-details="isHideDetails"
     :hide-no-data="isHideNoData"
@@ -26,29 +26,48 @@
     @click:clear="$emit('click-clear')"
     @update:search-input="$emit('update-search-input', localSearchInputSync)"
   >
-    <!--      <template v-slot:append> -->
-    <!--        <v-icon class="selectIcon">mdi-select</v-icon> -->
-    <!--      </template> -->
+    <template v-if="isIconPrepend" #prepend-inner>
+      <v-progress-circular
+        v-if="isLoading"
+        class="mr-1"
+        color="#95D7AE"
+        indeterminate
+        size="25"
+      />
+      <v-icon v-else class="selectIcon">
+        {{ iconPrepend }}
+      </v-icon>
+    </template>
     <template
-      v-if="isGlobalSearch" 
+      v-if="isGlobalSearch"
       #item="data"
     >
-      <v-list-item-content 
+      <v-list-item-content
         class="search_item"
         @click="watchDataRedirect(data.item)"
       >
         <span
-           v-html="getTitleString(data.item.text)"
+          v-html="getTitleString(data.item.text)"
         />
-        <span 
+        <span
           style="font-size: 0.8em; color: #B6B6B6;"
         >
-           - {{ data.item.category }}
+          - {{ data.item.category }}
         </span>
-      </v-list-item-content >
-      
+      </v-list-item-content>
     </template>
-    <!-- <template v-if="isCustomTemplateSelections" #item="data">
+    <template
+      v-if="isCustomTemplateSelections"
+      #item="data"
+    >
+      <v-list-item-content class="search_item">
+        <span v-html="getTitleString(data.item.city)"/>
+        <br>
+        <span style="font-size: 0.8em; color: #B6B6B6;">{{ data.item.address }}</span>
+      </v-list-item-content>
+    </template>
+    <!--
+ <template v-if="isCustomTemplateSelections" #item="data">
       <v-list-item-content @click="watchDataRedirect(data.item)">
         <span>Cтатьи</span>
         <v-list-item-title v-if="data.category === 'Cтатьи'">
@@ -62,13 +81,15 @@
         <v-list-item-title v-if="data.item.category === 'Оборудование'">
           <span v-html="getTitleString(data.item.text)"/>
         </v-list-item-title>
-        
+
         <v-list-item-title v-else>
           <span v-html="getTitleString(data.item.text)"/>
         </v-list-item-title>
       </v-list-item-content>
-    </template> -->
-    <!-- <template v-if="isCustomSearchSelections" #item="data">
+    </template>
+-->
+    <!--
+ <template v-if="isCustomSearchSelections" #item="data">
       <div
         class="search_user_invite"
         @click="stopInput($event)"
@@ -77,21 +98,22 @@
           :user-object="data.item"
         />
       </div>
-    </template> -->
+    </template>
+-->
   </VCombobox>
 </template>
 
 <script>
-import CardInviteUser from "./CardInviteUser.vue";
-import HashTagStyled from "~/components/Common/HashTagStyled";
+import CardInviteUser from './CardInviteUser.vue';
+import HashTagStyled from '~/components/Common/HashTagStyled';
 
 export default {
-  name: "SearchStyled",
+  name: 'SearchStyled',
   components: { CardInviteUser, HashTagStyled },
   props: {
     isClass: {
       type: String,
-      default: ""
+      default: ''
     },
     isOutlined: {
       type: Boolean,
@@ -115,7 +137,7 @@ export default {
     },
     isPlaceholder: {
       type: String,
-      default: ""
+      default: ''
     },
     isHideNoData: {
       type: Boolean,
@@ -131,11 +153,11 @@ export default {
     },
     isItemText: {
       type: String,
-      default: ""
+      default: ''
     },
     isItemValue: {
       type: String,
-      default: ""
+      default: ''
     },
     isReturnObject: {
       type: Boolean,
@@ -165,13 +187,25 @@ export default {
       type: Boolean,
       default: false
     },
+    isDisabled: {
+      type: Boolean,
+      default: false
+    },
     isGlobalSearch: {
       type: Boolean,
       default: false
+    },
+    isIconPrepend: {
+      type: Boolean,
+      default: false
+    },
+    iconPrepend: {
+      type: String,
+      default: ''
     }
   },
   data: () => ({
-    localSearchInputSync: "",
+    localSearchInputSync: '',
     localSelected: null
   }),
   computed: {
@@ -201,13 +235,12 @@ export default {
     internalData: function(newVal, oldVal) {
       if (!newVal) return false;
 
-      this.$emit("update-search-input", newVal);
+      this.$emit('update-search-input', newVal);
     }
   },
   methods: {
     watchDataRedirect(data) {
-      console.log('123', data)
-      this.$emit("redirect", data);
+      this.$emit('redirect', data);
     },
     getTitleString(text) {
       const { start, middle, end } = this.getMaskedCharacters(text);
@@ -216,10 +249,10 @@ export default {
 
     // Вспомогательные функции
     getMaskedCharacters(text) {
-      const searchInput = (this.localSearchInputSync || "").toString().toLocaleLowerCase();
+      const searchInput = (this.localSearchInputSync || '').toString().toLocaleLowerCase();
       const index = text.toLocaleLowerCase().indexOf(searchInput);
 
-      if (index < 0) return { start: text, middle: "", end: "" };
+      if (index < 0) return { start: text, middle: '', end: '' };
 
       const start = text.slice(0, index);
       const middle = text.slice(index, index + searchInput.length);
@@ -230,10 +263,8 @@ export default {
       return `<span class="v-list-item__mask">${text}</span>`;
     },
     stopInput(e) {
-      console.log("1", e);
       e.stopPropagation();
       e.preventDefault();
-      console.log("2", e);
     }
   }
 };
@@ -312,18 +343,14 @@ export default {
     }
   }
 
-  .selectIcon {
-    color: #857885 !important;
-    font-size: 1.2em !important;
-    cursor: pointer;
-    margin-top: 5px;
-
-  }
-
   .mdi-close {
     font-size: 1em;
     align-content: center;
     color: $orange-color !important;
   }
+}
+
+.selectIcon {
+  margin-right: 5px;
 }
 </style>

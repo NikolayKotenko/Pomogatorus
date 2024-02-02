@@ -39,7 +39,7 @@
         />
       </div>
     </div>
-        <Biathlon
+    <Biathlon
       v-if="! $store.state.ArticleModule.refactoring_content"
       :article="article"
       :questions="computedQuestions"
@@ -58,10 +58,11 @@
 import Vue from 'vue'
 import ArticleSmallCard from '../../components/Article/ArticleSmallCard.vue'
 import Biathlon from '../../components/Common/Biathlon.vue'
-import ProductsWidget from '../../components/Common/ProductsWidget.vue';
+import ProductsWidget from '../../components/Common/ProductsWidget.vue'
 import ViewerStyled from '~/components/Common/ViewerStyled'
 import ImageLayout from '~/components/frontLayouts/ImageLayout'
 import Question from '~/components/frontLayouts/Question'
+import NomenclatureArticle from '~/components/frontLayouts/NomenclatureArticle'
 import LoginAuth from '~/components/frontLayouts/LoginAuth'
 import ArticleInfo from '~/components/Article/ArticleInfo'
 import HashTagStyled from '~/components/Common/HashTagStyled'
@@ -153,11 +154,19 @@ export default {
       return JSON.parse(JSON.parse(this.article.content))
     },
     ComponentLayout() {
-      return this.params_of_component.name === 'questions'
-        ? Vue.extend(Question)
-        : this.params_of_component.name === 'image'
-          ? Vue.extend(ImageLayout)
-          : Vue.extend(LoginAuth)
+      if (this.params_of_component.name === 'questions') {
+        return Vue.extend(Question)
+      }
+
+      if (this.params_of_component.name === 'image') {
+        return Vue.extend(ImageLayout)
+      }
+
+      if (this.params_of_component.name === 'nomenclature') {
+        return Vue.extend(NomenclatureArticle)
+      }
+
+      return Vue.extend(LoginAuth)
     },
     isShowTitle() {
       return this.coordYNav <= 0 && this.coordYNav !== null
@@ -167,8 +176,8 @@ export default {
         ? this.article._all_public_name_tags[0]
         : ''
     },
-        listArticlesExcludeCurrent() {
-            return this.$store.state.ArticleModule.list_filtered_articles.filter((obj) => {
+    listArticlesExcludeCurrent() {
+      return this.$store.state.ArticleModule.list_filtered_articles.filter((obj) => {
         return obj.id !== this.article.id
       })
     },
@@ -337,6 +346,8 @@ export default {
                   component: elem.component
                 })
               }
+            } else if (elem.component.name === 'nomenclature') {
+              promises.push(this.$store.dispatch('nomenclatureFromServer', elem))
             } else if (elem.component.name === 'image') {
               promises.push(this.$store.dispatch('imageFromServer', elem))
             } else if (elem.component.name === 'auth') {
@@ -379,8 +390,9 @@ export default {
                       }
                     )
                     this.$store.commit('M_selectedComponent', {})
-                    // return
-                  } else data = elem.data
+                  } else {
+                    data = elem.data
+                  }
 
                   this.$store.commit('M_countLayout', elem.index)
                   this.$store.commit('M_selectedComponent', data)
@@ -415,10 +427,12 @@ export default {
       const vuetify = new VuetifyClass()
       const store = this.$store
       const router = this.$router
+      const $toast = this.$toast
       const instance = new this.ComponentLayout({
         store,
         vuetify,
-        router
+        router,
+        $toast
       })
       const data = new this.Imported_component({
         index: this.$store.state.ArticleModule.countLayout,

@@ -1,5 +1,5 @@
 export default class Logging {
-  //Если удобно пользоваться конструктором
+  // Если удобно пользоваться конструктором
   constructor(request) {
     const {
       message,
@@ -9,6 +9,7 @@ export default class Logging {
       links,
       codeResponse,
       systemErrors,
+      paginationData,
     } = request
 
     this.message = message
@@ -18,6 +19,7 @@ export default class Logging {
     this.links = links
     this.codeResponse = codeResponse
     this.systemErrors = systemErrors
+    this.paginationData = paginationData
   }
 
   /**

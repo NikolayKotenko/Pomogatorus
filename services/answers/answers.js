@@ -1,6 +1,5 @@
 import createStore from '../../store'
 import Request from '../request'
-import axios from 'axios'
 
 const _store = createStore()
 
@@ -8,20 +7,32 @@ export default class Answers {
   static async create(params) {
     return await Request.post(`${_store.state.BASE_URL}/entity/answers`, params)
   }
+
   static async update(params, id) {
-    return await Request.put(`${_store.state.BASE_URL}/entity/answers/${id}`, params)
+    return await Request.put(
+      `${_store.state.BASE_URL}/entity/answers/${id}`,
+      params
+    )
   }
+
   static async sendFile(params) {
-    return await Request.post(`${_store.state.BASE_URL}/entity/files`, params, true)
+    return await Request.post(
+      `${_store.state.BASE_URL}/entity/files`,
+      params,
+      true
+    )
   }
 
   static create_UUID() {
     let dt = new Date().getTime()
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-      let r = (dt + Math.random() * 16) % 16 | 0
-      dt = Math.floor(dt / 16)
-      return (c == 'x' ? r : (r & 0x3) | 0x8).toString(16)
-    })
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
+      /[xy]/g,
+      function (c) {
+        const r = (dt + Math.random() * 16) % 16 | 0
+        dt = Math.floor(dt / 16)
+        return (c == 'x' ? r : (r & 0x3) | 0x8).toString(16)
+      }
+    )
   }
 
   create_status(type, auth_block) {
@@ -44,19 +55,19 @@ class Status_sending {
     this.color = 'primary'
     this.type = type
     this.icon = 'v-progress-circular'
-    this.text = `Отправляем ответ`
+    this.text = 'Отправляем ответ'
   }
 }
 
 class Status_warning {
   constructor(type, auth_block) {
-    if (!auth_block) auth_block = 0;
+    if (!auth_block) auth_block = 0
 
     this.color = 'yellow darken-1'
     this.type = type
     this.icon = 'mdi-alert-circle-outline'
     this.anchor = `component_wrapper-${auth_block}`
-    this.text = `Необходимо <a href="#component_wrapper-${auth_block}" id="authAnchor"><strong>авторизоваться</strong></a> для сохранения вашего ответа`
+    this.text = `Необходимо <a href='#component_wrapper-${auth_block}' id='authAnchor'><strong>авторизоваться</strong></a> для сохранения вашего ответа`
   }
 }
 
@@ -65,7 +76,7 @@ class Status_error {
     this.color = 'red darken-1'
     this.type = type
     this.icon = 'mdi-close-octagon-outline'
-    this.text = `Произошла ошибка`
+    this.text = 'Произошла ошибка'
   }
 }
 
@@ -74,6 +85,6 @@ class Status_success {
     this.color = 'green darken-1'
     this.type = type
     this.icon = 'mdi-check-circle-outline'
-    this.text = `Ответ записан, спасибо!`
+    this.text = 'Ответ записан, спасибо!'
   }
 }

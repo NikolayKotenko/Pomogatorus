@@ -6,24 +6,25 @@
       :item-text="'name'"
       :item-value="'id'"
       :items="listServicesAvailableToAdd"
+      :label="listServicesAvailableToAdd.length ? 'Добавить услугу' : 'Нет новых услуг для добавления'"
       :value="selectedService"
       class="search_service"
       hide-selected
-      label="Добавить услугу"
       outlined
-      placeholder="Добавить услугу"
       return-object
       solo
       @change="setService"
     >
-      <template v-slot:append>
+      <template #append>
         <div class="wrapper_append">
           <IconTooltip
             :icon-text="'mdi-help-circle-outline'"
             :is-disabled="! selectedService"
             :text-tooltip="getTooltipData"
           />
-          <v-icon v-show="selectedService" @click="setService(null)">mdi-close</v-icon>
+          <v-icon v-show="selectedService" @click="setService(null)">
+            mdi-close
+          </v-icon>
         </div>
       </template>
     </v-combobox>
@@ -41,10 +42,10 @@
 </template>
 
 <script>
-import IconTooltip from "../Common/IconTooltip.vue";
+import IconTooltip from '../Common/IconTooltip.vue';
 
 export default {
-  name: "UniversalAddInput",
+  name: 'UniversalAddInput',
   components: {
     IconTooltip
   },
@@ -59,18 +60,18 @@ export default {
       selectedService: null
     };
   },
+  computed: {
+    getTooltipData() {
+      return this.selectedService?.name ? this.selectedService.name : '';
+    }
+  },
   methods: {
     setService(service) {
       this.selectedService = service;
     },
     sendEventAddService() {
-      this.$emit("add-service", this.selectedService);
+      this.$emit('add-service', this.selectedService);
       this.selectedService = null;
-    }
-  },
-  computed: {
-    getTooltipData() {
-      return this.selectedService?.name ? this.selectedService.name : "";
     }
   }
 };
@@ -98,5 +99,14 @@ export default {
     }
   }
 }
+</style>
 
+<style lang="scss">
+.add_services {
+  .search_service {
+    .v-label {
+      font-size: 1.2em;
+    }
+  }
+}
 </style>

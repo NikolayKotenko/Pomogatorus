@@ -69,19 +69,19 @@ export default class Request {
   }
 
   static async get(url, params = null) {
-    return this.request(url, params, 'GET', '')
+    return await this.request(url, params, 'GET', '')
   }
 
   static async post(url, params, formData) {
-    return this.request(url, params, 'POST', formData)
+    return await this.request(url, params, 'POST', formData)
   }
 
   static async put(url, params = null) {
-    return this.request(url, params, 'PUT', '')
+    return await this.request(url, params, 'PUT', '')
   }
 
   static async delete(url, params) {
-    return this.request(url, params, 'DELETE')
+    return await this.request(url, params, 'DELETE')
   }
 
   static bodyFormData(paramBody) {
@@ -130,7 +130,18 @@ export default class Request {
     }
     result = result.slice(0, -1)
 
-    // console.log("res", result);
+    // console.log("ConstructFilterQuery", result);
+    return '?' + result
+  }
+
+  static ConstructQuery(arrNameParam = []) {
+    let result = ''
+    for (const [key, value] of Object.entries(arrNameParam)) {
+      result += key + '=' + value + '&'
+    }
+    result = result.slice(0, -1)
+
+    // console.log('ConstructQuery', result)
     return '?' + result
   }
 }

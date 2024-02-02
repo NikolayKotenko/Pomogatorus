@@ -1,5 +1,5 @@
 import Request from '@/services/request'
-import _cloneNative from '@/helpers/deepCloneNativeJs';
+import _cloneNative from '@/helpers/deepCloneNativeJs'
 
 export default {
   state: {

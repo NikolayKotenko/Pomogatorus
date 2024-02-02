@@ -7,15 +7,56 @@ export default {
   state: {
     isUpdating: false,
     listServices: [],
+    listCities: [
+      {
+        id: 1627,
+        code: 'moskva',
+        city: 'Москва',
+        country: 'Россия',
+        address: 'г Москва',
+        region: 'Москва',
+        kladr_id: '7700000000000',
+        postal_code: '101000',
+        timezone: 'UTC+3',
+        dregions: {
+          id: 77,
+          code: 'g-moskva',
+          name: 'Москва',
+          name_with_type: 'г Москва',
+          code_subject: '77',
+        },
+      },
+      {
+        id: 2182,
+        code: 'celyabinsk',
+        city: 'Челябинск',
+        country: 'Россия',
+        address: 'г Челябинск',
+        region: 'Челябинская',
+        kladr_id: '7400000100000',
+        postal_code: '454000',
+        timezone: 'UTC+5',
+        dregions: {
+          id: 74,
+          code: 'celyabinskaya-obl',
+          name: 'Челябинская',
+          name_with_type: 'Челябинская обл',
+          code_subject: '74',
+        },
+      },
+    ],
     selectedServices: [],
     selectedRawServices: [],
     selectedRawAdditionalDataServices: [],
     selectedRawServicesBased: [],
     loading: false,
-    showDeleteOneServiceModal: false,
     searchServiceByName: '',
     sortListServicesValue: '',
     updatedEntryPrice: null,
+    debounceTimeout: null,
+    selectedRange: 0,
+    rangeArea: ['0', '100', '200', '300', '500', '1000'],
+    selectedCity: [],
   },
   mutations: {
     setIsUpdating(state, payload) {
@@ -24,6 +65,10 @@ export default {
     setListServices(state, payload) {
       state.listServices = []
       state.listServices = payload
+    },
+    setListCities(state, payload) {
+      state.listCities = []
+      state.listCities = payload
     },
     addServices(state, payload) {
       state.selectedServices.push(payload)
@@ -42,9 +87,6 @@ export default {
     setLoading(state, payload) {
       state.loading = payload
     },
-    changeStateDeleteServiceModal(state, payload) {
-      state.showDeleteOneServiceModal = payload
-    },
   },
   actions: {
     async addServicesAction(
@@ -62,12 +104,17 @@ export default {
       )
     },
 
-    async updateUser({ commit }, payload) {
+    async updateUser({ commit, getters }, payload) {
       const { userId, data } = payload
 
       if (!userId) return false
 
       commit('setIsUpdating', true)
+
+      // Добавляем данные по региону, радиусу обслуживания
+      data.ids_cities = getters.getIdsSelectedCities
+      data.range_area = getters.getRangeSlider
+      // console.log('updateUser data', data)
 
       await Request.put(
         `${this.state.BASE_URL}/users/update-user-data/${userId}`,
@@ -84,7 +131,7 @@ export default {
         })
     },
     async getListServices({ commit, rootGetters }) {
-      if (! rootGetters.stateAuth) return false;
+      if (!rootGetters.stateAuth) return false
 
       const response = await Request.get(
         this.state.BASE_URL + '/dictionary/tags?filter[flag_service]=true'
@@ -101,7 +148,7 @@ export default {
       })
       const response = await Request.get(
         this.state.BASE_URL +
-          `/m-to-m/users-services` +
+          '/m-to-m/users-services' +
           queryFilter +
           state.sortListServicesValue
       )
@@ -147,16 +194,59 @@ export default {
 
       commit('setLoading', false)
     },
+    getListCitiesBySearch({ commit, state }, string) {
+      if (!string) return false
+      if (state.listCities.some((elem) => elem.address === string)) return false
+
+      commit('setLoading', true)
+
+      if (state.debounceTimeout) clearTimeout(state.debounceTimeout)
+      state.debounceTimeout = setTimeout(async () => {
+        const response = await Request.get(
+          this.state.BASE_URL + '/dictionary/cities/search?q=' + string
+        )
+        commit('setListCities', response.data)
+        commit('setLoading', false)
+      }, 2000)
+    },
+
+    /* MapServiceArea */
+    localSetChips({ commit, state }, objCity) {
+      // console.log('localSetChips objCity', objCity)
+
+      const existEntry = state.selectedCity.find(
+        (elem) => elem.id === objCity.id
+      )
+      if (existEntry) {
+        state.selectedCity = state.selectedCity.filter(
+          (elem) => elem.id !== objCity.id
+        )
+      } else {
+        state.selectedCity.push(objCity)
+      }
+      // console.log('localSetChips state.selectedCity', state.selectedCity)
+    },
+    setSelectedCity({ commit, state }, objCity) {
+      if (!objCity) return false
+      if (typeof objCity !== 'object') return false
+
+      const existEntry = state.selectedCity.find(
+        (elem) => elem.id === objCity.id
+      )
+      if (existEntry) return false
+
+      state.selectedCity.push(objCity)
+    },
   },
   getters: {
     getCountServices(state) {
       return state.selectedServices.length
     },
-    getPriceByIdServices: (state) => (idServices) => {
-      const wtf = state.selectedRawServices.find(
+    getAdditionalDataByIdServices: (state) => (idServices) => {
+      const wtf = state.selectedRawAdditionalDataServices.filter(
         (elem) => elem.id_services === idServices
-      ).price
-      return wtf.toString()
+      )
+      return wtf
     },
     getFilteredListServicesByName(state) {
       if (!state.searchServiceByName) return state.selectedRawServicesBased
@@ -166,6 +256,26 @@ export default {
         const needle = state.searchServiceByName.toLowerCase()
         return !!haystack.match(needle)
       })
+    },
+    getListServicesExcludeAdded(state) {
+      const arrA = state.listServices.map((elem) => elem.id)
+      const arrB = state.selectedRawServices.map((elem) => elem.id_services)
+      const differenceIds = arrA.filter((x) => !arrB.includes(x))
+      // console.log('difference', differenceIds)
+
+      return state.listServices.filter((elem) =>
+        differenceIds.includes(elem.id)
+      )
+    },
+    getIdsSelectedCities(state) {
+      if (!state.selectedCity.length) return []
+      return state.selectedCity.map((elem) => elem.id)
+    },
+    getStateSelectedCities(state) {
+      return Boolean(state.selectedCity.length)
+    },
+    getRangeSlider(state) {
+      return state.rangeArea[state.selectedRange]
     },
   },
 }
