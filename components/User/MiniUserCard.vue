@@ -190,8 +190,9 @@ export default {
 .wrapper {
     padding: 20px;
     background: $background-element-color;
+    overflow: auto;
     height: 500px;
-    width: 600px;
+    width: 650px;
     .top {
         display: flex;
         justify-content: space-between;
