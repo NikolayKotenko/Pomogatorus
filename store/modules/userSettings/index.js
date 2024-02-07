@@ -112,8 +112,10 @@ export default {
       commit('setIsUpdating', true)
 
       // Добавляем данные по региону, радиусу обслуживания
-      data.ids_cities = getters.getIdsSelectedCities
-      data.range_area = getters.getRangeSlider
+      if (getters.getIdsSelectedCities.length) {
+        data.ids_cities = getters.getIdsSelectedCities
+        data.range_area = getters.getRangeSlider
+      }
       // console.log('updateUser data', data)
 
       await Request.put(

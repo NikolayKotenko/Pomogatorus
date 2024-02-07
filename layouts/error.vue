@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-container>
     <div v-if="error.statusCode === 404">
       <div class="error_container">
         <div class="error_title">
@@ -10,8 +10,8 @@
             {{ pageNotFoundText }}
           </div>
           <ButtonStyled
-            :is-nuxt-link="true"
             :href="'/'"
+            :is-nuxt-link="true"
             :local-text="'На главную'"
             local-class="style_button"
           />
@@ -28,7 +28,7 @@
         {{ otherError }}
       </span>
     </div>
-  </v-app>
+  </v-container>
 </template>
 
 <script>
@@ -41,40 +41,43 @@ export default {
   props: {
     error: {
       type: Object,
-      default: null,
-    },
+      default: null
+    }
   },
   data() {
     return {
       pageNotFound: '404',
       pageNotFoundText: 'Ой, что-то пошло не так',
-      otherError: 'An error occurred',
-    }
+      otherError: 'An error occurred'
+    };
   },
   head() {
-    const title = this.error.statusCode === 404 ? this.pageNotFound : this.otherError
+    const title = this.error.statusCode === 404 ? this.pageNotFound : this.otherError;
     return {
-      title,
-    }
-  },
-}
+      title
+    };
+  }
+};
 </script>
 
 <style lang="scss" scoped>
-.error_container{
+.error_container {
   display: flex;
   justify-content: space-between;
-  .error_title{
-    .error_number{
+
+  .error_title {
+    .error_number {
       font-size: 150px;
       font-weight: 500;
     }
-    .error_text{
+
+    .error_text {
       font-size: 30px;
       font-weight: 500;
     }
   }
-  .error_img{
+
+  .error_img {
     min-width: 600px;
   }
 }

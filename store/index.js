@@ -140,6 +140,13 @@ const createStore = () => {
             visible: true,
           },
           {
+            title: 'Найти мастера',
+            path: '/collaboration?modal=true',
+            icon: 'mdi-bell-outline',
+            visible: true,
+            divider: true,
+          },
+          {
             title: 'Агенты',
             path: '/agents',
             icon: 'mdi-account-group',
@@ -225,10 +232,12 @@ const createStore = () => {
       set_modal_auth(state, payload) {
         state.listModal[0].isOpen = payload
       },
+      set_current_pagination_data(state, payload) {
+        state.currentPaginationData = payload
+      },
 
       /* HEADERS */
       set_list_searched(state, payload) {
-
         payload.map((elem) => {
           elem.href = ''
           if (elem.category === 'Статьи') {
@@ -242,7 +251,7 @@ const createStore = () => {
           }
         })
         state.listSearched = payload
-      }
+      },
     },
     actions: {
       // nuxtServerInit({dispatch}) {
@@ -284,7 +293,7 @@ const createStore = () => {
       async getListSearched({ commit }, symbols) {
         const response = await Request.get(
           this.state.BASE_URL + `/entity/global-search/search/{q}?q=${symbols}`
-        );
+        )
         commit('set_list_searched', response.data)
       },
     },

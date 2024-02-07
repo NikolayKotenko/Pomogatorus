@@ -133,13 +133,13 @@
 </template>
 
 <script>
-import VueSlickCarousel from 'vue-slick-carousel'
-import 'vue-slick-carousel/dist/vue-slick-carousel.css'
-import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
-import ShimmerNomenclatureWidget from '../Shimmers/ShimmerNomenclatureWidget'
-import ButtonStyled from '../Common/ButtonStyled'
+import VueSlickCarousel from 'vue-slick-carousel';
+import 'vue-slick-carousel/dist/vue-slick-carousel.css';
+import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css';
+import ShimmerNomenclatureWidget from '../Shimmers/ShimmerNomenclatureWidget';
+import ButtonStyled from '../Common/ButtonStyled';
 
-import Request from '@/services/request'
+import Request from '@/services/request';
 
 export default {
   name: 'NomenclatureWidget',
@@ -199,67 +199,68 @@ export default {
   }),
   computed: {
     getIsAnswered() {
-      return this.$store.state.ArticleModule.isAnswered
+      return this.$store.state.ArticleModule.isAnswered;
     },
     checkIsFavorite() {
       if (!this.getCurrentNomenclature || !Object.keys(this.getCurrentNomenclature).length) {
-        return false
+        return false;
       }
-      return this.getCurrentNomenclature?.isLiked
+      return this.getCurrentNomenclature?.isLiked;
     },
     getVisibleNomenclature() {
-      return this.nomenclatureList.filter((elem) => !elem?.hide).length
+      return this.nomenclatureList.filter((elem) => !elem?.hide).length;
     },
     getCurrentNomenclature() {
       if (!this.nomenclatureList.length) {
-        return {}
+        return {};
       }
 
       if (this.currentNomenclatureIndex > this.nomenclatureList) {
-        return this.nomenclatureList[0] ?? {}
+        return this.nomenclatureList[0] ?? {};
       }
 
-      return this.nomenclatureList[this.currentNomenclatureIndex]
+      return this.nomenclatureList[this.currentNomenclatureIndex];
     }
   },
   watch: {
     'getIsAnswered': {
       handler(v) {
         if (v) {
-          this.resetData()
-          this.getNomenclature('start')
+          this.resetData();
+          this.getNomenclature('start');
         }
       }
     }
   },
   mounted() {
-    this.getNomenclature('start')
+    this.getNomenclature('start');
   },
   methods: {
     getPhoto(slide) {
-      const url = (slide?._family?.photos && slide?._family?.photos[0]) ?? null
+      const url = (slide?._family?.photos && slide?._family?.photos[0]) ?? null;
 
       if (url) {
-        return this.$store.state.BASE_URL + url?.full_path
+        return this.$store.state.BASE_URL + url?.full_path;
       } else {
-        return null
+        return null;
       }
     },
     async getNomenclature(type) {
-      const url = this.$store.state.BASE_URL + '/entity/nomenclature'
-      const { data } = await Request.get(url)
+      // TODO переделать на эндпоинт в store store/modules/nomenclature/index.js - getListNomenclature
+      const url = this.$store.state.BASE_URL + '/entity/nomenclature';
+      const { data } = await Request.get(url);
 
       if (type === 'start') {
         this.nomenclatureList = data.map((elem, index) => {
-          return { isLoading: false, data: elem, isLiked: false }
-        })
+          return { isLoading: false, data: elem, isLiked: false };
+        });
       }
 
       if (type === 'nextPage') {
         const transformedArr = data.map((elem) => {
-          return { isLoading: false, data: elem, isLiked: false }
-        })
-        this.nomenclatureList.push(...transformedArr)
+          return { isLoading: false, data: elem, isLiked: false };
+        });
+        this.nomenclatureList.push(...transformedArr);
       }
     },
     resetData() {
@@ -279,31 +280,31 @@ export default {
           hide: true,
           data: null
         }
-      ]
+      ];
 
-      this.currentNomenclatureIndex = 0
+      this.currentNomenclatureIndex = 0;
     },
 
     onInitCarousel() {
       if (process.client) {
         this.$nextTick(() => {
-        })
+        });
       }
     },
     changeSlide(oldSlideIndex, newSliderIndex) {
-      this.currentNomenclatureIndex = newSliderIndex
+      this.currentNomenclatureIndex = newSliderIndex;
 
       if (newSliderIndex === this.nomenclatureList.length - 2) {
-        this.getNomenclature('nextPage')
+        this.getNomenclature('nextPage');
       }
     },
 
     onClickLike() {
       // TODO: Функционал лайков
-      this.getCurrentNomenclature.isLiked = !this.getCurrentNomenclature.isLiked
+      this.getCurrentNomenclature.isLiked = !this.getCurrentNomenclature.isLiked;
     },
     onCLickNomenclature() {
     }
   }
-}
+};
 </script>
