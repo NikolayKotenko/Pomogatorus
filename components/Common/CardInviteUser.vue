@@ -8,10 +8,10 @@
     >
       <template #icon>
         <v-avatar size="70">
-                        <v-img 
-                            src="https://www.wrestlezone.com/wp-content/uploads/sites/8/2023/12/kurt-angle-meme-machine.jpg?resize=1024,576"
-                        />
-                    </v-avatar>
+            <v-img 
+                src="https://www.wrestlezone.com/wp-content/uploads/sites/8/2023/12/kurt-angle-meme-machine.jpg?resize=1024,576"
+            />
+        </v-avatar>
       </template>
       <template #content>
         <MiniUserCard :user-object="userObject">

@@ -23,7 +23,7 @@
         </div>
         <div class="user_info">
           <div class="user_name">{{ userObject.user_fio }}</div>
-          <div class="user_company">Компания: {{ userObject.company }}</div>
+          <div class="user_company">Компания: {{ getCompanyName }}</div>
           <div class="user_mail">{{ userObject.email }}</div>
         </div>
       </div>
@@ -119,12 +119,24 @@
         <!-- Бренды -->
         <v-tab-item :key="3">
           <v-card class="brand_wrapper" outlined height="60">
-            <v-img
-              :src="require(`~/assets/svg/baxi_logo.svg`)"
-              class="brand_img"
-              contain
-              max-width="100"
-            ></v-img>
+            <DropDownMenuStyled
+              :is-offset-y="true"
+              :is-left="true"
+            >
+              <template #icon>
+                <v-img
+                  :src="require(`~/assets/svg/baxi_logo.svg`)"
+                  class="brand_img"
+                  contain
+                  max-width="100"
+                ></v-img>
+              </template>
+              <template #content>
+                <BrandCard>
+
+                </BrandCard>
+              </template>
+            </DropDownMenuStyled>
             <span class="brand_text">Установленно оборудования Baxi: 23</span>
           </v-card>
           <v-card class="brand_wrapper" outlined height="60">
@@ -155,12 +167,13 @@
 import DropDownMenuStyled from "../Common/DropDownMenuStyled.vue";
 import IconTooltip from "../Common/IconTooltip.vue";
 import ServiceCard from "../Collaboration/ServiceCard.vue";
+import BrandCard from "../Common/BrandCard.vue";
 
 
 
 export default {
   name: 'MiniUserCard',
-  components: { DropDownMenuStyled, IconTooltip, ServiceCard },
+  components: { DropDownMenuStyled, IconTooltip, ServiceCard, BrandCard },
   props: {
     userObject:{
       type: Object,
@@ -177,6 +190,9 @@ export default {
     getCountServices() {
       this.userObject.services.length
         }
+    },
+    getCompanyName() {
+      this.userObject.company?.name
     }
   }
 
