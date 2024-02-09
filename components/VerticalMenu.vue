@@ -4,15 +4,16 @@
       v-for="(item, index) in $store.getters.menuItems"
       :key="index"
     >
+      <v-divider v-if="item.divider" style="border-color: black;"/>
       <div
         v-if="item.visible"
-        class="btn_wrapper"
         :class="{'active_element': getActiveMenuElement(item.path)}"
+        class="btn_wrapper"
       >
         <v-btn
           :href="item.path"
-          text
           class="btn"
+          text
         >
           <v-icon
             class="icon"
@@ -35,15 +36,15 @@ export default {
   data() {
     return {
       show: true
-    }
+    };
   },
   computed: {},
   methods: {
     getActiveMenuElement(elem) {
-      return this.$route.path === elem
+      return this.$route.path === elem;
     }
-  },
-}
+  }
+};
 </script>
 
 <style lang="scss" scoped>
@@ -61,6 +62,7 @@ export default {
   .btn_wrapper {
     cursor: pointer;
     margin-bottom: 5px;
+
     .btn {
       display: flex;
       justify-content: flex-start;
@@ -72,6 +74,7 @@ export default {
         color: #000000;
         margin-right: 10px;
       }
+
       .text {
         font-size: 1.2em;
         text-transform: none !important;
@@ -80,7 +83,7 @@ export default {
         letter-spacing: 0 !important;
       }
     }
-    }
+  }
 
 }
 
@@ -88,6 +91,7 @@ export default {
   .active_element {
     background-color: #FFFFFF;
     border-radius: 10px;
+
     .btn .icon {
       color: $green-color !important;
     }
@@ -96,7 +100,7 @@ export default {
 
 
 @media only screen and (max-width: 1600px) {
-  .menu_container{
+  .menu_container {
     display: none;
   }
 }

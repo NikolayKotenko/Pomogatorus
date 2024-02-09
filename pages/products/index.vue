@@ -63,12 +63,7 @@ export default {
   methods: {
     async getNextPageData() {
       const response = await this.$store.dispatch('NomenclatureModule/getListNomenclature', this.$route.query);
-      this.$router.replace({
-        query: {
-          cursor: response.paginationData.cursor
-        }
-      }).catch(() => {
-      });
+      window.history.replaceState({}, '', `/products?cursor=${response.paginationData.cursor}`);
     }
   }
 };
