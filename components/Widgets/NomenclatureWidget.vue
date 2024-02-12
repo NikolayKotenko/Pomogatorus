@@ -115,16 +115,9 @@
               @click-button="onCLickNomenclature"
             />
 
-            <ButtonStyled
-              :local-class="(checkIsFavorite ? 'style_button ' : '') + 'widget-button like-button'"
-              custom-slot
-              unset-width
-              @click-button="onClickLike"
-            >
-              <v-icon :color="checkIsFavorite ? '#95D7AE' : '#B3B3B3'">
-                mdi-heart
-              </v-icon>
-            </ButtonStyled>
+            <AddToFavoriteNomenclatures 
+              :favorite-object="favoriteData"
+            />
           </div>
         </div>
       </template>
@@ -138,16 +131,19 @@ import 'vue-slick-carousel/dist/vue-slick-carousel.css';
 import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css';
 import ShimmerNomenclatureWidget from '../Shimmers/ShimmerNomenclatureWidget';
 import ButtonStyled from '../Common/ButtonStyled';
+import AddToFavoriteNomenclatures from '../Common/AddToFavoriteNomenclatures.vue';
 
 import Request from '@/services/request';
+import { FavoriteNomenclature } from '~/helpers/constructors';
 
 export default {
   name: 'NomenclatureWidget',
   components: {
     ButtonStyled,
     ShimmerNomenclatureWidget,
-    VueSlickCarousel
-  },
+    VueSlickCarousel,
+    AddToFavoriteNomenclatures
+},
   data: () => ({
     nomenclatureList: [
       {
@@ -195,7 +191,7 @@ export default {
       'slidesToShow': 1,
       'slidesToScroll': 1,
       'initialSlide': 0
-    }
+    },
   }),
   computed: {
     getIsAnswered() {
@@ -220,6 +216,13 @@ export default {
       }
 
       return this.nomenclatureList[this.currentNomenclatureIndex];
+    },
+    favoriteData(){
+      return new FavoriteNomenclature(
+          this.$store.getters['Objects/getIdCurrentObject'],
+          this.$store.getters['getUserId'],
+          this.getCurrentNomenclature.data.id
+        )
     }
   },
   watch: {
@@ -299,10 +302,11 @@ export default {
       }
     },
 
-    onClickLike() {
-      // TODO: Функционал лайков
-      this.getCurrentNomenclature.isLiked = !this.getCurrentNomenclature.isLiked;
-    },
+    // onClickLike() {
+    //   // TODO: Функционал лайков
+    //   this.getCurrentNomenclature.isLiked = !this.getCurrentNomenclature.isLiked;
+    // },
+
     onCLickNomenclature() {
     }
   }

@@ -33,6 +33,16 @@ export function TaskData(
   this.status = status
 }
 
+export function FavoriteNomenclature(
+  idObject = null,
+  idUser = null,
+  idNomenclature = null
+) {
+  this.id_object = idObject
+  this.id_user = idUser
+  this.id_nomenclature = idNomenclature
+}
+
 export function MtoMUsersServices(id_services = null, price = '') {
   this.id_services = id_services
   this.price = price

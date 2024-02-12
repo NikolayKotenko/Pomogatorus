@@ -58,7 +58,7 @@ export default {
   name: 'index.vue',
   components: { ProductCard },
   async mounted() {
-    // await this.getNextPageData();
+    await this.getNextPageData();
   },
   methods: {
     async getNextPageData() {

@@ -115,53 +115,9 @@
                   </v-tab-item>
                 </v-tabs>
               </div>
-
-              <!-- Функциональные кнопки -->
-              <div class="product_detail_buttons">
-                <SelectStyled
-                  :is-solo="true"
-                  :item-text="'action'"
-                  :item-value="'value'"
-                  :items="actionsWithProduct"
-                  :placeholder="'Выберите действие'"
-                  class="function_btn"
-                />
-                <div>
-                  <ButtonStyled
-                    :local-class="'style_close'"
-                    :local-text="'Закрыть'"
-                    @click-button="closeModal"
-                  />
-                </div>
-              </div>
             </v-card>
           </v-dialog>
         </TooltipStyled>
-
-        <!-- Ссылка на маркетплейс -->
-        <IconTooltip
-          :color-icon="'#000000'"
-          :size-icon="'36'"
-          :icon-text="'mdi-store-outline'"
-          :text-tooltip="'Перейти в Яндекс Маркет'"
-        />
-        <!-- Модальное окно эксплуатации -->
-        <IconTooltip
-          :color-icon="'#000000'"
-          :size-icon="'36'"
-          :icon-text="'mdi-file-cog-outline'"
-          :text-tooltip="'Подробнее об эксплуатации'"
-        />
-      </div>
-      <div class="product_detail_buttons">
-        <SelectStyled
-          :is-solo="true"
-          :item-text="'action'"
-          :item-value="'value'"
-          :items="actionsWithProduct"
-          :placeholder="'Выберите действие'"
-          class="function_btn"
-        />
       </div>
     </div>
   </div>

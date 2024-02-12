@@ -52,7 +52,7 @@ export default {
       commit('setLoadingObjects', true)
 
       const arrayA = queryArr
-      const arrayB = [{ id_user: rootGetters.getUserId || null }]
+      const arrayB = [{ id_user: rootGetters.getUserId }]
       const newArray = arrayA.concat(arrayB)
 
       const query = constructFilterQuery(newArray)
