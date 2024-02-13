@@ -26,19 +26,24 @@
       >
     </ViewerStyled>
 
-    <div v-if="listArticlesExcludeCurrent.length" class="article_info_wrapper__more_article">
-      <h3>
-        Ещё статьи по тегу:
-        <HashTagStyled :text="getFirstTag"/>
-      </h3>
-      <div class="article_info_wrapper__more_article__wrapper">
-        <ArticleSmallCard
-          v-for="(obj, key) in listArticlesExcludeCurrent"
-          :key="key"
-          :article="obj"
-        />
-      </div>
-    </div>
+    <template v-if="tagsArticles.length">
+      <template v-for="(tag, index) in tagsArticles">
+        <div v-if="tag.articles.length" :key="index + '_tags'" class="article_info_wrapper__more_article">
+          <h3>
+            Ещё статьи по тегу:
+            <HashTagStyled :text="tag.name"/>
+          </h3>
+          <div class="article_info_wrapper__more_article__wrapper">
+            <ArticleSmallCard
+              v-for="(obj, key) in tag.articles"
+              :key="key"
+              :article="obj"
+            />
+          </div>
+        </div>
+      </template>
+    </template>
+
     <Biathlon
       v-if="! $store.state.ArticleModule.refactoring_content"
       :article="article"
@@ -56,6 +61,7 @@
 
 <script>
 import Vue from 'vue'
+import { mapGetters } from 'vuex'
 import ArticleSmallCard from '../../components/Article/ArticleSmallCard.vue'
 import Biathlon from '../../components/Common/Biathlon.vue'
 import ProductsWidget from '../../components/Common/ProductsWidget.vue'
@@ -146,6 +152,9 @@ export default {
     ]
   },
   computed: {
+    ...mapGetters(['getUserId']),
+    ...mapGetters('Objects', ['getIdCurrentObject']),
+
     totalImages() {
       return this.$store.state.ArticleModule.totalImages
     },
@@ -183,6 +192,48 @@ export default {
     },
     getFilterByMainTag() {
       return '&filter[tag][]=' + this.article._all_public_tags[0]?.code
+    },
+    tagsArticles() {
+      const tagsArticles = []
+      const alreadyAddedArticles = []
+
+      this.listArticlesExcludeCurrent.forEach((article) => {
+        article.mtomtags.forEach((tag) => {
+          const findedTagArticle = tagsArticles.find((elem) => elem?.code === tag?.dtags?.code)
+          if (findedTagArticle) {
+            if (findedTagArticle.articles.length >= 8) {
+              return
+            }
+
+            if (alreadyAddedArticles.includes(article.id)) {
+              return
+            }
+
+            findedTagArticle.articles.push(article)
+            alreadyAddedArticles.push(article.id)
+          } else {
+            if (alreadyAddedArticles.includes(article.id)) {
+              return
+            }
+            
+            tagsArticles.push({
+              name: tag.dtags.name,
+              articles: [article],
+              code: tag.dtags.code
+            })
+          }
+        })
+      })
+
+      return tagsArticles.sort((a, b) => {
+        if (a.articles.length < b.articles.length) {
+          return 1
+        }
+        if (a.articles.length > b.articles.length) {
+          return -1
+        }
+        return 0
+      })
     }
   },
   watch: {
@@ -203,6 +254,16 @@ export default {
           this.$refs.viewer.open(nv)
         }
       }
+    },
+    'getUserId': {
+      handler(v) {
+        this.getAnswers()
+      }
+    },
+    'getIdCurrentObject': {
+      handler(v) {
+        this.getAnswers()
+      }
     }
   },
   async mounted() {
@@ -217,6 +278,8 @@ export default {
         this.changeIndexQuestion()
         this.$store.commit('change_refactoring_content', false)
         this.findQuestions()
+
+        this.getAnswers()
       })
       // SCROLL TO AUTH BLOCK IF WE COME FROM EMAIL MESSAGE
       setTimeout(() => {
@@ -250,6 +313,18 @@ export default {
     }
   },
   methods: {
+    /* ANSWERS */
+    getAnswers() {
+      if (this.getUserId && this.getIdCurrentObject) {
+        const query = {
+          id_user: this.getUserId,
+          id_object: this.getIdCurrentObject,
+          id_article: this.$route.params.id
+        }
+        this.$store.dispatch('getAnswersFromServer', query)
+      }
+    },
+
     getSrc(item) {
       return this.$store.state.BASE_URL + item?.src
     },
@@ -313,7 +388,7 @@ export default {
               return elem.data.component.name === 'question' || elem.data.component.name === 'questions'
             })
             .filter((elem) => {
-              return elem.data.index === id
+              return parseInt(elem.data.index) === parseInt(id)
             })
 
 
@@ -565,13 +640,17 @@ export default {
   max-width: 815px;
 }
 
+.article_info_wrapper__more_article {
+  padding-top: 1rem;
+}
+
 .article_info_wrapper__more_article__wrapper {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
   grid-template-rows: auto;
   grid-gap: 1em;
   max-width: 870px;
-  padding-top: 3em;
+  padding-top: 2em;
   flex-wrap: wrap;
 
 
