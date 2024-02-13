@@ -62,11 +62,16 @@ export default {
 
       return response
     },
+    
+    
     // async getListNomenclatureCharacteristics({commit}) {
     //   const response = await  Request.get(
     //     this.state.BASE_URL + /
     //   )
     // },
   },
-  getters: {},
+  getters: {
+    
+
+  },
 }

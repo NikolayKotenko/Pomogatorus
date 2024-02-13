@@ -28,7 +28,6 @@ export default {
     },
     methods: {
     async addToFavoritesNomenclature() {
-    console.log('123', this.favoriteObject );
       await this.$store.dispatch(
         'NomenclatureModule/setFavoritesNomenclatureByObject',
         this.favoriteObject
