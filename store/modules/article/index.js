@@ -14,10 +14,19 @@ export default {
     answers: [],
     totalImages: [],
     indexImage: 0,
-
+    answersFromServer: [],
     isAnswered: false,
+    isLoadingAnswers: false,
   },
   mutations: {
+    /* ANSWERS */
+    set_answers_from_server(state, payload) {
+      state.answersFromServer = payload
+    },
+    set_is_loading_answers(state, payload) {
+      state.isLoadingAnswers = payload
+    },
+
     set_is_answered(state, payload) {
       state.isAnswered = payload
     },
@@ -194,6 +203,25 @@ export default {
     linkToArticle(_, articleId) {
       window.location.href = '/articles/' + articleId
     },
+
+    /* ANSWERS */
+    async getAnswersFromServer({ commit }, payload) {
+      commit('set_is_loading_answers', true)
+
+      const query = Request.ConstructFilterQuery(payload)
+
+      const data = await Request.get(
+        `${this.state.BASE_URL}/entity/answers${query}`
+      )
+
+      commit('set_answers_from_server', data?.data ?? [])
+
+      commit('set_is_loading_answers', false)
+    },
   },
-  getters: {},
+  getters: {
+    getQuestionAnswer: (state) => (id) => {
+      return state.answersFromServer.find((answer) => answer.id_question === id)
+    },
+  },
 }

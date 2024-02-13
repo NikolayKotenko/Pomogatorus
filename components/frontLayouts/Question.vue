@@ -25,9 +25,12 @@
         </div>
         <!-- STATUS -->
         <transition name="slide-fade">
-          <div v-if="check_status" class="question_wrapper__content__status">
+          <div
+            v-if="check_status || $store.state.ArticleModule.isLoadingAnswers"
+            class="question_wrapper__content__status"
+          >
             <v-progress-circular
-              v-if="status_question.type === 'sending'"
+              v-if="status_question.type === 'sending' || $store.state.ArticleModule.isLoadingAnswers"
               :size="20"
               color="primary"
               indeterminate
@@ -42,7 +45,7 @@
           <InputStyled
             :data="answer"
             :full-sinc-prop="true"
-            :is-disabled="(check_status && status_question.type === 'sending')"
+            :is-disabled="(check_status && status_question.type === 'sending') || $store.state.ArticleModule.isLoadingAnswers"
             :placeholder="'Введите ответ'"
             is-solo
             @update-input="textAnswer"
@@ -52,7 +55,7 @@
           <TextAreaStyled
             :data="answer"
             :full-sinc-prop="true"
-            :is-disabled="(check_status && status_question.type === 'sending')"
+            :is-disabled="(check_status && status_question.type === 'sending') || $store.state.ArticleModule.isLoadingAnswers"
             :placeholder="'Введите ответ'"
             is-solo
             @update-input="textAnswer"
@@ -63,7 +66,7 @@
             <v-radio
               v-for="(item, index) in value_type_answer"
               :key="index"
-              :disabled="(check_status && status_question.type === 'sending')"
+              :disabled="(check_status && status_question.type === 'sending') || $store.state.ArticleModule.isLoadingAnswers"
               :value="item.answer"
               color="#95D7AE"
               @change="changeAnswer(item.dataEnv)"
@@ -93,7 +96,7 @@
             v-for="(item, index) in value_type_answer"
             :key="index"
             v-model="answer"
-            :disabled="(check_status && status_question.type === 'sending')"
+            :disabled="(check_status && status_question.type === 'sending') || $store.state.ArticleModule.isLoadingAnswers"
             :value="item.answer"
             color="#95D7AE"
             dense
@@ -123,7 +126,7 @@
         <template v-else-if="question_data.id_type_answer == '5'">
           <v-select
             v-model="answer"
-            :disabled="(check_status && status_question.type === 'sending')"
+            :disabled="(check_status && status_question.type === 'sending') || $store.state.ArticleModule.isLoadingAnswers"
             :items="value_type_answer"
             :menu-props="{
               closeOnContentClick: true,
@@ -143,7 +146,7 @@
             <template #selection="data">
               <span v-bind="data.attrs" v-html="data.item.answer"/>
             </template>
-            <template #item="{ active, item, attrs, on }">
+            <template #item="{ item, attrs, on }">
               <v-list-item v-bind="attrs" @click="getIdElem($event)" v-on="on">
                 <v-list-item-content>
                   <v-list-item-title>
@@ -177,7 +180,7 @@
           <v-text-field
             v-model="answer"
             :class="{ rangeError: rangeError }"
-            :disabled="(check_status && status_question.type === 'sending')"
+            :disabled="(check_status && status_question.type === 'sending') || $store.state.ArticleModule.isLoadingAnswers"
             dense
             hide-details
             label="Введите ответ"
@@ -204,7 +207,7 @@
             }}</span>
             <v-range-slider
               v-model="answer"
-              :disabled="(check_status && status_question.type === 'sending')"
+              :disabled="(check_status && status_question.type === 'sending') || $store.state.ArticleModule.isLoadingAnswers"
               :max="max"
               :min="min"
               class="align-center"
@@ -244,6 +247,7 @@
           v-if="question_data.state_detailed_response"
           :data="detailed_response"
           :full-sinc-prop="true"
+          :is-disabled="$store.state.ArticleModule.isLoadingAnswers"
           :is-flat="true"
           :placeholder="'Развернутый ответ'"
           class="py-2"
@@ -259,6 +263,7 @@
             <DropzoneInput
               :id-answer="id_answer"
               :id-object="$store.state.Objects.currentObject.id"
+              :is-disabled="$store.state.ArticleModule.isLoadingAnswers"
               :object-template="!!uploadedFiles.length"
               :question-type="true"
               @uploaded-file="uploadFile"
@@ -419,6 +424,12 @@ export default {
         }
       },
       deep: true
+    },
+    '$store.state.ArticleModule.answersFromServer': {
+      handler() {
+        this.getAnswer()
+      },
+      deep: true
     }
   },
   mounted() {
@@ -432,6 +443,7 @@ export default {
   },
   computed: {
     ...mapGetters(['stateAuth', 'open_close_cabinet']),
+
     status_question() {
       let auth_block
       const index = this.$store.state.ArticleModule.components_after_request.findIndex((i) => {
@@ -453,6 +465,17 @@ export default {
   },
   methods: {
     ...mapActions('Objects', ['createNewObject']),
+    ...mapGetters(['getQuestionAnswer']),
+
+    /* ANSWERS */
+    getAnswer() {
+      if (this.getQuestionAnswer()(this.question_data.id)) {
+        const findedAnswer = this.getQuestionAnswer()(this.question_data.id)
+
+        this.answer = JSON.parse(findedAnswer.value_answer)
+        this.id_answer = findedAnswer.id
+      }
+    },
 
     /* AGENT PROP */
     getIdElem(event) {
