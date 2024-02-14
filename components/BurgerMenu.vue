@@ -33,22 +33,22 @@ export default {
   computed: {
     drawer: {
       get() {
-        return this.$store.state.drawer
+        return this.$store.state.drawer;
       },
       set(v) {
-        this.$store.commit('set_drawer', v)
+        this.$store.commit('set_drawer', v);
       }
     }
   },
   methods: {
     getCurrentRoute(path) {
-      return this.$route.path === path
+      return this.$route.path === path;
     }
   }
-}
+};
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .menuItem {
   padding-left: 40px;
 }

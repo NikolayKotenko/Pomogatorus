@@ -141,7 +141,7 @@ const createStore = () => {
           },
           {
             title: 'Найти мастера',
-            path: '/collaboration?modal=true',
+            path: '#inviteUserModal=true',
             icon: 'mdi-bell-outline',
             visible: true,
             divider: true,

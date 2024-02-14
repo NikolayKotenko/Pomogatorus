@@ -25,9 +25,9 @@
             @click="$store.state.stateVerticalMenu = !$store.state.stateVerticalMenu"
           >
             <IconTooltip
-              :size-icon="'32'"
               :color-icon="'#FFFFFF'"
               :icon-text="'mdi-menu'"
+              :size-icon="'32'"
               :text-tooltip="'Меню'"
             />
           </div>
@@ -41,8 +41,8 @@
           :class="'styleSearch'"
           :internal-data="selectedChips"
           :is-clearable="true"
-          :is-global-search="true"
           :is-disabled="loading"
+          :is-global-search="true"
           :is-hide-selected="false"
           :is-item-text="'text'"
           :is-item-value="'text'"
@@ -50,23 +50,23 @@
           :is-loading="loading"
           :is-placeholder="'Поиск'"
           class="search"
+          @redirect="redirectData"
           @update-search-input="localGetListItems"
           @change-search="setSelected"
-          @redirect="redirectData"
         />
       </template>
 
       <!-- Личный кабинет всегда по правую сторону -->
       <v-toolbar-items class="header_right">
         <DropDownMenuStyled
-          :is-offset-y="true"
           :is-left="true"
+          :is-offset-y="true"
         >
           <template #icon>
             <IconTooltip
               :color-icon="'#FFFFFF'"
-              :size-icon="'32'"
               :icon-text="'mdi-account-group-outline'"
+              :size-icon="'32'"
               :text-tooltip="'Совместная работа над ' + $store.state.Objects.currentObject.name"
             />
           </template>
@@ -76,8 +76,8 @@
         </DropDownMenuStyled>
 
         <DropDownMenuStyled
-          :is-offset-y="true"
           :is-left="true"
+          :is-offset-y="true"
         >
           <template #icon>
             <v-badge
@@ -88,8 +88,8 @@
             >
               <IconTooltip
                 :color-icon="'#FFFFFF'"
-                :size-icon="'32'"
                 :icon-text="'mdi-home-edit-outline'"
+                :size-icon="'32'"
                 :text-tooltip="'Текущий объект'"
               />
             </v-badge>
@@ -115,22 +115,36 @@
         </TooltipStyled>
       </v-toolbar-items>
     </v-container>
+
+    <!-- Глобальные модалки -->
+    <TaskModal
+      ref="inviteUserModal"
+    />
   </v-app-bar>
 </template>
 
 <script>
-import { mapState } from "vuex";
-import Request from "../services/request";
-import TooltipStyled from "./Common/TooltipStyled";
-import CurrentObjects from "./Widgets/CurrentObjects.vue";
-import Collaboration from "./Modals/Collaboration.vue";
-import SearchStyled from "./Common/SearchStyled.vue";
-import IconTooltip from "./Common/IconTooltip.vue";
-import DropDownMenuStyled from "./Common/DropDownMenuStyled.vue";
+import { mapState } from 'vuex';
+import TooltipStyled from './Common/TooltipStyled';
+import CurrentObjects from './Widgets/CurrentObjects.vue';
+import Collaboration from './Modals/Collaboration.vue';
+import SearchStyled from './Common/SearchStyled.vue';
+import IconTooltip from './Common/IconTooltip.vue';
+import DropDownMenuStyled from './Common/DropDownMenuStyled.vue';
+import TaskModal from './Collaboration/TaskModal.vue';
+import { getNameStateModalByUrlHash } from '~/helpers/urlHelper';
 
 export default {
-  name: "Header",
-  components: { SearchStyled, Collaboration, CurrentObjects, TooltipStyled, IconTooltip, DropDownMenuStyled },
+  name: 'Header',
+  components: {
+    SearchStyled,
+    Collaboration,
+    CurrentObjects,
+    TooltipStyled,
+    IconTooltip,
+    DropDownMenuStyled,
+    TaskModal
+  },
   data() {
     return {
       debounceTimeout: null,
@@ -175,6 +189,22 @@ export default {
         }
       ]
     };
+  },
+  watch: {
+    // Смотрим за изменением хэша в url'е и вызываем модалки по связи refs
+    $route(to, from) {
+      // console.log('route change to', to);
+      // console.log('route change from', from);
+      if (!to.hash) return false;
+
+      const { nameModal, stateModal } = getNameStateModalByUrlHash(to.hash);
+      // Внутри компонента с модалкой должны быть методы openModal и closeModal
+      if (stateModal === 'true') {
+        this.$refs[`${nameModal}`].openModal();
+      } else {
+        this.$refs[`${nameModal}`].closeModal();
+      }
+    }
   },
   mounted() {
     // eslint-disable-next-line nuxt/no-env-in-hooks
@@ -241,7 +271,7 @@ export default {
       if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
 
       this.debounceTimeout = setTimeout(async () => {
-        await this.$store.dispatch('getListSearched', searchString)
+        await this.$store.dispatch('getListSearched', searchString);
       }, 500);
     },
     setSelected(selectedObj) {
@@ -254,17 +284,17 @@ export default {
         this.$store.commit('CollaborationModule/changeStateCollaboration', state);
       }
     },
-    redirectData(data){
-      if (data.category === 'Подборки'){
+    redirectData(data) {
+      if (data.category === 'Подборки') {
         window.location.href = data.href;
       }
-      if (data.category === 'Статьи'){
+      if (data.category === 'Статьи') {
         window.location.href = data.href;
       }
       // if (data.category === 'Номенклатура'){
       //   window.location.href = ''+data.href;
       // }
-    },
+    }
 
 
     // async getArticlesBySymbols(symbols) {
@@ -295,13 +325,13 @@ export default {
     // },
 
 
-
   }
 };
 </script>
 
 <style lang="scss" scoped>
 @import 'assets/styles/style';
+
 .v-btn:not(.v-btn--round).v-size--default {
   padding: 0 !important;
   min-width: 0;

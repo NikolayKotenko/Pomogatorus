@@ -43,7 +43,7 @@
             </div>
           </div>
           <UniversalAddInput
-            :list-services-available-to-add="userObject.services"
+            :list-services-available-to-add="listServicesAvailableToAdd"
             @add-service="addService"
           />
         </div>
@@ -267,14 +267,12 @@ export default {
       type: Boolean,
       default: false
     },
-    userObject: {
-      type: Object,
-      required: true,
-      default: () => ({})
+    listServicesAvailableToAdd: {
+      type: Array,
+      default: () => ([])
     },
     getServicesTetheredByUserObject: {
       type: Array,
-      required: true,
       default: () => ([])
     },
     currentTask: {

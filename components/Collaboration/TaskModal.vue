@@ -2,11 +2,10 @@
   <v-dialog
     v-model="showModal"
     class="modal"
-    width="850"
     persistent
+    width="850"
   >
     <Task
-      :user-object="userObject"
       :get-services-tethered-by-user-object="getServicesTetheredByUserObject"
       :get-state-tethered-user-in-object="getStateTetheredUserInObject"
       @close-modal="closeModal"
@@ -15,44 +14,50 @@
 </template>
 
 <script>
-import Task from '../Collaboration/Task.vue'
+import Task from '../Collaboration/Task.vue';
+import { setStateModalByUrlHash } from '~/helpers/urlHelper';
 
 export default {
   name: 'TaskModal',
   components: {
-    Task,
+    Task
   },
   props: {
     getStateTetheredUserInObject: {
       type: Boolean,
       default: false
     },
-    userObject:{
-      type: Object,
-      required: true,
-      default: () => ({})
+    listServicesAvailableToAdd: {
+      type: Array,
+      default: () => ([])
     },
     getServicesTetheredByUserObject: {
       type: Array,
-      required: true,
       default: () => ([])
-    },
+    }
   },
   data() {
     return {
-      showModal: false,
-    }
+      showModal: false
+    };
   },
   methods: {
     closeModal() {
-      this.showModal = false
+      this.showModal = false;
+      setStateModalByUrlHash('inviteUserModal', false);
     },
-
     openModal() {
-      this.showModal = true
-    },
+      if (!this.$store.getters.stateAuth) {
+        this.$store.commit('set_modal_auth', true);
+        setStateModalByUrlHash('inviteUserModal', false);
+        return false;
+      }
+
+      this.showModal = true;
+      setStateModalByUrlHash('inviteUserModal', true);
+    }
   }
-} 
+};
 </script>
 
 <style lang="scss" scoped>
