@@ -1,9 +1,11 @@
 .object-wrapper {
   display: flex;
   flex-direction: column;
-  padding: 0 20px ;
-  height: 100%;
-
+  padding: 0 20px;
+  min-height: 1000px !important;
+  max-height: 1000px !important;
+  overflow: auto;
+  
   &-top {
     display: inline-flex;
     //grid-template-columns: 30% 1fr;

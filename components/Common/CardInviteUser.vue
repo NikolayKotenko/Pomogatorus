@@ -8,9 +8,9 @@
     >
       <template #icon>
         <v-avatar size="70">
-          <v-img
-            src="https://www.wrestlezone.com/wp-content/uploads/sites/8/2023/12/kurt-angle-meme-machine.jpg?resize=1024,576"
-          />
+            <v-img
+                src="https://www.wrestlezone.com/wp-content/uploads/sites/8/2023/12/kurt-angle-meme-machine.jpg?resize=1024,576"
+            />
         </v-avatar>
       </template>
       <template #content>
@@ -268,53 +268,53 @@ export default {
     ...mapState('Objects', ['currentObject']),
 
     SearchStyled() {
-      return SearchStyled;
+      return SearchStyled
     },
-    getCompanyName() {
-      return this.userObject.company?.name ?? '';
+    getCompanyName(){
+      return this.userObject.company?.name ?? ''
     },
-    getLimitedServices() {
-      return this.userObject.services.slice(0, 2);
+    getLimitedServices(){
+      return this.userObject.services.slice(0, 2)
     },
     getStateTetheredUserInObject() {
       return this.userObject.services_objects.some((object) => {
-        return object.id === this.$store.getters['Objects/getIdCurrentObject'];
-      });
+        return object.id === this.$store.getters['Objects/getIdCurrentObject']
+      })
     },
     getServicesTetheredByUserObject() {
       const currentObject = this.userObject.services_objects
         .filter((obj) => obj.id === this.$store.getters['Objects/getIdCurrentObject'])[0];
 
-      if (!currentObject) return [];
+      if (!currentObject) return []
 
-      if (!currentObject.m_to_m_users_services_objects) return [];
+      if (!currentObject.m_to_m_users_services_objects) return []
 
       const idsServices = currentObject.m_to_m_users_services_objects
         .filter((obj) => obj.id_user === this.userObject.id)
-        .map((obj) => obj.id_services);
+        .map((obj) => obj.id_services)
 
       return this.userObject.services.filter((obj) => {
-        return idsServices.includes(obj.id);
-      });
-    }
+        return idsServices.includes(obj.id)
+      })
+    },
   },
   mounted() {
     this.$nextTick(() => {
-      this.selectedServicesIdsLocal = this.getServicesTetheredByUserObject.map((obj) => obj.id);
+      this.selectedServicesIdsLocal = this.getServicesTetheredByUserObject.map((obj) => obj.id)
     });
   },
 
   methods: {
     getValueField(str) {
-      return (str) || '';
+      return (str) || ''
     },
     openModal() {
-      this.$store.commit('UserSettings/setListServices', []);
+      this.$store.commit('UserSettings/setListServices', [])
 
-      this.$refs.inviteUserModal.openModal();
+      this.$refs.inviteUserModal.openModal()
     },
     closeModal() {
-      this.$refs.inviteUserModal.closeModal();
+      this.$refs.inviteUserModal.closeModal()
     },
 
     async localDeleteServiceUserByObject() {
@@ -332,18 +332,18 @@ export default {
 
       if (response.codeResponse >= 400) return false;
 
-      this.$toast.success('Пользователь отстранён', { duration: 5000 });
-      this.closeModal();
+      this.$toast.success('Пользователь отстранён',{ duration: 5000 })
+      this.closeModal()
     },
     setSelectedServicesIdsLocal(selectedServices) {
-      if (!selectedServices) return false;
+      if ( ! selectedServices ) return false
 
       this.selectedServicesIdsLocal = [];
       this.selectedServicesIdsLocal.push(selectedServices.id);
 
 
     }
-  }
+  },
 };
 </script>
 
@@ -357,39 +357,34 @@ $orange-color: #F79256;
   height: auto;
   padding: 20px;
 
-  .main_info {
+  .main_info{
     display: flex;
     align-content: center;
-
-    .user_info {
+    .user_info{
       .mail {
         color: $grey-color;
         font-size: 0.88em;
       }
     }
-
-    .avatar {
+    .avatar{
       margin-right: 20px;
     }
 
   }
 }
-
 .application {
 
 }
-
-.functional_icons {
+.functional_icons{
   display: flex;
   justify-content: flex-end;
   grid-column-gap: 1em;
 }
 
-.avatar_fio {
+.avatar_fio{
   font-size: 2em;
   color: #FFFFFF;
 }
-
 .card_invite_user {
   display: inline-flex;
   grid-column-gap: 1em;
@@ -399,34 +394,29 @@ $orange-color: #F79256;
   border-radius: 5px;
   transition: $transition;
   cursor: default;
-
   &:hover {
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
     background-color: #FFF4CB;
   }
 
-  .user_info {
+  .user_info{
     display: grid;
     grid-template-columns: 1.6fr 1.4fr 1fr;
     width: 100%;
     align-items: center;
-
-    .access_rights {
+    .access_rights{
       margin-left: auto;
-
-      .access_style {
+      .access_style{
         color: $grey-color !important;
         font-size: 0.88em;
-        width: 100%;
+        width: 100% ;
       }
     }
-
-    .invite_right {
+    .invite_right{
       margin-left: auto;
     }
   }
 }
-
 .type {
   color: $orange-color;
   font-weight: bold;
@@ -437,17 +427,15 @@ $orange-color: #F79256;
   font-size: 0.88em;
 }
 
-.list_services {
+.list_services{
   display: flex;
   align-items: center;
 
 
 }
 
-.services {
-}
-
-.explain_info {
+.services{}
+.explain_info{
   padding: 20px;
   max-width: 500px;
 }

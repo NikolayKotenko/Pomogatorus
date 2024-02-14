@@ -1,18 +1,24 @@
 import Request from '@/services/request'
+import constructFilterQuery from '@/utils/constructFilterQuery'
 
 export default {
   namespaced: true,
   state: {
     listNomenclature: [],
+    listFavoriteNomenclature: [],
   },
   mutations: {
     set_list_nomenclature(state, payload) {
-      // if (payload.paginationData.onFirstPage) {
+      if (payload.paginationData.onFirstPage) {
       state.listNomenclature = []
       state.listNomenclature = payload.data
-      // } else {
-      //   state.listNomenclature.push(payload.data)
-      // }
+      } else {
+        state.listNomenclature = payload.data;
+      }
+    },
+    set_list_favorite_nomenclature(state, payload) {
+      state.listFavoriteNomenclature = []
+      state.listFavoriteNomenclature = payload
     },
   },
   actions: {
@@ -31,11 +37,41 @@ export default {
       })
       return response
     },
+    async setFavoritesNomenclatureByObject({ _ }, object) {
+      const response = await Request.post(
+        this.state.BASE_URL + '/m-to-m/favorites/add',
+        object
+      )
+
+      return response
+    },
+    async getListFavoriteNomenclatureByUserAndObjectId(
+      { commit, dispatch, getters, rootGetters }) {
+      if (!rootGetters.getUserId) return false
+      if (!rootGetters['Objects/getIdCurrentObject']) return false
+
+      // commit('setLoadingObjects', true)
+
+      const response = await Request.get(
+        this.state.BASE_URL + `/m-to-m/favorites?id_user=${rootGetters.getUserId}&id_object=${rootGetters['Objects/getIdCurrentObject']}`
+      )
+      commit('set_list_favorite_nomenclature', response.data)
+      
+
+      // commit('setLoadingObjects', false)
+
+      return response
+    },
+    
+    
     // async getListNomenclatureCharacteristics({commit}) {
     //   const response = await  Request.get(
     //     this.state.BASE_URL + /
     //   )
     // },
   },
-  getters: {},
+  getters: {
+    
+
+  },
 }

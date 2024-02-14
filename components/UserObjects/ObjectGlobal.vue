@@ -73,8 +73,16 @@
       <v-tab :key="0">
         Параметры объекта
       </v-tab>
-      <v-tab :key="1">
+      <v-tab 
+        :key="1"
+        @click="$store.dispatch('NomenclatureModule/getListFavoriteNomenclatureByUserAndObjectId')"
+      >
         Избранное оборудование
+        <v-badge
+          :content="$store.state.NomenclatureModule.listFavoriteNomenclature.length"
+          :value="$store.state.NomenclatureModule.listFavoriteNomenclature.length"
+          color="#95D7AE"
+        />
       </v-tab>
       <v-tab :key="2">
         Купленное оборудование
@@ -143,7 +151,14 @@
 
       <!-- Оборудование на объекте -->
       <v-tab-item :key="1">
-        <v-container class="object_products"/>
+        <v-container class="object_products">
+          <div
+            v-for="(item, index) in $store.state.NomenclatureModule.listFavoriteNomenclature"
+            :key="index"
+          >
+            <span>{{ item.name }}</span>
+          </div>
+        </v-container>
       </v-tab-item>
       <v-tab-item :key="2">
         <v-container class="object_products"/>

@@ -23,14 +23,7 @@
     <!-- Меню Кнопок -->
     <div class="product_buttons">
       <div class="product_icons">
-        <!-- Избранное -->
-        <IconTooltip
-          :color-icon="'#000000'"
-          :size-icon="'36'"
-          :icon-text="'mdi-heart-outline'"
-          :text-tooltip="'Добавить в избранное'"
-        />
-
+        
         <!-- Модальное окно. Детальная карточка товара -->
         <TooltipStyled
           :is-top="true"
@@ -38,7 +31,7 @@
         >
           <v-dialog
             v-model="showModal"
-            width="675"
+            width="700"
           >
             <template #activator="{ on, attrs }">
               <v-icon
@@ -46,15 +39,27 @@
                 v-bind="attrs"
                 v-on="on"
                 color="#000000"
+                @click="getFilteredListNomenclaturesByFamily(data)"
               >
                 mdi-list-box-outline
               </v-icon>
             </template>
 
             <v-card class="detail_card_product">
-              <div class="card_name">
-                {{ data.name }}
+
+              <!-- Семейство Оборудования -->
+              <div class="header">
+                <div class="family_name">
+                  <span>Семейство:</span>
+                  <div class="card_name">
+                    {{ data._family.name }}
+                  </div>
+                </div>
+                <AddToFavoriteNomenclatures
+                 :favorite-object="favoriteData"
+                />
               </div>
+              
 
               <!-- Фотографии Оборудования -->
               <div class="product_photos">
@@ -78,11 +83,34 @@
                   />
                 </div>
               </div>
-              <v-divider/>
 
+              <v-divider/>
+              
+              <!-- Модели Оборудования -->
+              <div class="family_slider">
+                <span>Модели:</span>
+                <v-tabs
+                  show-arrows
+                  color="#000000"
+                  class="slider"
+                >
+                  <v-tabs-slider color="#95D7AE"></v-tabs-slider>
+                    <v-tab 
+                      v-for="(item, index) in this.listFamilyNomenclatures"
+                      :key="index"
+                    >
+                      {{ item.name }}
+                    </v-tab>
+                    <v-tab-item></v-tab-item>
+                </v-tabs>
+              </div>
               <!-- Инфорамация об Оборудовании -->
               <div class="product_detail_info">
-                <v-tabs color="#95D7AE" vertical>
+                <v-tabs 
+                  color="#95D7AE" 
+                  vertical
+                  style="display: flex; flex-direction: row-reverse;" 
+                >
                   <v-tab :key="0">
                     Описание
                   </v-tab>
@@ -101,6 +129,10 @@
                   </v-tab-item>
                   <v-tab-item :key="1">
                     <div class="product_characteristics">
+                      <div class="switch">
+                        <v-switch color="#95D7AE" hide-details/>
+                        <span>Только различающиеся характеристики</span>
+                      </div>
                       <li>Артикул: {{ data.vendor_code }}</li>
                       <li
                         v-for="(character, index) in data._nomenclature_characteristics"
@@ -115,52 +147,18 @@
                   </v-tab-item>
                 </v-tabs>
               </div>
-
-              <!-- Функциональные кнопки -->
-              <div class="product_detail_buttons">
-                <SelectStyled
-                  :is-solo="true"
-                  :item-text="'action'"
-                  :item-value="'value'"
-                  :items="actionsWithProduct"
-                  :placeholder="'Выберите действие'"
-                  class="function_btn"
-                />
-                <div>
-                  <ButtonStyled
-                    :local-class="'style_close'"
-                    :local-text="'Закрыть'"
-                    @click-button="closeModal"
-                  />
-                </div>
-              </div>
+              <ButtonStyled
+              :local-class="'style_close'"
+              :local-text="'Закрыть'"
+              @click-button="closeModal"
+            />
             </v-card>
           </v-dialog>
         </TooltipStyled>
 
-        <!-- Ссылка на маркетплейс -->
-        <IconTooltip
-          :color-icon="'#000000'"
-          :size-icon="'36'"
-          :icon-text="'mdi-store-outline'"
-          :text-tooltip="'Перейти в Яндекс Маркет'"
-        />
-        <!-- Модальное окно эксплуатации -->
-        <IconTooltip
-          :color-icon="'#000000'"
-          :size-icon="'36'"
-          :icon-text="'mdi-file-cog-outline'"
-          :text-tooltip="'Подробнее об эксплуатации'"
-        />
-      </div>
-      <div class="product_detail_buttons">
-        <SelectStyled
-          :is-solo="true"
-          :item-text="'action'"
-          :item-value="'value'"
-          :items="actionsWithProduct"
-          :placeholder="'Выберите действие'"
-          class="function_btn"
+        <!-- Избранное -->
+        <AddToFavoriteNomenclatures
+          :favorite-object="favoriteData"
         />
       </div>
     </div>
@@ -173,10 +171,12 @@ import TooltipStyled from './TooltipStyled.vue';
 import ButtonStyled from './ButtonStyled.vue';
 import ViewerStyled from './ViewerStyled.vue';
 import IconTooltip from './IconTooltip.vue';
-
+import AddToFavoriteNomenclatures from './AddToFavoriteNomenclatures.vue';
+import { FavoriteNomenclature } from '~/helpers/constructors';
+ 
 export default {
   name: 'ProductCard',
-  components: { ViewerStyled, ButtonStyled, TooltipStyled, SelectStyled, IconTooltip },
+  components: { ViewerStyled, ButtonStyled, TooltipStyled, SelectStyled, IconTooltip, AddToFavoriteNomenclatures },
   props: {
     data: {
       type: Object,
@@ -191,12 +191,20 @@ export default {
         { action: 'Оформить акт установки', value: 2 },
         { action: 'Оформить акт тех.обслуживания', value: 3 },
         { action: 'Оформить акт утилизации', value: 4 }
-      ]
+      ],
+      listFamilyNomenclatures: []
     };
   },
   computed: {
     getMainProductPhoto() {
-      return this.data?._family?.photos[0].url;
+      return this.data?._family?.photos[0]?.url;
+    },
+    favoriteData(){
+      return new FavoriteNomenclature(
+          this.$store.getters['Objects/getIdCurrentObject'],
+          this.$store.getters['getUserId'],
+          this.data?.id
+        )
     }
   },
   async mounted() {
@@ -210,6 +218,12 @@ export default {
     },
     closeModal() {
       this.showModal = false;
+    },
+    getFilteredListNomenclaturesByFamily(objData) {
+      this.listFamilyNomenclatures = this.$store.state.NomenclatureModule.listNomenclature
+        .filter((elem) => 
+          elem?._family?.id === objData?._family?.id
+        )      
     }
   }
 
@@ -274,13 +288,28 @@ export default {
   display: inline-grid;
   grid-row-gap: 20px;
   width: 700px;
-  height: 700px;
+  // min-height: 700px !important;
+  // max-height: 700px !important;
+  overflow: auto;
   padding: 20px;
+  .header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
 
-  .card_name {
-    font-size: 1.5em;
-    font-weight: 700;
+    .family_name{
+      display: flex;
+      align-items: center;
+      
+      .card_name {
+      font-size: 1.5em;
+      font-weight: 700;
+      margin-left: 1em;
+    }
+    }
+    
   }
+  
 
   .product_photos {
     display: flex;
@@ -313,17 +342,31 @@ export default {
 
   }
 
-  .product_detail_info {
-    height: 200px;
+  .family_slider{
+    display: flex;
+    align-items: center;
+    .slider {
+      
+    }
+  }
 
+  .product_detail_info {
+    height: 350px;
+
+    
     .product_description {
-      font-size: 0.9em;
+      
     }
 
-    .product_characteristics {
-      font-size: 0.9em;
+    .product_characteristics {    
       color: #8A8784;
       margin-top: auto;
+      .switch {
+        display: flex;
+        align-items: center;
+        color: #000000;
+        margin-bottom: 20px;
+      }
     }
   }
 
@@ -340,5 +383,15 @@ export default {
   width: 320px;
   max-width: 320px;
   margin-bottom: 0;
+}
+</style>
+
+<style lang="scss">
+.v-tabs-items {
+  margin-right: 20px;
+}
+.v-input--selection-controls {
+  margin: 0;
+  padding: 0;
 }
 </style>

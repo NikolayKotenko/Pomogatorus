@@ -86,10 +86,10 @@
             </thead>
             <tbody>
               <tr
-                v-for="(item, index) in dataUsers"
+                v-for="(item, index) in getReccomendedUsers"
                 :key="index"
               >
-                <td>Иванов иван</td>
+                <td>{{ item.user_fio }}</td>
                 <td>66% - 2 из 3</td>
                 <td>66% - 2 из 3</td>
                 <td>
@@ -171,7 +171,7 @@
               :hide-details="true"
               :item-text="'user_fio'"
               :item-value="'id'"
-              :items="$store.state.CollaborationModule.listMembers"
+              :items="$store.state.CollaborationModule.listSearchedMembers"
               class="search_service"
               clearable
               hide-selected
@@ -334,6 +334,8 @@ export default {
     setPrice(index, price) {
       this.taskData.services[index].price = price;
     },
+    //из массива всех специалистов показать только тех у кого есть совпадение по услугам
+    
 
     addUser() {
       if (this.taskData.ids_users.includes(this.selectedUser.id)) {
@@ -384,6 +386,13 @@ export default {
       this.closeDeleteOneUserModal();
       this.$toast.success('Исполнитель удален');
     }
+  },
+  getters: {
+    getReccomendedUsers() {
+      console.log('123')
+      return this.$store.state.CollaborationModule.listSearchedMembers
+        .map((user) => { user.services.map((service) => { service.id }) })
+    },
   }
 };
 </script>
