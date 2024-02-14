@@ -63,6 +63,7 @@
         <div class="more_info">
           <section
             v-for="(obj, key) in $store.state.list_broadcast_snippet"
+            :key="key"
             class="current_object__wrapper_info"
           >
             <span class="current_object__wrapper_info__text">{{ obj.name }}:</span>

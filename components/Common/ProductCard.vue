@@ -94,14 +94,14 @@
                   color="#000000"
                   class="slider"
                 >
-                  <v-tabs-slider color="#95D7AE"></v-tabs-slider>
+                  <v-tabs-slider color="#95D7AE"/>
                     <v-tab 
                       v-for="(item, index) in this.listFamilyNomenclatures"
                       :key="index"
                     >
                       {{ item.name }}
                     </v-tab>
-                    <v-tab-item></v-tab-item>
+                    <v-tab-item/>
                 </v-tabs>
               </div>
               <!-- Инфорамация об Оборудовании -->
@@ -205,9 +205,20 @@ export default {
           this.$store.getters['getUserId'],
           this.data?.id
         )
+    },
+    
+  },
+  watch: {
+    '$store.state.Objects.currentObject.id':{
+      async handler(idCurrentObject) {
+        if (!idCurrentObject) return false;
+
+        await this.$store.dispatch('NomenclatureModule/getListFavoriteNomenclatureByUserAndObjectId');
+      }
     }
   },
   async mounted() {
+    await this.$store.dispatch('NomenclatureModule/getListNomenclature');
   },
   methods: {
     changeFavoriteProduct() {

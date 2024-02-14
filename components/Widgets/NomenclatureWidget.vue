@@ -233,9 +233,17 @@ export default {
           this.getNomenclature('start');
         }
       }
+    },
+    '$store.state.Objects.currentObject.id':{
+      async handler(idCurrentObject) {
+        if (!idCurrentObject) return false;
+
+        await this.$store.dispatch('NomenclatureModule/getListFavoriteNomenclatureByUserAndObjectId');
+      }
     }
   },
-  mounted() {
+  async mounted() {
+    await this.$store.dispatch('NomenclatureModule/getListNomenclature');
     this.getNomenclature('start');
   },
   methods: {

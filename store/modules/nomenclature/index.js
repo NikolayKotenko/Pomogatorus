@@ -46,7 +46,7 @@ export default {
       return response
     },
     async getListFavoriteNomenclatureByUserAndObjectId(
-      { commit, dispatch, getters, rootGetters }) {
+      { commit, dispatch, getters, rootGetters }) {       
       if (!rootGetters.getUserId) return false
       if (!rootGetters['Objects/getIdCurrentObject']) return false
 
