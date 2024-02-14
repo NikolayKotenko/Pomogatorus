@@ -337,7 +337,7 @@ export default {
       this.taskData.services[index].price = price;
     },
     //из массива всех специалистов показать только тех у кого есть совпадение по услугам
-    
+
 
     addUser() {
       if (this.taskData.ids_users.includes(this.selectedUser.id)) {
@@ -391,7 +391,6 @@ export default {
   },
   getters: {
     getReccomendedUsers() {
-      console.log('123')
       return this.$store.state.CollaborationModule.listSearchedMembers
         .map((user) => { user.services.map((service) => { service.id }) })
     },
