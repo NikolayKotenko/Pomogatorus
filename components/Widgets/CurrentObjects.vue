@@ -2,7 +2,7 @@
   <div class="current_object">
     <div class="current_object__label">
       <div class="current_object__label__container">
-        <span>Текущий объект</span>
+        <span>Ваш текущий объект</span>
       </div>
       <v-divider/>
     </div>

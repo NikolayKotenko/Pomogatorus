@@ -90,7 +90,7 @@
                 :color-icon="'#FFFFFF'"
                 :icon-text="'mdi-home-edit-outline'"
                 :size-icon="'32'"
-                :text-tooltip="'Текущий объект'"
+                :text-tooltip="'Ваш текущий объект'"
               />
             </v-badge>
           </template>
@@ -117,9 +117,8 @@
     </v-container>
 
     <!-- Глобальные модалки -->
-    <TaskModal
-      ref="inviteUserModal"
-    />
+    <TaskModal ref="inviteUserModal"/>
+    <CreateObjectModal ref="createObjectModal"/>
   </v-app-bar>
 </template>
 
@@ -133,10 +132,12 @@ import IconTooltip from './Common/IconTooltip.vue';
 import DropDownMenuStyled from './Common/DropDownMenuStyled.vue';
 import TaskModal from './Collaboration/TaskModal.vue';
 import { getNameStateModalByUrlHash } from '~/helpers/urlHelper';
+import CreateObjectModal from '~/components/Modals/CreateObjectModal';
 
 export default {
   name: 'Header',
   components: {
+    CreateObjectModal,
     SearchStyled,
     Collaboration,
     CurrentObjects,

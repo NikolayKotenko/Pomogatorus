@@ -37,7 +37,7 @@
             </v-menu>
           </TooltipStyled>
 
-          <TooltipStyled :title="stateCurrentObject ? 'Текущий объект' : 'Выбрать текущим'">
+          <TooltipStyled :title="stateCurrentObject ? 'Ваш текущий объект' : 'Выбрать текущим'">
             <div class="activity">
               <VSimpleCheckbox
                 :value="stateCurrentObject"
@@ -121,11 +121,12 @@ export default {
     }
   },
   watch: {},
-  mounted() {},
+  mounted() {
+  },
   methods: {
     async setObject() {
       await this.$store.dispatch('Objects/setCurrentObject', this.object_data);
-      this.$toast.success('Объект выбран',{ duration: 5000 })
+      this.$toast.success('Объект выбран', { duration: 5000 });
     },
     openDetailCard() {
       this.$emit('open-detail', this.object_data);

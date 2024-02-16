@@ -5,8 +5,8 @@
       :hide-details="true"
       :item-text="'name'"
       :item-value="'id'"
-      :items="listServicesAvailableToAdd"
-      :label="listServicesAvailableToAdd.length ? 'Добавить услугу' : 'Нет новых услуг для добавления'"
+      :items="currentListServicesAvailableToAdd"
+      :label="currentListServicesAvailableToAdd.length ? 'Добавить услугу' : 'Нет новых услуг для добавления'"
       :value="selectedService"
       class="search_service"
       hide-selected
@@ -70,10 +70,6 @@ export default {
           return this.listServicesAvailableToAdd;
         }
         return this.$store.state.UserSettings.listServices;
-      },
-      // TODO
-      set(array) {
-        this.listServicesAvailableToAdd = array;
       }
     }
   },

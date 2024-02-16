@@ -28,15 +28,15 @@
 
 <script>
 
-import { mapState } from 'vuex'
-import SubHeader from '../components/SubHeader'
-import Right from '../components/CascadModels/Right'
+import { mapState } from 'vuex';
+import SubHeader from '../components/SubHeader';
+import Right from '../components/CascadModels/Right';
 
-import BurgerMenu from '../components/BurgerMenu'
-import VerticalMenu from '../components/VerticalMenu.vue'
-import WrapperStickyCurrentObject from '../components/Widgets/WrapperStickyCurrentObject.vue'
-import Request from '@/services/request'
-import Logging from '@/services/logging'
+import BurgerMenu from '../components/BurgerMenu';
+import VerticalMenu from '../components/VerticalMenu.vue';
+import WrapperStickyCurrentObject from '../components/Widgets/WrapperStickyCurrentObject.vue';
+import Request from '@/services/request';
+import Logging from '@/services/logging';
 
 export default {
   name: 'DefaultLayout',
@@ -61,23 +61,23 @@ export default {
         }
       ],
       articles_breadcrumbs: []
-    }
+    };
   },
   async fetch() {
     const options = {
       method: 'GET',
       url: `${this.$store.state.BASE_URL}/entity/articles/`
-    }
+    };
     try {
-      const articlesRequest = await this.$axios(options)
+      const articlesRequest = await this.$axios(options);
       this.articles_breadcrumbs = articlesRequest.data.data.map((elem) => {
         return {
           url: `https://pomogatorus.ru/articles/${elem.id}`,
           text: elem.preview
-        }
-      })
+        };
+      });
     } catch (error) {
-      console.warn(error.response.data.message)
+      console.warn(error.response.data.message);
     }
   },
   jsonld() {
@@ -88,7 +88,7 @@ export default {
         '@id': item.url,
         name: item.text
       }
-    }))
+    }));
     return [
       {
         '@context': 'https://schema.org',
@@ -110,7 +110,7 @@ export default {
         },
         sameAs: ['https://www.instagram.com/pomogatorus_official/']
       }
-    ]
+    ];
   },
   computed: {
     ...mapState({
@@ -118,67 +118,67 @@ export default {
     }),
 
     computedBreadcrumbs() {
-      if (!this.articles_breadcrumbs || !this.articles_breadcrumbs.length) return this.breadcrumbs
-      return this.articles_breadcrumbs.concat(this.breadcrumbs)
+      if (!this.articles_breadcrumbs || !this.articles_breadcrumbs.length) return this.breadcrumbs;
+      return this.articles_breadcrumbs.concat(this.breadcrumbs);
     },
     listExcludedRightColumn() {
-      if (!this.$device.isDesktop) return true
+      if (!this.$device.isDesktop) return true;
 
       const arrPathExcluded = [
         'search',
         'object',
         'podborki',
         'notifications'
-      ]
+      ];
       return arrPathExcluded.some((path) => {
-        return this.$route.path.match(path)
-      })
+        return this.$route.path.match(path);
+      });
     }
   },
   watch: {
     '$store.getters.getUserId': {
       handler(value) {
-        this.$store.dispatch('Objects/getListObjectsByUserId')
+        this.$store.dispatch('Objects/getListObjectsByUserId', [{ 'home_owner': true }]);
       }
     }
   },
   mounted() {
-    this.fuckinMiddleware()
+    this.fuckinMiddleware();
     window.onNuxtReady((app) => {
       // console.log('Nuxt ready!')
-      this.loadComponent = true
-    })
+      this.loadComponent = true;
+    });
   },
   methods: {
     async fuckinMiddleware() {
       if (this.$route.query.userEmail) {
         await this.$store.dispatch('loginUser', {
           userEmail: this.$route.query.userEmail
-        })
+        });
       } else {
         if (Request.getAccessTokenInCookies() && this.$route.query.agent) {
-          this.$store.commit('change_agent_utm', this.$route.query.agent)
-          Request.get(this.$store.state.BASE_URL + '/entity/articles', this.$route.query)
+          this.$store.commit('change_agent_utm', this.$route.query.agent);
+          Request.get(this.$store.state.BASE_URL + '/entity/articles', this.$route.query);
         }
         if (!Request.getAccessTokenInCookies()) {
-          const refreshResponse = await this.$store.dispatch('refreshTokens')
-          console.log('if (!Request.getAccessTokenInCookies())', refreshResponse)
+          const refreshResponse = await this.$store.dispatch('refreshTokens');
+          console.log('if (!Request.getAccessTokenInCookies())', refreshResponse);
 
-          if (Logging.checkExistErr(refreshResponse)) console.log(refreshResponse.message)
+          if (Logging.checkExistErr(refreshResponse)) console.log(refreshResponse.message);
           // return redirect('/login')
         } else {
-          await this.$store.dispatch('loginByToken')
+          await this.$store.dispatch('loginByToken');
         }
       }
 
-      this.$store.commit('change_refactoring_content', false)
+      this.$store.commit('change_refactoring_content', false);
     }
   }
 
-}
+};
 </script>
 
-<style lang='scss'>
+<style lang="scss">
 @import 'assets/styles/style';
 
 body {

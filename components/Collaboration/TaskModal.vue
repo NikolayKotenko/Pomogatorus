@@ -52,6 +52,11 @@ export default {
         setStateModalByUrlHash('inviteUserModal', false);
         return false;
       }
+      //TODO доделать когда будет разделение прав
+      if (!this.$store.getters['Objects/getIdCurrentObject']) {
+        setStateModalByUrlHash('createObjectModal', true);
+        return false;
+      }
 
       this.showModal = true;
       setStateModalByUrlHash('inviteUserModal', true);
