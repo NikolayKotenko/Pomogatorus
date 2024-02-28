@@ -29,6 +29,22 @@
       </div>
     </TooltipStyled>
 
+    <div>
+      <v-badge
+        :content="$store.getters['NomenclatureModule/getCountFavoriteNomenclatures']"
+        :value="$store.getters['NomenclatureModule/getCountFavoriteNomenclatures']"
+        color="#95D7AE"
+        overlap
+      >
+        <IconTooltip
+          :color-icon="'B3B3B3'"
+          :size-icon="'32'"
+          :icon-text="'mdi-heart-outline'"
+          :text-tooltip="'Избранного оборудования на объекте'"
+        />
+      </v-badge>
+    </div>
+
     <TooltipStyled :title="$store.getters['Objects/getFirstPhotoObject']['filename'] || 'Фото объекта'">
       <!--      <v-img class="current_object__image"> -->
       <!--        <v-icon class="current_object__image__icon" x-large> -->
@@ -87,8 +103,8 @@
             local-class="style_button"
             @click-button="state_tech_task_block = !state_tech_task_block"
           >
-            <span>{{ state_tech_task_block ? "Скрыть&nbsp; ТЗ" : "Создать ТЗ" }}</span>
-            <v-icon>{{ state_tech_task_block ? "mdi-chevron-up" : "mdi-chevron-down" }}</v-icon>
+            <span>{{ state_tech_task_block ? 'Скрыть&nbsp; ТЗ' : 'Создать ТЗ' }}</span>
+            <v-icon>{{ state_tech_task_block ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
           </ButtonStyled>
         </TooltipStyled>
       </div>
@@ -98,18 +114,18 @@
 </template>
 
 <script>
-import SelectObjectStyled from '../Common/SelectObjectStyled';
-import Collaboration from '../Modals/Collaboration.vue';
-import TooltipStyled from '~/components/Common/TooltipStyled';
-import ButtonStyled from '~/components/Common/ButtonStyled';
-import TagsTechBlock from '~/components/Widgets/TagsTechBlock';
+import SelectObjectStyled from '../Common/SelectObjectStyled'
+import IconTooltip from '../Common/IconTooltip.vue'
+import TooltipStyled from '~/components/Common/TooltipStyled'
+import ButtonStyled from '~/components/Common/ButtonStyled'
+import TagsTechBlock from '~/components/Widgets/TagsTechBlock'
 
 export default {
   name: 'CurrentObjects',
   // eslint-disable-next-line vue/no-unused-components
   components: {
+    IconTooltip,
     TagsTechBlock,
-    Collaboration,
     ButtonStyled,
     TooltipStyled,
     SelectObjectStyled
@@ -123,7 +139,7 @@ export default {
         state: false,
         message: ''
       }
-    };
+    }
   },
   computed: {
     stateCurrentObject() {
@@ -132,24 +148,26 @@ export default {
       return this.object_data.id === this.$store.state.Objects.currentObject?.id;
     },
     stateFilledImageObject() {
-      if (!this.object_data?.('osnovnoe-foto-obekta')) return false;
+      if (!this.object_data?.('osnovnoe-foto-obekta')) return false
 
-      return this.object_data['osnovnoe-foto-obekta'].length;
-    }
+      return this.object_data['osnovnoe-foto-obekta'].length
+    },
+
   },
   watch: {
     '$store.getters.stateAuth': {
       handler(state) {
         if (state) {
-          this.$store.dispatch('getListBroadcastSnippet');
+          this.$store.dispatch('getListBroadcastSnippet')
         } else {
-          this.$store.commit('set_list_broadcast_snippet', []);
+          this.$store.commit('set_list_broadcast_snippet', [])
         }
       }
     }
   },
   mounted() {
-    this.getSnippet();
+    this.getSnippet()
+    this.$store.dispatch('NomenclatureModule/getListFavoriteNomenclatureByUserAndObjectId')
   },
   methods: {
     callAuthModal() {
@@ -158,17 +176,17 @@ export default {
       this.$store.commit('set_modal_auth', true);
     },
     async callback(data) {
-      await this.$store.dispatch('Objects/setCurrentObject', data);
+      await this.$store.dispatch('Objects/setCurrentObject', data)
     },
 
     async getSnippet() {
-      await this.$store.dispatch('getListBroadcastSnippet');
+      await this.$store.dispatch('getListBroadcastSnippet')
     }
   }
-};
+}
 </script>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 @import "@/assets/styles/style";
 
 .current_object {

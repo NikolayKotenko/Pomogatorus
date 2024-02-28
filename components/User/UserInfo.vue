@@ -33,7 +33,7 @@
         v-if="isLoggedIn && userData.installation_engineering_systems === 1"
         :key="2"
       >
-        Портфель брендов
+        <span class="tab_header">Портфель брендов</span>
         <v-badge
           :content="$store.getters['UserSettings/getCountServices']"
           :value="$store.getters['UserSettings/getCountServices']"
@@ -102,7 +102,7 @@
 
         <!-- Добавить услугу -->
         <UniversalAddInput
-          :list-services-available-to-add="$store.getters['UserSettings/getListServicesExcludeAdded']"
+          :list-items-available-to-add="$store.getters['UserSettings/getListServicesExcludeAdded']"
           class="mt-5"
           @add-service="setServiceByUser"
         />
@@ -110,17 +110,18 @@
 
       <!-- Портфель брендов -->
       <v-tab-item :key="2" class="brands_tab">
+        <UniversalAddInput
+          :list-items-available-to-add="$store.getters['BrandsModule/getListBrandsExcludeAdded']"
+        />
+
         <span class="title">Бренды с которыми вы работаете</span>
         <v-card class="brand_wrapper" height="60" outlined>
-          <div class="brand_info">
-            <span style="font-size: 1.5em; margin-right: 10px;">1. </span>
-            <v-img
-              :src="require(`~/assets/svg/baxi_logo.svg`)"
-              class="brand_img"
-              contain
-            />
-            <span class="brand_text">Установленно оборудования Baxi: 23</span>
-          </div>
+          <v-img
+            :src="require(`~/assets/svg/baxi_logo.svg`)"
+            class="brand_img"
+            contain
+          />
+          <span class="brand_text">Установленно оборудования: 23</span>
           <IconTooltip
             :color-icon="'#B3B3B3'"
             :icon-text="'mdi-close'"
@@ -129,15 +130,12 @@
           />
         </v-card>
         <v-card class="brand_wrapper" height="60" outlined>
-          <div class="brand_info">
-            <span style="font-size: 1.5em; margin-right: 10px;">2. </span>
-            <v-img
-              :src="require(`~/assets/svg/navien_logo.svg`)"
-              class="brand_img"
-              contain
-            />
-            <span class="brand_text">Установленно оборудования Navien: 23</span>
-          </div>
+          <v-img
+            :src="require(`~/assets/svg/navien_logo.svg`)"
+            class="brand_img"
+            contain
+          />
+          <span class="brand_text">Установленно оборудования: 23</span>
           <IconTooltip
             :color-icon="'#B3B3B3'"
             :icon-text="'mdi-close'"
@@ -146,15 +144,12 @@
           />
         </v-card>
         <v-card class="brand_wrapper" height="60" outlined>
-          <div class="brand_info">
-            <span style="font-size: 1.5em; margin-right: 10px;">3. </span>
-            <v-img
-              :src="require(`~/assets/svg/ariston_logo.svg`)"
-              class="brand_img"
-              contain
-            />
-            <span class="brand_text">Установленно оборудования Ariston: 23</span>
-          </div>
+          <v-img
+            :src="require(`~/assets/svg/ariston_logo.svg`)"
+            class="brand_img"
+            contain
+          />
+          <span class="brand_text">Установленно оборудования: 23</span>
           <IconTooltip
             :color-icon="'#B3B3B3'"
             :icon-text="'mdi-close'"
@@ -225,8 +220,6 @@ import { mapState } from 'vuex';
 import LoginAuth from '../frontLayouts/LoginAuth';
 import ButtonStyled from '../Common/ButtonStyled.vue';
 import SearchStyled from '../Common/SearchStyled.vue';
-import InputStyled from '../Common/InputStyled.vue';
-import TooltipStyled from '../Common/TooltipStyled.vue';
 import IconTooltip from '../Common/IconTooltip.vue';
 import UserFields from './UserFields';
 import ServiceCard from '@/components/Collaboration/ServiceCard.vue';
@@ -238,8 +231,6 @@ export default {
   name: 'UserInfo',
   components: {
     SelectStyled,
-    TooltipStyled,
-    InputStyled,
     SearchStyled,
     ButtonStyled,
     UserFields,
@@ -274,6 +265,7 @@ export default {
   }),
   async mounted() {
     await this.$store.dispatch('UserSettings/getListServices');
+    await this.$store.dispatch('BrandsModule/getListBrands');
   },
   computed: {
     ...mapState({
@@ -423,22 +415,16 @@ export default {
   }
 
   .brand_wrapper {
-    display: flex;
+    display: grid;
+    grid-template-columns: 0.7fr 2fr 0.1fr;
+    grid-column-gap: 20px;
     justify-content: space-between;
     align-items: center;
     width: 100%;
     padding: 1em;
-
-    .brand_info {
-      display: flex;
-      align-items: center;
-
-      .brand_img {
-        max-height: 24px;
-        margin-right: 50px;
-      }
+    .brand_img {
+      max-height: 24px;
     }
-
   }
 }
 

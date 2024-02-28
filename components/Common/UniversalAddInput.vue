@@ -5,8 +5,8 @@
       :hide-details="true"
       :item-text="'name'"
       :item-value="'id'"
-      :items="currentListServicesAvailableToAdd"
-      :label="currentListServicesAvailableToAdd.length ? 'Добавить услугу' : 'Нет новых услуг для добавления'"
+      :items="listItemsAvailableToAdd"
+      :label="listItemsAvailableToAdd.length ? 'Выбрать' : 'Нет элементов для добавления'"
       :value="selectedService"
       class="search_service"
       hide-selected
@@ -50,10 +50,10 @@ export default {
     IconTooltip
   },
   props: {
-    listServicesAvailableToAdd: {
+    listItemsAvailableToAdd: {
       type: Array,
       default: () => []
-    }
+    },
   },
   data() {
     return {
