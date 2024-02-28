@@ -1,6 +1,4 @@
 import Request from '@/services/request'
-import constructFilterQuery from '@/utils/constructFilterQuery'
-
 export default {
   namespaced: true,
   state: {
@@ -36,16 +34,18 @@ export default {
       })
       return response
     },
-    async setFavoritesNomenclatureByObject({ rootGetters, commit }, object) {
+    async setFavoritesNomenclatureByObject({ rootGetters, commit, dispatch }, object) {
       const response = await Request.post(
         this.state.BASE_URL + '/m-to-m/favorites/add',
         object
       );
+      // Вызов диспатча в одном компоненте
+      await dispatch('getListFavoriteNomenclatureByUserAndObjectId')
 
       return response
     },
     async getListFavoriteNomenclatureByUserAndObjectId(
-      { commit, dispatch, getters, rootGetters }) {
+      { commit, rootGetters }) {
       if (!rootGetters.getUserId) return false
       if (!rootGetters['Objects/getIdCurrentObject']) return false
 
@@ -60,16 +60,19 @@ export default {
 
       return response
     },
+    async deleteOneFavoriteNomenclature({ dispatch }, object) {
+      await Request.delete(
+        this.state.BASE_URL + '/m-to-m/favorites/remove',
+        object
+      );
 
+      await dispatch('getListFavoriteNomenclatureByUserAndObjectId')
+    }
 
-    // async getListNomenclatureCharacteristics({commit}) {
-    //   const response = await  Request.get(
-    //     this.state.BASE_URL + /
-    //   )
-    // },
   },
   getters: {
-
-
+    getCountFavoriteNomenclatures(state) {
+      return state.listFavoriteNomenclature.length
+    }
   },
 }

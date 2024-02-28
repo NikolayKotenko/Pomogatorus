@@ -29,6 +29,22 @@
       </div>
     </TooltipStyled>
 
+    <div>
+      <v-badge
+        :content="$store.getters['NomenclatureModule/getCountFavoriteNomenclatures']"
+        :value="$store.getters['NomenclatureModule/getCountFavoriteNomenclatures']"
+        color="#95D7AE"
+        overlap
+      >
+        <IconTooltip
+          :color-icon="'B3B3B3'"
+          :size-icon="'32'"
+          :icon-text="'mdi-heart-outline'"
+          :text-tooltip="'Избранного оборудования на объекте'"
+        />
+      </v-badge>
+    </div>
+
     <TooltipStyled :title="$store.getters['Objects/getFirstPhotoObject']['filename'] || 'Фото объекта'">
       <!--      <v-img class="current_object__image"> -->
       <!--        <v-icon class="current_object__image__icon" x-large> -->
@@ -99,7 +115,7 @@
 
 <script>
 import SelectObjectStyled from '../Common/SelectObjectStyled'
-import Collaboration from '../Modals/Collaboration.vue'
+import IconTooltip from '../Common/IconTooltip.vue'
 import TooltipStyled from '~/components/Common/TooltipStyled'
 import ButtonStyled from '~/components/Common/ButtonStyled'
 import TagsTechBlock from '~/components/Widgets/TagsTechBlock'
@@ -108,8 +124,8 @@ export default {
   name: 'CurrentObjects',
   // eslint-disable-next-line vue/no-unused-components
   components: {
+    IconTooltip,
     TagsTechBlock,
-    Collaboration,
     ButtonStyled,
     TooltipStyled,
     SelectObjectStyled
@@ -133,7 +149,8 @@ export default {
       if (!this.object_data?.('osnovnoe-foto-obekta')) return false
 
       return this.object_data['osnovnoe-foto-obekta'].length
-    }
+    },
+
   },
   watch: {
     '$store.getters.stateAuth': {
@@ -148,6 +165,7 @@ export default {
   },
   mounted() {
     this.getSnippet()
+    this.$store.dispatch('NomenclatureModule/getListFavoriteNomenclatureByUserAndObjectId')
   },
   methods: {
     callAuthModal() {

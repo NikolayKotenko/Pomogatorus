@@ -12,6 +12,7 @@ import Objects from './modules/objects'
 import CollaborationModule from './modules/collaboration'
 import NomenclatureModule from './modules/nomenclature'
 import NotificationModule from './modules/notification'
+import BrandsModule from './modules/brands'
 
 const createStore = () => {
   return new Vuex.Store({
@@ -71,18 +72,12 @@ const createStore = () => {
     },
     getters: {
       getImageByEClientFilesObj: (state) => (eClientFilesObj) => {
-        const templateImage =
-          'https://cdn.dribbble.com/users/41613/screenshots/3848663/chronicle_prev.jpg?compress=1&resize=400x300'
-
         if (!eClientFilesObj) return ''
 
         const firstElem = eClientFilesObj.find((e) => e.preview_image === true)
         return firstElem ? state.BASE_URL + firstElem.full_path : ''
       },
       getImageMainPhotoObjects: (state) => (obj) => {
-        const templateImage =
-          'https://cdn.dribbble.com/users/41613/screenshots/3848663/chronicle_prev.jpg?compress=1&resize=400x300'
-
         if (!obj) return ''
 
         return state.BASE_URL + obj.full_path
@@ -142,7 +137,7 @@ const createStore = () => {
           {
             title: 'Найти мастера',
             path: '/collaboration?modal=true',
-            icon: 'mdi-bell-outline',
+            icon: 'mdi-plus',
             visible: true,
             divider: true,
           },
@@ -238,6 +233,7 @@ const createStore = () => {
 
       /* HEADERS */
       set_list_searched(state, payload) {
+        // eslint-disable-next-line array-callback-return
         payload.map((elem) => {
           elem.href = ''
           if (elem.category === 'Статьи') {
@@ -309,6 +305,7 @@ const createStore = () => {
       CollaborationModule,
       NomenclatureModule,
       NotificationModule,
+      BrandsModule
     },
   })
 }

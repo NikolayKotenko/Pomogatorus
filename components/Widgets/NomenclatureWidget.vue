@@ -6,7 +6,7 @@
         :value="getVisibleNomenclature"
         color="#95D7AE"
       >
-        Оборудование
+        Рекомендуемое оборудование
       </v-badge>
     </div>
     <div class="w-slider-wrapper-separator"/>
@@ -115,7 +115,7 @@
               @click-button="onCLickNomenclature"
             />
 
-            <AddToFavoriteNomenclatures 
+            <AddToFavoriteNomenclatures
               :favorite-object="favoriteData"
             />
           </div>
@@ -219,10 +219,10 @@ export default {
     },
     favoriteData(){
       return new FavoriteNomenclature(
-          this.$store.getters['Objects/getIdCurrentObject'],
-          this.$store.getters['getUserId'],
-          this.getCurrentNomenclature.data.id
-        )
+        this.$store.getters['Objects/getIdCurrentObject'],
+        this.$store.getters.getUserId,
+        this.getCurrentNomenclature.data.id
+      )
     }
   },
   watch: {

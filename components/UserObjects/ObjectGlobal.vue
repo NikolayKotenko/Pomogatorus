@@ -73,7 +73,7 @@
       <v-tab :key="0">
         Параметры объекта
       </v-tab>
-      <v-tab 
+      <v-tab
         :key="1"
         @click="$store.dispatch('NomenclatureModule/getListFavoriteNomenclatureByUserAndObjectId')"
       >
@@ -208,7 +208,6 @@
         <v-dialog
           v-model="stateTagsTechBlock"
           width="1080"
-
         >
           <v-card>
             <v-card-title class="d-flex justify-end">
@@ -262,8 +261,6 @@ import SelectGeo from '../Common/SelectGeo';
 import ButtonStyled from '../Common/ButtonStyled';
 import TooltipStyled from '../Common/TooltipStyled.vue';
 import CopyLinkButton from '../Common/CopyLinkButton.vue';
-import SearchStyled from '../Common/SearchStyled.vue';
-import ProductCard from '../Common/ProductCard.vue';
 import ListFilesStyled from '~/components/Common/ListFilesStyled';
 import Collaboration from '~/components/Modals/Collaboration';
 import InputStyled from '~/components/Common/InputStyled';
@@ -272,8 +269,6 @@ import TagsTechBlock from '~/components/Widgets/TagsTechBlock';
 export default {
   name: 'ObjectGlobal',
   components: {
-    ProductCard,
-    SearchStyled,
     TagsTechBlock,
     InputStyled,
     CopyLinkButton,
@@ -350,7 +345,8 @@ export default {
     },
     isMobile() {
       return this.$device.isMobile;
-    }
+    },
+
   },
   methods: {
     ...mapActions('Objects', ['saveObjData', 'getListObjectsByUserId']),
@@ -447,7 +443,7 @@ export default {
     getObjectFromProp() {
       this.object = this.objectData;
     },
-    async callback(value) {
+    callback(value) {
       if (!value) return false;
 
       this.setLoadingData(true);

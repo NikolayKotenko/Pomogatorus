@@ -15,29 +15,29 @@
 </template>
 
 <script>
-import TooltipStyled from "../Common/TooltipStyled.vue";
+import TooltipStyled from '../Common/TooltipStyled.vue';
 
 export default {
-  name: "IconTooltip",
+  name: 'IconTooltip',
   components: {
     TooltipStyled
   },
   props: {
     sizeIcon: {
       type: String,
-      default: "24"
+      default: '24'
     },
     colorIcon: {
       type: String,
-      default: "#5D80B5"
+      default: '#5D80B5'
     },
     iconText: {
       type: String,
-      default: "mdi-help-circle-outline"
+      default: 'mdi-help-circle-outline'
     },
     textTooltip: {
       type: String,
-      default: ""
+      default: ''
     },
     isDisabled: {
       type: Boolean,
@@ -51,6 +51,3 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
