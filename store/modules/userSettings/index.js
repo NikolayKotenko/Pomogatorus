@@ -6,7 +6,6 @@ export default {
   namespaced: true,
   state: {
     isUpdating: false,
-    listServices: [],
     listCities: [
       {
         id: 1627,
@@ -61,10 +60,6 @@ export default {
   mutations: {
     setIsUpdating(state, payload) {
       state.isUpdating = payload
-    },
-    setListServices(state, payload) {
-      state.listServices = []
-      state.listServices = payload
     },
     setListCities(state, payload) {
       state.listCities = []
@@ -132,14 +127,6 @@ export default {
           commit('setIsUpdating', false)
         })
     },
-    async getListServices({ commit, rootGetters }) {
-      if (!rootGetters.stateAuth) return false
-
-      const response = await Request.get(
-        this.state.BASE_URL + '/dictionary/tags?filter[flag_service]=true'
-      )
-      commit('setListServices', response.data)
-    },
     async getUserServices({ commit, state }, idUser) {
       commit('setLoading', true)
 
@@ -179,14 +166,14 @@ export default {
     // },
 
     async deleteEntriesServicesByUser({ rootGetters }) {
-      const response = await Request.delete(
+      await Request.delete(
         `${this.state.BASE_URL}/m-to-m/delete-all-services-by-user/${rootGetters.getUserId}`
       )
     },
     async deleteOneServiceAssignToUser({ commit, rootGetters }, idService) {
       commit('setLoading', true)
 
-      const response = await Request.delete(
+      await Request.delete(
         `${this.state.BASE_URL}/m-to-m/delete-one-service-assign-to-user`,
         {
           id_user: rootGetters.getUserId,
@@ -259,13 +246,15 @@ export default {
         return !!haystack.match(needle)
       })
     },
-    getListServicesExcludeAdded(state) {
-      const arrA = state.listServices.map((elem) => elem.id)
+    getListServicesExcludeAdded(state, getters, rootState) {
+      const arrA = rootState.CollaborationModule.listServices.map(
+        (elem) => elem.id
+      )
       const arrB = state.selectedRawServices.map((elem) => elem.id_services)
       const differenceIds = arrA.filter((x) => !arrB.includes(x))
       // console.log('difference', differenceIds)
 
-      return state.listServices.filter((elem) =>
+      return rootState.CollaborationModule.listServices.filter((elem) =>
         differenceIds.includes(elem.id)
       )
     },

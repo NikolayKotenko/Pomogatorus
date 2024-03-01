@@ -10,6 +10,7 @@ export default {
     listInviteIdUsers: [],
     stateCollaborationMenu: false,
     debounceTimeout: null,
+    listServices: [],
   },
   mutations: {
     setLoading(state, payload) {
@@ -26,6 +27,10 @@ export default {
     },
     changeStateCollaboration(state, payload) {
       state.stateCollaborationMenu = payload
+    },
+    setListServices(state, payload) {
+      state.listServices = []
+      state.listServices = payload
     },
   },
   actions: {
@@ -76,9 +81,8 @@ export default {
 
       commit('setLoading', true)
 
-      if (state.debounceTimeout) clearTimeout(state.debounceTimeout);
+      if (state.debounceTimeout) clearTimeout(state.debounceTimeout)
       state.debounceTimeout = setTimeout(async () => {
-
         const response = await Request.get(
           this.state.BASE_URL + '/users/get-list-users/search?q=' + string
         )
@@ -88,17 +92,16 @@ export default {
         commit('setLoading', false)
 
         return response
-      }, 1000);
+      }, 1000)
     },
     getListMembersByFilter({ commit, state }, Obj) {
-      if (!Obj) return false;
-      if (!Obj.id_object) return false;
+      if (!Obj) return false
+      if (!Obj.id_object) return false
 
       commit('setLoading', true)
 
-      if (state.debounceTimeout) clearTimeout(state.debounceTimeout);
+      if (state.debounceTimeout) clearTimeout(state.debounceTimeout)
       state.debounceTimeout = setTimeout(async () => {
-
         const query = Request.ConstructFilterQuery(Obj) // query = ?filter[id_object]=2
         const response = await Request.get(
           this.state.BASE_URL + '/users/get-list-users' + query
@@ -106,7 +109,7 @@ export default {
         commit('setMembersList', response.data)
         commit('setLoading', false)
         return response
-      }, 1000);
+      }, 1000)
     },
     async saveObjData({ commit }, payload) {
       commit('setLoading', true)
@@ -117,7 +120,14 @@ export default {
 
       commit('setLoading', false)
     },
+    async getListServices({ commit, rootGetters }) {
+      if (!rootGetters.stateAuth) return false
 
+      const response = await Request.get(
+        this.state.BASE_URL + '/dictionary/tags?filter[flag_service]=true'
+      )
+      commit('setListServices', response.data)
+    },
   },
   getters: {
     getFilteredListByRoleExperts(state) {

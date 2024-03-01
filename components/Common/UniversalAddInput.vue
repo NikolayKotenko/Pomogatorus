@@ -52,8 +52,9 @@ export default {
   props: {
     listItemsAvailableToAdd: {
       type: Array,
-      default: () => []
-    },
+      default: () => [],
+      required: true
+    }
   },
   data() {
     return {
@@ -63,22 +64,9 @@ export default {
   computed: {
     getTooltipData() {
       return this.selectedService?.name ? this.selectedService.name : '';
-    },
-    currentListServicesAvailableToAdd: {
-      get() {
-        if (this.listServicesAvailableToAdd.length) {
-          return this.listServicesAvailableToAdd;
-        }
-        return this.$store.state.UserSettings.listServices;
-      }
     }
   },
   async mounted() {
-    if (this.listServicesAvailableToAdd.length) return false;
-
-    if (!this.$store.state.UserSettings.listServices.length) {
-      await this.$store.dispatch('UserSettings/getListServices');
-    }
   },
   methods: {
     setService(service) {

@@ -1,7 +1,7 @@
 <template>
   <v-app-bar
     id="navbar"
-    :class="{isMobile: isMobile}"
+    :class="{ isMobile: isMobile }"
     app
     class="header"
     dark
@@ -10,19 +10,22 @@
     <v-container class="d-flex custom_grid_system">
       <v-app-bar-nav-icon v-if="isMobile" @click="showDrawer"/>
       <v-toolbar-title v-if="isMobile">
-        <router-link :to="getCurrentRoute.path" style="color: unset; text-decoration: unset">
+        <router-link
+          :to="getCurrentRoute.path"
+          style="color: unset; text-decoration: unset"
+        >
           {{ getCurrentRoute.title }}
         </router-link>
       </v-toolbar-title>
 
       <!-- Desktop -->
       <template v-if="!isMobile">
-        <div
-          class="header_left"
-        >
+        <div class="header_left">
           <div
             class="menu"
-            @click="$store.state.stateVerticalMenu = !$store.state.stateVerticalMenu"
+            @click="
+              $store.state.stateVerticalMenu = !$store.state.stateVerticalMenu
+            "
           >
             <IconTooltip
               :color-icon="'#FFFFFF'"
@@ -32,9 +35,7 @@
             />
           </div>
           <div class="logo_wrapper">
-            <v-img
-              :src="require(`~/assets/svg/logo.svg`)"
-            />
+            <v-img :src="require(`~/assets/svg/logo.svg`)"/>
           </div>
         </div>
         <SearchStyled
@@ -58,16 +59,16 @@
 
       <!-- Личный кабинет всегда по правую сторону -->
       <v-toolbar-items class="header_right">
-        <DropDownMenuStyled
-          :is-left="true"
-          :is-offset-y="true"
-        >
+        <DropDownMenuStyled :is-left="true" :is-offset-y="true">
           <template #icon>
             <IconTooltip
               :color-icon="'#FFFFFF'"
               :icon-text="'mdi-account-group-outline'"
               :size-icon="'32'"
-              :text-tooltip="'Совместная работа над ' + $store.state.Objects.currentObject.name"
+              :text-tooltip="
+                'Совместная работа над ' +
+                  $store.state.Objects.currentObject.name
+              "
             />
           </template>
           <template #content>
@@ -75,10 +76,7 @@
           </template>
         </DropDownMenuStyled>
 
-        <DropDownMenuStyled
-          :is-left="true"
-          :is-offset-y="true"
-        >
+        <DropDownMenuStyled :is-left="true" :is-offset-y="true">
           <template #icon>
             <v-badge
               :content="$store.getters['Objects/getCountObject']"
@@ -144,7 +142,7 @@ export default {
     TooltipStyled,
     IconTooltip,
     DropDownMenuStyled,
-    TaskModal
+    TaskModal,
   },
   data() {
     return {
@@ -162,7 +160,7 @@ export default {
           query: '',
           search: '',
           text: '',
-          isAuthorized: null
+          isAuthorized: null,
         },
         {
           category: 'Подборки',
@@ -170,7 +168,7 @@ export default {
           query: '',
           search: '',
           text: '',
-          isAuthorized: null
+          isAuthorized: null,
         },
         {
           category: 'Оборудование',
@@ -178,7 +176,7 @@ export default {
           query: '',
           search: '',
           text: '',
-          isAuthorized: null
+          isAuthorized: null,
         },
         {
           category: 'Объекты',
@@ -186,117 +184,121 @@ export default {
           query: '',
           search: '',
           text: '',
-          isAuthorized: null
-        }
-      ]
-    };
+          isAuthorized: null,
+        },
+      ],
+    }
   },
   watch: {
     // Смотрим за изменением хэша в url'е и вызываем модалки по связи refs
     $route(to, from) {
       // console.log('route change to', to);
       // console.log('route change from', from);
-      if (!to.hash) return false;
-
-      const { nameModal, stateModal } = getNameStateModalByUrlHash(to.hash);
-      // Внутри компонента с модалкой должны быть методы openModal и closeModal
-      if (stateModal === 'true') {
-        this.$refs[`${nameModal}`].openModal();
-      } else {
-        this.$refs[`${nameModal}`].closeModal();
-      }
-    }
+      if (!to.hash) return false
+      this.localSetStateModalByUrlHash(to.hash)
+    },
   },
   mounted() {
     // eslint-disable-next-line nuxt/no-env-in-hooks
     if (!process.server) {
-      this.onScroll();
+      this.onScroll()
     }
   },
   // eslint-disable-next-line vue/order-in-components
   computed: {
     ...mapState({
-      listModal: state => state.listModal,
-      drawer: state => state.drawer
+      listModal: (state) => state.listModal,
+      drawer: (state) => state.drawer,
     }),
 
     isMobile() {
-      return this.$device.isMobile;
+      return this.$device.isMobile
     },
     getCurrentRoute() {
       if (this.listModal[0].isOpen) {
         return {
           path: '',
-          title: 'Личный кабинет'
-        };
+          title: 'Личный кабинет',
+        }
       }
       return this.$store.getters.menuItems.find((elem) => {
-        return this.$route.path.match(elem.path);
-      });
-    }
+        return this.$route.path.match(elem.path)
+      })
+    },
   },
   methods: {
     showDrawer() {
-      this.$store.commit('set_drawer', !this.drawer);
+      this.$store.commit('set_drawer', !this.drawer)
     },
     // openObject() {
     //   this.$emit("open_object", this.$store.state.listObjects.currentObject)
     //   console.log('work')
     // },
     setHeader(value) {
-      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
       this.debounceTimeout = setTimeout(() => {
-        this.$store.commit('change_show_header', value);
-      });
+        this.$store.commit('change_show_header', value)
+      })
     },
     onScroll() {
       if (this.$device.isDesktop) {
-        let prevScrollpos = window.pageYOffset;
-        const _this = this;
-        window.onscroll = function() {
-          const currentScrollPos = window.pageYOffset;
+        let prevScrollpos = window.pageYOffset
+        const _this = this
+        window.onscroll = function () {
+          const currentScrollPos = window.pageYOffset
           if (prevScrollpos > currentScrollPos) {
-            document.getElementById('navbar').style.top = '0';
-            _this.setHeader(true);
+            document.getElementById('navbar').style.top = '0'
+            _this.setHeader(true)
           } else {
-            document.getElementById('navbar').style.top = '-70px';
-            _this.setHeader(false);
+            document.getElementById('navbar').style.top = '-70px'
+            _this.setHeader(false)
           }
-          prevScrollpos = currentScrollPos;
-        };
+          prevScrollpos = currentScrollPos
+        }
       }
     },
     localGetListItems(searchString) {
-      if (!searchString) return false;
+      if (!searchString) return false
 
-      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
 
       this.debounceTimeout = setTimeout(async () => {
-        await this.$store.dispatch('getListSearched', searchString);
-      }, 500);
+        await this.$store.dispatch('getListSearched', searchString)
+      }, 500)
     },
     setSelected(selectedObj) {
-      this.selectedArticle = selectedObj;
+      this.selectedArticle = selectedObj
     },
     openCollaborationModule(state) {
       if (!this.$store.getters.stateAuth) {
-        this.$store.commit('set_modal_auth', state);
+        this.$store.commit('set_modal_auth', state)
       } else {
-        this.$store.commit('CollaborationModule/changeStateCollaboration', state);
+        this.$store.commit(
+          'CollaborationModule/changeStateCollaboration',
+          state
+        )
       }
     },
     redirectData(data) {
       if (data.category === 'Подборки') {
-        window.location.href = data.href;
+        window.location.href = data.href
       }
       if (data.category === 'Статьи') {
-        window.location.href = data.href;
+        window.location.href = data.href
       }
       // if (data.category === 'Номенклатура'){
       //   window.location.href = ''+data.href;
       // }
-    }
-
+    },
+    localSetStateModalByUrlHash(hash) {
+      const { nameModal, stateModal } = getNameStateModalByUrlHash(hash)
+      // Внутри компонента с модалкой должны быть методы openModal и closeModal
+      if (stateModal === 'true') {
+        this.$refs[`${nameModal}`].openModal()
+      } else {
+        this.$refs[`${nameModal}`].closeModal()
+      }
+    },
 
     // async getArticlesBySymbols(symbols) {
     //   this.loading = true;
@@ -324,10 +326,8 @@ export default {
     //
     //   return response;
     // },
-
-
-  }
-};
+  },
+}
 </script>
 
 <style lang="scss" scoped>
@@ -338,9 +338,8 @@ export default {
   min-width: 0;
 }
 
-
 .theme--dark.v-app-bar.v-toolbar.v-sheet {
-  background: #37392E;
+  background: #37392e;
 }
 
 .header {
@@ -434,6 +433,5 @@ export default {
 .search {
   max-width: 750px;
   max-height: 40px;
-
 }
 </style>

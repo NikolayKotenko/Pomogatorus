@@ -43,7 +43,7 @@
             </div>
           </div>
           <UniversalAddInput
-            :list-services-available-to-add="listServicesAvailableToAdd"
+            :list-items-available-to-add="currentListServicesAvailableToAdd"
             @add-service="addService"
           />
         </div>
@@ -289,11 +289,32 @@ export default {
       e1: 0
     };
   },
-  mounted() {
+  computed: {
+    getReccomendedUsers() {
+      return this.$store.state.CollaborationModule.listSearchedMembers
+        .map((user) => {
+          return user.services.map((service) => service.id);
+        });
+    },
+    currentListServicesAvailableToAdd: {
+      get() {
+        if (this.listServicesAvailableToAdd.length) {
+          return this.listServicesAvailableToAdd;
+        }
+        return this.$store.state.CollaborationModule.listServices;
+      }
+    }
+  },
+  async mounted() {
     if (this.currentTask) {
       this.taskData = this.currentTask;
     }
     this.taskData.id_object = this.$store.getters['Objects/getIdCurrentObject'];
+
+    if (this.listServicesAvailableToAdd.length) return false;
+    if (!this.$store.state.CollaborationModule.listServices.length) {
+      await this.$store.dispatch('CollaborationModule/getListServices');
+    }
   },
   methods: {
     getValueField(str) {
@@ -334,7 +355,7 @@ export default {
     setPrice(index, price) {
       this.taskData.services[index].price = price;
     },
-    //из массива всех специалистов показать только тех у кого есть совпадение по услугам
+    // из массива всех специалистов показать только тех у кого есть совпадение по услугам
 
 
     addUser() {
@@ -386,12 +407,6 @@ export default {
       this.closeDeleteOneUserModal();
       this.$toast.success('Исполнитель удален');
     }
-  },
-  getters: {
-    getReccomendedUsers() {
-      return this.$store.state.CollaborationModule.listSearchedMembers
-        .map((user) => { user.services.map((service) => { service.id }) })
-    },
   }
 };
 </script>
