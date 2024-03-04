@@ -6,14 +6,14 @@
       ref="nomenclature-widget"
       :class="{'show-widget': isObjectLoaded}"
       class="nomenclature-widget"
-      style="top: 0;"
+      style="top: 430px;"
     />
   </div>
 </template>
 
 <script>
-import CurrentObjects from './CurrentObjects.vue'
-import NomenclatureWidget from './NomenclatureWidget'
+import CurrentObjects from './CurrentObjects.vue';
+import NomenclatureWidget from './NomenclatureWidget';
 
 export default {
   name: 'WrapperStickyCurrentObject',
@@ -25,7 +25,7 @@ export default {
     '$store.state.Objects.isLoadingObjects': {
       handler(v) {
         if (v) {
-          this.getNomenclaturePosition()
+          this.getNomenclaturePosition();
         }
       }
     }
@@ -36,33 +36,33 @@ export default {
         this.$nextTick(() => {
           // Отложенная загрузка виджета через 5 сек
           setTimeout(() => {
-            const object = this.$refs['object-widget'] ? this.$refs['object-widget'].$el : null
+            const object = this.$refs['object-widget'] ? this.$refs['object-widget'].$el : null;
 
             if (!object) {
-              return
+              return;
             }
 
-            const objectHeight = object.offsetHeight
-            const gap = 40 // Отступ виджета от другого
+            const objectHeight = object.offsetHeight;
+            const gap = 40; // Отступ виджета от другого
 
-            const nomenclature = this.$refs['nomenclature-widget'] ? this.$refs['nomenclature-widget'].$el : null
+            const nomenclature = this.$refs['nomenclature-widget'] ? this.$refs['nomenclature-widget'].$el : null;
 
             if (!nomenclature) {
-              return
+              return;
             }
 
-            nomenclature.style.top = `${objectHeight + gap}px`
+            nomenclature.style.top = `${objectHeight + gap}px`;
 
-            this.isObjectLoaded = true
-          }, 5000)
-        })
+            this.isObjectLoaded = true;
+          }, 5000);
+        });
       }
     }
   }
-}
+};
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @media (min-width: 1233px) {
   .wrapper_current_object {
     display: block;

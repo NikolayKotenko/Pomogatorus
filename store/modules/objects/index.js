@@ -21,7 +21,7 @@ export default {
       state.listObjects = []
     },
     set_currentObject(state, value) {
-      if (!value) return false
+      if (!value) value = {}
 
       state.currentObject = value
     },

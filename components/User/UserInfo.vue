@@ -1,27 +1,21 @@
 <template>
   <div class="user_info_wrapper">
     <div class="user_info_title">
-      <h3>{{ isLoggedIn ? "Настройки профиля" : "Войти или Зарегистрироваться" }}</h3>
+      <h3>
+        {{ isLoggedIn ? 'Настройки профиля' : 'Войти или Зарегистрироваться' }}
+      </h3>
       <v-icon large @click="$store.commit('set_modal_auth', false)">
         mdi-close
       </v-icon>
     </div>
 
-    <v-tabs
-      v-model="tab"
-      color="#000000"
-      grow
-      @change="checkServicesTab"
-    >
-      <v-tab
-        :key="0"
-      >
-        <span class="tab_header">{{ isLoggedIn ? "Общая информация" : "Авторизация" }}</span>
+    <v-tabs v-model="tab" color="#000000" grow @change="checkServicesTab">
+      <v-tab :key="0">
+        <span class="tab_header">{{
+          isLoggedIn ? 'Общая информация' : 'Авторизация'
+        }}</span>
       </v-tab>
-      <v-tab
-        v-if="isLoggedIn"
-        :key="1"
-      >
+      <v-tab v-if="isLoggedIn" :key="1">
         <span class="tab_header">Мои услуги</span>
         <v-badge
           :content="$store.getters['UserSettings/getCountServices']"
@@ -44,10 +38,7 @@
       <v-tab-item :key="0">
         <div class="card_object pt-5 pb-5">
           <div v-if="isLoggedIn" class="card_object_container">
-            <UserFields
-              @is-changed="setChanged"
-              @new-data="setData"
-            />
+            <UserFields @is-changed="setChanged" @new-data="setData"/>
           </div>
           <LoginAuth v-else/>
         </div>
@@ -84,15 +75,23 @@
         </div>
 
         <div class="services_list">
-          <div v-for="(item, index) in $store.state.UserSettings.selectedRawServices" :key="index">
+          <div
+            v-for="(item, index) in $store.state.UserSettings
+              .selectedRawServices"
+            :key="index"
+          >
             <ServiceCard
               v-if="item.id"
               :key="index"
               :is-equipment-exist="false"
               :is-loading="$store.state.UserSettings.loading"
               :is-quantity-exist="false"
-              :iteration-key="index+1"
-              :list-additional-data-services="$store.getters['UserSettings/getAdditionalDataByIdServices'](item.id_services)"
+              :iteration-key="index + 1"
+              :list-additional-data-services="
+                $store.getters['UserSettings/getAdditionalDataByIdServices'](
+                  item.id_services
+                )
+              "
               :service-object="item"
               @delete-one-service="deleteOneService(item, $event)"
               @update-price-field="setPrice(item, $event)"
@@ -102,7 +101,9 @@
 
         <!-- Добавить услугу -->
         <UniversalAddInput
-          :list-items-available-to-add="$store.getters['UserSettings/getListServicesExcludeAdded']"
+          :list-items-available-to-add="
+            $store.getters['UserSettings/getListServicesExcludeAdded']
+          "
           class="mt-5"
           @add-service="setServiceByUser"
         />
@@ -111,7 +112,9 @@
       <!-- Портфель брендов -->
       <v-tab-item :key="2" class="brands_tab">
         <UniversalAddInput
-          :list-items-available-to-add="$store.getters['BrandsModule/getListBrandsExcludeAdded']"
+          :list-items-available-to-add="
+            $store.getters['BrandsModule/getListBrandsExcludeAdded']
+          "
         />
 
         <span class="title">Бренды с которыми вы работаете</span>
@@ -200,16 +203,8 @@
       </template>
     </div>
 
-    <v-overlay
-      :value="isUpdating"
-      absolute
-      color="#F2F2F2"
-    >
-      <v-progress-circular
-        color="#95D7AE"
-        indeterminate
-        size="64"
-      />
+    <v-overlay :value="isUpdating" absolute color="#F2F2F2">
+      <v-progress-circular color="#95D7AE" indeterminate size="64"/>
     </v-overlay>
   </div>
 </template>
@@ -237,7 +232,7 @@ export default {
     LoginAuth,
     ServiceCard,
     UniversalAddInput,
-    IconTooltip
+    IconTooltip,
   },
   data: () => ({
     isChanged: false,
@@ -249,113 +244,139 @@ export default {
     servicePrice: '',
     localSelectedService: null,
     isErrorMessagesPrice: [
-      v => Number.isInteger(v) || 'Поле должно быть числом'
+      (v) => Number.isInteger(v) || 'Поле должно быть числом',
     ],
     debounceTimeout: null,
     arrSort: [
       {
-        'action': 'По алфавиту',
-        'value': '&sort[name]=asc'
+        action: 'По алфавиту',
+        value: '&sort[name]=asc',
       },
       {
-        'action': 'По дате',
-        'value': '&sort[created_at]=desc'
-      }
-    ]
+        action: 'По дате',
+        value: '&sort[created_at]=desc',
+      },
+    ],
   }),
   async mounted() {
-    await this.$store.dispatch('UserSettings/getListServices');
-    await this.$store.dispatch('BrandsModule/getListBrands');
+    await this.$store.dispatch('CollaborationModule/getListServices')
+    await this.$store.dispatch('BrandsModule/getListBrands')
   },
   computed: {
     ...mapState({
-      isUpdating: state => state.UserSettings.isUpdating,
-      userData: state => state.AuthModule.userData
+      isUpdating: (state) => state.UserSettings.isUpdating,
+      userData: (state) => state.AuthModule.userData,
     }),
 
     isLoggedIn() {
-      return this.userData && Object.keys(this.userData).length;
+      return this.userData && Object.keys(this.userData).length
     },
     isMobile() {
-      return this.$device.isMobile;
-    }
+      return this.$device.isMobile
+    },
   },
   methods: {
     closeDetail() {
-      this.$emit('close-detail');
+      this.$emit('close-detail')
     },
     logout() {
-      this.$store.dispatch('logout');
+      this.$store.dispatch('logout')
     },
     setChanged(value) {
-      this.isChanged = value;
+      this.isChanged = value
     },
     setData(value) {
-      this.data = value.data;
-      this.data.email_state = this.userData.email_state;
-      this.data.telephone_state = this.userData.telephone_state;
-      this.isValid = value.isValid;
+      this.data = value.data
+      this.data.email_state = this.userData.email_state
+      this.data.telephone_state = this.userData.telephone_state
+      this.isValid = value.isValid
     },
     async saveUser() {
-      await this.$store.dispatch('UserSettings/updateUser', { userId: this.userData.id, data: this.data });
-      this.$toast.success('Данные сохранены', { duration: 5000 });
-      this.closeDetail();
+      await this.$store.dispatch('UserSettings/updateUser', {
+        userId: this.userData.id,
+        data: this.data,
+      })
+      this.$toast.success('Данные сохранены', { duration: 5000 })
+      this.closeDetail()
     },
     async setServiceByUser(serviceData) {
-      const checkExist = this.$store.state.UserSettings.selectedServices.some((elem) => {
-        return elem.id === serviceData.id;
-      });
+      const checkExist = this.$store.state.UserSettings.selectedServices.some(
+        (elem) => {
+          return elem.id === serviceData.id
+        }
+      )
       if (checkExist) {
-        this.$toast.error('Такая услуга уже добавлена!');
-        return false;
+        this.$toast.error('Такая услуга уже добавлена!')
+        return false
       }
 
-      await this.$store.dispatch('UserSettings/addServicesAction', new MtoMUsersServices(serviceData.id));
-      await this.$store.dispatch('UserSettings/getUserServices', this.userData.id);
-      this.$toast.success('Услуга добавлена');
+      await this.$store.dispatch(
+        'UserSettings/addServicesAction',
+        new MtoMUsersServices(serviceData.id)
+      )
+      await this.$store.dispatch(
+        'UserSettings/getUserServices',
+        this.userData.id
+      )
+      this.$toast.success('Услуга добавлена')
     },
     checkServicesTab(tabId) {
       if (tabId === 1) {
-        this.$store.dispatch('UserSettings/getUserServices', this.userData.id);
+        this.$store.dispatch('UserSettings/getUserServices', this.userData.id)
       }
     },
     async deleteOneService(serviceRawObj, event) {
-      await this.$store.dispatch('UserSettings/deleteOneServiceAssignToUser', serviceRawObj.id_services);
-      await this.$store.dispatch('UserSettings/getUserServices', this.userData.id);
-      this.$toast.success('Услуга удалена');
+      await this.$store.dispatch(
+        'UserSettings/deleteOneServiceAssignToUser',
+        serviceRawObj.id_services
+      )
+      await this.$store.dispatch(
+        'UserSettings/getUserServices',
+        this.userData.id
+      )
+      this.$toast.success('Услуга удалена')
     },
     setPrice(object, price) {
-      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
       this.debounceTimeout = setTimeout(async () => {
-        await this.$store.dispatch('UserSettings/addServicesAction', new MtoMUsersServices(
-          object.id_services,
-          price
-        ));
-        this.$store.state.UserSettings.updatedEntryPrice = object.id;
-        await this.$store.dispatch('UserSettings/getUserServices', this.userData.id);
-        this.$toast.success('Услуга обновлена');
-      }, 2000);
+        await this.$store.dispatch(
+          'UserSettings/addServicesAction',
+          new MtoMUsersServices(object.id_services, price)
+        )
+        this.$store.state.UserSettings.updatedEntryPrice = object.id
+        await this.$store.dispatch(
+          'UserSettings/getUserServices',
+          this.userData.id
+        )
+        this.$toast.success('Услуга обновлена')
+      }, 2000)
     },
     filterListService(string) {
       if (!string) {
-        string = '';
+        string = ''
       }
 
-      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
       this.debounceTimeout = setTimeout(async () => {
-        this.$store.state.UserSettings.searchServiceByName = string;
-        await this.$store.dispatch('UserSettings/getUserServices', this.userData.id);
-      }, 1000);
+        this.$store.state.UserSettings.searchServiceByName = string
+        await this.$store.dispatch(
+          'UserSettings/getUserServices',
+          this.userData.id
+        )
+      }, 1000)
     },
     sortListServices(object) {
-      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
       this.debounceTimeout = setTimeout(async () => {
-        this.$store.state.UserSettings.sortListServicesValue = object.value;
-        await this.$store.dispatch('UserSettings/getUserServices', this.userData.id);
-      }, 1000);
-    }
-  }
-};
+        this.$store.state.UserSettings.sortListServicesValue = object.value
+        await this.$store.dispatch(
+          'UserSettings/getUserServices',
+          this.userData.id
+        )
+      }, 1000)
+    },
+  },
+}
 </script>
 
 <style lang="scss" scoped>
@@ -404,7 +425,6 @@ export default {
   }
 }
 
-
 .brands_tab {
   display: grid;
   grid-row-gap: 10px;
@@ -422,12 +442,12 @@ export default {
     align-items: center;
     width: 100%;
     padding: 1em;
+
     .brand_img {
       max-height: 24px;
     }
   }
 }
-
 
 .close {
   max-height: 45px;
@@ -437,12 +457,12 @@ export default {
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity .5s
+  transition: opacity 0.5s;
 }
 
 .fade-enter,
 .fade-leave-to {
-  opacity: 0
+  opacity: 0;
 }
 
 .services_list {
@@ -462,13 +482,11 @@ export default {
 
     .service_title {
       font-size: 1.3em;
-
     }
 
     .service_price {
       max-width: 150px;
     }
-
   }
 }
 
@@ -502,6 +520,5 @@ export default {
   &:hover {
     color: #000000;
   }
-
 }
 </style>

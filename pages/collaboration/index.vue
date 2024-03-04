@@ -7,7 +7,7 @@ export default {
   components: {},
   methods: {
     openModal() {
-      this.$store.commit('UserSettings/setListServices', []);
+      this.$store.commit('CollaborationModule/setListServices', []);
 
       this.$refs.inviteUserModal.openModal();
     }

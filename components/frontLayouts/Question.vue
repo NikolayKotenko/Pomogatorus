@@ -25,9 +25,12 @@
         </div>
         <!-- STATUS -->
         <transition name="slide-fade">
-          <div v-if="check_status" class="question_wrapper__content__status">
+          <div
+            v-if="check_status || $store.state.ArticleModule.isLoadingAnswers"
+            class="question_wrapper__content__status"
+          >
             <v-progress-circular
-              v-if="status_question.type === 'sending'"
+              v-if="status_question.type === 'sending' || $store.state.ArticleModule.isLoadingAnswers"
               :size="20"
               color="primary"
               indeterminate
@@ -42,7 +45,7 @@
           <InputStyled
             :data="answer"
             :full-sinc-prop="true"
-            :is-disabled="(check_status && status_question.type === 'sending')"
+            :is-disabled="(check_status && status_question.type === 'sending') || $store.state.ArticleModule.isLoadingAnswers"
             :placeholder="'Введите ответ'"
             is-solo
             @update-input="textAnswer"
@@ -52,7 +55,7 @@
           <TextAreaStyled
             :data="answer"
             :full-sinc-prop="true"
-            :is-disabled="(check_status && status_question.type === 'sending')"
+            :is-disabled="(check_status && status_question.type === 'sending') || $store.state.ArticleModule.isLoadingAnswers"
             :placeholder="'Введите ответ'"
             is-solo
             @update-input="textAnswer"
@@ -63,7 +66,7 @@
             <v-radio
               v-for="(item, index) in value_type_answer"
               :key="index"
-              :disabled="(check_status && status_question.type === 'sending')"
+              :disabled="(check_status && status_question.type === 'sending') || $store.state.ArticleModule.isLoadingAnswers"
               :value="item.answer"
               color="#95D7AE"
               @change="changeAnswer(item.dataEnv)"
@@ -93,7 +96,7 @@
             v-for="(item, index) in value_type_answer"
             :key="index"
             v-model="answer"
-            :disabled="(check_status && status_question.type === 'sending')"
+            :disabled="(check_status && status_question.type === 'sending') || $store.state.ArticleModule.isLoadingAnswers"
             :value="item.answer"
             color="#95D7AE"
             dense
@@ -123,7 +126,7 @@
         <template v-else-if="question_data.id_type_answer == '5'">
           <v-select
             v-model="answer"
-            :disabled="(check_status && status_question.type === 'sending')"
+            :disabled="(check_status && status_question.type === 'sending') || $store.state.ArticleModule.isLoadingAnswers"
             :items="value_type_answer"
             :menu-props="{
               closeOnContentClick: true,
@@ -143,7 +146,7 @@
             <template #selection="data">
               <span v-bind="data.attrs" v-html="data.item.answer"/>
             </template>
-            <template #item="{ active, item, attrs, on }">
+            <template #item="{ item, attrs, on }">
               <v-list-item v-bind="attrs" @click="getIdElem($event)" v-on="on">
                 <v-list-item-content>
                   <v-list-item-title>
@@ -177,7 +180,7 @@
           <v-text-field
             v-model="answer"
             :class="{ rangeError: rangeError }"
-            :disabled="(check_status && status_question.type === 'sending')"
+            :disabled="(check_status && status_question.type === 'sending') || $store.state.ArticleModule.isLoadingAnswers"
             dense
             hide-details
             label="Введите ответ"
@@ -204,7 +207,7 @@
             }}</span>
             <v-range-slider
               v-model="answer"
-              :disabled="(check_status && status_question.type === 'sending')"
+              :disabled="(check_status && status_question.type === 'sending') || $store.state.ArticleModule.isLoadingAnswers"
               :max="max"
               :min="min"
               class="align-center"
@@ -244,6 +247,7 @@
           v-if="question_data.state_detailed_response"
           :data="detailed_response"
           :full-sinc-prop="true"
+          :is-disabled="$store.state.ArticleModule.isLoadingAnswers"
           :is-flat="true"
           :placeholder="'Развернутый ответ'"
           class="py-2"
@@ -259,6 +263,7 @@
             <DropzoneInput
               :id-answer="id_answer"
               :id-object="$store.state.Objects.currentObject.id"
+              :is-disabled="$store.state.ArticleModule.isLoadingAnswers"
               :object-template="!!uploadedFiles.length"
               :question-type="true"
               @uploaded-file="uploadFile"
@@ -308,14 +313,14 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
-import CompareArrays from '../../utils/compareArrays'
-import AuthModal from '../Modals/AuthModal'
-import InputStyled from '../Common/InputStyled'
-import TextAreaStyled from '../Common/TextAreaStyled'
-import TooltipStyled from '../Common/TooltipStyled.vue'
-import DropzoneInput from '../Common/DropzoneInput'
-import Answers from '@/services/answers/answers'
+import { mapActions, mapGetters } from 'vuex';
+import CompareArrays from '../../utils/compareArrays';
+import AuthModal from '../Modals/AuthModal';
+import InputStyled from '../Common/InputStyled';
+import TextAreaStyled from '../Common/TextAreaStyled';
+import TooltipStyled from '../Common/TooltipStyled.vue';
+import DropzoneInput from '../Common/DropzoneInput';
+import Answers from '@/services/answers/answers';
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -367,12 +372,12 @@ export default {
     answer: {
       handler() {
         if (this.question_data.id_type_answer === '6') {
-          if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
+          if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
           this.debounceTimeout = setTimeout(() => {
             this.rangeError =
               parseInt(this.answer) < parseInt(this.value_type_answer[0].answer) ||
-              parseInt(this.answer) > parseInt(this.value_type_answer[1].answer)
-          })
+              parseInt(this.answer) > parseInt(this.value_type_answer[1].answer);
+          });
         }
       }
     },
@@ -386,14 +391,14 @@ export default {
     stateAuth: {
       handler(v) {
         if (v && !this.$store.state.listModal[0].isOpen && !this.isSilentCreated) {
-          this.check_status = false
+          this.check_status = false;
           this.$nextTick(() => {
             // чтобы в слайдере не затерлось на null, т.к. там нужен массив
             if (this.question_data.id_type_answer !== '7') {
-              this.answer = null
+              this.answer = null;
             }
-            this.detailed_response = ''
-          })
+            this.detailed_response = '';
+          });
         }
       },
       deep: true
@@ -402,10 +407,10 @@ export default {
       handler(v) {
         if (!v) {
           this.$nextTick(() => {
-            this.answer = ''
-            this.detailed_response = ''
-          })
-          this.$store.commit('set_idQuestionWhenModal', null)
+            this.answer = '';
+            this.detailed_response = '';
+          });
+          this.$store.commit('set_idQuestionWhenModal', null);
         }
       }
     },
@@ -413,84 +418,102 @@ export default {
       handler() {
         if (this.$store.state.idQuestionWhenModal === this.question_data.id) {
           if (this.$store.state.Objects.currentObject && Object.keys(this.$store.state.Objects.currentObject).length) {
-            this.changeAnswer()
+            this.changeAnswer();
           }
-          this.$store.commit('set_idQuestionWhenModal', null)
+          this.$store.commit('set_idQuestionWhenModal', null);
         }
+      },
+      deep: true
+    },
+    '$store.state.ArticleModule.answersFromServer': {
+      handler() {
+        this.getAnswer();
       },
       deep: true
     }
   },
   mounted() {
     if (Object.keys(this.propsData).length) {
-      this.index_questions = this.propsIndex
-      this.index_component = Math.floor(Math.random() * 100)
-      this.question_data = this.propsData
+      this.index_questions = this.propsIndex;
+      this.index_component = Math.floor(Math.random() * 100);
+      this.question_data = this.propsData;
     } else {
-      this.getData()
+      this.getData();
     }
   },
   computed: {
     ...mapGetters(['stateAuth', 'open_close_cabinet']),
-    status_question() {
-      let auth_block
-      const index = this.$store.state.ArticleModule.components_after_request.findIndex((i) => {
-        return i.component.name === 'auth'
-      })
-      if (index !== -1) auth_block = this.$store.state.ArticleModule.components_after_request[index].index
 
-      return new Answers().create_status(this.status_name, auth_block)
+    status_question() {
+      let auth_block;
+      const index = this.$store.state.ArticleModule.components_after_request.findIndex((i) => {
+        return i.component.name === 'auth';
+      });
+      if (index !== -1) auth_block = this.$store.state.ArticleModule.components_after_request[index].index;
+
+      return new Answers().create_status(this.status_name, auth_block);
     },
     statusFile() {
-      return CompareArrays(this.files, this.uploadedFiles)
+      return CompareArrays(this.files, this.uploadedFiles);
     },
     disableBtn() {
-      return !this.stateAuth
+      return !this.stateAuth;
     },
     answerIsArray() {
-      return this.answer?.length === 2
+      return this.answer?.length === 2;
     }
   },
   methods: {
     ...mapActions('Objects', ['createNewObject']),
+    ...mapGetters(['getQuestionAnswer']),
+
+    /* ANSWERS */
+    getAnswer() {
+      if (this.getQuestionAnswer()(this.question_data.id)) {
+        const findedAnswer = this.getQuestionAnswer()(this.question_data.id);
+
+        this.answer = JSON.parse(findedAnswer.value_answer);
+        this.id_answer = findedAnswer.id;
+      }
+    },
 
     /* AGENT PROP */
     getIdElem(event) {
       const child =
-        event.target.parentElement.parentElement.querySelectorAll('.answerList') || event.target.nextElementSibling
+        event.target.parentElement.parentElement.querySelectorAll('.answerList') || event.target.nextElementSibling;
       if (child) {
         if (Array.from(child).length === 1) {
           if (Array.from(child)[0].children.length) {
-            this.agentCode = Array.from(child)[0].children[0].id
-          } else this.agentCode = null
-        } else this.agentCode = null
-      } else this.agentCode = null
+            this.agentCode = Array.from(child)[0].children[0].id;
+          } else this.agentCode = null;
+        } else this.agentCode = null;
+      } else this.agentCode = null;
     },
     stopEvent(event) {
-      event.preventDefault()
+      event.preventDefault();
     },
 
     /* FILES UPLOAD */
     uploadFile(data) {
-      this.files.push(data)
-      this.uploadedFiles = [...this.files]
+      this.files.push(data);
+      this.uploadedFiles = [...this.files];
     },
     removeFile(id) {
-      const index = this.files.findIndex(elem => elem.data.id === id)
+      const index = this.files.findIndex(elem => elem.data.id === id);
       if (index !== -1) {
-        this.files.splice(index, 1)
-        this.uploadedFiles = [...this.files]
+        this.files.splice(index, 1);
+        this.uploadedFiles = [...this.files];
       }
     },
 
     /* ANSWER LOGIC */
     textAnswer(value) {
       // TODO: А пустое значение на вопрос нужно ли сохранять?
-      this.answer = value
-      if (this.saveTextDebounce) clearTimeout(this.saveTextDebounce)
+      this.answer = value;
+      if (this.saveTextDebounce) clearTimeout(this.saveTextDebounce);
       this.saveTextDebounce = setTimeout(() => {
-        this.changeAnswer()
-      }, 600)
+        this.changeAnswer();
+      }, 600);
     },
     setDataEnv(dataEnv) {
       if (dataEnv) {
@@ -501,8 +524,8 @@ export default {
           data: {
             id: this.$store.state.Objects.currentObject.id
           }
-        }
-        this.data_env.data[dataEnv.data.data.column] = JSON.stringify(this.answer)
+        };
+        this.data_env.data[dataEnv.data.data.column] = JSON.stringify(this.answer);
       } else if (!this.answer && this.detailed_response) {
         if (this.value_type_answer && this.value_type_answer.length) {
           if (this.value_type_answer[0]?.dataEnv?.data?.data?.column) {
@@ -513,10 +536,10 @@ export default {
               data: {
                 id: this.$store.state.Objects.currentObject.id
               }
-            }
+            };
             this.value_type_answer.forEach((elem) => {
-              this.data_env.data[elem.dataEnv.data.data.column] = JSON.stringify(this.detailed_response)
-            })
+              this.data_env.data[elem.dataEnv.data.data.column] = JSON.stringify(this.detailed_response);
+            });
           }
         }
       } else if (typeof this.answer === 'string') {
@@ -529,8 +552,8 @@ export default {
               data: {
                 id: this.$store.state.Objects.currentObject.id
               }
-            }
-            this.data_env.data[this.value_type_answer[0].dataEnv.data.data.column] = JSON.stringify(this.answer)
+            };
+            this.data_env.data[this.value_type_answer[0].dataEnv.data.data.column] = JSON.stringify(this.answer);
           }
         }
       } else if (this.answer?.dataEnv) {
@@ -542,27 +565,27 @@ export default {
             data: {
               id: this.$store.state.Objects.currentObject.id
             }
-          }
-          this.data_env.data[this.answer.dataEnv.data.data.column] = JSON.stringify(this.answer)
+          };
+          this.data_env.data[this.answer.dataEnv.data.data.column] = JSON.stringify(this.answer);
         }
       }
     },
 
     async silentCreateObject() {
-      this.isSilentCreated = true
+      this.isSilentCreated = true;
 
-      const data = await this.createNewObject()
+      const data = await this.createNewObject();
 
-      this.$store.commit('Objects/setListObjects', [data])
+      this.$store.commit('Objects/setListObjects', [data]);
     },
     sendAnswer(dataEnv) {
-      this.status_name = 'sending'
+      this.status_name = 'sending';
       this.$nextTick(async () => {
         try {
-          this.setDataEnv(dataEnv)
+          this.setDataEnv(dataEnv);
         } catch (e) {
-          this.status_name = 'error'
-          console.warn(e)
+          this.status_name = 'error';
+          console.warn(e);
         }
 
         if (this.id_answer) {
@@ -574,24 +597,24 @@ export default {
                 id_user: this.$store.state.AuthModule.userData.id,
                 id_object: this.$store.state.Objects.currentObject.id,
                 code_agent: this.agentCode,
-                id_article: this.$route.params.id,
+                // id_article: this.$route.params.id,
                 value_answer: JSON.stringify(this.answer),
                 data_env: JSON.stringify(this.data_env),
                 detailed_response: this.detailed_response,
                 attachment_files: ''
               },
               this.id_answer
-            )
+            );
             if (result.codeResponse !== 202) {
-              this.status_name = 'error'
+              this.status_name = 'error';
             } else {
-              this.status_name = 'success'
-              this.$emit('answer', { answer: this.answer, id: this.question_data.id })
-              this.id_answer = result.data.id
+              this.status_name = 'success';
+              this.$emit('answer', { answer: this.answer, id: this.question_data.id });
+              this.id_answer = result.data.id;
             }
           } catch (e) {
-            this.status_name = 'error'
-            console.warn(e)
+            this.status_name = 'error';
+            console.warn(e);
           }
         } else {
           try {
@@ -601,190 +624,194 @@ export default {
               id_user: this.$store.state.AuthModule.userData?.id,
               id_object: this.$store.state.Objects.currentObject?.id,
               code_agent: this.agentCode,
-              id_article: this.$route.params.id,
+              // id_article: this.$route.params.id,
               value_answer: JSON.stringify(this.answer),
               data_env: JSON.stringify(this.data_env),
               detailed_response: this.detailed_response,
               attachment_files: ''
-            })
+            });
 
             if (result.codeResponse !== 201) {
-              this.status_name = 'error'
+              this.status_name = 'error';
             } else {
-              this.status_name = 'success'
-              this.id_answer = result.data.id
-              this.$emit('answer', { answer: this.answer, id: this.question_data.id })
+              this.status_name = 'success';
+              this.id_answer = result.data.id;
+              this.$emit('answer', { answer: this.answer, id: this.question_data.id });
             }
           } catch (e) {
-            this.status_name = 'error'
-            console.warn(e)
+            this.status_name = 'error';
+            console.warn(e);
           }
         }
 
-        await this.$store.dispatch('setIsAnswered')
+        await this.$store.dispatch('setIsAnswered');
 
         // AFTER WE CREATE WE SAVE OUR ANSWER TO STORE
-        const files = structuredClone(this.files)
+        const files = structuredClone(this.files);
         this.$store.commit('add_answers', {
           id: this.question_data.id,
           answer: this.answer,
           detailed_response: this.detailed_response,
           files
-        })
-      })
+        });
+      });
     },
 
     changeDetailedResponse(value) {
-      this.detailed_response = value
-      this.changeAnswer()
+      this.detailed_response = value;
+
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+      this.debounceTimeout = setTimeout(() => {
+        this.changeAnswer();
+      }, 1000);
     },
     async changeAnswer(dataEnv) {
-      this.check_status = true
+      this.check_status = true;
 
       if (Array.isArray(this.answer)) {
-        const rangeAnswer = this.answer.join('')
+        const rangeAnswer = this.answer.join('');
         if (rangeAnswer === ('' + this.min + this.max)) {
-          return
+          return;
         }
       }
 
       if (!this.stateAuth) {
-        this.status_name = 'warning'
+        this.status_name = 'warning';
         this.$nextTick(() => {
           /* Fix default scroll by hash on page */
-          this.createAnchorToAuth()
-        })
-        this.$store.commit('set_modal_auth', true)
+          this.createAnchorToAuth();
+        });
+        this.$store.commit('set_modal_auth', true);
       } else if (!this.$store.state.Objects.currentObject || !Object.keys(this.$store.state.Objects.currentObject).length) {
         if (!Array.isArray(this.$store.state.AuthModule.userData.objects) || this.$store.state.AuthModule.userData.objects.length < 1) {
-          await this.silentCreateObject()
-          this.check_status = true
-          this.sendAnswer(dataEnv)
+          await this.silentCreateObject();
+          this.check_status = true;
+          this.sendAnswer(dataEnv);
         } else {
-          this.check_status = false
-          this.$store.commit('set_idQuestionWhenModal', this.question_data.id)
-          this.$store.commit('change_showCabinet', true)
+          this.check_status = false;
+          this.$store.commit('set_idQuestionWhenModal', this.question_data.id);
+          this.$store.commit('change_showCabinet', true);
         }
       } else {
-        this.sendAnswer(dataEnv)
+        this.sendAnswer(dataEnv);
       }
     },
     createAnchorToAuth() {
       document.querySelectorAll('#authAnchor').forEach((anchor) => {
-        const elem = document.getElementById(this.status_question?.anchor)
+        const elem = document.getElementById(this.status_question?.anchor);
         if (elem) {
-          const heightNav = 70
-          const headerTitle = 54
-          const top = window.scrollY + elem.getBoundingClientRect().top - heightNav - headerTitle
+          const heightNav = 70;
+          const headerTitle = 54;
+          const top = window.scrollY + elem.getBoundingClientRect().top - heightNav - headerTitle;
           anchor.addEventListener('click', function(e) {
-            e.preventDefault()
-            window.scrollTo(0, top)
-          })
+            e.preventDefault();
+            window.scrollTo(0, top);
+          });
         }
-      })
+      });
     },
     deleteQuestion() {
-      const elem = document.getElementById(`component_wrapper-${this.index_component}`)
-      elem.remove()
-      this.$store.dispatch('deleteComponent', this.index_component)
+      const elem = document.getElementById(`component_wrapper-${this.index_component}`);
+      elem.remove();
+      this.$store.dispatch('deleteComponent', this.index_component);
     },
     rangeEdit(action) {
       if (action === 'plus') {
         if (!this.answer) {
           this.$nextTick(() => {
-            this.answer = 1
-          })
+            this.answer = 1;
+          });
         } else {
           this.$nextTick(() => {
-            this.answer = parseInt(this.answer) + 1
-          })
+            this.answer = parseInt(this.answer) + 1;
+          });
         }
       } else if (!this.answer) {
         this.$nextTick(() => {
-          this.answer = 0
-        })
+          this.answer = 0;
+        });
       } else if (parseInt(this.answer) > 0) {
         this.$nextTick(() => {
-          this.answer = parseInt(this.answer) - 1
-        })
+          this.answer = parseInt(this.answer) - 1;
+        });
       } else
         this.$nextTick(() => {
-          this.answer = 0
-        })
-      this.changeAnswer()
+          this.answer = 0;
+        });
+      this.changeAnswer();
     },
     getData() {
       if (Object.keys(this.$store.state.ArticleModule.selectedComponent).length) {
-        this.index_questions = this.$store.state.ArticleModule.count_of_questions
-        this.index_component = this.$store.state.ArticleModule.countLayout
-        this.question_data = Object.assign({}, this.$store.state.ArticleModule.selectedComponent)
-        this.getValue_type_answer()
-        this.getHeightOfControls()
-        this.getWidthOfControls()
+        this.index_questions = this.$store.state.ArticleModule.count_of_questions;
+        this.index_component = this.$store.state.ArticleModule.countLayout;
+        this.question_data = Object.assign({}, this.$store.state.ArticleModule.selectedComponent);
+        this.getValue_type_answer();
+        this.getHeightOfControls();
+        this.getWidthOfControls();
 
         if (this.$store.state.ArticleModule.answers.length) {
-          const current = this.$store.state.ArticleModule.answers.find(elem => elem.id === this.question_data.id)
+          const current = this.$store.state.ArticleModule.answers.find(elem => elem.id === this.question_data.id);
           if (current) {
-            this.files = current.files
-            this.answer = current.answer
-            this.detailed_response = current.detailed_response
+            this.files = current.files;
+            this.answer = current.answer;
+            this.detailed_response = current.detailed_response;
           }
         }
       }
     },
     getValue_type_answer() {
       if (this.question_data.id_type_answer === '7') {
-        let parsed = null
-        parsed = JSON.parse(JSON.parse(this.question_data.value_type_answer))
+        let parsed = null;
+        parsed = JSON.parse(JSON.parse(this.question_data.value_type_answer));
         if (Array.isArray(parsed)) {
-          this.value_type_answer = parsed
+          this.value_type_answer = parsed;
         } else {
-          this.value_type_answer = []
+          this.value_type_answer = [];
         }
         if (this.value_type_answer.length) {
           this.$nextTick(() => {
-            this.min = this.value_type_answer[0].answer
-            this.max = this.value_type_answer[1].answer
-            this.answer = []
-            this.answer.push(this.min)
-            this.answer.push(this.max)
-          })
+            this.min = this.value_type_answer[0].answer;
+            this.max = this.value_type_answer[1].answer;
+            this.answer = [];
+            this.answer.push(this.min);
+            this.answer.push(this.max);
+          });
         }
       } else {
-        let parsed = null
-        parsed = JSON.parse(JSON.parse(this.question_data.value_type_answer))
+        let parsed = null;
+        parsed = JSON.parse(JSON.parse(this.question_data.value_type_answer));
         if (Array.isArray(parsed)) {
-          this.value_type_answer = parsed
+          this.value_type_answer = parsed;
         } else {
-          this.value_type_answer = []
+          this.value_type_answer = [];
         }
       }
     },
     getWidthOfControls() {
       this.$nextTick(() => {
-        const elem = document.getElementById(`component_wrapper-${this.index_component}`)
+        const elem = document.getElementById(`component_wrapper-${this.index_component}`);
         if (elem) {
-          this.controls_width = elem.getBoundingClientRect().width + 6
+          this.controls_width = elem.getBoundingClientRect().width + 6;
         } else {
-          this.controls_width = 0
+          this.controls_width = 0;
         }
-      })
+      });
     },
     getHeightOfControls() {
       this.$nextTick(() => {
-        const elem = document.getElementById(`component_wrapper-${this.index_component}`)
+        const elem = document.getElementById(`component_wrapper-${this.index_component}`);
         if (elem) {
-          this.controls_height = elem.getBoundingClientRect().height + 22
+          this.controls_height = elem.getBoundingClientRect().height + 22;
         } else {
-          this.controls_height = 0
+          this.controls_height = 0;
         }
-      })
+      });
     }
   }
-}
+};
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @import 'assets/styles/style';
 
 @media only screen and (max-width: 600px) {

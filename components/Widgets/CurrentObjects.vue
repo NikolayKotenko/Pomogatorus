@@ -2,7 +2,7 @@
   <div class="current_object">
     <div class="current_object__label">
       <div class="current_object__label__container">
-        <span>Текущий объект</span>
+        <span>Ваш текущий объект</span>
       </div>
       <v-divider/>
     </div>
@@ -143,7 +143,9 @@ export default {
   },
   computed: {
     stateCurrentObject() {
-      return this.object_data.id === this.$store.state.Objects.currentObject?.id
+      if (!this.object_data) return false;
+
+      return this.object_data.id === this.$store.state.Objects.currentObject?.id;
     },
     stateFilledImageObject() {
       if (!this.object_data?.('osnovnoe-foto-obekta')) return false
@@ -169,9 +171,9 @@ export default {
   },
   methods: {
     callAuthModal() {
-      if (this.$store.getters.stateAuth) return false
+      if (this.$store.getters.stateAuth) return false;
 
-      this.$store.state.listModal[0].isOpen = true
+      this.$store.commit('set_modal_auth', true);
     },
     async callback(data) {
       await this.$store.dispatch('Objects/setCurrentObject', data)

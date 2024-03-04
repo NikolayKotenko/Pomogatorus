@@ -136,7 +136,7 @@ const createStore = () => {
           },
           {
             title: 'Найти мастера',
-            path: '/collaboration?modal=true',
+            path: '#inviteUserModal=true',
             icon: 'mdi-plus',
             visible: true,
             divider: true,

@@ -52,8 +52,9 @@ export default {
   props: {
     listItemsAvailableToAdd: {
       type: Array,
-      default: () => []
-    },
+      default: () => [],
+      required: true
+    }
   },
   data() {
     return {
@@ -64,6 +65,8 @@ export default {
     getTooltipData() {
       return this.selectedService?.name ? this.selectedService.name : '';
     }
+  },
+  async mounted() {
   },
   methods: {
     setService(service) {

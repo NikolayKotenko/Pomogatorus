@@ -9,7 +9,8 @@
             />
           </v-avatar>
           <v-rating
-                        background-color="#B3B3B3"
+            :value="4"
+            background-color="#B3B3B3"
             color="#95D7AE"
             empty-icon="mdi-star-outline"
             full-icon="mdi-star"
@@ -18,13 +19,18 @@
             length="5"
             readonly
             size="20"
-          value="4"
-                    ></v-rating>
+          />
         </div>
         <div class="user_info">
-          <div class="user_name">{{ userObject.user_fio }}</div>
-          <div class="user_company">Компания: {{ getCompanyName }}</div>
-          <div class="user_mail">{{ userObject.email }}</div>
+          <div class="user_name">
+            {{ userObject.user_fio }}
+          </div>
+          <div class="user_company">
+            Компания: {{ getCompanyName }}
+          </div>
+          <div class="user_mail">
+            {{ userObject.email }}
+          </div>
         </div>
       </div>
       <DropDownMenuStyled>
@@ -41,19 +47,22 @@
         </template>
       </DropDownMenuStyled>
     </div>
-    <v-divider style="margin: 10px 0 10px 0;"></v-divider>
+    <v-divider style="margin: 10px 0 10px 0;"/>
     <div class="bottom">
       <v-tabs color="#000000">
-        <v-tab :key="0">Услуги
+        <v-tab :key="0">
+          Услуги
           <v-badge
             :content="userObject.services.length"
             :value="userObject.services.length"
             color="#95D7AE"
-
           />
         </v-tab>
-        <v-tab :key="1">Территория оказания услуг</v-tab>
-        <v-tab :key="2">Опыт работы с брендами
+        <v-tab :key="1">
+          Территория оказания услуг
+        </v-tab>
+        <v-tab :key="2">
+          Опыт работы с брендами
           <v-badge
             :content="userObject.services.length"
             :value="userObject.services.length"
@@ -69,7 +78,9 @@
             class="service_wrapper"
           >
             <div class="left">
-              <div class="service_name"> {{ item.name }} </div>
+              <div class="service_name">
+                {{ item.name }}
+              </div>
               <TooltipStyled
                 :title="'Описание услуги'"
               >
@@ -98,11 +109,11 @@
               v-model="price"
               class="price"
 
-              outlined
               disabled
               hide-details
               label="Цена"
-     ></v-text-field>
+              outlined
+            />
           </v-card>
         </v-tab-item>
 
@@ -112,16 +123,18 @@
             <div class="location_title">
               В радиусе 100 км от населенного пункта:
             </div>
-            <div class="city">Челябинск</div>
+            <div class="city">
+              Челябинск
+            </div>
           </div>
         </v-tab-item>
 
         <!-- Бренды -->
         <v-tab-item :key="3">
-          <v-card class="brand_wrapper" outlined height="60">
+          <v-card class="brand_wrapper" height="60" outlined>
             <DropDownMenuStyled
-              :is-offset-y="true"
               :is-left="true"
+              :is-offset-y="true"
             >
               <template #icon>
                 <v-img
@@ -129,32 +142,30 @@
                   class="brand_img"
                   contain
                   max-width="100"
-                ></v-img>
+                />
               </template>
               <template #content>
-                <BrandCard>
-
-                </BrandCard>
+                <BrandCard/>
               </template>
             </DropDownMenuStyled>
             <span class="brand_text">Установленно оборудования Baxi: 23</span>
           </v-card>
-          <v-card class="brand_wrapper" outlined height="60">
+          <v-card class="brand_wrapper" height="60" outlined>
             <v-img
               :src="require(`~/assets/svg/navien_logo.svg`)"
               class="brand_img"
               contain
               max-width="100"
-            ></v-img>
+            />
             <span class="brand_text">Установленно оборудования Navien: 23</span>
           </v-card>
-          <v-card class="brand_wrapper" outlined height="60">
+          <v-card class="brand_wrapper" height="60" outlined>
             <v-img
               :src="require(`~/assets/svg/ariston_logo.svg`)"
               class="brand_img"
               contain
               max-width="100"
-            ></v-img>
+            />
             <span class="brand_text">Установленно оборудования Ariston: 23</span>
           </v-card>
         </v-tab-item>
@@ -164,105 +175,120 @@
 </template>
 
 <script>
-import DropDownMenuStyled from "../Common/DropDownMenuStyled.vue";
-import IconTooltip from "../Common/IconTooltip.vue";
-import ServiceCard from "../Collaboration/ServiceCard.vue";
-import BrandCard from "../Common/BrandCard.vue";
-
+import DropDownMenuStyled from '../Common/DropDownMenuStyled.vue';
+import IconTooltip from '../Common/IconTooltip.vue';
+import ServiceCard from '../Collaboration/ServiceCard.vue';
+import BrandCard from '../Common/BrandCard.vue';
+import TooltipStyled from '../Common/TooltipStyled.vue';
 
 
 export default {
   name: 'MiniUserCard',
-  components: { DropDownMenuStyled, IconTooltip, ServiceCard, BrandCard },
+  components: { DropDownMenuStyled, IconTooltip, ServiceCard, TooltipStyled, BrandCard },
   props: {
-    userObject:{
+    userObject: {
       type: Object,
       required: true,
       default: () => ({})
-    },
+    }
   },
   data() {
     return {
       price: 'Договорная'
-        }
+    };
+  },
+  computed: {
+    getCompanyName() {
+      return this.userObject.company?.name;
+    }
   },
   methods: {
     getCountServices() {
-      this.userObject.services.length
-        }
-    },
-    getCompanyName() {
-      this.userObject.company?.name
+      this.userObject.services.length;
     }
   }
+};
 
 </script>
-
 
 
 <style lang="scss" scoped>
 @import '@/assets/styles/style.scss';
 
 .wrapper {
-    padding: 20px;
-    background: $background-element-color;
-    overflow: auto;
-    height: 500px;
-    width: 650px;
-    .top {
-        display: flex;
-        justify-content: space-between;
-        .left_column {
-            display: flex;
-            
-            .avatar {
-                margin-right: 20px;
-            }
-            .user_info {
-                .user_name {
-                    font-size: 1.5em;
-                    font-weight: 700;
-                }
-                .user_company {
+  padding: 20px;
+  background: $background-element-color;
+  overflow: auto;
+  height: 500px;
+  width: 650px;
 
-                } 
-                .user_mail {
-                color: $grey-text-color;
-                }
+  .top {
+    display: flex;
+    justify-content: space-between;
+
+    .left_column {
+      display: flex;
+
+      .avatar {
+        margin-right: 20px;
+      }
+
+      .user_info {
+        .user_name {
+          font-size: 1.5em;
+          font-weight: 700;
+        }
+
+        .user_company {
+
+        }
+
+        .user_mail {
+          color: $grey-text-color;
+        }
       }
     }
   }
+
   .bottom {
     .service_wrapper {
-        display: flex;
-        padding: 10px;
+      display: flex;
+      padding: 10px;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 10px;
+
       .left {
         display: flex;
-        .service_name {}
+
+        .service_name {
+        }
+
         .service_description {
           background-color: $background-element-color;
           padding: 10px;
         }
 
       }
-    .price{
+
+      .price {
         max-width: 100px;
       }
     }
-    .location_wrapper{
+
+    .location_wrapper {
       .location_title {
         font-size: 1.3em;
         font-weight: 700;
       }
+
       .city {
         font-size: 1.3em;
 
         text-decoration: underline;
       }
     }
+
     .brand_wrapper {
       display: flex;
       justify-content: space-between;
@@ -270,6 +296,7 @@ export default {
       width: 100%;
       padding: 1em;
       margin-bottom: 10px;
+
       .brand_img {
         max-height: 24px;
         margin-right: 50px;
@@ -288,6 +315,7 @@ export default {
 .v-text-field--filled > .v-input__control > .v-input__slot, .v-text-field--full-width > .v-input__control > .v-input__slot, .v-text-field--outlined > .v-input__control > .v-input__slot {
   min-height: 32px;
 }
+
 .v-card > *:last-child:not(.v-btn):not(.v-chip):not(.v-avatar) {
   border-radius: 5px !important;
 }
