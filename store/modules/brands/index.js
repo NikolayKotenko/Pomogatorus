@@ -23,6 +23,16 @@ export default {
       )
 
       commit('set_list_brands', response.data)
+    },
+    async addBrandToUser({ commit, rootGetters, state }, idBrand) {
+      const objMToMUserBrand = {
+        id_user: rootGetters.getUserId,
+        id_brand: idBrand.id
+      }
+      await Request.post(
+        this.state.BASE_URL + '/m-to-m/users-brands',
+        objMToMUserBrand
+      )
     }
   },
   getters: {
