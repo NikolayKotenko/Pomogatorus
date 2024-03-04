@@ -49,10 +49,14 @@ export default {
 .brand_container {
   padding: 20px;
   background-color: #FFFFFF;
+  max-width: 500px;
   .top_wrapper{
+    display: flex;
+
     .brand_name {
       font-weight: 700;
-      font-size: 2em;
+      font-size: 1.5em;
+      margin-left: 20px;
     }
   }
   .bot_wrapper {

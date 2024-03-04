@@ -29,8 +29,8 @@
       >
         <span class="tab_header">Портфель брендов</span>
         <v-badge
-          :content="$store.getters['UserSettings/getCountServices']"
-          :value="$store.getters['UserSettings/getCountServices']"
+          :content="$store.getters['BrandsModule/getCountFavoriteBrands']"
+          :value="$store.getters['BrandsModule/getCountFavoriteBrands']"
           color="#95D7AE"
         />
       </v-tab>
@@ -111,55 +111,64 @@
 
       <!-- Портфель брендов -->
       <v-tab-item :key="2" class="brands_tab">
+        <template v-if="$store.getters.getListBrandsByUser.length">
+          <span class="title">Бренды с которыми вы работаете</span>
+          <v-card
+            v-for="(item, index) in $store.getters.getListBrandsByUser"
+            :key="index"
+            class="brand_wrapper"
+            height="60"
+            outlined
+          >
+            <div style="display: flex;">
+              <DropDownMenuStyled
+                :is-left="true"
+                :is-offset-y="true"
+              >
+                <template #icon>
+                  <v-img
+                    :src="getBrandPhoto(item)"
+                    class="brand_img"
+                    contain
+                  />
+                </template>
+                <template #content>
+                  <BrandCard
+                    :brand-object="item"
+                  />
+                </template>
+              </DropDownMenuStyled>
+              <span class="brand_name">{{ item.name }}</span>
+            </div>
+            <IconTooltip
+              :color-icon="'#B3B3B3'"
+              :icon-text="'mdi-close'"
+              :size-icon="'24'"
+              :text-tooltip="'Удалить бренд'"
+              @click-icon="deleteBrand(item)"
+            />
+          </v-card>
+          <v-overlay
+            :value="$store.state.BrandsModule.isLoading"
+            absolute
+            class="overlay_style"
+            color="#FFFFFF"
+            opacity="100"
+          >
+            <v-progress-circular
+              color="#95D7AE"
+              indeterminate
+              size="64"
+            />
+          </v-overlay>
+        </template>
+        <template v-else>
+          <span class="title">У вас нет брендов с которыми вы работаете</span>
+        </template>
         <UniversalAddInput
-          :list-items-available-to-add="
-            $store.getters['BrandsModule/getListBrandsExcludeAdded']
-          "
+          :list-items-available-to-add="$store.state.BrandsModule.listBrands"
+          @add-service="addBrand"
         />
-
-        <span class="title">Бренды с которыми вы работаете</span>
-        <v-card class="brand_wrapper" height="60" outlined>
-          <v-img
-            :src="require(`~/assets/svg/baxi_logo.svg`)"
-            class="brand_img"
-            contain
-          />
-          <span class="brand_text">Установленно оборудования: 23</span>
-          <IconTooltip
-            :color-icon="'#B3B3B3'"
-            :icon-text="'mdi-close'"
-            :size-icon="'24'"
-            :text-tooltip="'Удалить бренд'"
-          />
-        </v-card>
-        <v-card class="brand_wrapper" height="60" outlined>
-          <v-img
-            :src="require(`~/assets/svg/navien_logo.svg`)"
-            class="brand_img"
-            contain
-          />
-          <span class="brand_text">Установленно оборудования: 23</span>
-          <IconTooltip
-            :color-icon="'#B3B3B3'"
-            :icon-text="'mdi-close'"
-            :size-icon="'24'"
-            :text-tooltip="'Удалить бренд'"
-          />
-        </v-card>
-        <v-card class="brand_wrapper" height="60" outlined>
-          <v-img
-            :src="require(`~/assets/svg/ariston_logo.svg`)"
-            class="brand_img"
-            contain
-          />
-          <span class="brand_text">Установленно оборудования: 23</span>
-          <IconTooltip
-            :color-icon="'#B3B3B3'"
-            :icon-text="'mdi-close'"
-            :size-icon="'24'"
-            :text-tooltip="'Удалить бренд'"
-          />
-        </v-card>
       </v-tab-item>
     </v-tabs>
 
@@ -216,6 +225,8 @@ import LoginAuth from '../frontLayouts/LoginAuth';
 import ButtonStyled from '../Common/ButtonStyled.vue';
 import SearchStyled from '../Common/SearchStyled.vue';
 import IconTooltip from '../Common/IconTooltip.vue';
+import DropDownMenuStyled from '../Common/DropDownMenuStyled.vue'
+import BrandCard from '../Common/BrandCard.vue'
 import UserFields from './UserFields';
 import ServiceCard from '@/components/Collaboration/ServiceCard.vue';
 import UniversalAddInput from '@/components/Common/UniversalAddInput.vue';
@@ -225,6 +236,7 @@ import SelectStyled from '~/components/Common/SelectStyled';
 export default {
   name: 'UserInfo',
   components: {
+    BrandCard, DropDownMenuStyled,
     SelectStyled,
     SearchStyled,
     ButtonStyled,
@@ -257,10 +269,12 @@ export default {
         value: '&sort[created_at]=desc',
       },
     ],
+    deleteBrandModal: false
   }),
   async mounted() {
     await this.$store.dispatch('CollaborationModule/getListServices')
     await this.$store.dispatch('BrandsModule/getListBrands')
+    await this.$store.dispatch('BrandsModule/getListBrandsByUser')
   },
   computed: {
     ...mapState({
@@ -276,6 +290,12 @@ export default {
     },
   },
   methods: {
+    openModal() {
+      this.deleteBrandModal = true
+    },
+    closeModal() {
+      this.deleteBrandModal = false
+    },
     closeDetail() {
       this.$emit('close-detail')
     },
@@ -375,6 +395,23 @@ export default {
         )
       }, 1000)
     },
+    addBrand(obj) {
+      this.$store.dispatch('BrandsModule/addBrandToUser', obj.id)
+
+      const message = 'Добавлен бренд ' + obj.name
+      this.$toast.success(message);
+    },
+    deleteBrand(obj){
+      this.$store.dispatch('BrandsModule/deleteBrandByUser', obj.id)
+
+      const message = 'Удалён бренд ' + obj.name
+      this.$toast.success(message);
+    },
+    getBrandPhoto(elem) {
+      if (elem.e_client_files.length) {
+        return elem.e_client_files[0].url
+      }
+    },
   },
 }
 </script>
@@ -435,9 +472,7 @@ export default {
   }
 
   .brand_wrapper {
-    display: grid;
-    grid-template-columns: 0.7fr 2fr 0.1fr;
-    grid-column-gap: 20px;
+    display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
@@ -445,6 +480,11 @@ export default {
 
     .brand_img {
       max-height: 24px;
+      margin-right: 20px;
+    }
+    .brand_name {
+      font-weight: 700;
+
     }
   }
 }
