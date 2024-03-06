@@ -29,8 +29,8 @@
       >
         <span class="tab_header">Портфель брендов</span>
         <v-badge
-          :content="$store.getters['BrandsModule/getCountFavoriteBrands']"
-          :value="$store.getters['BrandsModule/getCountFavoriteBrands']"
+          :content="$store.getters['getCountFavoriteBrands']"
+          :value="$store.getters['getCountFavoriteBrands']"
           color="#95D7AE"
         />
       </v-tab>
@@ -118,9 +118,9 @@
             :key="index"
             class="brand_wrapper"
             height="60"
-            outlined
           >
             <div style="display: flex;">
+              <span class="brand_name">{{ item.name }}</span>
               <DropDownMenuStyled
                 :is-left="true"
                 :is-offset-y="true"
@@ -128,8 +128,8 @@
                 <template #icon>
                   <v-img
                     :src="getBrandPhoto(item)"
-                    class="brand_img"
-                    contain
+                    width="60"
+                    height="24"
                   />
                 </template>
                 <template #content>
@@ -138,11 +138,10 @@
                   />
                 </template>
               </DropDownMenuStyled>
-              <span class="brand_name">{{ item.name }}</span>
             </div>
             <IconTooltip
               :color-icon="'#B3B3B3'"
-              :icon-text="'mdi-close'"
+              :icon-text="'mdi-delete-outline'"
               :size-icon="'24'"
               :text-tooltip="'Удалить бренд'"
               @click-icon="deleteBrand(item)"
@@ -274,7 +273,6 @@ export default {
   async mounted() {
     await this.$store.dispatch('CollaborationModule/getListServices')
     await this.$store.dispatch('BrandsModule/getListBrands')
-    await this.$store.dispatch('BrandsModule/getListBrandsByUser')
   },
   computed: {
     ...mapState({
@@ -396,6 +394,11 @@ export default {
       }, 1000)
     },
     addBrand(obj) {
+      if (this.$store.state.AuthModule.userData.brands.find(item => item.id === obj.id)) {
+        this.$toast.error('Такой бренд уже добавлен');
+        return false;
+      }
+
       this.$store.dispatch('BrandsModule/addBrandToUser', obj.id)
 
       const message = 'Добавлен бренд ' + obj.name
@@ -479,12 +482,13 @@ export default {
     padding: 1em;
 
     .brand_img {
-      max-height: 24px;
-      margin-right: 20px;
+
     }
     .brand_name {
-      font-weight: 700;
-
+      font-size: 2.2em;
+      display: flex;
+      align-items: center;
+      margin-right: 10px;
     }
   }
 }

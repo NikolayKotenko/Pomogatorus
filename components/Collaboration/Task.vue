@@ -10,19 +10,29 @@
     </template>
 
     <v-tabs
+      v-model="tab"
       color="black"
       grow
     >
       <v-tab :key="0">
         Услуги
       </v-tab>
-      <v-tab :key="1">
+      <v-tab
+        :key="1"
+        :disabled="! taskData.services.length"
+      >
         Рекомендованные специалисты
       </v-tab>
-      <v-tab :key="2">
+      <v-tab
+        :key="2"
+        :disabled="! taskData.ids_users.length || ! taskData.services.length"
+      >
         Приглашенные специалисты
       </v-tab>
-      <v-tab :key="3">
+      <v-tab
+        :key="3"
+        :disabled="! taskData.ids_users.length || ! taskData.services.length"
+      >
         Заявка
       </v-tab>
 
@@ -30,7 +40,6 @@
       <v-tab-item :key="0">
         <div class="services_table">
           <div class="info_wrapper">
-            <span class="info_title">Услуги: </span>
             <div class="service_card_wrapper">
               <ServiceCard
                 v-for="(item, index) in taskData.services"
@@ -46,21 +55,6 @@
             :list-items-available-to-add="currentListServicesAvailableToAdd"
             @add-service="addService"
           />
-        </div>
-
-        <!-- Блок с примечанием. -->
-        <div class="info_wrapper">
-          <span class="info_title">Примечание: </span>
-          <div class="textarea_style">
-            <v-textarea
-              v-model="taskData.notes"
-              :hide-details="true"
-              clearable
-              color="#000000"
-              label="Введите примечание"
-              outlined
-            />
-          </div>
         </div>
       </v-tab-item>
 
@@ -226,20 +220,86 @@
           </template>
         </v-simple-table>
       </v-tab-item>
+      <v-tab-item :key="3">
+        <!-- Блок с примечанием. -->
+        <div class="info_wrapper">
+          <span class="info_title">Примечание: </span>
+          <div class="textarea_style">
+            <v-textarea
+              v-model="taskData.notes"
+              :hide-details="true"
+              clearable
+              color="#000000"
+              label="Введите примечание"
+              outlined
+            />
+          </div>
+        </div>
+      </v-tab-item>
     </v-tabs>
 
 
     <!-- Блок с кнопками. -->
-    <div class="footer_buttons">
+    <div v-if="tab === 0" class="footer_buttons">
+      <ButtonStyled
+        class="btn"
+        :local-class="'invite_button style_button'"
+        :local-text="'Выбрать специалистов'"
+        :is-disabled="! taskData.services.length"
+        @click-button="nextStep"
+      >
+        <v-icon>mdi-chevron-right</v-icon>
+      </ButtonStyled>
+    </div>
+
+    <div v-if="tab === 1" class="footer_buttons">
+      <ButtonStyled
+        :local-class="'style_close'"
+        :local-text="'Вернуться к услугам'"
+        @click-button="previousStep"
+      >
+        <v-icon>mdi-chevron-left</v-icon>
+      </ButtonStyled>
+      <ButtonStyled
+        :local-class="'invite_button style_button'"
+        :local-text="'Просмотреть специалистов'"
+        :is-disabled="! taskData.ids_users.length || ! taskData.services.length"
+        @click-button="nextStep"
+      >
+        <v-icon>mdi-chevron-right</v-icon>
+      </ButtonStyled>
+    </div>
+
+    <div v-if="tab === 2" class="footer_buttons">
+      <ButtonStyled
+        :local-class="'style_close'"
+        :local-text="'Вернуться к рекомендациям'"
+        @click-button="previousStep"
+      >
+        <v-icon>mdi-chevron-left</v-icon>
+      </ButtonStyled>
+      <ButtonStyled
+        :local-class="'invite_button style_button'"
+        :local-text="'Перейти к итогу'"
+        :is-disabled="! taskData.ids_users.length || ! taskData.services.length"
+        @click-button="nextStep"
+      >
+        <v-icon>mdi-chevron-right</v-icon>
+      </ButtonStyled>
+    </div>
+
+    <div v-if="tab === 3" class="footer_buttons">
+      <ButtonStyled
+        :local-class="'style_close'"
+        :local-text="'Вернуться к приглашенным'"
+        @click-button="previousStep"
+      >
+        <v-icon>mdi-chevron-left</v-icon>
+      </ButtonStyled>
       <ButtonStyled
         :local-class="'invite_button style_button'"
         :local-text="'Отправить заявку'"
         @click-button="sendTask"
-      />
-      <ButtonStyled
-        :local-class="'style_close'"
-        :local-text="'Отмена'"
-        @click-button="$emit('close-modal')"
       />
     </div>
   </v-card>
@@ -286,7 +346,8 @@ export default {
       dataUsers: [],
       showDeleteOneUserModal: false,
       selectedUser: {},
-      e1: 0
+      e1: 0,
+      tab: null,
     };
   },
   computed: {
@@ -393,7 +454,34 @@ export default {
       // this.dataUsers = ''
       // this.taskData = new TaskData()
     },
-
+    nextStep() {
+      if (this.tab === 0) {
+        this.tab = 1
+        return false
+      }
+      if (this.tab === 1) {
+        this.tab = 2
+        return false
+      }
+      if (this.tab === 2) {
+        this.tab = 3
+        return false
+      }
+    },
+    previousStep() {
+      if (this.tab === 1) {
+        this.tab = 0
+        return false
+      }
+      if (this.tab === 2) {
+        this.tab = 1
+        return false
+      }
+      if (this.tab === 3) {
+        this.tab = 2
+        return false
+      }
+    },
     deleteOneService(serviceToRemove) {
       this.taskData.services.splice(serviceToRemove, 1);
 
@@ -425,6 +513,7 @@ $borderRadius: 5px;
   grid-row-gap: 15px;
   padding: 20px;
   background: #FFFFFF;
+
 
   .application_header {
     display: flex;
@@ -475,7 +564,6 @@ $borderRadius: 5px;
   .services_table {
     display: grid;
     grid-row-gap: 1em;
-    background: $yellowBackground;
     box-shadow: $shadowBox;
     border-radius: $borderRadius;
     padding: 10px;
@@ -519,6 +607,9 @@ $borderRadius: 5px;
   .footer_buttons {
     display: flex;
     justify-content: space-between;
+    .btn {
+      margin-left: auto;
+    }
   }
 }
 

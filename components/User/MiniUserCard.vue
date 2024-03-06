@@ -64,8 +64,8 @@
         <v-tab :key="2">
           Опыт работы с брендами
           <v-badge
-            :content="userObject.services.length"
-            :value="userObject.services.length"
+            :content="userObject.brands.length"
+            :value="userObject.brands.length"
             color="#95D7AE"
           />
         </v-tab>
@@ -131,42 +131,32 @@
 
         <!-- Бренды -->
         <v-tab-item :key="3">
-          <v-card class="brand_wrapper" height="60" outlined>
-            <DropDownMenuStyled
-              :is-left="true"
-              :is-offset-y="true"
-            >
-              <template #icon>
-                <v-img
-                  :src="require(`~/assets/svg/baxi_logo.svg`)"
-                  class="brand_img"
-                  contain
-                  max-width="100"
-                />
-              </template>
-              <template #content>
-                <BrandCard/>
-              </template>
-            </DropDownMenuStyled>
-            <span class="brand_text">Установленно оборудования Baxi: 23</span>
-          </v-card>
-          <v-card class="brand_wrapper" height="60" outlined>
-            <v-img
-              :src="require(`~/assets/svg/navien_logo.svg`)"
-              class="brand_img"
-              contain
-              max-width="100"
-            />
-            <span class="brand_text">Установленно оборудования Navien: 23</span>
-          </v-card>
-          <v-card class="brand_wrapper" height="60" outlined>
-            <v-img
-              :src="require(`~/assets/svg/ariston_logo.svg`)"
-              class="brand_img"
-              contain
-              max-width="100"
-            />
-            <span class="brand_text">Установленно оборудования Ariston: 23</span>
+          <v-card
+            v-for="(item, index) in userObject.brands"
+            :key="index"
+            class="brand_wrapper"
+            height="60"
+          >
+            <div style="display: flex;">
+              <span class="brand_name">{{ item.name }}</span>
+              <DropDownMenuStyled
+                :is-left="true"
+                :is-offset-y="true"
+              >
+                <template #icon>
+                  <v-img
+                    :src="getBrandPhoto(item)"
+                    width="60"
+                    height="24"
+                  />
+                </template>
+                <template #content>
+                  <BrandCard
+                    :brand-object="item"
+                  />
+                </template>
+              </DropDownMenuStyled>
+            </div>
           </v-card>
         </v-tab-item>
       </v-tabs>
@@ -203,9 +193,11 @@ export default {
     }
   },
   methods: {
-    getCountServices() {
-      this.userObject.services.length;
-    }
+    getBrandPhoto(elem) {
+      if (elem.e_client_files.length) {
+        return elem.e_client_files[0].url
+      }
+    },
   }
 };
 
@@ -296,12 +288,12 @@ export default {
       width: 100%;
       padding: 1em;
       margin-bottom: 10px;
-
-      .brand_img {
-        max-height: 24px;
-        margin-right: 50px;
-        width: auto;
+      .brand_name {
+        font-weight: 400;
+        font-size: 1.5em;
+        margin-right: 10px;
       }
+
     }
   }
 }

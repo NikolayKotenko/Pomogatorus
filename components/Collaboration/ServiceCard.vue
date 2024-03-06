@@ -17,118 +17,92 @@
             </template>
           </DropDownMenuStyled>
         </li>
-        <div v-if="isEquipmentExist" class="equipment">
-          <div class="add_equipment">
-            <TooltipStyled
-              :is-top="true"
-              :title="'Добавить оборудование'"
-            >
-              <v-icon
-                color="#95D7AE"
-                size="22"
+        <div class="service_info">
+          <v-text-field
+            ref="price_field"
+            :color="(delayUpdatingData) ? 'green' : 'blue'"
+            :hide-details="!delayUpdatingData"
+            :hint="'Обновлено - ' + serviceObject.created_at_minutes"
+            :persistent-hint="delayUpdatingData"
+            :value="serviceObject.price"
+            class="price_field"
+            dense
+            height="40"
+            label="Цена услуги"
+            outlined
+            persistent-placeholder
+            placeholder="Договорная"
+            suffix="₽"
+            type="number"
+            @input="$emit('update-price-field', $event)"
+          >
+            <template #append>
+              <DropDownMenuStyled
+                :is-left="true"
+                :nudge-bottom="30"
+                :nudge-right="15"
               >
-                mdi-plus-circle-outline
-              </v-icon>
-            </TooltipStyled>
-            <v-combobox
-              :hide-details="true"
-              :item-text="'name'"
-              :item-value="'id'"
-              :items="$store.state.NomenclatureModule.listNomenclature"
-              class="search_equipment"
-              clearable
-              label="Добавить оборудование"
-              outlined
-              placeholder="Добавить оборудование"
-              return-object
-              solo
-            />
-          </div>
-          <!--      <div class="equipment_list"> -->
-          <!--        <li -->
-          <!--          v-for="(item, index) in serviceObject.service_data.ids_nominclatures" -->
-          <!--          :key="index" -->
-          <!--          class="name_and_article" -->
-          <!--        > -->
-          <!--          {{ item.name }} -->
-          <!--        </li> -->
-          <!--      </div> -->
-        </div>
-      </div>
-      <div class="service_info">
-        <v-text-field
-          ref="price_field"
-          :color="(delayUpdatingData) ? 'green' : 'blue'"
-          :hide-details="!delayUpdatingData"
-          :hint="'Обновлено - ' + serviceObject.created_at_minutes"
-          :persistent-hint="delayUpdatingData"
-          :value="serviceObject.price"
-          class="price_field"
-          dense
-          height="40"
-          label="Цена услуги"
-          outlined
-          persistent-placeholder
-          placeholder="Договорная"
-          suffix="₽"
-          type="number"
-          @input="$emit('update-price-field', $event)"
-        >
-          <template #append>
-            <DropDownMenuStyled
-              :is-left="true"
-              :nudge-bottom="30"
-              :nudge-right="15"
-            >
-              <template #icon>
-                <IconTooltip
-                  :icon-text="'mdi-chart-timeline-variant'"
-                  :text-tooltip="'История цен'"
-                />
-              </template>
-              <template #content>
-                <div class="additional_data">
-                  <h4 class="header_additional_data">
-                    <span>
-                      {{ listAdditionalDataServices.length ?
-                        "Ваша история цены на услугу:" :
-                        "Здесь появится ваша история цен." }}
-                    </span>
-                  </h4>
-                  <div class="wrapper_additional_data">
-                    <div
-                      v-for="(item, index) in listAdditionalDataServices"
-                      :key="index"
-                      class="row_additional_data"
-                    >
-                      <section> - {{ item.price }} ₽</section>
-                      <section class="last_entry">
-                        {{ item.created_at_date }}
-                      </section>
+                <template #icon>
+                  <IconTooltip
+                    :icon-text="'mdi-chart-timeline-variant'"
+                    :text-tooltip="'История цен'"
+                  />
+                </template>
+                <template #content>
+                  <div class="additional_data">
+                    <h4 class="header_additional_data">
+                      <span>
+                        {{ listAdditionalDataServices.length ?
+                          "Ваша история цены на услугу:" :
+                          "Здесь появится ваша история цен." }}
+                      </span>
+                    </h4>
+                    <div class="wrapper_additional_data">
+                      <div
+                        v-for="(item, index) in listAdditionalDataServices"
+                        :key="index"
+                        class="row_additional_data"
+                      >
+                        <section> - {{ item.price }} ₽</section>
+                        <section class="last_entry">
+                          {{ item.created_at_date }}
+                        </section>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </template>
-            </DropDownMenuStyled>
-          </template>
-        </v-text-field>
-        <InputStyled
-          v-if="isQuantityExist"
-          :class="'styleQuantityField'"
-          :data="serviceObject.quantity"
-          :is-label="'Кол-во'"
-          :is-outlined="true"
-          :is-placeholder="'Кол-во'"
-          class="quantity_field"
+                </template>
+              </DropDownMenuStyled>
+            </template>
+          </v-text-field>
+          <InputStyled
+            v-if="isQuantityExist"
+            :class="'styleQuantityField'"
+            :data="serviceObject.quantity"
+            :is-label="'Кол-во'"
+            :is-outlined="true"
+            :is-placeholder="'Кол-во'"
+            class="quantity_field"
+          />
+        </div>
+        <IconTooltip
+          :color-icon="'#8A8784'"
+          :icon-text="'mdi-delete-outline'"
+          :size-icon="'32'"
+          :text-tooltip="'Удалить услугу'"
+          @click-icon="showDeleteOneServiceModal = true"
         />
       </div>
-      <IconTooltip
-        :color-icon="'#8A8784'"
-        :icon-text="'mdi-delete-outline'"
-        :size-icon="'32'"
-        :text-tooltip="'Удалить услугу'"
-        @click-icon="showDeleteOneServiceModal = true"
-      />
+      <div v-if="isEquipmentExist" class="equipment">
+        <span style="font-weight: 700;">Выберите оборудование: </span>
+        <div class="add_equipment">
+          <UniversalAddInput
+            :list-items-available-to-add="
+              $store.state.NomenclatureModule.listNomenclature
+            "
+            style="width: 500px"
+          />
+        </div>
+      </div>
     </div>
 
     <v-dialog
@@ -170,11 +144,12 @@ import TooltipStyled from '../Common/TooltipStyled.vue';
 import { Service } from '../../helpers/constructors';
 import ButtonStyled from '../Common/ButtonStyled.vue';
 import IconTooltip from '../Common/IconTooltip.vue';
+import UniversalAddInput from '../Common/UniversalAddInput.vue'
 import DropDownMenuStyled from '~/components/Common/DropDownMenuStyled';
 
 export default {
   name: 'ServiceCard',
-  components: { DropDownMenuStyled, ButtonStyled, TooltipStyled, InputStyled, IconTooltip },
+  components: { DropDownMenuStyled, ButtonStyled, TooltipStyled, InputStyled, IconTooltip, UniversalAddInput },
   props: {
     listAdditionalDataServices: {
       type: Array,
@@ -251,64 +226,62 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'assets/styles/style';
+
 .card_wrapper {
   display: grid;
   //grid-row-gap: 10px;
-  padding: 10px 10px;
+  padding: 1em;
   //height: 96px;
+  transition: $transition;
+  &:hover {
+    background-color: $dull-yellow-color;
+  }
 
   .card_header {
     display: grid;
-    grid-column-gap: 20px;
-    grid-template-columns: 50% auto min-content;
-    align-items: center;
-
+    grid-row-gap: 1em;
     .title_and_equip {
       display: grid;
-      grid-row-gap: 10px;
+      align-items: center;
+      grid-template-columns: 2fr 1.4fr 0.1fr;
 
       .service_title {
         font-size: 1.3em;
         display: inline-flex;
         grid-column-gap: 10px;
       }
-    }
+      .service_info {
+        display: flex;
+        align-items: center;
+        grid-column-gap: 1em;
 
-    .service_info {
-      display: grid;
-      justify-items: flex-end;
-      //align-items: center;
-      grid-row-gap: 1em;
+        .price_field {
+          max-width: 160px;
+          width: 100%;
 
-      .price_field {
-        max-width: 260px;
-        width: 100%;
-
-        .v-messages__message {
-          color: green !important;
-          background: red;
+          .v-messages__message {
+            color: green !important;
+            background: red;
+          }
         }
-      }
 
-      .quantity_field {
-        max-width: 90px;
-      }
+        .quantity_field {
+          max-width: 90px;
+        }
 
+      }
     }
+
+
   }
 
   .equipment {
     display: grid;
     grid-row-gap: 10px;
-
     .add_equipment {
       display: inline-flex;
-      //align-items: center;
       grid-column-gap: 10px;
-
-      .search_equipment {
-        max-width: 330px;
-      }
     }
 
     .name_and_article {

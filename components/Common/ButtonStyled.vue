@@ -118,12 +118,11 @@ export default {
   background: $background-element-color !important;
   color: $black-text-color;
   border: 1px solid $orange-color;
-  margin-left: auto;
   transition: $transition;
   &:hover {
     background: $orange-color !important;
     color: #000000;
-  
+
   }
 }
 </style>

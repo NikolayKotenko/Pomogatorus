@@ -46,19 +46,19 @@ export default {
     },
     async getListFavoriteNomenclatureByUserAndObjectId(
       { commit, rootGetters }) {
-      if (!rootGetters.getUserId) return false
-      if (!rootGetters['Objects/getIdCurrentObject']) return false
-
-      // commit('setLoadingObjects', true)
-
-      const response = await Request.get(
-        this.state.BASE_URL + `/m-to-m/favorites?id_user=${rootGetters.getUserId}&id_object=${rootGetters['Objects/getIdCurrentObject']}`
-      )
-      commit('set_list_favorite_nomenclature', response.data)
-
-      // commit('setLoadingObjects', false)
-
-      return response
+      // if (!rootGetters.getUserId) return false
+      // if (!rootGetters['Objects/getIdCurrentObject']) return false
+      //
+      // // commit('setLoadingObjects', true)
+      //
+      // const response = await Request.get(
+      //   this.state.BASE_URL + `/m-to-m/favorites?id_user=${rootGetters.getUserId}&id_object=${rootGetters['Objects/getIdCurrentObject']}`
+      // )
+      // commit('set_list_favorite_nomenclature', response.data)
+      //
+      // // commit('setLoadingObjects', false)
+      //
+      // return response
     },
     async deleteOneFavoriteNomenclature({ dispatch }, object) {
       await Request.delete(

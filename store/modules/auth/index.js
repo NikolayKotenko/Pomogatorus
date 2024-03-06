@@ -128,6 +128,9 @@ export default {
       if (!state.userData.brands) return [];
 
       return state.userData.brands;
+    },
+    getCountFavoriteBrands(state) {
+      return state.userData.brands.length
     }
   },
 }

@@ -52,7 +52,7 @@ export default {
         setStateModalByUrlHash('inviteUserModal', false);
         return false;
       }
-      //TODO доделать когда будет разделение прав
+      // TODO доделать когда будет разделение прав
       if (!this.$store.getters['Objects/getIdCurrentObject']) {
         setStateModalByUrlHash('createObjectModal', true);
         return false;
@@ -66,5 +66,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.modal {
+  min-height: 760px;
+}
 </style>

@@ -1,14 +1,15 @@
 <template>
   <div class="brand_container">
     <div class="top_wrapper">
-      <v-img
-        :src="getBrandPhoto(brandObject)"
-        max-width="160"
-        contain
-      />
       <div class="brand_name">
         {{ brandObject.name }}
       </div>
+      <v-img
+        :src="getBrandPhoto(brandObject)"
+        height="24"
+        max-width="60"
+        contain
+      />
     </div>
 
     <v-divider style="margin: 10px 0 10px 0;"/>
@@ -52,11 +53,10 @@ export default {
   max-width: 500px;
   .top_wrapper{
     display: flex;
-
     .brand_name {
-      font-weight: 700;
-      font-size: 1.5em;
-      margin-left: 20px;
+      font-weight: 400;
+      font-size: 2.2em;
+      margin-right: 10px;
     }
   }
   .bot_wrapper {

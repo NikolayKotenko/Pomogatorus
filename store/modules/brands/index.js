@@ -28,7 +28,7 @@ export default {
 
       commit('set_list_brands', response.data)
     },
-    async addBrandToUser({ commit, rootGetters, state, dispatch }, idBrand) {
+    async addBrandToUser({ commit, rootGetters, state, dispatch, rootState }, idBrand) {
       commit('setLoading', true)
 
       await Request.post(
@@ -71,5 +71,6 @@ export default {
     //     differenceIds.includes(elem.id)
     //   )
     // },
+
   }
 }

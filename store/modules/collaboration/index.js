@@ -128,6 +128,7 @@ export default {
       )
       commit('setListServices', response.data)
     },
+
   },
   getters: {
     getFilteredListByRoleExperts(state) {
@@ -144,5 +145,6 @@ export default {
         })
       })
     },
+
   },
 }

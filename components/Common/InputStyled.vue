@@ -25,7 +25,7 @@
     @click="onClick"
     @focus="isFocused = true"
     @focusout="isFocused = false"
-  ></v-text-field>
+  />
 
   <v-text-field
     v-else
@@ -57,7 +57,7 @@
 
 <script>
 export default {
-  name: "InputStyled",
+  name: 'InputStyled',
   props: {
     fullSincProp: {
       type: Boolean,
@@ -65,11 +65,11 @@ export default {
     },
     placeholder: {
       type: String,
-      default: ""
+      default: ''
     },
     isLabel: {
       type: String,
-      default: ""
+      default: ''
     },
     isSolo: {
       type: Boolean,
@@ -81,7 +81,7 @@ export default {
     },
     data: {
       type: String,
-      default: ""
+      default: ''
     },
     isDisabled: {
       type: Boolean,
@@ -105,11 +105,11 @@ export default {
     },
     appendIcon: {
       type: String,
-      default: ""
+      default: ''
     },
     prependIconInner: {
       type: String,
-      default: ""
+      default: ''
     },
     isFlat: {
       type: Boolean,
@@ -129,7 +129,7 @@ export default {
     },
     isErrorMessages: {
       type: String,
-      default: ""
+      default: ''
     },
     isNumber: {
       type: Boolean,
@@ -137,13 +137,13 @@ export default {
     }
   },
   data: () => ({
-    internalData: "",
+    internalData: '',
     isFocused: false
   }),
   computed: {
     computedPlaceholder() {
       if (this.isFocused) {
-        return "";
+        return '';
       }
       return this.placeholder;
     },
@@ -162,16 +162,16 @@ export default {
         if (!this.data) {
           this.internalData = value;
         }
-        this.$emit("update-input", value);
+        this.$emit('update-input', value);
       }
     }
   },
   methods: {
     onClick() {
-      this.$emit("on-click");
+      this.$emit('on-click');
     },
     onChange(value) {
-      this.$emit("on-change", value);
+      this.$emit('on-change', value);
     }
   }
 };
@@ -186,7 +186,7 @@ export default {
 
 .styleTextField {
   border-radius: 5px;
-  margin-bottom: 1em !important;
+
 
   &.primary--text {
     color: $green-color !important;
