@@ -1,3 +1,4 @@
+import { isArray } from 'vue-slick-carousel/dist/vue-slick-carousel.common'
 import Logging from '@/services/logging'
 // import Vue from "vue";
 // import auth from "@/middleware/redirectArticles.js"
@@ -126,7 +127,14 @@ export default class Request {
   static ConstructFilterQuery(arrNameParam = []) {
     let result = ''
     for (const [key, value] of Object.entries(arrNameParam)) {
-      result += 'filter[' + key + ']=' + value + '&'
+      if (Array.isArray(value)){
+        value.forEach((item) => {
+          result += 'filter[' + key + '][]=' + item + '&'
+        })
+      }
+      else{
+        result += 'filter[' + key + ']=' + value + '&'
+      }
     }
     result = result.slice(0, -1)
 

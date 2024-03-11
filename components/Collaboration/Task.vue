@@ -16,28 +16,43 @@
     >
       <v-tab :key="0">
         Услуги
+        <v-badge
+          :content="taskData.services.length"
+          :value="taskData.services.length"
+          color="#95D7AE"
+        />
       </v-tab>
       <v-tab
         :key="1"
         :disabled="! taskData.services.length"
       >
         Рекомендованные специалисты
+        <v-badge
+          :content="$store.state.CollaborationModule.listRatedUsers.length"
+          :value="$store.state.CollaborationModule.listRatedUsers.length"
+          color="#95D7AE"
+        />
       </v-tab>
       <v-tab
         :key="2"
         :disabled="! taskData.ids_users.length || ! taskData.services.length"
       >
         Приглашенные специалисты
+        <v-badge
+          :content="taskData.ids_users.length"
+          :value="taskData.ids_users.length"
+          color="#95D7AE"
+        />
       </v-tab>
       <v-tab
         :key="3"
-        :disabled="! taskData.ids_users.length || ! taskData.services.length"
+        :disabled="(taskData.notes === '') && (! taskData.ids_users.length) && (! taskData.services.length)"
       >
         Заявка
       </v-tab>
 
       <!-- Блок с услугами. -->
-      <v-tab-item :key="0">
+      <v-tab-item :key="0" class="tab_wrapper">
         <div class="services_table">
           <div class="info_wrapper">
             <div class="service_card_wrapper">
@@ -56,10 +71,31 @@
             @add-service="addService"
           />
         </div>
+
+        <!-- Блок с примечанием. -->
+        <div class="info_wrapper">
+          <div style="display: flex;">
+            <span class="info_title">Примечание: </span>
+            <IconTooltip
+              :icon-text="'mdi-help-circle-outline'"
+              :text-tooltip="'Допускается заполнение только этого поля'"
+            />
+          </div>
+          <div class="textarea_style">
+            <v-textarea
+              v-model="taskData.notes"
+              :hide-details="true"
+              clearable
+              color="#000000"
+              label="Введите примечание"
+              outlined
+            />
+          </div>
+        </div>
       </v-tab-item>
 
       <!-- Блок с рекомендованными пользователями. -->
-      <v-tab-item :key="1">
+      <v-tab-item :key="1" class="tab_wrapper">
         <v-simple-table>
           <template #default>
             <thead>
@@ -80,107 +116,55 @@
             </thead>
             <tbody>
               <tr
-                v-for="(item, index) in getReccomendedUsers"
+                v-for="(item, index) in $store.state.CollaborationModule.listRatedUsers"
                 :key="index"
               >
-                <td>{{ item.user_fio }}</td>
+                <td>
+                  <div class="user_info">
+                    <DropDownMenuStyled :is-left="true" :is-offset-y="true">
+                      <template #icon>
+                        <v-avatar size="50">
+                          <v-img
+                            src="https://www.wrestlezone.com/wp-content/uploads/sites/8/2023/12/kurt-angle-meme-machine.jpg?resize=1024,576"
+                          />
+                        </v-avatar>
+                      </template>
+                      <template #content>
+                        <MiniUserCard :user-object="item"/>
+                      </template>
+                    </DropDownMenuStyled>
+                    <div class="user_title">
+                      <div class="name">
+                        {{ item.user_fio }}
+                      </div>
+                      <v-rating
+                        background-color="#B3B3B3"
+                        color="#95D7AE"
+                        readonly
+                        value="4"
+                      />
+                    </div>
+                  </div>
+                </td>
                 <td>66% - 2 из 3</td>
                 <td>66% - 2 из 3</td>
                 <td>
                   <IconTooltip
                     :color-icon="'#B3B3B3'"
-                    :icon-text="'mdi-plus-circle-outline'"
+                    :icon-text="'mdi-plus'"
                     :size-icon="'32'"
                     :text-tooltip="'Добавить в заявку'"
+                    @click-icon="addUser(item)"
                   />
                 </td>
               </tr>
             </tbody>
           </template>
         </v-simple-table>
-
-        <div class="info_wrapper">
-          <span class="info_title">Исполнители: </span>
-          <div
-            v-for="(item, index) in dataUsers"
-            :key="index"
-            class="user_info"
-          >
-            <li>{{ item.user_fio }}</li>
-            <v-dialog
-              v-model="showDeleteOneUserModal"
-              width="600"
-            >
-              <template #activator="{ on, attrs }">
-                <TooltipStyled :title="'Удалить исполнителя'">
-                  <v-icon
-                    color="#8A8784"
-                    size="32"
-                    v-bind="attrs"
-                    v-on="on"
-                  >
-                    mdi-delete-outline
-                  </v-icon>
-                </TooltipStyled>
-              </template>
-              <v-card class="delete_user_modal">
-                <div class="delete_user_header">
-                  <span class="header_title">Удаление исполнителя</span>
-                  <v-icon large @click="closeDeleteOneUserModal">
-                    mdi-close
-                  </v-icon>
-                </div>
-                <span>
-                  Вы действительно хотите удалить исполнителя "{{ item.user_fio }}"?
-                </span>
-                <div class="delete_user_buttons">
-                  <ButtonStyled
-                    :local-class="'invite_button style_button'"
-                    :local-text="'Подтвердить'"
-                    @click-button="deleteOneUser(taskData.ids_users.item, index)"
-                  />
-                  <ButtonStyled
-                    :local-class="'style_close'"
-                    :local-text="'Отмена'"
-                    @click-button="closeDeleteOneUserModal"
-                  />
-                </div>
-              </v-card>
-            </v-dialog>
-          </div>
-          <div class="add_users_wrapper">
-            <TooltipStyled
-              :is-top="true"
-              :title="'Добавить исполнителя'"
-            >
-              <v-icon
-                color="#95D7AE"
-                size="34"
-                @click="addUser"
-              >
-                mdi-plus-circle-outline
-              </v-icon>
-            </TooltipStyled>
-            <v-combobox
-              :hide-details="true"
-              :item-text="'user_fio'"
-              :item-value="'id'"
-              :items="$store.state.CollaborationModule.listSearchedMembers"
-              class="search_service"
-              clearable
-              hide-selected
-              label="Добавить исполнителя"
-              outlined
-              return-object
-              solo
-              @change="setSelectedUsersIdsLocal"
-            />
-          </div>
-        </div>
       </v-tab-item>
 
       <!-- Блок с приглашенными пользователями. -->
-      <v-tab-item :key="2">
+      <v-tab-item :key="2" class="tab_wrapper">
         <v-simple-table>
           <template #default>
             <thead>
@@ -204,15 +188,42 @@
                 v-for="(item, index) in dataUsers"
                 :key="index"
               >
-                <td>Иванов иван</td>
+                <td>
+                  <div class="user_info">
+                    <DropDownMenuStyled :is-left="true" :is-offset-y="true">
+                      <template #icon>
+                        <v-avatar size="50">
+                          <v-img
+                            src="https://www.wrestlezone.com/wp-content/uploads/sites/8/2023/12/kurt-angle-meme-machine.jpg?resize=1024,576"
+                          />
+                        </v-avatar>
+                      </template>
+                      <template #content>
+                        <MiniUserCard :user-object="item"/>
+                      </template>
+                    </DropDownMenuStyled>
+                    <div class="user_title">
+                      <div class="name">
+                        {{ item.user_fio }}
+                      </div>
+                      <v-rating
+                        background-color="#B3B3B3"
+                        color="#95D7AE"
+                        readonly
+                        value="4"
+                      />
+                    </div>
+                  </div>
+                </td>
                 <td>66% - 2 из 3</td>
                 <td>66% - 2 из 3</td>
                 <td>
                   <IconTooltip
                     :color-icon="'#B3B3B3'"
-                    :icon-text="'mdi-minus-circle-outline'"
+                    :icon-text="'mdi-delete-outline'"
                     :size-icon="'32'"
                     :text-tooltip="'Убрать из заявки'"
+                    @click-icon="deleteOneUser(taskData.ids_users.item, index)"
                   />
                 </td>
               </tr>
@@ -220,22 +231,7 @@
           </template>
         </v-simple-table>
       </v-tab-item>
-      <v-tab-item :key="3">
-        <!-- Блок с примечанием. -->
-        <div class="info_wrapper">
-          <span class="info_title">Примечание: </span>
-          <div class="textarea_style">
-            <v-textarea
-              v-model="taskData.notes"
-              :hide-details="true"
-              clearable
-              color="#000000"
-              label="Введите примечание"
-              outlined
-            />
-          </div>
-        </div>
-      </v-tab-item>
+      <v-tab-item :key="3" class="tab_wrapper"/>
     </v-tabs>
 
 
@@ -309,6 +305,8 @@
 import ButtonStyled from '../Common/ButtonStyled.vue';
 import TooltipStyled from '../Common/TooltipStyled.vue';
 import IconTooltip from '../Common/IconTooltip.vue';
+import DropDownMenuStyled from '../Common/DropDownMenuStyled.vue'
+import MiniUserCard from '../User/MiniUserCard.vue'
 import ServiceCard from './ServiceCard.vue';
 import { Service, ServiceDataConstructor, TaskData } from '~/helpers/constructors';
 import UniversalAddInput from '~/components/Common/UniversalAddInput';
@@ -316,6 +314,7 @@ import UniversalAddInput from '~/components/Common/UniversalAddInput';
 export default {
   name: 'InviteUserModal',
   components: {
+    MiniUserCard, DropDownMenuStyled,
     UniversalAddInput,
     ServiceCard,
     TooltipStyled,
@@ -345,18 +344,11 @@ export default {
       taskData: new TaskData(),
       dataUsers: [],
       showDeleteOneUserModal: false,
-      selectedUser: {},
       e1: 0,
       tab: null,
     };
   },
   computed: {
-    getReccomendedUsers() {
-      return this.$store.state.CollaborationModule.listSearchedMembers
-        .map((user) => {
-          return user.services.map((service) => service.id);
-        });
-    },
     currentListServicesAvailableToAdd: {
       get() {
         if (this.listServicesAvailableToAdd.length) {
@@ -364,7 +356,17 @@ export default {
         }
         return this.$store.state.CollaborationModule.listServices;
       }
+    },
+    getServicesCodes() {
+      return this.taskData.services.map((item) => item.service_data.code);
     }
+  },
+  watch: {
+    'getServicesCodes':{
+      async handler(v) {
+        await this.$store.dispatch('CollaborationModule/getListRatedUsers', this.getServicesCodes);
+      }
+    },
   },
   async mounted() {
     if (this.currentTask) {
@@ -376,6 +378,7 @@ export default {
     if (!this.$store.state.CollaborationModule.listServices.length) {
       await this.$store.dispatch('CollaborationModule/getListServices');
     }
+
   },
   methods: {
     getValueField(str) {
@@ -419,14 +422,14 @@ export default {
     // из массива всех специалистов показать только тех у кого есть совпадение по услугам
 
 
-    addUser() {
-      if (this.taskData.ids_users.includes(this.selectedUser.id)) {
+    addUser(userData) {
+      if (this.taskData.ids_users.includes(userData.id)) {
         this.$toast.error('Исполнитель уже добавлен');
         return false;
       }
 
-      this.taskData.ids_users.push(this.selectedUser.id);
-      this.dataUsers.push(this.selectedUser);
+      this.taskData.ids_users.push(userData.id);
+      this.dataUsers.push(userData);
 
       this.$toast.success('Исполнитель добавлен');
     },
@@ -492,9 +495,9 @@ export default {
       this.taskData.ids_users.splice(idUserToRemove, 1);
       this.dataUsers.splice(dataUserToRemove, 1);
 
-      this.closeDeleteOneUserModal();
       this.$toast.success('Исполнитель удален');
-    }
+    },
+
   }
 };
 </script>
@@ -506,6 +509,11 @@ $borderRadius: 5px;
 
 .v-input__slot {
   max-height: 40px !important;
+}
+
+.tab_wrapper {
+  height: 600px;
+  overflow: auto;
 }
 
 .application_card {
@@ -532,12 +540,6 @@ $borderRadius: 5px;
     .info_title {
       font-weight: 600;
       font-size: 1.3em;
-    }
-
-    .user_info {
-      display: inline-flex;
-      justify-content: space-between;
-      align-items: center;
     }
 
     .info_text {
@@ -609,6 +611,18 @@ $borderRadius: 5px;
     justify-content: space-between;
     .btn {
       margin-left: auto;
+    }
+  }
+}
+
+.user_info {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+  .user_title {
+    margin-left: 20px;
+    .name {
+      font-size: 1em !important;
     }
   }
 }

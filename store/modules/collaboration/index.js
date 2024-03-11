@@ -11,6 +11,7 @@ export default {
     stateCollaborationMenu: false,
     debounceTimeout: null,
     listServices: [],
+    listRatedUsers: []
   },
   mutations: {
     setLoading(state, payload) {
@@ -32,6 +33,10 @@ export default {
       state.listServices = []
       state.listServices = payload
     },
+    setListRatedUsers(state, payload) {
+      state.listRatedUsers = []
+      state.listRatedUsers = payload
+    }
   },
   actions: {
     // Новый action
@@ -127,6 +132,18 @@ export default {
         this.state.BASE_URL + '/dictionary/tags?filter[flag_service]=true'
       )
       commit('setListServices', response.data)
+    },
+    async getListRatedUsers({ commit, rootGetters }, servicesCodeArray) {
+      const queryFilter = Request.ConstructFilterQuery({
+        id_object: rootGetters['Objects/getIdCurrentObject'],
+        services: servicesCodeArray,
+      })
+
+      const response = await Request.get(
+        this.state.BASE_URL + '/users/get-list-rated-users' + queryFilter
+      )
+
+      commit('setListRatedUsers', response.data)
     },
 
   },
