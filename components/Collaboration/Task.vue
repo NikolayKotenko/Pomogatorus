@@ -53,6 +53,9 @@
 
       <!-- Блок с услугами. -->
       <v-tab-item :key="0" class="tab_wrapper">
+        <template v-if="! taskData.services.length">
+          <span class="empty_data_wrapper">Вы ещё не выбрали услугу</span>
+        </template>
         <div class="services_table">
           <div class="info_wrapper">
             <div class="service_card_wrapper">
@@ -74,7 +77,7 @@
 
         <!-- Блок с примечанием. -->
         <div class="info_wrapper">
-          <div style="display: flex;">
+          <div style="display: flex; align-items: center">
             <span class="info_title">Примечание: </span>
             <IconTooltip
               :icon-text="'mdi-help-circle-outline'"
@@ -104,10 +107,28 @@
                   Специалисты
                 </th>
                 <th class="text-left">
-                  Совпадение по услугам
+                  <div style="display: flex; align-items: center">
+                    Совпадение по услугам
+                    <IconTooltip
+                      :icon-text="'mdi-help-circle-outline'"
+                      :size-icon="'16'"
+                      :text-tooltip="'В большинстве случаев отсутствие услуги\n'+
+                        'объясняется тем, что специалист пока \n'+
+                        'не заполнил свой прайс'"
+                    />
+                  </div>
                 </th>
                 <th class="text-left">
-                  Совпадение по брендам
+                  <div style="display: flex; align-items: center">
+                    Совпадение по брендам
+                    <IconTooltip
+                      :icon-text="'mdi-help-circle-outline'"
+                      :size-icon="'16'"
+                      :text-tooltip="'В этом столбце показано совпадение\n'
+                        +'по вашему избранному оборудованию \n'
+                        +'с опытом монтажа мастером этих брендов'"
+                    />
+                  </div>
                 </th>
                 <th class="text-left">
                   Действие
@@ -141,12 +162,41 @@
                         background-color="#B3B3B3"
                         color="#95D7AE"
                         readonly
-                        value="4"
                       />
                     </div>
                   </div>
                 </td>
-                <td>66% - 2 из 3</td>
+                <td>
+                  <v-menu offset-overflow offset-y open-on-hover>
+                    <template #activator="{ on, attrs }">
+                      <span
+                        style="font-weight: 700;"
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        {{ getMatchPercentage(item.services) }} -
+                      </span>
+                      <span
+                        style="font-weight: 400; color: #B3B3B3;"
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        {{ getCountUserServicesToMatch(item.services) }}
+                      </span>
+                    </template>
+                    <v-list>
+                      <div class="explain_info">
+                        <h4>Пользователь может выполнить следующие услуги: </h4>
+                        <li
+                          v-for="(item, index) in getListServicesOfUserToExecute(item.services)"
+                          :key="index"
+                        >
+                          {{ item }}
+                        </li>
+                      </div>
+                    </v-list>
+                  </v-menu>
+                </td>
                 <td>66% - 2 из 3</td>
                 <td>
                   <IconTooltip
@@ -165,75 +215,171 @@
 
       <!-- Блок с приглашенными пользователями. -->
       <v-tab-item :key="2" class="tab_wrapper">
-        <v-simple-table>
-          <template #default>
-            <thead>
-              <tr>
-                <th class="text-left">
-                  Специалисты
-                </th>
-                <th class="text-left">
-                  Совпадение по услугам
-                </th>
-                <th class="text-left">
-                  Совпадение по брендам
-                </th>
-                <th class="text-left">
-                  Действие
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="(item, index) in dataUsers"
-                :key="index"
-              >
-                <td>
-                  <div class="user_info">
-                    <DropDownMenuStyled :is-left="true" :is-offset-y="true">
-                      <template #icon>
-                        <v-avatar size="50">
-                          <v-img
-                            src="https://www.wrestlezone.com/wp-content/uploads/sites/8/2023/12/kurt-angle-meme-machine.jpg?resize=1024,576"
-                          />
-                        </v-avatar>
-                      </template>
-                      <template #content>
-                        <MiniUserCard :user-object="item"/>
-                      </template>
-                    </DropDownMenuStyled>
-                    <div class="user_title">
-                      <div class="name">
-                        {{ item.user_fio }}
-                      </div>
-                      <v-rating
-                        background-color="#B3B3B3"
-                        color="#95D7AE"
-                        readonly
-                        value="4"
+        <template v-if="! taskData.ids_users.length">
+          <span class="empty_data_wrapper">Вы ещё не выбрали специалистов</span>
+        </template>
+        <template v-else>
+          <v-simple-table>
+            <template #default>
+              <thead>
+                <tr>
+                  <th class="text-left">
+                    Специалисты
+                  </th>
+                  <th class="text-left">
+                    <div style="display: flex; align-items: center">
+                      Совпадение по услугам
+                      <IconTooltip
+                        :icon-text="'mdi-help-circle-outline'"
+                        :size-icon="'16'"
+                        :text-tooltip="'В большинстве случаев отсутствие услуги\n'+
+                          'объясняется тем, что специалист пока \n'+
+                          'не заполнил свой прайс'"
                       />
                     </div>
-                  </div>
-                </td>
-                <td>66% - 2 из 3</td>
-                <td>66% - 2 из 3</td>
-                <td>
-                  <IconTooltip
-                    :color-icon="'#B3B3B3'"
-                    :icon-text="'mdi-delete-outline'"
-                    :size-icon="'32'"
-                    :text-tooltip="'Убрать из заявки'"
-                    @click-icon="deleteOneUser(taskData.ids_users.item, index)"
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </template>
-        </v-simple-table>
+                  </th>
+                  <th class="text-left">
+                    <div style="display: flex; align-items: center">
+                      Совпадение по брендам
+                      <IconTooltip
+                        :icon-text="'mdi-help-circle-outline'"
+                        :size-icon="'16'"
+                        :text-tooltip="'В этом столбце показано совпадение\n'
+                          +'по вашему избранному оборудованию \n'
+                          +'с опытом монтажа мастером этих брендов'"
+                      />
+                    </div>
+                  </th>
+                  <th class="text-left">
+                    Действие
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(item, index) in dataUsers"
+                  :key="index"
+                >
+                  <td>
+                    <div class="user_info">
+                      <DropDownMenuStyled :is-left="true" :is-offset-y="true">
+                        <template #icon>
+                          <v-avatar size="50">
+                            <v-img
+                              src="https://www.wrestlezone.com/wp-content/uploads/sites/8/2023/12/kurt-angle-meme-machine.jpg?resize=1024,576"
+                            />
+                          </v-avatar>
+                        </template>
+                        <template #content>
+                          <MiniUserCard :user-object="item"/>
+                        </template>
+                      </DropDownMenuStyled>
+                      <div class="user_title">
+                        <div class="name">
+                          {{ item.user_fio }}
+                        </div>
+                        <v-rating
+                          background-color="#B3B3B3"
+                          color="#95D7AE"
+                          readonly
+                        />
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <v-menu offset-overflow offset-y open-on-hover>
+                      <template #activator="{ on, attrs }">
+                        <span
+                          style="font-weight: 700;"
+                          v-bind="attrs"
+                          v-on="on"
+                        >
+                          {{ getMatchPercentage(item.services) }} -
+                        </span>
+                        <span
+                          style="font-weight: 400; color: #B3B3B3;"
+                          v-bind="attrs"
+                          v-on="on"
+                        >
+                          {{ getCountUserServicesToMatch(item.services) }}
+                        </span>
+                      </template>
+                      <v-list>
+                        <div class="explain_info">
+                          <h4>Пользователь может выполнить следующие услуги: </h4>
+                          <li
+                            v-for="(item, index) in getListServicesOfUserToExecute(item.services)"
+                            :key="index"
+                          >
+                            {{ item }}
+                          </li>
+                        </div>
+                      </v-list>
+                    </v-menu>
+                  </td>
+                  <td>66% - 2 из 3</td>
+                  <td>
+                    <IconTooltip
+                      :color-icon="'#B3B3B3'"
+                      :icon-text="'mdi-delete-outline'"
+                      :size-icon="'32'"
+                      :text-tooltip="'Убрать из заявки'"
+                      @click-icon="deleteOneUser(taskData.ids_users.item, index)"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </template>
+          </v-simple-table>
+        </template>
       </v-tab-item>
-      <v-tab-item :key="3" class="tab_wrapper"/>
+      <v-tab-item :key="3" class="tab_wrapper">
+        <div class="info_wrapper">
+          <div v-if="taskData.services.length" class="info_title">
+            Услуги:
+            <li
+              v-for="(item, index) in taskData.services"
+              :key="index"
+              class="text"
+            >
+              {{ item.service_data.name }}
+            </li>
+          </div>
+          <div v-if="dataUsers.length" class="info_title">
+            Специалисты:
+            <li
+              v-for="(item, index) in dataUsers"
+              :key="index"
+              class="text"
+            >
+              {{ item.user_fio }}
+            </li>
+          </div>
+          <div
+            v-if="taskData.notes !== ''"
+            style="display: grid; grid-row-gap: 10px;"
+          >
+            <div style="display: flex; align-items: center">
+              <span class="info_title">Примечание: </span>
+              <IconTooltip
+                :icon-text="'mdi-help-circle-outline'"
+                :text-tooltip="'Допускается заполнение только этого поля'"
+              />
+            </div>
+            <v-textarea
+              v-model="taskData.notes"
+              :hide-details="true"
+              clearable
+              color="#000000"
+              label="Введите примечание"
+              outlined
+              disabled
+              height="150"
+            />
+          </div>
+        </div>
+      </v-tab-item>
     </v-tabs>
-
 
     <!-- Блок с кнопками. -->
     <div v-if="tab === 0" class="footer_buttons">
@@ -359,7 +505,7 @@ export default {
     },
     getServicesCodes() {
       return this.taskData.services.map((item) => item.service_data.code);
-    }
+    },
   },
   watch: {
     'getServicesCodes':{
@@ -497,7 +643,63 @@ export default {
 
       this.$toast.success('Исполнитель удален');
     },
+    getMatchPercentage(ratedUserServices) {
+      const taskServicesLength = this.taskData.services.length
+      const userServicesCodes = ratedUserServices.map((elem) => elem.code)
 
+      const taskServicesCodes = this.getServicesCodes
+
+      const resultArr = []
+
+      for (const elem of userServicesCodes) {
+        if (taskServicesCodes.includes(elem)) {
+          resultArr.push(elem)
+        }
+      }
+
+      let result = Math.floor((resultArr.length / taskServicesLength) * 100)
+
+      if (result > 100) {
+        result = '100%'
+      } else {
+        result = result + '%'
+      }
+
+      return result
+    },
+    getCountUserServicesToMatch(ratedUserServices) {
+      const taskServicesLength = this.taskData.services.length
+      const userServicesCodes = ratedUserServices.map((elem) => elem.code)
+
+      const taskServicesCodes = this.getServicesCodes
+
+      const resultArr = []
+
+      for (const elem of userServicesCodes) {
+        if (taskServicesCodes.includes(elem)) {
+          resultArr.push(elem)
+        }
+      }
+
+      return resultArr.length + ' из ' + taskServicesLength
+    },
+    getListServicesOfUserToExecute(ratedUserServices) {
+      const userServicesName = ratedUserServices
+        .map((elem) => elem.name)
+
+      const taskServicesName = this.taskData.services
+        .map((elem) => elem.service_data.name)
+
+      const resultArr = []
+
+      for (const elem of userServicesName) {
+        if (taskServicesName.includes(elem)) {
+          resultArr.push(elem)
+        }
+      }
+
+      return resultArr
+    }
   }
 };
 </script>
@@ -514,6 +716,15 @@ $borderRadius: 5px;
 .tab_wrapper {
   height: 600px;
   overflow: auto;
+}
+
+.empty_data_wrapper {
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5em;
+  font-weight: 700;
 }
 
 .application_card {
@@ -540,6 +751,11 @@ $borderRadius: 5px;
     .info_title {
       font-weight: 600;
       font-size: 1.3em;
+      display: grid;
+      .text {
+        font-size: 1em !important;
+        font-weight: 400;
+      }
     }
 
     .info_text {
@@ -643,6 +859,11 @@ $borderRadius: 5px;
     display: flex;
     justify-content: space-between;
   }
+}
+
+.explain_info {
+  padding: 10px;
+  max-width: 300px;
 }
 
 </style>
