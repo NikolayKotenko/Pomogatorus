@@ -172,6 +172,13 @@ export default {
           this.getNomenclature('start')
         }
       }
+    },
+    '$store.state.Objects.currentObject.id':{
+      async handler(idCurrentObject) {
+        if (!idCurrentObject) return false;
+
+        await this.$store.dispatch('NomenclatureModule/getListFavoriteNomenclatureByUserAndObjectId');
+      }
     }
   },
   mounted() {

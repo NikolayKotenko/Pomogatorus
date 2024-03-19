@@ -74,17 +74,17 @@ import ArticleInfo from '~/components/Article/ArticleInfo'
 import HashTagStyled from '~/components/Common/HashTagStyled'
 import Request from '~/services/request'
 
-const VuetifyClass = require('vuetify')
+const VuetifyClass = require('vuetify');
 
 export default {
   components: { Biathlon, ArticleSmallCard, ArticleInfo, HashTagStyled, ViewerStyled },
   async asyncData({ store, params }) {
     try {
-      const articleRequest = await Request.get(`${store.state.BASE_URL}/entity/articles/${params.id}`, '', true)
-      const article = articleRequest.data
-      return { article }
+      const articleRequest = await Request.get(`${store.state.BASE_URL}/entity/articles/${params.id}`, '', true);
+      const article = articleRequest.data;
+      return { article };
     } catch (error) {
-      console.warn(error)
+      console.warn(error);
     }
   },
   data: () => ({
@@ -125,7 +125,7 @@ export default {
           content: 'blue'
         }
       ]
-    }
+    };
   },
   jsonld() {
     return [
@@ -149,91 +149,91 @@ export default {
         },
         datePublished: this.article.created_at
       }
-    ]
+    ];
   },
   computed: {
     ...mapGetters(['getUserId']),
     ...mapGetters('Objects', ['getIdCurrentObject']),
 
     totalImages() {
-      return this.$store.state.ArticleModule.totalImages
+      return this.$store.state.ArticleModule.totalImages;
     },
 
     refactored_content() {
-      return JSON.parse(JSON.parse(this.article.content))
+      return JSON.parse(JSON.parse(this.article.content));
     },
     ComponentLayout() {
       if (this.params_of_component.name === 'questions') {
-        return Vue.extend(Question)
+        return Vue.extend(Question);
       }
 
       if (this.params_of_component.name === 'image') {
-        return Vue.extend(ImageLayout)
+        return Vue.extend(ImageLayout);
       }
 
       if (this.params_of_component.name === 'nomenclature') {
-        return Vue.extend(NomenclatureArticle)
+        return Vue.extend(NomenclatureArticle);
       }
 
-      return Vue.extend(LoginAuth)
+      return Vue.extend(LoginAuth);
     },
     isShowTitle() {
-      return this.coordYNav <= 0 && this.coordYNav !== null
+      return this.coordYNav <= 0 && this.coordYNav !== null;
     },
     getFirstTag() {
       return (this.article._all_public_name_tags.length)
         ? this.article._all_public_name_tags[0]
-        : ''
+        : '';
     },
     listArticlesExcludeCurrent() {
       return this.$store.state.ArticleModule.list_filtered_articles.filter((obj) => {
-        return obj.id !== this.article.id
-      })
+        return obj.id !== this.article.id;
+      });
     },
     getFilterByMainTag() {
-      return '&filter[tag][]=' + this.article._all_public_tags[0]?.code
+      return '&filter[tag][]=' + this.article._all_public_tags[0]?.code;
     },
     tagsArticles() {
-      const tagsArticles = []
-      const alreadyAddedArticles = []
+      const tagsArticles = [];
+      const alreadyAddedArticles = [];
 
       this.listArticlesExcludeCurrent.forEach((article) => {
         article.mtomtags.forEach((tag) => {
-          const findedTagArticle = tagsArticles.find((elem) => elem?.code === tag?.dtags?.code)
+          const findedTagArticle = tagsArticles.find((elem) => elem?.code === tag?.dtags?.code);
           if (findedTagArticle) {
             if (findedTagArticle.articles.length >= 8) {
-              return
+              return;
             }
 
             if (alreadyAddedArticles.includes(article.id)) {
-              return
+              return;
             }
 
-            findedTagArticle.articles.push(article)
-            alreadyAddedArticles.push(article.id)
+            findedTagArticle.articles.push(article);
+            alreadyAddedArticles.push(article.id);
           } else {
             if (alreadyAddedArticles.includes(article.id)) {
-              return
+              return;
             }
 
             tagsArticles.push({
               name: tag.dtags.name,
               articles: [article],
               code: tag.dtags.code
-            })
+            });
           }
-        })
-      })
+        });
+      });
 
       return tagsArticles.sort((a, b) => {
         if (a.articles.length < b.articles.length) {
-          return 1
+          return 1;
         }
         if (a.articles.length > b.articles.length) {
-          return -1
+          return -1;
         }
-        return 0
-      })
+        return 0;
+      });
     }
   },
   watch: {
@@ -241,75 +241,75 @@ export default {
       handler(v) {
         if (!v) {
           this.initializeContent().then(() => {
-            this.$store.commit('change_refactoring_content', false)
-          })
+            this.$store.commit('change_refactoring_content', false);
+          });
         }
       }
     },
     '$store.state.ArticleModule.indexImage': {
       handler(nv, ov) {
         if (nv === -1) {
-          this.$refs.viewer.open(ov)
+          this.$refs.viewer.open(ov);
         } else {
-          this.$refs.viewer.open(nv)
+          this.$refs.viewer.open(nv);
         }
       }
     },
     'getUserId': {
       handler(v) {
-        this.getAnswers()
+        this.getAnswers();
       }
     },
     'getIdCurrentObject': {
       handler(v) {
-        this.getAnswers()
+        this.getAnswers();
       }
     }
   },
   async mounted() {
-    this.$route.meta.title = this.article?.name
+    this.$route.meta.title = this.article?.name;
 
     // eslint-disable-next-line nuxt/no-env-in-hooks
     if (process.client) {
-      window.addEventListener('scroll', this.scrollWindow)
+      window.addEventListener('scroll', this.scrollWindow);
     }
     this.initializeContent().then(() => {
       setTimeout(() => {
-        this.changeIndexQuestion()
-        this.$store.commit('change_refactoring_content', false)
-        this.findQuestions()
+        this.changeIndexQuestion();
+        this.$store.commit('change_refactoring_content', false);
+        this.findQuestions();
 
-        this.getAnswers()
-      })
+        this.getAnswers();
+      });
       // SCROLL TO AUTH BLOCK IF WE COME FROM EMAIL MESSAGE
       setTimeout(() => {
         if (this.$route.hash) {
-          const elem = document.getElementById(this.$route.hash.split('#').pop())
-          const top = window.scrollY + elem.getBoundingClientRect().top - this.heightNav - 54
-          window.scrollTo(0, top)
+          const elem = document.getElementById(this.$route.hash.split('#').pop());
+          const top = window.scrollY + elem.getBoundingClientRect().top - this.heightNav - 54;
+          window.scrollTo(0, top);
         }
-      }, 200)
-    })
+      }, 200);
+    });
 
-    await this.$store.dispatch('getListArticles', this.getFilterByMainTag)
+    await this.$store.dispatch('getListArticles', this.getFilterByMainTag);
   },
   created() {
     // eslint-disable-next-line nuxt/no-globals-in-created
-    if (process.client) window.addEventListener('scroll', this.handleScroll)
+    if (process.client) window.addEventListener('scroll', this.handleScroll);
   },
   beforeDestroy() {
-    this.$store.state.ArticleModule.selectedComponent = {}
-    this.$store.state.ArticleModule.countLayout = 0
-    this.$store.state.ArticleModule.count_of_questions = 0
-    this.$store.state.ArticleModule.components_after_request = []
+    this.$store.state.ArticleModule.selectedComponent = {};
+    this.$store.state.ArticleModule.countLayout = 0;
+    this.$store.state.ArticleModule.count_of_questions = 0;
+    this.$store.state.ArticleModule.components_after_request = [];
 
-    this.$store.commit('set_answers', [])
+    this.$store.commit('set_answers', []);
   },
   destroyed() {
     // eslint-disable-next-line nuxt/no-env-in-hooks
     if (process.client) {
-      window.removeEventListener('scroll', this.scrollWindow)
-      window.removeEventListener('scroll', this.handleScroll)
+      window.removeEventListener('scroll', this.scrollWindow);
+      window.removeEventListener('scroll', this.handleScroll);
     }
   },
   methods: {
@@ -318,143 +318,143 @@ export default {
       if (this.getUserId && this.getIdCurrentObject) {
         const query = {
           id_user: this.getUserId,
-          id_object: this.getIdCurrentObject,
-          id_article: this.$route.params.id
-        }
-        this.$store.dispatch('getAnswersFromServer', query)
+          id_object: this.getIdCurrentObject
+          // id_article: this.$route.params.id
+        };
+        this.$store.dispatch('getAnswersFromServer', query);
       }
     },
 
     getSrc(item) {
-      return this.$store.state.BASE_URL + item?.src
+      return this.$store.state.BASE_URL + item?.src;
     },
 
     // SCROLL EVENT
     scrollWindow() {
       setTimeout(() => {
         if (this.$refs.nav) {
-          this.coordYNav = this.$refs.nav.getBoundingClientRect().y
-          this.heightNav = this.$refs.nav.getBoundingClientRect().height
+          this.coordYNav = this.$refs.nav.getBoundingClientRect().y;
+          this.heightNav = this.$refs.nav.getBoundingClientRect().height;
         }
-      }, 1000)
+      }, 1000);
     },
 
     // CHANGE VIEW OF ARTICLE
     setView(value) {
       if (value === 'normal') {
-        this.renderNormal()
+        this.renderNormal();
       } else {
-        this.renderFlat()
+        this.renderFlat();
       }
     },
     renderNormal() {
-      this.renderArticle = true
+      this.renderArticle = true;
       this.$nextTick(() => {
-        this.renderArticle = false
+        this.renderArticle = false;
 
-        this.$store.commit('change_refactoring_content', true)
+        this.$store.commit('change_refactoring_content', true);
         this.initializeContent().then(() => {
           setTimeout(() => {
-            this.changeIndexQuestion()
-            this.$store.commit('change_refactoring_content', false)
-          })
-        })
-      })
+            this.changeIndexQuestion();
+            this.$store.commit('change_refactoring_content', false);
+          });
+        });
+      });
     },
     renderFlat() {
-      const components = Array.from(document.getElementsByClassName('article_component'))
+      const components = Array.from(document.getElementsByClassName('article_component'));
 
-      const contentElement = document.getElementsByClassName('article-template__content')[0]
-      contentElement.innerHTML = ''
+      const contentElement = document.getElementsByClassName('article-template__content')[0];
+      contentElement.innerHTML = '';
 
       components.forEach(elem => {
-        contentElement.appendChild(elem)
-      })
+        contentElement.appendChild(elem);
+      });
     },
 
     // RENDER ARTICLE
     changeIndexQuestion() {
-      const questions = [...document.getElementsByClassName('question_wrapper')]
+      const questions = [...document.getElementsByClassName('question_wrapper')];
 
       this.$nextTick(() => {
-        let counter = 1
+        let counter = 1;
 
         questions.forEach((elem) => {
-          const tmpStr = elem.id.match('-(.*)')
-          const id = tmpStr[tmpStr.length - 1]
+          const tmpStr = elem.id.match('-(.*)');
+          const id = tmpStr[tmpStr.length - 1];
 
           const component = this.data_of_components
             .filter((elem) => {
-              return elem.data.component.name === 'question' || elem.data.component.name === 'questions'
+              return elem.data.component.name === 'question' || elem.data.component.name === 'questions';
             })
             .filter((elem) => {
-              return parseInt(elem.data.index) === parseInt(id)
-            })
+              return parseInt(elem.data.index) === parseInt(id);
+            });
 
 
           if (component.length) {
-            const keyData = `index_${component[0].data.component.name}`
-            component[0].instance.$data[keyData] = counter
+            const keyData = `index_${component[0].data.component.name}`;
+            component[0].instance.$data[keyData] = counter;
 
-            counter++
+            counter++;
           }
-        })
-      })
+        });
+      });
     },
     initializeContent() {
       return new Promise((resolve) => {
         if (JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components))).length) {
-          const questionsData = this.article.questions
+          const questionsData = this.article.questions;
 
-          const arrOfComponents = JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components)))
-          const promises = []
+          const arrOfComponents = JSON.parse(JSON.parse(JSON.parse(this.article.inserted_components)));
+          const promises = [];
 
           arrOfComponents.forEach((elem) => {
             if (elem.component.name === 'questions') {
               const question = questionsData.filter(question => {
-                return parseInt(question.id) === parseInt(elem.component.id)
-              })[0]
+                return parseInt(question.id) === parseInt(elem.component.id);
+              })[0];
               if (question) {
                 this.$store.commit('changeSelectedComponent', {
                   data: question,
                   index: elem.index,
                   component: elem.component
-                })
+                });
               }
             } else if (elem.component.name === 'nomenclature') {
-              promises.push(this.$store.dispatch('nomenclatureFromServer', elem))
+              promises.push(this.$store.dispatch('nomenclatureFromServer', elem));
             } else if (elem.component.name === 'image') {
-              promises.push(this.$store.dispatch('imageFromServer', elem))
+              promises.push(this.$store.dispatch('imageFromServer', elem));
             } else if (elem.component.name === 'auth') {
-              promises.push(this.$store.dispatch('getAuth', elem))
+              promises.push(this.$store.dispatch('getAuth', elem));
             }
-          })
+          });
 
           Promise.all(promises).finally(() => {
-            const arr = []
+            const arr = [];
             this.$store.state.ArticleModule.components_after_request.forEach((elem) => {
-              arr.push(elem)
-            })
+              arr.push(elem);
+            });
             arr.sort((a, b) => {
-              return a.index - b.index
-            })
+              return a.index - b.index;
+            });
 
             this.$nextTick(() => {
               arr.forEach((elem) => {
                 setTimeout(() => {
-                  this.checkTypeComponent(elem)
-                  let data = {}
+                  this.checkTypeComponent(elem);
+                  let data = {};
                   if (elem.component.name === 'image') {
                     const fullUrl = document
                       .getElementById(`component_wrapper-${elem.index}`)
-                      .getElementsByClassName('inserted_image')[0].src
-                    const subUrl = fullUrl.split('.com')
+                      .getElementsByClassName('inserted_image')[0].src;
+                    const subUrl = fullUrl.split('.com');
                     const alt = document
                       .getElementById(`component_wrapper-${elem.index}`)
-                      .getElementsByClassName('inserted_image')[0].alt
+                      .getElementsByClassName('inserted_image')[0].alt;
                     const title = document
                       .getElementById(`component_wrapper-${elem.index}`)
-                      .getElementsByClassName('inserted_image')[0].title
+                      .getElementsByClassName('inserted_image')[0].title;
                     data = Object.assign(
                       {},
                       {
@@ -463,91 +463,91 @@ export default {
                         title,
                         index_image: elem.component.index_image
                       }
-                    )
-                    this.$store.commit('M_selectedComponent', {})
+                    );
+                    this.$store.commit('M_selectedComponent', {});
                   } else {
-                    data = elem.data
+                    data = elem.data;
                   }
 
-                  this.$store.commit('M_countLayout', elem.index)
-                  this.$store.commit('M_selectedComponent', data)
-                  const countLayout = this.$store.state.ArticleModule.countLayout
-                  const range = document.createRange()
-                  range.selectNode(document.getElementById(`component_wrapper-${elem.index}`))
-                  range.deleteContents()
-                  range.collapse(false)
-                  this.data_of_components.push(this.getStructureForInstance(elem.component))
-                  this.data_of_components[countLayout - 1].instance.$mount() // pass nothing
-                  range.insertNode(this.data_of_components[elem.index - 1].instance.$el)
-                  this.$store.commit('M_selectedComponent', {})
-                })
-              })
-            })
-            resolve()
-          })
+                  this.$store.commit('M_countLayout', elem.index);
+                  this.$store.commit('M_selectedComponent', data);
+                  const countLayout = this.$store.state.ArticleModule.countLayout;
+                  const range = document.createRange();
+                  range.selectNode(document.getElementById(`component_wrapper-${elem.index}`));
+                  range.deleteContents();
+                  range.collapse(false);
+                  this.data_of_components.push(this.getStructureForInstance(elem.component));
+                  this.data_of_components[countLayout - 1].instance.$mount(); // pass nothing
+                  range.insertNode(this.data_of_components[elem.index - 1].instance.$el);
+                  this.$store.commit('M_selectedComponent', {});
+                });
+              });
+            });
+            resolve();
+          });
         }
-      })
+      });
     },
     checkTypeComponent(elem) {
-      this.params_of_component.name = elem.component.name
+      this.params_of_component.name = elem.component.name;
       if (elem.component.name === 'questions') {
         const name = Object.prototype.hasOwnProperty.call(elem.component, 'index_question')
           ? 'question'
-          : elem.component.name
-        this.$store.commit('M_count_of_questions', elem.component[`index_${name}`])
+          : elem.component.name;
+        this.$store.commit('M_count_of_questions', elem.component[`index_${name}`]);
       }
     },
     getStructureForInstance(dataComponent) {
-      Vue.use(VuetifyClass)
-      const vuetify = new VuetifyClass()
-      const store = this.$store
-      const router = this.$router
-      const $toast = this.$toast
+      Vue.use(VuetifyClass);
+      const vuetify = new VuetifyClass();
+      const store = this.$store;
+      const router = this.$router;
+      const $toast = this.$toast;
       const instance = new this.ComponentLayout({
         store,
         vuetify,
         router,
         $toast
-      })
+      });
       const data = new this.Imported_component({
         index: this.$store.state.ArticleModule.countLayout,
         component: dataComponent
-      })
-      const params = Object.assign({}, { instance }, { data })
-      return new this.Constructor_instance(params)
+      });
+      const params = Object.assign({}, { instance }, { data });
+      return new this.Constructor_instance(params);
     },
     findQuestions() {
       if (!this.data_of_components.length) {
-        return
+        return;
       }
       this.computedQuestions = this.data_of_components.filter(elem => {
-        return elem.data.component.name === 'questions'
-      })
+        return elem.data.component.name === 'questions';
+      });
     },
 
     /* CONSTRUCTORS */
     Imported_component(data) {
-      const { index, component } = data
+      const { index, component } = data;
 
-      this.index = index
-      this.component = component
+      this.index = index;
+      this.component = component;
     },
     Constructor_instance(params) {
-      const { data, instance } = params
+      const { data, instance } = params;
 
-      this.data = data
-      this.instance = instance
+      this.data = data;
+      this.instance = instance;
     },
     handleScroll() {
       if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight - 50) {
-        this.localViewAction = true
+        this.localViewAction = true;
       }
     }
   }
-}
+};
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @import 'assets/styles/style';
 
 .fade-enter-active,

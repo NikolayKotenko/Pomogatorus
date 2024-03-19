@@ -10,27 +10,54 @@
     </template>
 
     <v-tabs
+      v-model="tab"
       color="black"
       grow
     >
       <v-tab :key="0">
         Услуги
+        <v-badge
+          :content="taskData.services.length"
+          :value="taskData.services.length"
+          color="#95D7AE"
+        />
       </v-tab>
-      <v-tab :key="1">
+      <v-tab
+        :key="1"
+        :disabled="! taskData.services.length"
+      >
         Рекомендованные специалисты
+        <v-badge
+          :content="$store.state.CollaborationModule.listRatedUsers.length"
+          :value="$store.state.CollaborationModule.listRatedUsers.length"
+          color="#95D7AE"
+        />
       </v-tab>
-      <v-tab :key="2">
+      <v-tab
+        :key="2"
+        :disabled="! taskData.ids_users.length || ! taskData.services.length"
+      >
         Приглашенные специалисты
+        <v-badge
+          :content="taskData.ids_users.length"
+          :value="taskData.ids_users.length"
+          color="#95D7AE"
+        />
       </v-tab>
-      <v-tab :key="3">
+      <v-tab
+        :key="3"
+        :disabled="(taskData.notes === '') && (! taskData.ids_users.length) && (! taskData.services.length)"
+      >
         Заявка
       </v-tab>
 
       <!-- Блок с услугами. -->
-      <v-tab-item :key="0">
+      <v-tab-item :key="0" class="tab_wrapper">
+        <template v-if="! taskData.services.length">
+          <span class="empty_data_wrapper">Вы ещё не выбрали услугу</span>
+        </template>
         <div class="services_table">
           <div class="info_wrapper">
-            <span class="info_title">Услуги: </span>
             <div class="service_card_wrapper">
               <ServiceCard
                 v-for="(item, index) in taskData.services"
@@ -43,14 +70,20 @@
             </div>
           </div>
           <UniversalAddInput
-            :list-services-available-to-add="listServicesAvailableToAdd"
+            :list-items-available-to-add="currentListServicesAvailableToAdd"
             @add-service="addService"
           />
         </div>
 
         <!-- Блок с примечанием. -->
         <div class="info_wrapper">
-          <span class="info_title">Примечание: </span>
+          <div style="display: flex; align-items: center">
+            <span class="info_title">Примечание: </span>
+            <IconTooltip
+              :icon-text="'mdi-help-circle-outline'"
+              :text-tooltip="'Допускается заполнение только этого поля'"
+            />
+          </div>
           <div class="textarea_style">
             <v-textarea
               v-model="taskData.notes"
@@ -65,7 +98,7 @@
       </v-tab-item>
 
       <!-- Блок с рекомендованными пользователями. -->
-      <v-tab-item :key="1">
+      <v-tab-item :key="1" class="tab_wrapper">
         <v-simple-table>
           <template #default>
             <thead>
@@ -74,10 +107,28 @@
                   Специалисты
                 </th>
                 <th class="text-left">
-                  Совпадение по услугам
+                  <div style="display: flex; align-items: center">
+                    Совпадение по услугам
+                    <IconTooltip
+                      :icon-text="'mdi-help-circle-outline'"
+                      :size-icon="'16'"
+                      :text-tooltip="'В большинстве случаев отсутствие услуги\n'+
+                        'объясняется тем, что специалист пока \n'+
+                        'не заполнил свой прайс'"
+                    />
+                  </div>
                 </th>
                 <th class="text-left">
-                  Совпадение по брендам
+                  <div style="display: flex; align-items: center">
+                    Совпадение по брендам
+                    <IconTooltip
+                      :icon-text="'mdi-help-circle-outline'"
+                      :size-icon="'16'"
+                      :text-tooltip="'В этом столбце показано совпадение\n'
+                        +'по вашему избранному оборудованию \n'
+                        +'с опытом монтажа мастером этих брендов'"
+                    />
+                  </div>
                 </th>
                 <th class="text-left">
                   Действие
@@ -86,160 +137,311 @@
             </thead>
             <tbody>
               <tr
-                v-for="(item, index) in getReccomendedUsers"
+                v-for="(item, index) in $store.state.CollaborationModule.listRatedUsers"
                 :key="index"
               >
-                <td>{{ item.user_fio }}</td>
-                <td>66% - 2 из 3</td>
+                <td>
+                  <div class="user_info">
+                    <DropDownMenuStyled :is-left="true" :is-offset-y="true">
+                      <template #icon>
+                        <v-avatar size="50">
+                          <v-img
+                            src="https://www.wrestlezone.com/wp-content/uploads/sites/8/2023/12/kurt-angle-meme-machine.jpg?resize=1024,576"
+                          />
+                        </v-avatar>
+                      </template>
+                      <template #content>
+                        <MiniUserCard :user-object="item"/>
+                      </template>
+                    </DropDownMenuStyled>
+                    <div class="user_title">
+                      <div class="name">
+                        {{ item.user_fio }}
+                      </div>
+                      <v-rating
+                        background-color="#B3B3B3"
+                        color="#95D7AE"
+                        readonly
+                      />
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <v-menu offset-overflow offset-y open-on-hover>
+                    <template #activator="{ on, attrs }">
+                      <span
+                        style="font-weight: 700;"
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        {{ getMatchPercentage(item.services) }} -
+                      </span>
+                      <span
+                        style="font-weight: 400; color: #B3B3B3;"
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        {{ getCountUserServicesToMatch(item.services) }}
+                      </span>
+                    </template>
+                    <v-list>
+                      <div class="explain_info">
+                        <h4>Пользователь может выполнить следующие услуги: </h4>
+                        <li
+                          v-for="(item, index) in getListServicesOfUserToExecute(item.services)"
+                          :key="index"
+                        >
+                          {{ item }}
+                        </li>
+                      </div>
+                    </v-list>
+                  </v-menu>
+                </td>
                 <td>66% - 2 из 3</td>
                 <td>
                   <IconTooltip
                     :color-icon="'#B3B3B3'"
-                    :icon-text="'mdi-plus-circle-outline'"
+                    :icon-text="'mdi-plus'"
                     :size-icon="'32'"
                     :text-tooltip="'Добавить в заявку'"
+                    @click-icon="addUser(item)"
                   />
                 </td>
               </tr>
             </tbody>
           </template>
         </v-simple-table>
+      </v-tab-item>
 
+      <!-- Блок с приглашенными пользователями. -->
+      <v-tab-item :key="2" class="tab_wrapper">
+        <template v-if="! taskData.ids_users.length">
+          <span class="empty_data_wrapper">Вы ещё не выбрали специалистов</span>
+        </template>
+        <template v-else>
+          <v-simple-table>
+            <template #default>
+              <thead>
+                <tr>
+                  <th class="text-left">
+                    Специалисты
+                  </th>
+                  <th class="text-left">
+                    <div style="display: flex; align-items: center">
+                      Совпадение по услугам
+                      <IconTooltip
+                        :icon-text="'mdi-help-circle-outline'"
+                        :size-icon="'16'"
+                        :text-tooltip="'В большинстве случаев отсутствие услуги\n'+
+                          'объясняется тем, что специалист пока \n'+
+                          'не заполнил свой прайс'"
+                      />
+                    </div>
+                  </th>
+                  <th class="text-left">
+                    <div style="display: flex; align-items: center">
+                      Совпадение по брендам
+                      <IconTooltip
+                        :icon-text="'mdi-help-circle-outline'"
+                        :size-icon="'16'"
+                        :text-tooltip="'В этом столбце показано совпадение\n'
+                          +'по вашему избранному оборудованию \n'
+                          +'с опытом монтажа мастером этих брендов'"
+                      />
+                    </div>
+                  </th>
+                  <th class="text-left">
+                    Действие
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(item, index) in dataUsers"
+                  :key="index"
+                >
+                  <td>
+                    <div class="user_info">
+                      <DropDownMenuStyled :is-left="true" :is-offset-y="true">
+                        <template #icon>
+                          <v-avatar size="50">
+                            <v-img
+                              src="https://www.wrestlezone.com/wp-content/uploads/sites/8/2023/12/kurt-angle-meme-machine.jpg?resize=1024,576"
+                            />
+                          </v-avatar>
+                        </template>
+                        <template #content>
+                          <MiniUserCard :user-object="item"/>
+                        </template>
+                      </DropDownMenuStyled>
+                      <div class="user_title">
+                        <div class="name">
+                          {{ item.user_fio }}
+                        </div>
+                        <v-rating
+                          background-color="#B3B3B3"
+                          color="#95D7AE"
+                          readonly
+                        />
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <v-menu offset-overflow offset-y open-on-hover>
+                      <template #activator="{ on, attrs }">
+                        <span
+                          style="font-weight: 700;"
+                          v-bind="attrs"
+                          v-on="on"
+                        >
+                          {{ getMatchPercentage(item.services) }} -
+                        </span>
+                        <span
+                          style="font-weight: 400; color: #B3B3B3;"
+                          v-bind="attrs"
+                          v-on="on"
+                        >
+                          {{ getCountUserServicesToMatch(item.services) }}
+                        </span>
+                      </template>
+                      <v-list>
+                        <div class="explain_info">
+                          <h4>Пользователь может выполнить следующие услуги: </h4>
+                          <li
+                            v-for="(item, index) in getListServicesOfUserToExecute(item.services)"
+                            :key="index"
+                          >
+                            {{ item }}
+                          </li>
+                        </div>
+                      </v-list>
+                    </v-menu>
+                  </td>
+                  <td>66% - 2 из 3</td>
+                  <td>
+                    <IconTooltip
+                      :color-icon="'#B3B3B3'"
+                      :icon-text="'mdi-delete-outline'"
+                      :size-icon="'32'"
+                      :text-tooltip="'Убрать из заявки'"
+                      @click-icon="deleteOneUser(taskData.ids_users.item, index)"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </template>
+          </v-simple-table>
+        </template>
+      </v-tab-item>
+      <v-tab-item :key="3" class="tab_wrapper">
         <div class="info_wrapper">
-          <span class="info_title">Исполнители: </span>
-          <div
-            v-for="(item, index) in dataUsers"
-            :key="index"
-            class="user_info"
-          >
-            <li>{{ item.user_fio }}</li>
-            <v-dialog
-              v-model="showDeleteOneUserModal"
-              width="600"
+          <div v-if="taskData.services.length" class="info_title">
+            Услуги:
+            <li
+              v-for="(item, index) in taskData.services"
+              :key="index"
+              class="text"
             >
-              <template #activator="{ on, attrs }">
-                <TooltipStyled :title="'Удалить исполнителя'">
-                  <v-icon
-                    color="#8A8784"
-                    size="32"
-                    v-bind="attrs"
-                    v-on="on"
-                  >
-                    mdi-delete-outline
-                  </v-icon>
-                </TooltipStyled>
-              </template>
-              <v-card class="delete_user_modal">
-                <div class="delete_user_header">
-                  <span class="header_title">Удаление исполнителя</span>
-                  <v-icon large @click="closeDeleteOneUserModal">
-                    mdi-close
-                  </v-icon>
-                </div>
-                <span>
-                  Вы действительно хотите удалить исполнителя "{{ item.user_fio }}"?
-                </span>
-                <div class="delete_user_buttons">
-                  <ButtonStyled
-                    :local-class="'invite_button style_button'"
-                    :local-text="'Подтвердить'"
-                    @click-button="deleteOneUser(taskData.ids_users.item, index)"
-                  />
-                  <ButtonStyled
-                    :local-class="'style_close'"
-                    :local-text="'Отмена'"
-                    @click-button="closeDeleteOneUserModal"
-                  />
-                </div>
-              </v-card>
-            </v-dialog>
+              {{ item.service_data.name }}
+            </li>
           </div>
-          <div class="add_users_wrapper">
-            <TooltipStyled
-              :is-top="true"
-              :title="'Добавить исполнителя'"
+          <div v-if="dataUsers.length" class="info_title">
+            Специалисты:
+            <li
+              v-for="(item, index) in dataUsers"
+              :key="index"
+              class="text"
             >
-              <v-icon
-                color="#95D7AE"
-                size="34"
-                @click="addUser"
-              >
-                mdi-plus-circle-outline
-              </v-icon>
-            </TooltipStyled>
-            <v-combobox
+              {{ item.user_fio }}
+            </li>
+          </div>
+          <div
+            v-if="taskData.notes !== ''"
+            style="display: grid; grid-row-gap: 10px;"
+          >
+            <div style="display: flex; align-items: center">
+              <span class="info_title">Примечание: </span>
+              <IconTooltip
+                :icon-text="'mdi-help-circle-outline'"
+                :text-tooltip="'Допускается заполнение только этого поля'"
+              />
+            </div>
+            <v-textarea
+              v-model="taskData.notes"
               :hide-details="true"
-              :item-text="'user_fio'"
-              :item-value="'id'"
-              :items="$store.state.CollaborationModule.listSearchedMembers"
-              class="search_service"
               clearable
-              hide-selected
-              label="Добавить исполнителя"
+              color="#000000"
+              label="Введите примечание"
               outlined
-              return-object
-              solo
-              @change="setSelectedUsersIdsLocal"
+              disabled
+              height="150"
             />
           </div>
         </div>
       </v-tab-item>
-
-      <!-- Блок с приглашенными пользователями. -->
-      <v-tab-item :key="2">
-        <v-simple-table>
-          <template #default>
-            <thead>
-              <tr>
-                <th class="text-left">
-                  Специалисты
-                </th>
-                <th class="text-left">
-                  Совпадение по услугам
-                </th>
-                <th class="text-left">
-                  Совпадение по брендам
-                </th>
-                <th class="text-left">
-                  Действие
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="(item, index) in dataUsers"
-                :key="index"
-              >
-                <td>Иванов иван</td>
-                <td>66% - 2 из 3</td>
-                <td>66% - 2 из 3</td>
-                <td>
-                  <IconTooltip
-                    :color-icon="'#B3B3B3'"
-                    :icon-text="'mdi-minus-circle-outline'"
-                    :size-icon="'32'"
-                    :text-tooltip="'Убрать из заявки'"
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </template>
-        </v-simple-table>
-      </v-tab-item>
     </v-tabs>
 
-
     <!-- Блок с кнопками. -->
-    <div class="footer_buttons">
+    <div v-if="tab === 0" class="footer_buttons">
+      <ButtonStyled
+        class="btn"
+        :local-class="'invite_button style_button'"
+        :local-text="'Выбрать специалистов'"
+        :is-disabled="! taskData.services.length"
+        @click-button="nextStep"
+      >
+        <v-icon>mdi-chevron-right</v-icon>
+      </ButtonStyled>
+    </div>
+
+    <div v-if="tab === 1" class="footer_buttons">
+      <ButtonStyled
+        :local-class="'style_close'"
+        :local-text="'Вернуться к услугам'"
+        @click-button="previousStep"
+      >
+        <v-icon>mdi-chevron-left</v-icon>
+      </ButtonStyled>
+      <ButtonStyled
+        :local-class="'invite_button style_button'"
+        :local-text="'Просмотреть специалистов'"
+        :is-disabled="! taskData.ids_users.length || ! taskData.services.length"
+        @click-button="nextStep"
+      >
+        <v-icon>mdi-chevron-right</v-icon>
+      </ButtonStyled>
+    </div>
+
+    <div v-if="tab === 2" class="footer_buttons">
+      <ButtonStyled
+        :local-class="'style_close'"
+        :local-text="'Вернуться к рекомендациям'"
+        @click-button="previousStep"
+      >
+        <v-icon>mdi-chevron-left</v-icon>
+      </ButtonStyled>
+      <ButtonStyled
+        :local-class="'invite_button style_button'"
+        :local-text="'Перейти к итогу'"
+        :is-disabled="! taskData.ids_users.length || ! taskData.services.length"
+        @click-button="nextStep"
+      >
+        <v-icon>mdi-chevron-right</v-icon>
+      </ButtonStyled>
+    </div>
+
+    <div v-if="tab === 3" class="footer_buttons">
+      <ButtonStyled
+        :local-class="'style_close'"
+        :local-text="'Вернуться к приглашенным'"
+        @click-button="previousStep"
+      >
+        <v-icon>mdi-chevron-left</v-icon>
+      </ButtonStyled>
       <ButtonStyled
         :local-class="'invite_button style_button'"
         :local-text="'Отправить заявку'"
         @click-button="sendTask"
-      />
-      <ButtonStyled
-        :local-class="'style_close'"
-        :local-text="'Отмена'"
-        @click-button="$emit('close-modal')"
       />
     </div>
   </v-card>
@@ -249,6 +451,8 @@
 import ButtonStyled from '../Common/ButtonStyled.vue';
 import TooltipStyled from '../Common/TooltipStyled.vue';
 import IconTooltip from '../Common/IconTooltip.vue';
+import DropDownMenuStyled from '../Common/DropDownMenuStyled.vue'
+import MiniUserCard from '../User/MiniUserCard.vue'
 import ServiceCard from './ServiceCard.vue';
 import { Service, ServiceDataConstructor, TaskData } from '~/helpers/constructors';
 import UniversalAddInput from '~/components/Common/UniversalAddInput';
@@ -256,6 +460,7 @@ import UniversalAddInput from '~/components/Common/UniversalAddInput';
 export default {
   name: 'InviteUserModal',
   components: {
+    MiniUserCard, DropDownMenuStyled,
     UniversalAddInput,
     ServiceCard,
     TooltipStyled,
@@ -285,15 +490,41 @@ export default {
       taskData: new TaskData(),
       dataUsers: [],
       showDeleteOneUserModal: false,
-      selectedUser: {},
-      e1: 0
+      e1: 0,
+      tab: null,
     };
   },
-  mounted() {
+  computed: {
+    currentListServicesAvailableToAdd: {
+      get() {
+        if (this.listServicesAvailableToAdd.length) {
+          return this.listServicesAvailableToAdd;
+        }
+        return this.$store.state.CollaborationModule.listServices;
+      }
+    },
+    getServicesCodes() {
+      return this.taskData.services.map((item) => item.service_data.code);
+    },
+  },
+  watch: {
+    'getServicesCodes':{
+      async handler(v) {
+        await this.$store.dispatch('CollaborationModule/getListRatedUsers', this.getServicesCodes);
+      }
+    },
+  },
+  async mounted() {
     if (this.currentTask) {
       this.taskData = this.currentTask;
     }
     this.taskData.id_object = this.$store.getters['Objects/getIdCurrentObject'];
+
+    if (this.listServicesAvailableToAdd.length) return false;
+    if (!this.$store.state.CollaborationModule.listServices.length) {
+      await this.$store.dispatch('CollaborationModule/getListServices');
+    }
+
   },
   methods: {
     getValueField(str) {
@@ -334,17 +565,17 @@ export default {
     setPrice(index, price) {
       this.taskData.services[index].price = price;
     },
-    //из массива всех специалистов показать только тех у кого есть совпадение по услугам
-    
+    // из массива всех специалистов показать только тех у кого есть совпадение по услугам
 
-    addUser() {
-      if (this.taskData.ids_users.includes(this.selectedUser.id)) {
+
+    addUser(userData) {
+      if (this.taskData.ids_users.includes(userData.id)) {
         this.$toast.error('Исполнитель уже добавлен');
         return false;
       }
 
-      this.taskData.ids_users.push(this.selectedUser.id);
-      this.dataUsers.push(this.selectedUser);
+      this.taskData.ids_users.push(userData.id);
+      this.dataUsers.push(userData);
 
       this.$toast.success('Исполнитель добавлен');
     },
@@ -372,7 +603,34 @@ export default {
       // this.dataUsers = ''
       // this.taskData = new TaskData()
     },
-
+    nextStep() {
+      if (this.tab === 0) {
+        this.tab = 1
+        return false
+      }
+      if (this.tab === 1) {
+        this.tab = 2
+        return false
+      }
+      if (this.tab === 2) {
+        this.tab = 3
+        return false
+      }
+    },
+    previousStep() {
+      if (this.tab === 1) {
+        this.tab = 0
+        return false
+      }
+      if (this.tab === 2) {
+        this.tab = 1
+        return false
+      }
+      if (this.tab === 3) {
+        this.tab = 2
+        return false
+      }
+    },
     deleteOneService(serviceToRemove) {
       this.taskData.services.splice(serviceToRemove, 1);
 
@@ -383,16 +641,65 @@ export default {
       this.taskData.ids_users.splice(idUserToRemove, 1);
       this.dataUsers.splice(dataUserToRemove, 1);
 
-      this.closeDeleteOneUserModal();
       this.$toast.success('Исполнитель удален');
-    }
-  },
-  getters: {
-    getReccomendedUsers() {
-      console.log('123')
-      return this.$store.state.CollaborationModule.listSearchedMembers
-        .map((user) => { user.services.map((service) => { service.id }) })
     },
+    getMatchPercentage(ratedUserServices) {
+      const taskServicesLength = this.taskData.services.length
+      const userServicesCodes = ratedUserServices.map((elem) => elem.code)
+
+      const taskServicesCodes = this.getServicesCodes
+
+      const resultArr = []
+
+      for (const elem of userServicesCodes) {
+        if (taskServicesCodes.includes(elem)) {
+          resultArr.push(elem)
+        }
+      }
+
+      let result = Math.floor((resultArr.length / taskServicesLength) * 100)
+
+      if (result > 100) {
+        result = '100%'
+      } else {
+        result = result + '%'
+      }
+
+      return result
+    },
+    getCountUserServicesToMatch(ratedUserServices) {
+      const taskServicesLength = this.taskData.services.length
+      const userServicesCodes = ratedUserServices.map((elem) => elem.code)
+
+      const taskServicesCodes = this.getServicesCodes
+
+      const resultArr = []
+
+      for (const elem of userServicesCodes) {
+        if (taskServicesCodes.includes(elem)) {
+          resultArr.push(elem)
+        }
+      }
+
+      return resultArr.length + ' из ' + taskServicesLength
+    },
+    getListServicesOfUserToExecute(ratedUserServices) {
+      const userServicesName = ratedUserServices
+        .map((elem) => elem.name)
+
+      const taskServicesName = this.taskData.services
+        .map((elem) => elem.service_data.name)
+
+      const resultArr = []
+
+      for (const elem of userServicesName) {
+        if (taskServicesName.includes(elem)) {
+          resultArr.push(elem)
+        }
+      }
+
+      return resultArr
+    }
   }
 };
 </script>
@@ -406,11 +713,26 @@ $borderRadius: 5px;
   max-height: 40px !important;
 }
 
+.tab_wrapper {
+  height: 600px;
+  overflow: auto;
+}
+
+.empty_data_wrapper {
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5em;
+  font-weight: 700;
+}
+
 .application_card {
   display: grid;
   grid-row-gap: 15px;
   padding: 20px;
   background: #FFFFFF;
+
 
   .application_header {
     display: flex;
@@ -429,12 +751,11 @@ $borderRadius: 5px;
     .info_title {
       font-weight: 600;
       font-size: 1.3em;
-    }
-
-    .user_info {
-      display: inline-flex;
-      justify-content: space-between;
-      align-items: center;
+      display: grid;
+      .text {
+        font-size: 1em !important;
+        font-weight: 400;
+      }
     }
 
     .info_text {
@@ -461,7 +782,6 @@ $borderRadius: 5px;
   .services_table {
     display: grid;
     grid-row-gap: 1em;
-    background: $yellowBackground;
     box-shadow: $shadowBox;
     border-radius: $borderRadius;
     padding: 10px;
@@ -505,6 +825,21 @@ $borderRadius: 5px;
   .footer_buttons {
     display: flex;
     justify-content: space-between;
+    .btn {
+      margin-left: auto;
+    }
+  }
+}
+
+.user_info {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+  .user_title {
+    margin-left: 20px;
+    .name {
+      font-size: 1em !important;
+    }
   }
 }
 
@@ -524,6 +859,11 @@ $borderRadius: 5px;
     display: flex;
     justify-content: space-between;
   }
+}
+
+.explain_info {
+  padding: 10px;
+  max-width: 300px;
 }
 
 </style>

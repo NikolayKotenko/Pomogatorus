@@ -1,22 +1,20 @@
 <template>
   <div class="brand_container">
     <div class="top_wrapper">
+      <div class="brand_name">
+        {{ brandObject.name }}
+      </div>
       <v-img
-        :src='require(`~/assets/svg/baxi_logo.svg`)'
-        max-width="160"
+        :src="getBrandPhoto(brandObject)"
+        height="24"
+        max-width="60"
         contain
-      ></v-img>
-      <v-img></v-img>
+      />
     </div>
 
-    <v-divider style="margin: 10px 0 10px 0;"></v-divider>
+    <v-divider style="margin: 10px 0 10px 0;"/>
 
-    <div class="bot_wrapper">
-      <li class="title">Более 20 лет успешной работы;</li>
-      <li class="title">Более 1,8 млн. установленных котлов;</li>
-      <li class="title">50 складов запчастей;</li>
-      <li class="title">Более 800 авторизированных сервисных центров</li>
-    </div>
+    <div class="bot_wrapper" v-html="brandObject.description"/>
   </div>
 </template>
 
@@ -24,11 +22,25 @@
 export default {
   name: 'BrandCard',
   components: {},
-  props: {},
-  data() {
-    return {}
+  props: {
+    brandObject: {
+      type: Object,
+      require: true,
+      default: () => ({})
+    }
   },
-  methods: {}
+  data() {
+    return {
+
+    }
+  },
+  methods: {
+    getBrandPhoto(elem) {
+      if (elem.e_client_files.length) {
+        return elem.e_client_files[0].url
+      }
+    },
+  }
 }
 </script>
 
@@ -38,6 +50,15 @@ export default {
 .brand_container {
   padding: 20px;
   background-color: #FFFFFF;
+  max-width: 500px;
+  .top_wrapper{
+    display: flex;
+    .brand_name {
+      font-weight: 400;
+      font-size: 2.2em;
+      margin-right: 10px;
+    }
+  }
   .bot_wrapper {
     .title {
       font-size: 1em !important;
@@ -46,7 +67,7 @@ export default {
       line-height: normal !important;
       letter-spacing: normal !important;
     }
-    
+
   }
 }
 </style>

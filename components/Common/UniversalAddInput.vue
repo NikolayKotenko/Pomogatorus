@@ -5,8 +5,8 @@
       :hide-details="true"
       :item-text="'name'"
       :item-value="'id'"
-      :items="currentListServicesAvailableToAdd"
-      :label="currentListServicesAvailableToAdd.length ? 'Добавить услугу' : 'Нет новых услуг для добавления'"
+      :items="listItemsAvailableToAdd"
+      :label="listItemsAvailableToAdd.length ? 'Выбрать' : 'Нет элементов для добавления'"
       :value="selectedService"
       class="search_service"
       hide-selected
@@ -50,9 +50,10 @@ export default {
     IconTooltip
   },
   props: {
-    listServicesAvailableToAdd: {
+    listItemsAvailableToAdd: {
       type: Array,
-      default: () => []
+      default: () => [],
+      required: true
     }
   },
   data() {
@@ -63,22 +64,9 @@ export default {
   computed: {
     getTooltipData() {
       return this.selectedService?.name ? this.selectedService.name : '';
-    },
-    currentListServicesAvailableToAdd: {
-      get() {
-        if (this.listServicesAvailableToAdd.length) {
-          return this.listServicesAvailableToAdd;
-        }
-        return this.$store.state.UserSettings.listServices;
-      }
     }
   },
   async mounted() {
-    if (this.listServicesAvailableToAdd.length) return false;
-
-    if (!this.$store.state.UserSettings.listServices.length) {
-      await this.$store.dispatch('UserSettings/getListServices');
-    }
   },
   methods: {
     setService(service) {

@@ -1,27 +1,21 @@
 <template>
   <div class="user_info_wrapper">
     <div class="user_info_title">
-      <h3>{{ isLoggedIn ? "Настройки профиля" : "Войти или Зарегистрироваться" }}</h3>
+      <h3>
+        {{ isLoggedIn ? 'Настройки профиля' : 'Войти или Зарегистрироваться' }}
+      </h3>
       <v-icon large @click="$store.commit('set_modal_auth', false)">
         mdi-close
       </v-icon>
     </div>
 
-    <v-tabs
-      v-model="tab"
-      color="#000000"
-      grow
-      @change="checkServicesTab"
-    >
-      <v-tab
-        :key="0"
-      >
-        <span class="tab_header">{{ isLoggedIn ? "Общая информация" : "Авторизация" }}</span>
+    <v-tabs v-model="tab" color="#000000" grow @change="checkServicesTab">
+      <v-tab :key="0">
+        <span class="tab_header">{{
+          isLoggedIn ? 'Общая информация' : 'Авторизация'
+        }}</span>
       </v-tab>
-      <v-tab
-        v-if="isLoggedIn"
-        :key="1"
-      >
+      <v-tab v-if="isLoggedIn" :key="1">
         <span class="tab_header">Мои услуги</span>
         <v-badge
           :content="$store.getters['UserSettings/getCountServices']"
@@ -33,10 +27,10 @@
         v-if="isLoggedIn && userData.installation_engineering_systems === 1"
         :key="2"
       >
-        Портфель брендов
+        <span class="tab_header">Портфель брендов</span>
         <v-badge
-          :content="$store.getters['UserSettings/getCountServices']"
-          :value="$store.getters['UserSettings/getCountServices']"
+          :content="$store.getters['getCountFavoriteBrands']"
+          :value="$store.getters['getCountFavoriteBrands']"
           color="#95D7AE"
         />
       </v-tab>
@@ -44,10 +38,7 @@
       <v-tab-item :key="0">
         <div class="card_object pt-5 pb-5">
           <div v-if="isLoggedIn" class="card_object_container">
-            <UserFields
-              @is-changed="setChanged"
-              @new-data="setData"
-            />
+            <UserFields @is-changed="setChanged" @new-data="setData"/>
           </div>
           <LoginAuth v-else/>
         </div>
@@ -84,15 +75,23 @@
         </div>
 
         <div class="services_list">
-          <div v-for="(item, index) in $store.state.UserSettings.selectedRawServices" :key="index">
+          <div
+            v-for="(item, index) in $store.state.UserSettings
+              .selectedRawServices"
+            :key="index"
+          >
             <ServiceCard
               v-if="item.id"
               :key="index"
               :is-equipment-exist="false"
               :is-loading="$store.state.UserSettings.loading"
               :is-quantity-exist="false"
-              :iteration-key="index+1"
-              :list-additional-data-services="$store.getters['UserSettings/getAdditionalDataByIdServices'](item.id_services)"
+              :iteration-key="index + 1"
+              :list-additional-data-services="
+                $store.getters['UserSettings/getAdditionalDataByIdServices'](
+                  item.id_services
+                )
+              "
               :service-object="item"
               @delete-one-service="deleteOneService(item, $event)"
               @update-price-field="setPrice(item, $event)"
@@ -102,7 +101,9 @@
 
         <!-- Добавить услугу -->
         <UniversalAddInput
-          :list-services-available-to-add="$store.getters['UserSettings/getListServicesExcludeAdded']"
+          :list-items-available-to-add="
+            $store.getters['UserSettings/getListServicesExcludeAdded']
+          "
           class="mt-5"
           @add-service="setServiceByUser"
         />
@@ -110,58 +111,63 @@
 
       <!-- Портфель брендов -->
       <v-tab-item :key="2" class="brands_tab">
-        <span class="title">Бренды с которыми вы работаете</span>
-        <v-card class="brand_wrapper" height="60" outlined>
-          <div class="brand_info">
-            <span style="font-size: 1.5em; margin-right: 10px;">1. </span>
-            <v-img
-              :src="require(`~/assets/svg/baxi_logo.svg`)"
-              class="brand_img"
-              contain
+        <template v-if="$store.getters.getListBrandsByUser.length">
+          <span class="title">Бренды с которыми вы работаете</span>
+          <v-card
+            v-for="(item, index) in $store.getters.getListBrandsByUser"
+            :key="index"
+            class="brand_wrapper"
+            height="60"
+          >
+            <div style="display: flex;">
+              <span class="brand_name">{{ item.name }}</span>
+              <DropDownMenuStyled
+                :is-left="true"
+                :is-offset-y="true"
+              >
+                <template #icon>
+                  <v-img
+                    :src="getBrandPhoto(item)"
+                    width="60"
+                    height="24"
+                  />
+                </template>
+                <template #content>
+                  <BrandCard
+                    :brand-object="item"
+                  />
+                </template>
+              </DropDownMenuStyled>
+            </div>
+            <IconTooltip
+              :color-icon="'#B3B3B3'"
+              :icon-text="'mdi-delete-outline'"
+              :size-icon="'24'"
+              :text-tooltip="'Удалить бренд'"
+              @click-icon="deleteBrand(item)"
             />
-            <span class="brand_text">Установленно оборудования Baxi: 23</span>
-          </div>
-          <IconTooltip
-            :color-icon="'#B3B3B3'"
-            :icon-text="'mdi-close'"
-            :size-icon="'24'"
-            :text-tooltip="'Удалить бренд'"
-          />
-        </v-card>
-        <v-card class="brand_wrapper" height="60" outlined>
-          <div class="brand_info">
-            <span style="font-size: 1.5em; margin-right: 10px;">2. </span>
-            <v-img
-              :src="require(`~/assets/svg/navien_logo.svg`)"
-              class="brand_img"
-              contain
+          </v-card>
+          <v-overlay
+            :value="$store.state.BrandsModule.isLoading"
+            absolute
+            class="overlay_style"
+            color="#FFFFFF"
+            opacity="100"
+          >
+            <v-progress-circular
+              color="#95D7AE"
+              indeterminate
+              size="64"
             />
-            <span class="brand_text">Установленно оборудования Navien: 23</span>
-          </div>
-          <IconTooltip
-            :color-icon="'#B3B3B3'"
-            :icon-text="'mdi-close'"
-            :size-icon="'24'"
-            :text-tooltip="'Удалить бренд'"
-          />
-        </v-card>
-        <v-card class="brand_wrapper" height="60" outlined>
-          <div class="brand_info">
-            <span style="font-size: 1.5em; margin-right: 10px;">3. </span>
-            <v-img
-              :src="require(`~/assets/svg/ariston_logo.svg`)"
-              class="brand_img"
-              contain
-            />
-            <span class="brand_text">Установленно оборудования Ariston: 23</span>
-          </div>
-          <IconTooltip
-            :color-icon="'#B3B3B3'"
-            :icon-text="'mdi-close'"
-            :size-icon="'24'"
-            :text-tooltip="'Удалить бренд'"
-          />
-        </v-card>
+          </v-overlay>
+        </template>
+        <template v-else>
+          <span class="title">У вас нет брендов с которыми вы работаете</span>
+        </template>
+        <UniversalAddInput
+          :list-items-available-to-add="$store.state.BrandsModule.listBrands"
+          @add-service="addBrand"
+        />
       </v-tab-item>
     </v-tabs>
 
@@ -205,16 +211,8 @@
       </template>
     </div>
 
-    <v-overlay
-      :value="isUpdating"
-      absolute
-      color="#F2F2F2"
-    >
-      <v-progress-circular
-        color="#95D7AE"
-        indeterminate
-        size="64"
-      />
+    <v-overlay :value="isUpdating" absolute color="#F2F2F2">
+      <v-progress-circular color="#95D7AE" indeterminate size="64"/>
     </v-overlay>
   </div>
 </template>
@@ -225,9 +223,9 @@ import { mapState } from 'vuex';
 import LoginAuth from '../frontLayouts/LoginAuth';
 import ButtonStyled from '../Common/ButtonStyled.vue';
 import SearchStyled from '../Common/SearchStyled.vue';
-import InputStyled from '../Common/InputStyled.vue';
-import TooltipStyled from '../Common/TooltipStyled.vue';
 import IconTooltip from '../Common/IconTooltip.vue';
+import DropDownMenuStyled from '../Common/DropDownMenuStyled.vue'
+import BrandCard from '../Common/BrandCard.vue'
 import UserFields from './UserFields';
 import ServiceCard from '@/components/Collaboration/ServiceCard.vue';
 import UniversalAddInput from '@/components/Common/UniversalAddInput.vue';
@@ -237,16 +235,15 @@ import SelectStyled from '~/components/Common/SelectStyled';
 export default {
   name: 'UserInfo',
   components: {
+    BrandCard, DropDownMenuStyled,
     SelectStyled,
-    TooltipStyled,
-    InputStyled,
     SearchStyled,
     ButtonStyled,
     UserFields,
     LoginAuth,
     ServiceCard,
     UniversalAddInput,
-    IconTooltip
+    IconTooltip,
   },
   data: () => ({
     isChanged: false,
@@ -258,112 +255,168 @@ export default {
     servicePrice: '',
     localSelectedService: null,
     isErrorMessagesPrice: [
-      v => Number.isInteger(v) || 'Поле должно быть числом'
+      (v) => Number.isInteger(v) || 'Поле должно быть числом',
     ],
     debounceTimeout: null,
     arrSort: [
       {
-        'action': 'По алфавиту',
-        'value': '&sort[name]=asc'
+        action: 'По алфавиту',
+        value: '&sort[name]=asc',
       },
       {
-        'action': 'По дате',
-        'value': '&sort[created_at]=desc'
-      }
-    ]
+        action: 'По дате',
+        value: '&sort[created_at]=desc',
+      },
+    ],
+    deleteBrandModal: false
   }),
   async mounted() {
-    await this.$store.dispatch('UserSettings/getListServices');
+    await this.$store.dispatch('CollaborationModule/getListServices')
+    await this.$store.dispatch('BrandsModule/getListBrands')
   },
   computed: {
     ...mapState({
-      isUpdating: state => state.UserSettings.isUpdating,
-      userData: state => state.AuthModule.userData
+      isUpdating: (state) => state.UserSettings.isUpdating,
+      userData: (state) => state.AuthModule.userData,
     }),
 
     isLoggedIn() {
-      return this.userData && Object.keys(this.userData).length;
+      return this.userData && Object.keys(this.userData).length
     },
     isMobile() {
-      return this.$device.isMobile;
-    }
+      return this.$device.isMobile
+    },
   },
   methods: {
+    openModal() {
+      this.deleteBrandModal = true
+    },
+    closeModal() {
+      this.deleteBrandModal = false
+    },
     closeDetail() {
-      this.$emit('close-detail');
+      this.$emit('close-detail')
     },
     logout() {
-      this.$store.dispatch('logout');
+      this.$store.dispatch('logout')
     },
     setChanged(value) {
-      this.isChanged = value;
+      this.isChanged = value
     },
     setData(value) {
-      this.data = value.data;
-      this.data.email_state = this.userData.email_state;
-      this.data.telephone_state = this.userData.telephone_state;
-      this.isValid = value.isValid;
+      this.data = value.data
+      this.data.email_state = this.userData.email_state
+      this.data.telephone_state = this.userData.telephone_state
+      this.isValid = value.isValid
     },
     async saveUser() {
-      await this.$store.dispatch('UserSettings/updateUser', { userId: this.userData.id, data: this.data });
-      this.$toast.success('Данные сохранены', { duration: 5000 });
-      this.closeDetail();
+      await this.$store.dispatch('UserSettings/updateUser', {
+        userId: this.userData.id,
+        data: this.data,
+      })
+      this.$toast.success('Данные сохранены', { duration: 5000 })
+      this.closeDetail()
     },
     async setServiceByUser(serviceData) {
-      const checkExist = this.$store.state.UserSettings.selectedServices.some((elem) => {
-        return elem.id === serviceData.id;
-      });
+      const checkExist = this.$store.state.UserSettings.selectedServices.some(
+        (elem) => {
+          return elem.id === serviceData.id
+        }
+      )
       if (checkExist) {
-        this.$toast.error('Такая услуга уже добавлена!');
-        return false;
+        this.$toast.error('Такая услуга уже добавлена!')
+        return false
       }
 
-      await this.$store.dispatch('UserSettings/addServicesAction', new MtoMUsersServices(serviceData.id));
-      await this.$store.dispatch('UserSettings/getUserServices', this.userData.id);
-      this.$toast.success('Услуга добавлена');
+      await this.$store.dispatch(
+        'UserSettings/addServicesAction',
+        new MtoMUsersServices(serviceData.id)
+      )
+      await this.$store.dispatch(
+        'UserSettings/getUserServices',
+        this.userData.id
+      )
+      this.$toast.success('Услуга добавлена')
     },
     checkServicesTab(tabId) {
       if (tabId === 1) {
-        this.$store.dispatch('UserSettings/getUserServices', this.userData.id);
+        this.$store.dispatch('UserSettings/getUserServices', this.userData.id)
       }
     },
     async deleteOneService(serviceRawObj, event) {
-      await this.$store.dispatch('UserSettings/deleteOneServiceAssignToUser', serviceRawObj.id_services);
-      await this.$store.dispatch('UserSettings/getUserServices', this.userData.id);
-      this.$toast.success('Услуга удалена');
+      await this.$store.dispatch(
+        'UserSettings/deleteOneServiceAssignToUser',
+        serviceRawObj.id_services
+      )
+      await this.$store.dispatch(
+        'UserSettings/getUserServices',
+        this.userData.id
+      )
+      this.$toast.success('Услуга удалена')
     },
     setPrice(object, price) {
-      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
       this.debounceTimeout = setTimeout(async () => {
-        await this.$store.dispatch('UserSettings/addServicesAction', new MtoMUsersServices(
-          object.id_services,
-          price
-        ));
-        this.$store.state.UserSettings.updatedEntryPrice = object.id;
-        await this.$store.dispatch('UserSettings/getUserServices', this.userData.id);
-        this.$toast.success('Услуга обновлена');
-      }, 2000);
+        await this.$store.dispatch(
+          'UserSettings/addServicesAction',
+          new MtoMUsersServices(object.id_services, price)
+        )
+        this.$store.state.UserSettings.updatedEntryPrice = object.id
+        await this.$store.dispatch(
+          'UserSettings/getUserServices',
+          this.userData.id
+        )
+        this.$toast.success('Услуга обновлена')
+      }, 2000)
     },
     filterListService(string) {
       if (!string) {
-        string = '';
+        string = ''
       }
 
-      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
       this.debounceTimeout = setTimeout(async () => {
-        this.$store.state.UserSettings.searchServiceByName = string;
-        await this.$store.dispatch('UserSettings/getUserServices', this.userData.id);
-      }, 1000);
+        this.$store.state.UserSettings.searchServiceByName = string
+        await this.$store.dispatch(
+          'UserSettings/getUserServices',
+          this.userData.id
+        )
+      }, 1000)
     },
     sortListServices(object) {
-      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
       this.debounceTimeout = setTimeout(async () => {
-        this.$store.state.UserSettings.sortListServicesValue = object.value;
-        await this.$store.dispatch('UserSettings/getUserServices', this.userData.id);
-      }, 1000);
-    }
-  }
-};
+        this.$store.state.UserSettings.sortListServicesValue = object.value
+        await this.$store.dispatch(
+          'UserSettings/getUserServices',
+          this.userData.id
+        )
+      }, 1000)
+    },
+    addBrand(obj) {
+      if (this.$store.state.AuthModule.userData.brands.find(item => item.id === obj.id)) {
+        this.$toast.error('Такой бренд уже добавлен');
+        return false;
+      }
+
+      this.$store.dispatch('BrandsModule/addBrandToUser', obj.id)
+
+      const message = 'Добавлен бренд ' + obj.name
+      this.$toast.success(message);
+    },
+    deleteBrand(obj){
+      this.$store.dispatch('BrandsModule/deleteBrandByUser', obj.id)
+
+      const message = 'Удалён бренд ' + obj.name
+      this.$toast.success(message);
+    },
+    getBrandPhoto(elem) {
+      if (elem.e_client_files.length) {
+        return elem.e_client_files[0].url
+      }
+    },
+  },
+}
 </script>
 
 <style lang="scss" scoped>
@@ -412,7 +465,6 @@ export default {
   }
 }
 
-
 .brands_tab {
   display: grid;
   grid-row-gap: 10px;
@@ -429,19 +481,17 @@ export default {
     width: 100%;
     padding: 1em;
 
-    .brand_info {
+    .brand_img {
+
+    }
+    .brand_name {
+      font-size: 2.2em;
       display: flex;
       align-items: center;
-
-      .brand_img {
-        max-height: 24px;
-        margin-right: 50px;
-      }
+      margin-right: 10px;
     }
-
   }
 }
-
 
 .close {
   max-height: 45px;
@@ -451,12 +501,12 @@ export default {
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity .5s
+  transition: opacity 0.5s;
 }
 
 .fade-enter,
 .fade-leave-to {
-  opacity: 0
+  opacity: 0;
 }
 
 .services_list {
@@ -476,13 +526,11 @@ export default {
 
     .service_title {
       font-size: 1.3em;
-
     }
 
     .service_price {
       max-width: 150px;
     }
-
   }
 }
 
@@ -516,6 +564,5 @@ export default {
   &:hover {
     color: #000000;
   }
-
 }
 </style>

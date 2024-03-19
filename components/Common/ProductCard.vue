@@ -23,7 +23,6 @@
     <!-- Меню Кнопок -->
     <div class="product_buttons">
       <div class="product_icons">
-        
         <!-- Модальное окно. Детальная карточка товара -->
         <TooltipStyled
           :is-top="true"
@@ -37,8 +36,8 @@
               <v-icon
                 size="36"
                 v-bind="attrs"
-                v-on="on"
                 color="#000000"
+                v-on="on"
                 @click="getFilteredListNomenclaturesByFamily(data)"
               >
                 mdi-list-box-outline
@@ -46,7 +45,6 @@
             </template>
 
             <v-card class="detail_card_product">
-
               <!-- Семейство Оборудования -->
               <div class="header">
                 <div class="family_name">
@@ -56,10 +54,10 @@
                   </div>
                 </div>
                 <AddToFavoriteNomenclatures
-                 :favorite-object="favoriteData"
+                  :favorite-object="favoriteData"
                 />
               </div>
-              
+
 
               <!-- Фотографии Оборудования -->
               <div class="product_photos">
@@ -85,7 +83,7 @@
               </div>
 
               <v-divider/>
-              
+
               <!-- Модели Оборудования -->
               <div class="family_slider">
                 <span>Модели:</span>
@@ -94,22 +92,22 @@
                   color="#000000"
                   class="slider"
                 >
-                  <v-tabs-slider color="#95D7AE"></v-tabs-slider>
-                    <v-tab 
-                      v-for="(item, index) in this.listFamilyNomenclatures"
-                      :key="index"
-                    >
-                      {{ item.name }}
-                    </v-tab>
-                    <v-tab-item></v-tab-item>
+                  <v-tabs-slider color="#95D7AE"/>
+                  <v-tab
+                    v-for="(item, index) in listFamilyNomenclatures"
+                    :key="index"
+                  >
+                    {{ item.name }}
+                  </v-tab>
+                  <v-tab-item/>
                 </v-tabs>
               </div>
               <!-- Инфорамация об Оборудовании -->
               <div class="product_detail_info">
-                <v-tabs 
-                  color="#95D7AE" 
+                <v-tabs
+                  color="#95D7AE"
                   vertical
-                  style="display: flex; flex-direction: row-reverse;" 
+                  style="display: flex; flex-direction: row-reverse;"
                 >
                   <v-tab :key="0">
                     Описание
@@ -148,10 +146,10 @@
                 </v-tabs>
               </div>
               <ButtonStyled
-              :local-class="'style_close'"
-              :local-text="'Закрыть'"
-              @click-button="closeModal"
-            />
+                :local-class="'style_close'"
+                :local-text="'Закрыть'"
+                @click-button="closeModal"
+              />
             </v-card>
           </v-dialog>
         </TooltipStyled>
@@ -173,7 +171,7 @@ import ViewerStyled from './ViewerStyled.vue';
 import IconTooltip from './IconTooltip.vue';
 import AddToFavoriteNomenclatures from './AddToFavoriteNomenclatures.vue';
 import { FavoriteNomenclature } from '~/helpers/constructors';
- 
+
 export default {
   name: 'ProductCard',
   components: { ViewerStyled, ButtonStyled, TooltipStyled, SelectStyled, IconTooltip, AddToFavoriteNomenclatures },
@@ -202,12 +200,23 @@ export default {
     favoriteData(){
       return new FavoriteNomenclature(
           this.$store.getters['Objects/getIdCurrentObject'],
-          this.$store.getters['getUserId'],
+          this.$store.getters.getUserId,
           this.data?.id
         )
+    },
+
+  },
+  watch: {
+    '$store.state.Objects.currentObject.id':{
+      async handler(idCurrentObject) {
+        if (!idCurrentObject) return false;
+
+        await this.$store.dispatch('NomenclatureModule/getListFavoriteNomenclatureByUserAndObjectId');
+      }
     }
   },
   async mounted() {
+    await this.$store.dispatch('NomenclatureModule/getListNomenclature');
   },
   methods: {
     changeFavoriteProduct() {
@@ -221,9 +230,9 @@ export default {
     },
     getFilteredListNomenclaturesByFamily(objData) {
       this.listFamilyNomenclatures = this.$store.state.NomenclatureModule.listNomenclature
-        .filter((elem) => 
+        .filter((elem) =>
           elem?._family?.id === objData?._family?.id
-        )      
+        )
     }
   }
 
@@ -300,16 +309,16 @@ export default {
     .family_name{
       display: flex;
       align-items: center;
-      
+
       .card_name {
       font-size: 1.5em;
       font-weight: 700;
       margin-left: 1em;
     }
     }
-    
+
   }
-  
+
 
   .product_photos {
     display: flex;
@@ -346,19 +355,19 @@ export default {
     display: flex;
     align-items: center;
     .slider {
-      
+
     }
   }
 
   .product_detail_info {
     height: 350px;
 
-    
+
     .product_description {
-      
+
     }
 
-    .product_characteristics {    
+    .product_characteristics {
       color: #8A8784;
       margin-top: auto;
       .switch {

@@ -94,6 +94,14 @@ export default {
         commit('set_modal_auth', true)
       }
     },
+    async getCurrentUserData({ commit, getters }){
+      console.log('CHEECK')
+      const response = await Request.get(
+        this.state.BASE_URL + '/users/get-user-data/'+getters.getUserId
+      )
+      commit('set_user_data', _cloneNative(response.data))
+      commit('set_default_user_data', _cloneNative(response.data))
+    }
   },
   getters: {
     userIsAgent(state) {
@@ -115,5 +123,14 @@ export default {
 
       return Boolean(process.env.VUE_APP_SERVER.match('admin'))
     },
+    getListBrandsByUser(state){
+      if (! Object.keys(state.userData).length) return [];
+      if (!state.userData.brands) return [];
+
+      return state.userData.brands;
+    },
+    getCountFavoriteBrands(state) {
+      return state.userData.brands.length
+    }
   },
 }

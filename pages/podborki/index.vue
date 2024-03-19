@@ -147,6 +147,7 @@ export default {
       grid-row-gap: 10px;
       .info_title {
         font-size: 1.5em;
+
       }
       .text_info {
         background-color: #D9D9D9;
