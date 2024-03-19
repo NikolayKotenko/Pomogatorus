@@ -1,0 +1,53 @@
+.c-nomenclature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+
+  &__img {
+    height: 250px;
+    width: 250px;
+    position: relative;
+    background: #FFFFFF;
+    border-radius: 5px;
+
+    &__like {
+      position: absolute;
+      right: 0;
+      padding: 10px;
+    }
+
+    img {
+      height: 250px;
+      width: 250px;
+      margin: 0 auto;
+      object-fit: contain;
+    }
+  }
+
+  &__info {
+    padding-top: 10px;
+
+    &__label {
+      font-family: Roboto, sans-serif;
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 23.44px;
+      text-align: left;
+
+    }
+  }
+}
+
+.c-nomenclature-info {
+  padding: 20px;
+  background: #E3E3E3;
+  border-radius: 5px;
+  cursor: pointer;
+  max-width: 290px;
+  min-height: 370px;
+
+  &:hover {
+    @extend .background-hover;
+  }
+}
