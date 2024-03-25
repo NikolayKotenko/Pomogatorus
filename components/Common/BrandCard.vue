@@ -15,13 +15,40 @@
     <v-divider style="margin: 10px 0 10px 0;"/>
 
     <div class="bot_wrapper" v-html="brandObject.description"/>
+
+    <v-divider style="margin: 10px 0 10px 0;"/>
+
+    <span>Специалистов, занимающихся брендом {{ brandObject.name }}: </span>
+    <DropDownMenuStyled
+      :is-left="true"
+      :is-offset-y="true"
+    >
+      <template #icon>
+        <span>13</span>
+        <IconTooltip
+          :icon-text="'mdi-menu-down'"
+          :text-tooltip="'Показать специалистов'"
+        />
+      </template>
+      <template #content>
+        <div
+          v-for="(item, index) in $store.dispatch('CollaborationModule/getListMembersByBrand', brandObject)"
+          :key="index"
+        >
+          {{ item.user_fio }}
+        </div>
+      </template>
+    </DropDownMenuStyled>
   </div>
 </template>
 
 <script>
+import DropDownMenuStyled from './DropDownMenuStyled.vue'
+import IconTooltip from './IconTooltip.vue'
+
 export default {
   name: 'BrandCard',
-  components: {},
+  components: { IconTooltip, DropDownMenuStyled },
   props: {
     brandObject: {
       type: Object,
@@ -33,6 +60,9 @@ export default {
     return {
 
     }
+  },
+  async mounted() {
+    await this.$store.dispatch('CollaborationModule/getListAllUsers')
   },
   methods: {
     getBrandPhoto(elem) {

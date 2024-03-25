@@ -11,7 +11,8 @@ export default {
     stateCollaborationMenu: false,
     debounceTimeout: null,
     listServices: [],
-    listRatedUsers: []
+    listRatedUsers: [],
+    listAllUsers: []
   },
   mutations: {
     setLoading(state, payload) {
@@ -36,6 +37,10 @@ export default {
     setListRatedUsers(state, payload) {
       state.listRatedUsers = []
       state.listRatedUsers = payload
+    },
+    setListAllUsers(state, payload) {
+      state.listAllUsers = []
+      state.listAllUsers = payload
     }
   },
   actions: {
@@ -145,7 +150,33 @@ export default {
 
       commit('setListRatedUsers', response.data)
     },
+    // async getLastEntryByUserServices({ _ }, idUser, idService) {
+    //
+    //   const queryFilter = Request.ConstructFilterQuery( {
+    //     id_user: idUser,
+    //     id_services: idService
+    //   })
+    //
+    //   await Request.get(
+    //     this.state.BASE_URL + '/m-to-m/users-services/get-last-entry' + queryFilter
+    //   )
+    //
+    // },
+    async getListAllUsers({ commit }) {
+      const response = await Request.get(
+        this.state.BASE_URL + '/users/get-list-users'
+      )
 
+      commit('setListAllUsers', response.data)
+    },
+
+    getListMembersByBrand({ state }, brand) {
+
+      const arr =  state.listAllUsers.map((user) => user.brands
+        .filter((elem) => elem.id === brand.id))
+
+      console.log('asdadsda', arr)
+    }
   },
   getters: {
     getFilteredListByRoleExperts(state) {
@@ -162,6 +193,8 @@ export default {
         })
       })
     },
+
+
 
   },
 }

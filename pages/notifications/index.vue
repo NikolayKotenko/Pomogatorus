@@ -116,6 +116,7 @@
 import CardPreviewNotification from '../../components/Notification/CardPreviewNotification.vue';
 import TaskWatchArea from '../../components/Notification/TaskWatchArea.vue';
 
+
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Index',
@@ -123,6 +124,7 @@ export default {
   data() {
     return {
       objTask: {},
+      socket: null,
     }
   },
   computed:{
@@ -133,34 +135,31 @@ export default {
   async mounted() {
     await this.$store.dispatch('NotificationModule/getListTasks')
 
-    this.socket = this.$nuxtSocket({
-      name: 'home',
-      channel: '/index',
-
-      reconnection: false
-    })
-    this.socket.on('someEvent', (msg, cb) => {
-      console.log('its working');
-    })
+    // this.$socket.on('message', message => {
+    //   this.messages.push({ id: Date.now(), text: message });
+    // });
+    // this.socket.on('someEvent', (msg, cb) => {
+    //   console.log('its working');
+    // })
   },
 
   methods: {
     setObjTask(obj) {
       this.objTask = obj
     },
-    method1() {
-      this.socket.emit('method1', {
-        hello: 'world'
-      }, (resp) => {
-        
-      })
-    },
-    async getMessage() {
-      console.log('1234', this.messageRxd);
-      this.messageRxd = await this.socket.emitP('getMessage' , {
-        id: 'abc123'
-      })
-    }
+    // method1() {
+    //   this.socket.emit('method1', {
+    //     hello: 'world'
+    //   }, (resp) => {
+    //
+    //   })
+    // },
+    // async getMessage() {
+    //   console.log('1234', this.messageRxd);
+    //   this.messageRxd = await this.socket.emit('getMessage' , {
+    //     id: 'abc123'
+    //   })
+    // }
   },
 
 }

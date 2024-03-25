@@ -135,6 +135,12 @@ const createStore = () => {
             visible: true,
           },
           {
+            title: 'Люди',
+            path: '/people',
+            icon: 'mdi-account-group-outline',
+            visible: true
+          },
+          {
             title: 'Найти мастера',
             path: '#inviteUserModal=true',
             icon: 'mdi-plus',

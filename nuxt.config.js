@@ -82,7 +82,7 @@ export default {
     sockets: [
       {
         name: 'home',
-        url: 'http://192.168.1.221:5000',
+        url: 'http://100.126.181.178:5000/',
         vuex: {},
         namespaces: {},
       },

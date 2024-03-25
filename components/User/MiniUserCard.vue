@@ -47,7 +47,6 @@
         </template>
       </DropDownMenuStyled>
     </div>
-    <v-divider style="margin: 10px 0 10px 0;"/>
     <div class="bottom">
       <v-tabs color="#000000">
         <v-tab :key="0">
@@ -59,7 +58,7 @@
           />
         </v-tab>
         <v-tab :key="1">
-          Территория оказания услуг
+          Территория обслуживания
         </v-tab>
         <v-tab :key="2">
           Опыт работы с брендами

@@ -308,10 +308,10 @@
                         <div class="explain_info">
                           <h4>Пользователь может выполнить следующие услуги: </h4>
                           <li
-                            v-for="(item, index) in getListServicesOfUserToExecute(item.services)"
-                            :key="index"
+                            v-for="(elem, key) in getListServicesOfUserToExecute(item.services)"
+                            :key="key"
                           >
-                            {{ item }}
+                            {{ elem }}
                           </li>
                         </div>
                       </v-list>
@@ -699,7 +699,14 @@ export default {
       }
 
       return resultArr
-    }
+    },
+    // async getPriceByUser(idUser, services) {
+    //   console.log('getPriceByUser', idUser, services)
+    //
+    //
+    //
+    //   return await this.$store.dispatch('CollaborationModule/getLastEntryByUserServices', idUser, services)
+    // }
   }
 };
 </script>
