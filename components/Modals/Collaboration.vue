@@ -2,7 +2,7 @@
   <v-container class="collaboration">
     <section class="header">
       <span class="header_title">
-        Совместная работа над объектом "{{ $store.state.Objects.currentObject.name }}"
+        Ваши специалисты
       </span>
       <SearchStyled
         :is-clearable="true"
@@ -13,77 +13,43 @@
         :is-item-value="'id'"
         :is-items="$store.state.CollaborationModule.listMembers"
         :is-outlined="false"
-        :is-placeholder="'Пригласить новых участников'"
+        :is-placeholder="'Поиск специалистов'"
         :is-rounded="true"
         class="invite_input"
-        @update-search-input="localGetListUsers"
       />
     </section>
 
-    <div v-if="$store.state.CollaborationModule.listSearchedMembers.length">
-      <CardInviteUser
-        v-for="(item, index) in $store.state.CollaborationModule.listSearchedMembers"
-        :key="index"
-        :user-object="item"
-        class="invite_user"
-      />
-      <v-overlay
-        :value="$store.state.CollaborationModule.isLoading"
-        absolute
-        class="overlay_style"
-        color="#F2F2F2"
-        opacity="100"
-      >
-        <v-progress-circular
-          color="#95D7AE"
-          indeterminate
-          size="64"
+    <v-tabs
+      color="black"
+      grow
+    >
+      <v-tab :key="0">
+        Избранные специалисты
+      </v-tab>
+      <v-tab :key="1">
+        Приглашенные специалисты
+      </v-tab>
+      <v-tab-item :key="0">
+        <FavoriteUserCard
+          v-for="(item, index) in $store.state.CollaborationModule.listFavoriteUsers"
+          :key="index"
+          :user-object="item"
         />
-      </v-overlay>
-    </div>
-    <!--    <div v-if="$store.getters['CollaborationModule/getFilteredListByRoleExperts'].length"> -->
-    <!--      <span class="category_user">Знакомые специалисты</span> -->
-    <!--      <hr> -->
-    <!--      <CardInviteUser -->
-    <!--        v-for="(item, index) in $store.getters['CollaborationModule/getFilteredListByRoleExperts']" -->
-    <!--        :key="index" -->
-    <!--        :user-object="item" -->
-    <!--        class="invite_user" -->
-    <!--      /> -->
-    <!--    </div> -->
-    <div v-if="$store.getters['CollaborationModule/getFilteredListByRoleUsers'].length">
-      <span class="category_user">Приглашенные пользователи</span>
-      <hr>
-      <CardInviteUser
-        v-for="(item) in $store.getters['CollaborationModule/getFilteredListByRoleUsers']"
-        :key="item.id"
-        :user-object="item"
-        class="invite_user"
-      />
-      <v-overlay
-        :value="$store.state.CollaborationModule.isLoading"
-        absolute
-        class="overlay_style"
-        color="#F2F2F2"
-        opacity="100"
-      >
-        <v-progress-circular
-          color="#95D7AE"
-          indeterminate
-          size="64"
-        />
-      </v-overlay>
-    </div>
+      </v-tab-item>
+      <v-tab-item :key="1"/>
+    </v-tabs>
   </v-container>
 </template>
 
 <script>
-import SearchStyled from "~/components/Common/SearchStyled";
-import CardInviteUser from "~/components/Common/CardInviteUser";
+import FavoriteUserCard from '../People/FavoriteUserCard.vue'
+import SearchStyled from '~/components/Common/SearchStyled';
+import CardInviteUser from '~/components/Common/CardInviteUser';
 
 export default {
-  name: "Collaboration",
+  name: 'Collaboration',
   components: {
+    FavoriteUserCard,
     SearchStyled,
     CardInviteUser
   },
@@ -93,21 +59,24 @@ export default {
     };
   },
   async mounted() {
+    await this.$store.dispatch('CollaborationModule/getListFavoriteUsers')
   },
   methods: {
-    async localGetListUsers(phrase) {
-      await this.$store.dispatch("CollaborationModule/getSearchedListMembers", phrase);
-
-      if (phrase) return false;
-
-      await this.$store.dispatch("CollaborationModule/getListMembersByFilter", { id_object: this.$store.getters["Objects/getIdCurrentObject"] });
-    }
+    // async localGetListUsers(phrase) {
+    //   await this.$store.dispatch('CollaborationModule/getSearchedListMembers', phrase);
+    //
+    //   if (phrase) return false;
+    //
+    //   await this.$store.dispatch('CollaborationModule/getListMembersByFilter', { id_object: this.$store.getters['Objects/getIdCurrentObject'] });
+    // }
 
   }
 };
 </script>
 
 <style lang="scss" scoped>
+@import 'assets/styles/style';
+
 .collaboration {
   padding: 20px;
   //position: absolute;
@@ -116,9 +85,9 @@ export default {
   //z-index: 9999;
   background-color: white;
   overflow: auto;
-  width: 1080px;
-  max-height: 650px;
-  box-shadow: -2px 2px 4px 0px rgba(0, 0, 0, 0.25), 2px 2px 4px 0px rgba(0, 0, 0, 0.25);
+  width: 740px;
+  max-height: 840px;
+  box-shadow: $shadowBox;
 
 
   .header {

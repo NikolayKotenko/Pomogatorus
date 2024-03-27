@@ -178,7 +178,7 @@ function getUrl(req, res) {
   const fullUrl = `${protocol}://${host}:${port}${url}`
   return fullUrl.includes('pomogatorus')
     ? 'https://api.agregatorus.com'
-    : 'https://api-test.agregatorus.com'
+    : 'https://api.agregatorus.com'
 }
 
 function parseCookies(cookieHeader) {

@@ -1,12 +1,5 @@
 <template>
-  <div class="current_object">
-    <div class="current_object__label">
-      <div class="current_object__label__container">
-        <span>Ваш текущий объект</span>
-      </div>
-      <v-divider/>
-    </div>
-
+  <div class="current_object" :class="{'isNoWidgetStyle' : isNoWidget}">
     <TooltipStyled
       :title="$store.getters.stateAuth ?
         'Выбрать объект или создать новый' : 'Для выбора объекта - авторизуйтесь'"
@@ -131,7 +124,12 @@ export default {
     SelectObjectStyled
   },
   // eslint-disable-next-line vue/prop-name-casing
-  props: ['object_data'],
+  props: {
+    isNoWidget: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       state_tech_task_block: false,
@@ -187,28 +185,33 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-@import "@/assets/styles/style";
+@import 'assets/styles/style';
+
+.isNoWidgetStyle {
+  padding: 20px;
+  width: 290px !important;
+  min-width: 290px !important;
+}
+
 
 .current_object {
   height: auto;
   max-height: 768px;
-  width: 290px;
-  min-width: 290px;
+  width: 250px;
+  min-width: 250px;
   border-radius: 10px;
   //max-height: 500px;
   display: flex;
   flex-direction: column;
   align-self: baseline;
   grid-row-gap: 1em;
-  padding: 20px !important;
+
   transition: $transition !important;
   background: white;
   overflow-y: overlay;
 
 
-  &:hover {
-    @extend .background-hover;
-  }
+
 
   &__label {
     font-size: 1.25em;
@@ -272,5 +275,11 @@ export default {
       width: 100%;
     }
   }
+}
+</style>
+
+<style lang="scss">
+.v-expansion-panel-content__wrap{
+  padding: 0 20px 20px !important;
 }
 </style>

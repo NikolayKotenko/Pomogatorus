@@ -65,10 +65,7 @@
               :color-icon="'#FFFFFF'"
               :icon-text="'mdi-account-group-outline'"
               :size-icon="'32'"
-              :text-tooltip="
-                'Совместная работа над ' +
-                  $store.state.Objects.currentObject.name
-              "
+              :text-tooltip="'Ваши специалисты'"
             />
           </template>
           <template #content>
@@ -93,7 +90,7 @@
             </v-badge>
           </template>
           <template #content>
-            <CurrentObjects/>
+            <CurrentObjects :is-no-widget="true"/>
           </template>
         </DropDownMenuStyled>
 

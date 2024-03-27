@@ -12,7 +12,8 @@ export default {
     debounceTimeout: null,
     listServices: [],
     listRatedUsers: [],
-    listAllUsers: []
+    listAllUsers: [],
+    listFavoriteUsers: []
   },
   mutations: {
     setLoading(state, payload) {
@@ -41,6 +42,10 @@ export default {
     setListAllUsers(state, payload) {
       state.listAllUsers = []
       state.listAllUsers = payload
+    },
+    setListFavoriteUsers(state, payload) {
+      state.listFavoriteUsers = []
+      state.listFavoriteUsers = payload
     }
   },
   actions: {
@@ -176,8 +181,40 @@ export default {
         .filter((elem) => elem.id === brand.id))
 
       console.log('asdadsda', arr)
+    },
+
+    // ИЗБРАННЫЕ СПЕЦИАЛИСТЫ
+    async getListFavoriteUsers({ commit, rootGetters }) {
+      const response = await Request.get(
+        this.state.BASE_URL +
+        `/m-to-m/favorites-specialists?id_user=${rootGetters.getUserId}`
+      )
+
+      commit('setListFavoriteUsers', response.data)
+    },
+
+    async addUserToFavoriteUsers({ commit, rootGetters, state, dispatch, rootState }, idUserToAdd){
+      await Request.post(
+        this.state.BASE_URL + '/m-to-m/favorites-specialists/add', {
+          id_favorite_user: idUserToAdd,
+          id_user: rootGetters.getUserId
+        }
+      )
+
+      await dispatch('getListFavoriteUsers')
+    },
+
+    async deleteFavoriteUser({ commit, rootGetters, state, dispatch, rootState }, idUserToDelete){
+      await Request.delete(
+        this.state.BASE_URL + '/m-to-m/favorites-specialists/remove', {
+          id_favorite_user: idUserToDelete,
+          id_user: rootGetters.getUserId
+        }
+      )
+
+      await dispatch('getListFavoriteUsers')
     }
-  },
+   },
   getters: {
     getFilteredListByRoleExperts(state) {
       return state.listMembers.filter((user) => {

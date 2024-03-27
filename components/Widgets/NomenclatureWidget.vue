@@ -1,16 +1,5 @@
 <template>
   <div :class="{'hovered-widget': getIsAnswered}" class="w-slider-wrapper">
-    <div class="w-slider-wrapper-label">
-      <v-badge
-        :content="getVisibleNomenclature"
-        :value="getVisibleNomenclature"
-        color="#95D7AE"
-      >
-        Рекомендуемое оборудование
-      </v-badge>
-    </div>
-    <div class="w-slider-wrapper-separator"/>
-
     <div class="w-slider-wrapper-slider-container">
       <VueSlickCarousel
         v-if="nomenclatureList.length"
