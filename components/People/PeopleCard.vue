@@ -39,7 +39,10 @@
       </div>
     </div>
 
-    <DropDownMenuStyled>
+    <DropDownMenuStyled
+      :close-on-content-click="true"
+      :is-top="true"
+    >
       <template #icon>
         <IconTooltip
           :icon-text="'mdi-dots-horizontal-circle-outline'"
@@ -49,14 +52,15 @@
         />
       </template>
       <template #content>
-        <v-card class="pa-2">
-          <div>Не рекомедовать этого пользователя</div>
-          <v-btn
+        <div class="action_menu">
+          <div class="menu_elem">Не рекомедовать этого пользователя</div>
+          <div
+            class="menu_elem"
             @click="$store.dispatch('CollaborationModule/addUserToFavoriteUsers', userObject.id)"
           >
             Добавить в избранные пользователи
-          </v-btn>
-        </v-card>
+          </div>
+        </div>
       </template>
     </DropDownMenuStyled>
   </div>
@@ -98,6 +102,24 @@ export default {
 
 <style scoped lang="scss">
 @import 'assets/styles/style';
+
+.action_menu {
+  padding: 10px;
+  display: grid;
+  grid-row-gap: 5px;
+  border-radius: 5px;
+  border: 1px solid #FFDB58;
+  background-color: $background-element-color;
+  .menu_elem {
+    width: 100%;
+    cursor: pointer;
+    transition: $transition;
+    &:hover {
+      background-color: #dadada;
+    }
+  }
+}
+
 
 .card_wrapper {
   padding: 20px;

@@ -190,6 +190,7 @@ export default {
         `/m-to-m/favorites-specialists?id_user=${rootGetters.getUserId}`
       )
 
+
       commit('setListFavoriteUsers', response.data)
     },
 
@@ -200,6 +201,7 @@ export default {
           id_user: rootGetters.getUserId
         }
       )
+      this.$toast.success('Специалист добавлен в избранное')
 
       await dispatch('getListFavoriteUsers')
     },
@@ -211,6 +213,8 @@ export default {
           id_user: rootGetters.getUserId
         }
       )
+
+      this.$toast.success('Специалист удалён из избранного')
 
       await dispatch('getListFavoriteUsers')
     }

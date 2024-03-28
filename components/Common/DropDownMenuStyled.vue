@@ -1,7 +1,7 @@
 <template>
   <v-menu
     :close-on-click="closeOnClickOutside"
-    :close-on-content-click="false"
+    :close-on-content-click="closeOnContentClick"
     :left="isLeft"
     :nudge-bottom="nudgeBottom"
     :nudge-right="nudgeRight"
@@ -56,6 +56,10 @@ export default {
     closeOnClickOutside: {
       type: Boolean,
       default: true
+    },
+    closeOnContentClick: {
+      type: Boolean,
+      default: false
     }
   }
 };
