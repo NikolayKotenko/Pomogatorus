@@ -183,14 +183,13 @@
 <script>
 import DropDownMenuStyled from '../Common/DropDownMenuStyled.vue';
 import IconTooltip from '../Common/IconTooltip.vue';
-import ServiceCard from '../Collaboration/ServiceCard.vue';
 import BrandCard from '../Common/BrandCard.vue';
 import TooltipStyled from '../Common/TooltipStyled.vue';
 
 
 export default {
   name: 'MiniUserCard',
-  components: { DropDownMenuStyled, IconTooltip, ServiceCard, TooltipStyled, BrandCard },
+  components: { DropDownMenuStyled, IconTooltip, TooltipStyled, BrandCard },
   props: {
     userObject: {
       type: Object,

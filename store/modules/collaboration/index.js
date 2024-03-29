@@ -54,20 +54,16 @@ export default {
     // делаем запрос на список пользователей закрепленых
     //
     async setUserByObject({ dispatch }, object) {
-      const response = await Request.post(
+      return  await Request.post(
         this.state.BASE_URL + '/users/invite-user-to-object',
         object
       )
-
-      return response
     },
     async setTaskByObject({ dispatch }, object) {
-      const response = await Request.post(
+      return await Request.post(
         this.state.BASE_URL + '/entity/request-for-work',
         object
       )
-
-      return response
     },
     async deleteServiceUserByObject({ dispatch, commit }, object) {
       commit('setLoading', true)
@@ -86,10 +82,9 @@ export default {
       return response
     },
     async getRequestForWorkList() {
-      const response = await Request.get(
+      return await Request.get(
         this.state.BASE_URL + '/entity/request-for-work/'
       )
-      return response
     },
     getSearchedListMembers({ commit, state }, string) {
       if (!string) return false

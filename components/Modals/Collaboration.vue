@@ -56,7 +56,6 @@ export default {
   components: {
     FavoriteUserCard,
     SearchStyled,
-    CardInviteUser
   },
   data() {
     return {
