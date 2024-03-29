@@ -175,12 +175,14 @@ export default {
       commit('setListAllUsers', response.data)
     },
 
-    getListMembersByBrand({ state }, brand) {
+    getListMembersByBrand({ state }, brandId) {
 
-      const arr =  state.listAllUsers.map((user) => user.brands
-        .filter((elem) => elem.id === brand.id))
+      return state.listAllUsers.filter((user) => {
+        return user.brands.some((brand) => {
+          return brand.id === brandId
+        })
+      })
 
-      console.log('asdadsda', arr)
     },
 
     // ИЗБРАННЫЕ СПЕЦИАЛИСТЫ
@@ -234,6 +236,9 @@ export default {
         })
       })
     },
+    getCountFavoriteUsers(state) {
+      return state.listFavoriteUsers.length
+    }
 
 
 

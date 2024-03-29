@@ -33,17 +33,34 @@
           </div>
         </div>
       </div>
-      <DropDownMenuStyled>
+      <DropDownMenuStyled
+        :close-on-content-click="true"
+        :is-top="true"
+        :close-on-click-outside="true"
+      >
         <template #icon>
           <IconTooltip
             :icon-text="'mdi-dots-horizontal-circle-outline'"
-            :text-tooltip="'Другие действия'"
+            :text-tooltip="'Действия с пользователем'"
+            :size-icon="'32'"
+            :color-icon="'#B3B3B3'"
           />
         </template>
         <template #content>
-          <v-card class="pa-2">
-            <div>Не рекомедовать этого пользователя</div>
-          </v-card>
+          <div class="action_menu">
+            <div class="menu_elem">
+              Пригласить на объект
+            </div>
+            <div
+              class="menu_elem"
+              @click="addOrDeleteFavoritesUser(userObject.id)"
+            >
+              {{ ! stateCurrentUser ? 'Добавить в избранные специалисты' : 'Убрать из избранных специалистов' }}
+            </div>
+            <div class="menu_elem">
+              Не рекомедовать этого пользователя
+            </div>
+          </div>
         </template>
       </DropDownMenuStyled>
     </div>
@@ -204,7 +221,25 @@ export default {
 
 
 <style lang="scss" scoped>
-@import '@/assets/styles/style.scss';
+@import 'assets/styles/style';
+
+.action_menu {
+  padding: 10px;
+  display: grid;
+  grid-row-gap: 5px;
+  border-radius: 5px;
+  border: 1px solid #FFDB58;
+  background-color: $background-element-color;
+  .menu_elem {
+    width: 100%;
+    cursor: pointer;
+    transition: $transition;
+    padding: 0 5px;
+    &:hover {
+      background-color: #dadada;
+    }
+  }
+}
 
 .wrapper {
   padding: 20px;

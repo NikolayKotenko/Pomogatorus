@@ -11,7 +11,7 @@
         :is-hide-selected="true"
         :is-item-text="'email'"
         :is-item-value="'id'"
-        :is-items="$store.state.CollaborationModule.listMembers"
+        :is-items="$store.state.CollaborationModule.listAllUsers"
         :is-outlined="false"
         :is-placeholder="'Поиск специалистов'"
         :is-rounded="true"
@@ -25,6 +25,11 @@
     >
       <v-tab :key="0">
         Избранные специалисты
+        <v-badge
+          :value="$store.getters['CollaborationModule/getCountFavoriteUsers']"
+          :content="$store.getters['CollaborationModule/getCountFavoriteUsers']"
+          color="#95D7AE"
+        />
       </v-tab>
       <v-tab :key="1">
         Приглашенные специалисты
@@ -60,6 +65,7 @@ export default {
   },
   async mounted() {
     await this.$store.dispatch('CollaborationModule/getListFavoriteUsers')
+    await this.$store.dispatch('CollaborationModule/getListAllUsers')
   },
   methods: {
     // async localGetListUsers(phrase) {

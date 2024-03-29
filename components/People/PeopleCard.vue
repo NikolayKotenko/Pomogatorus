@@ -42,23 +42,29 @@
     <DropDownMenuStyled
       :close-on-content-click="true"
       :is-top="true"
+      :close-on-click-outside="true"
     >
       <template #icon>
         <IconTooltip
           :icon-text="'mdi-dots-horizontal-circle-outline'"
-          :text-tooltip="'Другие действия'"
+          :text-tooltip="'Действия с пользователем'"
           :size-icon="'32'"
           :color-icon="'#B3B3B3'"
         />
       </template>
       <template #content>
         <div class="action_menu">
-          <div class="menu_elem">Не рекомедовать этого пользователя</div>
+          <div class="menu_elem">
+            Пригласить на объект
+          </div>
           <div
             class="menu_elem"
-            @click="$store.dispatch('CollaborationModule/addUserToFavoriteUsers', userObject.id)"
+            @click="addOrDeleteFavoritesUser(userObject.id)"
           >
-            Добавить в избранные пользователи
+            {{ ! stateCurrentUser ? 'Добавить в избранные специалисты' : 'Убрать из избранных специалистов' }}
+          </div>
+          <div class="menu_elem">
+            Не рекомедовать этого пользователя
           </div>
         </div>
       </template>
@@ -94,8 +100,21 @@ export default {
     },
     getCountServices() {
       return this.userObject.services.length
-    }
+    },
+    stateCurrentUser() {
+      return this.$store.state.CollaborationModule.listFavoriteUsers.some((elem) => {
+        return elem.id_favorite_user === this.userObject.id
+      })
+    },
+
   },
+  methods: {
+    addOrDeleteFavoritesUser(favoriteUserId) {
+      ! this.stateCurrentUser
+        ? this.$store.dispatch('CollaborationModule/addUserToFavoriteUsers', favoriteUserId)
+        : this.$store.dispatch('CollaborationModule/deleteFavoriteUser', favoriteUserId)
+    }
+  }
 
 }
 </script>

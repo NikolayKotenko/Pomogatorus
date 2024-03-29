@@ -59,7 +59,11 @@
 
       <!-- Личный кабинет всегда по правую сторону -->
       <v-toolbar-items class="header_right">
-        <DropDownMenuStyled :is-left="true" :is-offset-y="true">
+        <DropDownMenuStyled
+          :is-left="true"
+          :is-offset-y="true"
+          :close-on-click-outside="true"
+        >
           <template #icon>
             <IconTooltip
               :color-icon="'#FFFFFF'"
