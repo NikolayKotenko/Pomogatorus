@@ -33,6 +33,7 @@
     <!--        </v-menu> -->
     <!--      </TooltipStyled> -->
     <!--    </div> -->
+    <UniversalFilter/>
     <ProductCard
       v-for="(item) in $store.state.NomenclatureModule.listNomenclature"
       :key="item.id"
@@ -52,11 +53,12 @@
 </template>
 <script>
 import ProductCard from '../../components/Common/ProductCard.vue';
+import UniversalFilter from '../../components/Common/UniversalFilter.vue'
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'index.vue',
-  components: { ProductCard },
+  components: { UniversalFilter, ProductCard },
   async mounted() {
     await this.getNextPageData();
   },

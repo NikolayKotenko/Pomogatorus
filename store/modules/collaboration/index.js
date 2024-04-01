@@ -11,7 +11,6 @@ export default {
     stateCollaborationMenu: false,
     debounceTimeout: null,
     listServices: [],
-    listRatedUsers: [],
     listAllUsers: [],
     listFavoriteUsers: []
   },
@@ -34,10 +33,6 @@ export default {
     setListServices(state, payload) {
       state.listServices = []
       state.listServices = payload
-    },
-    setListRatedUsers(state, payload) {
-      state.listRatedUsers = []
-      state.listRatedUsers = payload
     },
     setListAllUsers(state, payload) {
       state.listAllUsers = []
@@ -138,18 +133,7 @@ export default {
       )
       commit('setListServices', response.data)
     },
-    async getListRatedUsers({ commit, rootGetters }, servicesCodeArray) {
-      const queryFilter = Request.ConstructFilterQuery({
-        id_object: rootGetters['Objects/getIdCurrentObject'],
-        services: servicesCodeArray,
-      })
 
-      const response = await Request.get(
-        this.state.BASE_URL + '/users/get-list-rated-users' + queryFilter
-      )
-
-      commit('setListRatedUsers', response.data)
-    },
     // async getLastEntryByUserServices({ _ }, idUser, idService) {
     //
     //   const queryFilter = Request.ConstructFilterQuery( {

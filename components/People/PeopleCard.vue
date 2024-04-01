@@ -53,6 +53,9 @@
         />
       </template>
       <template #content>
+        <UserActionsButton
+          :user-object="userObject"
+        />
         <div class="action_menu">
           <div class="menu_elem">
             Пригласить на объект
@@ -76,10 +79,11 @@
 import MiniUserCard from '../User/MiniUserCard.vue'
 import DropDownMenuStyled from '../Common/DropDownMenuStyled.vue'
 import IconTooltip from '../Common/IconTooltip.vue'
+import UserActionsButton from '../Common/UserActionsButton.vue'
 
 export default {
   name: 'PeopleCard',
-  components: { IconTooltip, DropDownMenuStyled, MiniUserCard },
+  components: { IconTooltip, DropDownMenuStyled, MiniUserCard, UserActionsButton },
   props: {
     userObject: {
       type: Object,

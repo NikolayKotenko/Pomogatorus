@@ -13,13 +13,14 @@ import CollaborationModule from './modules/collaboration'
 import NomenclatureModule from './modules/nomenclature'
 import NotificationModule from './modules/notification'
 import BrandsModule from './modules/brands'
+import TaskModule from './modules/task'
 
 const createStore = () => {
   return new Vuex.Store({
     state: {
       BASE_URL:
         process.env.NODE_ENV === 'development'
-          ? 'https://api.agregatorus.com'
+          ? 'https://api-test.agregatorus.com'
           : 'https://api.agregatorus.com',
       show_header: false,
       breadcrumbs: [],
@@ -311,7 +312,8 @@ const createStore = () => {
       CollaborationModule,
       NomenclatureModule,
       NotificationModule,
-      BrandsModule
+      BrandsModule,
+      TaskModule
     },
   })
 }

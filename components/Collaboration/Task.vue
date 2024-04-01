@@ -28,8 +28,8 @@
       >
         Рекомендованные специалисты
         <v-badge
-          :content="$store.state.CollaborationModule.listRatedUsers.length"
-          :value="$store.state.CollaborationModule.listRatedUsers.length"
+          :content="$store.state.TaskModule.listRatedUsers.length"
+          :value="$store.state.TaskModule.listRatedUsers.length"
           color="#95D7AE"
         />
       </v-tab>
@@ -60,7 +60,7 @@
           <div class="info_wrapper">
             <div class="service_card_wrapper">
               <ServiceCard
-                v-for="(item, index) in taskData.services"
+                v-for="(item, index) in $store.state.TaskModule.taskData.services"
                 :key="index"
                 :iteration-key="index+1"
                 :service-object="item"
@@ -71,7 +71,7 @@
           </div>
           <UniversalAddInput
             :list-items-available-to-add="currentListServicesAvailableToAdd"
-            @add-service="addService"
+            @add-service="testAddService"
           />
         </div>
 
@@ -137,7 +137,7 @@
             </thead>
             <tbody>
               <tr
-                v-for="(item, index) in $store.state.CollaborationModule.listRatedUsers"
+                v-for="(item, index) in $store.state.TaskModule.listRatedUsers"
                 :key="index"
               >
                 <td>
@@ -483,6 +483,12 @@ export default {
     currentTask: {
       type: Object,
       default: null
+    },
+
+    // Пропс используется если модалка вызывается через пользователя
+    userId: {
+      type: Number,
+      default: null
     }
   },
   data() {
@@ -503,14 +509,11 @@ export default {
         return this.$store.state.CollaborationModule.listServices;
       }
     },
-    getServicesCodes() {
-      return this.taskData.services.map((item) => item.service_data.code);
-    },
   },
   watch: {
-    'getServicesCodes':{
+    '$store.getters.TaskModule.getServiceCodes':{
       async handler(v) {
-        await this.$store.dispatch('CollaborationModule/getListRatedUsers', this.getServicesCodes);
+        await this.$store.dispatch('TaskModule/getListRatedUsers', this.$store.getters['TaskModule/getServicesCodes']);
       }
     },
   },
@@ -539,6 +542,10 @@ export default {
       this.selectedUser = obj;
     },
 
+    testAddService(obj) {
+        this.$store.dispatch('TaskModule/addService', obj)
+    },
+
     addService(obj) {
       if (!obj) return false;
 
@@ -561,6 +568,7 @@ export default {
 
       this.$toast.success('Услуга добавлена');
     },
+
 
     setPrice(index, price) {
       this.taskData.services[index].price = price;
@@ -598,10 +606,13 @@ export default {
 
       this.$toast.success(response.message);
       this.$emit('close-modal');
+    },
 
       // TODO: Доделать дестрой
       // this.dataUsers = ''
       // this.taskData = new TaskData()
+    addUserToTask(userId) {
+      this.$refs.inviteUserModal.openModal()
     },
     nextStep() {
       if (this.tab === 0) {

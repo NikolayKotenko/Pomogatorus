@@ -8,6 +8,7 @@
     <Task
       :get-services-tethered-by-user-object="getServicesTetheredByUserObject"
       :get-state-tethered-user-in-object="getStateTetheredUserInObject"
+      :user-id="userId"
       @close-modal="closeModal"
     />
   </v-dialog>
@@ -34,12 +35,22 @@ export default {
     getServicesTetheredByUserObject: {
       type: Array,
       default: () => ([])
+    },
+    userId: {
+      type: Number,
+      default: null
     }
   },
   data() {
     return {
-      showModal: false
+      showModal: false,
+      selectedUserId: null
     };
+  },
+  created() {
+    this.$on('add-user-to-task', userId =>{
+      this.selectedUserId = userId
+    })
   },
   methods: {
     closeModal() {
