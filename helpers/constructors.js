@@ -9,7 +9,7 @@ export function Service(
   idServices = null,
   idsNomenclatures = [],
   price = '',
-  quantity = null,
+  quantity = '',
   service_data = new ServiceDataConstructor()
 ) {
   this.id_services = idServices

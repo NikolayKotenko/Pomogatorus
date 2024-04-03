@@ -82,6 +82,7 @@
             :is-outlined="true"
             :is-placeholder="'Кол-во'"
             class="quantity_field"
+            @input="$emit('update-quantity-input', $event)"
           />
         </div>
         <IconTooltip
