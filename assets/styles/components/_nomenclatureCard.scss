@@ -44,10 +44,30 @@
   background: #E3E3E3;
   border-radius: 5px;
   cursor: pointer;
-  max-width: 290px;
+  width: 290px;
   min-height: 370px;
 
   &:hover {
     @extend .background-hover;
+  }
+}
+
+@media only screen and (max-width: 1200px) {
+  .c-nomenclature__img {
+    width: 200px;
+  }
+
+  .c-nomenclature__img img {
+    width: 200px;
+  }
+
+  .c-nomenclature-info {
+    width: 250px;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .c-nomenclature-info {
+    width: 100%;
   }
 }
