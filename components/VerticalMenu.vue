@@ -27,6 +27,26 @@
         </v-btn>
       </div>
     </div>
+    <v-divider style="margin: 10px 0"/>
+    <div
+      class="btn_wrapper"
+      @click="openModal"
+    >
+      <v-btn
+        class="btn"
+        text
+      >
+        <v-icon
+          class="icon"
+          size="24"
+        >
+          mdi-plus
+        </v-icon>
+        <span class="text">
+          Найти мастера
+        </span>
+      </v-btn>
+    </div>
   </div>
 </template>
 
@@ -42,6 +62,9 @@ export default {
   methods: {
     getActiveMenuElement(elem) {
       return this.$route.path === elem;
+    },
+    openModal() {
+      this.$store.dispatch('TaskModule/openModal')
     }
   }
 };

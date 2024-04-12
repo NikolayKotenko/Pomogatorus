@@ -10,9 +10,10 @@ export default {
     stateModal: false
   },
   mutations: {
-    setTaskData(state, payload) {
+    setEmptyData(state) {
       state.taskData = new TaskData()
-      state.taskData = payload
+      state.dataUsers = []
+      state.listRatedUsers = []
     },
     setListRatedUsers(state, payload) {
       state.listRatedUsers = []
@@ -22,9 +23,30 @@ export default {
       state.taskData.ids_users.push(userData.id);
       state.dataUsers.push(userData)
     },
+    setTaskModalState(state, payload) {
+      state.stateModal = payload
+    }
 
   },
   actions: {
+    openModal({ rootGetters, commit, state }){
+      if (! rootGetters.stateAuth) {
+        commit('set_modal_auth', true)
+        return false
+      }
+
+      if (! rootGetters['Objects/getIdCurrentObject']) {
+        this.$toast.error('Сначала создайте объект!')
+        return false
+      }
+
+      commit('setTaskModalState', true)
+    },
+    closeModal({ commit, state }){
+      commit('setTaskModalState', false)
+      commit('setEmptyData')
+    },
+
     async addService({ state, commit, dispatch }, service) {
       if (!service) return false;
 
@@ -87,7 +109,7 @@ export default {
       this.$toast.success('Исполнитель удален');
     },
 
-    async sendTask({ state }) {
+    async sendTask({ state, dispatch, commit }) {
       if (!state.taskData.services.length) {
         this.$toast.info('Выберите услугу');
         return false;
@@ -104,7 +126,10 @@ export default {
         state.taskData
       )
 
+      await dispatch('closeModal')
       this.$toast.success(response.message);
+
+      commit('setTaskData')
     }
 
   },
@@ -139,6 +164,10 @@ export default {
 
       if (result > 100) {
         result = '100%'
+      } else if (result === 0) {
+        result = 0
+      } else if (isNaN(result)) {
+        result = 0
       } else {
         result = result + '%'
       }

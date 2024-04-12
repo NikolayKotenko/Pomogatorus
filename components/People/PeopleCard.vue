@@ -56,20 +56,6 @@
         <UserActionsButton
           :user-object="userObject"
         />
-        <div class="action_menu">
-          <div class="menu_elem">
-            Пригласить на объект
-          </div>
-          <div
-            class="menu_elem"
-            @click="addOrDeleteFavoritesUser(userObject.id)"
-          >
-            {{ ! stateCurrentUser ? 'Добавить в избранные специалисты' : 'Убрать из избранных специалистов' }}
-          </div>
-          <div class="menu_elem">
-            Не рекомедовать этого пользователя
-          </div>
-        </div>
       </template>
     </DropDownMenuStyled>
   </div>
@@ -113,11 +99,7 @@ export default {
 
   },
   methods: {
-    addOrDeleteFavoritesUser(favoriteUserId) {
-      ! this.stateCurrentUser
-        ? this.$store.dispatch('CollaborationModule/addUserToFavoriteUsers', favoriteUserId)
-        : this.$store.dispatch('CollaborationModule/deleteFavoriteUser', favoriteUserId)
-    }
+
   }
 
 }

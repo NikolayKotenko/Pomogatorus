@@ -85,9 +85,8 @@ export default {
   letter-spacing: normal !important;
   //font-style: normal !important;
   font-size: 1em;
-  border-radius: 5px;
-  border: 1px solid #857885;
-  box-shadow: rgba(0, 0, 0, 0.25);
+  border-radius: 25px;
+  border: 1px solid #000000;
   transition: $transition;
 
   &:hover {
@@ -106,10 +105,11 @@ export default {
 .v-btn.style_button {
   background-color: $background-element-color !important;
   color: $black-text-color;
-  border: 1px solid $green-color;
+  border: 1px solid #000000;
   transition: $transition;
   &:hover {
-    background: $green-color !important;
+    background: #000000 !important;
+    color: #FFFFFF;
   }
 }
 

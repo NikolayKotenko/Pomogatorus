@@ -116,7 +116,7 @@
     </v-container>
 
     <!-- Глобальные модалки -->
-    <TaskModal ref="inviteUserModal"/>
+    <TaskModal/>
     <CreateObjectModal ref="createObjectModal"/>
   </v-app-bar>
 </template>
@@ -340,16 +340,17 @@ export default {
 }
 
 .theme--dark.v-app-bar.v-toolbar.v-sheet {
-  background: #37392e;
+  background: #000000;
 }
 
 .header {
   display: flex;
   flex: unset !important;
-  width: 100%;
-  position: sticky;
-  top: 0;
+  margin: 40px 100px 0 100px;
+  position: fixed;
+  top: 40px;
   z-index: 100;
+  border-radius: 40px !important;
   transition: $transition;
   height: 64px !important;
 

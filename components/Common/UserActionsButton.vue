@@ -2,7 +2,7 @@
   <div class="action_menu">
     <div
       class="menu_elem"
-      @click="addUserToTask(userObject.id)"
+      @click="addUserToTask(userObject)"
     >
       Пригласить на объект
     </div>
@@ -15,15 +15,6 @@
     <div class="menu_elem">
       Не рекомедовать этого пользователя
     </div>
-    <TaskModal
-      ref="inviteUserModal"
-      :get-services-tethered-by-user-object="
-        getServicesTetheredByUserObject
-      "
-      :get-state-tethered-user-in-object="getStateTetheredUserInObject"
-      :list-services-available-to-add="userObject.services"
-      :user-id="userObject.id"
-    />
   </div>
 </template>
 
@@ -53,9 +44,10 @@ export default {
         ? this.$store.dispatch('CollaborationModule/addUserToFavoriteUsers', favoriteUserId)
         : this.$store.dispatch('CollaborationModule/deleteFavoriteUser', favoriteUserId)
     },
-    addUserToTask(userId) {
-      this.$refs.inviteUserModal.openModal()
-      this.$emit('add-user-to-task', userId)
+    addUserToTask(userData) {
+      this.$store.dispatch('TaskModule/openModal')
+
+      this.$store.dispatch('TaskModule/addUser', userData)
     }
   }
 

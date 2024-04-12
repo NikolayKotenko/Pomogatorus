@@ -3,7 +3,7 @@
     <template v-if="!getStateTetheredUserInObject">
       <div class="application_header">
         <span class="header_title">Составление заявки</span>
-        <v-icon large @click="$emit('close-modal')">
+        <v-icon large @click="$store.dispatch('TaskModule/closeModal')">
           mdi-close
         </v-icon>
       </div>
@@ -306,7 +306,23 @@
                         </span>
                       </template>
                       <v-list>
-                        <div class="explain_info">
+                        <div
+                          v-if="! $store.getters['TaskModule/getCountServices']"
+                          class="explain_info"
+                        >
+                          <h4>
+                            Вы ещё не добавили услуги
+                          </h4>
+                        </div>
+                        <div
+                          v-else-if="$store.getters['TaskModule/getMatchPercentage'](item.services) === 0"
+                          class="explain_info"
+                        >
+                          <h4>
+                            Нет совпадений
+                          </h4>
+                        </div>
+                        <div v-else class="explain_info">
                           <h4>Пользователь может выполнить следующие услуги: </h4>
                           <li
                             v-for="(elem, key) in $store.getters['TaskModule/getListServicesOfUserToExecute'](item.services)"

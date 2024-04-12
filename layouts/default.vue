@@ -13,7 +13,7 @@
       <Nuxt class="custom_grid_system main__left_column"/>
 
       <!--   WIDGETS   -->
-      <WrapperStickyCurrentObject v-if="!listExcludedRightColumn && $device.isDesktop"/>
+      <!--      <WrapperStickyCurrentObject v-if="!listExcludedRightColumn && $device.isDesktop"/> -->
     </v-main>
 
     <!-- КАСКАДНЫЕ МОДАЛКИ -->

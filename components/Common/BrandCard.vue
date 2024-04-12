@@ -77,20 +77,9 @@
                 />
               </template>
               <template #content>
-                <div class="action_menu">
-                  <div class="menu_elem">
-                    Пригласить на объект
-                  </div>
-                  <div
-                    class="menu_elem"
-                    @click="$store.dispatch('CollaborationModule/addUserToFavoriteUsers', item.id)"
-                  >
-                    Добавить в избранные пользователи
-                  </div>
-                  <div class="menu_elem">
-                    Не рекомедовать этого пользователя
-                  </div>
-                </div>
+                <UserActionsButton
+                  :user-object="item"
+                />
               </template>
             </DropDownMenuStyled>
           </div>
@@ -104,10 +93,11 @@
 import MiniUserCard from '../User/MiniUserCard.vue'
 import DropDownMenuStyled from './DropDownMenuStyled.vue'
 import IconTooltip from './IconTooltip.vue'
+import UserActionsButton from './UserActionsButton.vue'
 
 export default {
   name: 'BrandCard',
-  components: { MiniUserCard, IconTooltip, DropDownMenuStyled },
+  components: { UserActionsButton, MiniUserCard, IconTooltip, DropDownMenuStyled },
   props: {
     brandObject: {
       type: Object,
