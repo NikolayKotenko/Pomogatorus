@@ -3,7 +3,7 @@
     <template v-if="!getStateTetheredUserInObject">
       <div class="application_header">
         <span class="header_title">Составление заявки</span>
-        <v-icon large @click="$emit('close-modal')">
+        <v-icon large @click="$store.dispatch('TaskModule/closeModal')">
           mdi-close
         </v-icon>
       </div>
@@ -17,55 +17,53 @@
       <v-tab :key="0">
         Услуги
         <v-badge
-          :content="taskData.services.length"
-          :value="taskData.services.length"
+          :content="$store.getters['TaskModule/getCountServices']"
+          :value="$store.getters['TaskModule/getCountServices']"
           color="#95D7AE"
         />
       </v-tab>
       <v-tab
         :key="1"
-        :disabled="! taskData.services.length"
       >
         Рекомендованные специалисты
         <v-badge
-          :content="$store.state.CollaborationModule.listRatedUsers.length"
-          :value="$store.state.CollaborationModule.listRatedUsers.length"
+          :content="$store.getters['TaskModule/getCountRatedUsers']"
+          :value="$store.getters['TaskModule/getCountRatedUsers']"
           color="#95D7AE"
         />
       </v-tab>
       <v-tab
         :key="2"
-        :disabled="! taskData.ids_users.length || ! taskData.services.length"
       >
-        Приглашенные специалисты
+        Выбранные специалисты
         <v-badge
-          :content="taskData.ids_users.length"
-          :value="taskData.ids_users.length"
+          :content="$store.getters['TaskModule/getCountAddedUsers']"
+          :value="$store.getters['TaskModule/getCountAddedUsers']"
           color="#95D7AE"
         />
       </v-tab>
       <v-tab
         :key="3"
-        :disabled="(taskData.notes === '') && (! taskData.ids_users.length) && (! taskData.services.length)"
       >
         Заявка
       </v-tab>
 
       <!-- Блок с услугами. -->
       <v-tab-item :key="0" class="tab_wrapper">
-        <template v-if="! taskData.services.length">
+        <template v-if="! $store.getters['TaskModule/getCountServices']">
           <span class="empty_data_wrapper">Вы ещё не выбрали услугу</span>
         </template>
         <div class="services_table">
           <div class="info_wrapper">
             <div class="service_card_wrapper">
               <ServiceCard
-                v-for="(item, index) in taskData.services"
+                v-for="(item, index) in $store.state.TaskModule.taskData.services"
                 :key="index"
                 :iteration-key="index+1"
                 :service-object="item"
-                @delete-one-service="deleteOneService(index)"
+                @delete-one-service="deleteService(index)"
                 @update-price-field="setPrice(index, $event)"
+                @update-quantity-input="setQuantity(index, $event)"
               />
             </div>
           </div>
@@ -86,7 +84,7 @@
           </div>
           <div class="textarea_style">
             <v-textarea
-              v-model="taskData.notes"
+              v-model="$store.state.TaskModule.taskData.notes"
               :hide-details="true"
               clearable
               color="#000000"
@@ -99,7 +97,10 @@
 
       <!-- Блок с рекомендованными пользователями. -->
       <v-tab-item :key="1" class="tab_wrapper">
-        <v-simple-table>
+        <template v-if="! $store.getters['TaskModule/getCountServices']">
+          <span class="empty_data_wrapper">Вначале выберите услугу</span>
+        </template>
+        <v-simple-table v-else>
           <template #default>
             <thead>
               <tr>
@@ -137,7 +138,7 @@
             </thead>
             <tbody>
               <tr
-                v-for="(item, index) in $store.state.CollaborationModule.listRatedUsers"
+                v-for="(item, index) in $store.state.TaskModule.listRatedUsers"
                 :key="index"
               >
                 <td>
@@ -174,21 +175,21 @@
                         v-bind="attrs"
                         v-on="on"
                       >
-                        {{ getMatchPercentage(item.services) }} -
+                        {{ $store.getters['TaskModule/getMatchPercentage'](item.services) }} -
                       </span>
                       <span
                         style="font-weight: 400; color: #B3B3B3;"
                         v-bind="attrs"
                         v-on="on"
                       >
-                        {{ getCountUserServicesToMatch(item.services) }}
+                        {{ $store.getters['TaskModule/getCountUserServicesToMatch'](item.services) }}
                       </span>
                     </template>
                     <v-list>
                       <div class="explain_info">
                         <h4>Пользователь может выполнить следующие услуги: </h4>
                         <li
-                          v-for="(item, index) in getListServicesOfUserToExecute(item.services)"
+                          v-for="(item, index) in $store.getters['TaskModule/getListServicesOfUserToExecute'](item.services)"
                           :key="index"
                         >
                           {{ item }}
@@ -215,7 +216,7 @@
 
       <!-- Блок с приглашенными пользователями. -->
       <v-tab-item :key="2" class="tab_wrapper">
-        <template v-if="! taskData.ids_users.length">
+        <template v-if="! $store.getters['TaskModule/getCountAddedUsers']">
           <span class="empty_data_wrapper">Вы ещё не выбрали специалистов</span>
         </template>
         <template v-else>
@@ -257,7 +258,7 @@
               </thead>
               <tbody>
                 <tr
-                  v-for="(item, index) in dataUsers"
+                  v-for="(item, index) in $store.state.TaskModule.dataUsers"
                   :key="index"
                 >
                   <td>
@@ -294,21 +295,37 @@
                           v-bind="attrs"
                           v-on="on"
                         >
-                          {{ getMatchPercentage(item.services) }} -
+                          {{ $store.getters['TaskModule/getMatchPercentage'](item.services) }} -
                         </span>
                         <span
                           style="font-weight: 400; color: #B3B3B3;"
                           v-bind="attrs"
                           v-on="on"
                         >
-                          {{ getCountUserServicesToMatch(item.services) }}
+                          {{ $store.getters['TaskModule/getCountUserServicesToMatch'](item.services) }}
                         </span>
                       </template>
                       <v-list>
-                        <div class="explain_info">
+                        <div
+                          v-if="! $store.getters['TaskModule/getCountServices']"
+                          class="explain_info"
+                        >
+                          <h4>
+                            Вы ещё не добавили услуги
+                          </h4>
+                        </div>
+                        <div
+                          v-else-if="$store.getters['TaskModule/getMatchPercentage'](item.services) === 0"
+                          class="explain_info"
+                        >
+                          <h4>
+                            Нет совпадений
+                          </h4>
+                        </div>
+                        <div v-else class="explain_info">
                           <h4>Пользователь может выполнить следующие услуги: </h4>
                           <li
-                            v-for="(elem, key) in getListServicesOfUserToExecute(item.services)"
+                            v-for="(elem, key) in $store.getters['TaskModule/getListServicesOfUserToExecute'](item.services)"
                             :key="key"
                           >
                             {{ elem }}
@@ -324,7 +341,7 @@
                       :icon-text="'mdi-delete-outline'"
                       :size-icon="'32'"
                       :text-tooltip="'Убрать из заявки'"
-                      @click-icon="deleteOneUser(taskData.ids_users.item, index)"
+                      @click-icon="deleteUser($store.state.TaskModule.taskData.ids_users.item, index)"
                     />
                   </td>
                 </tr>
@@ -335,20 +352,20 @@
       </v-tab-item>
       <v-tab-item :key="3" class="tab_wrapper">
         <div class="info_wrapper">
-          <div v-if="taskData.services.length" class="info_title">
+          <div v-if="$store.getters['TaskModule/getCountServices']" class="info_title">
             Услуги:
             <li
-              v-for="(item, index) in taskData.services"
+              v-for="(item, index) in $store.state.TaskModule.taskData.services"
               :key="index"
               class="text"
             >
               {{ item.service_data.name }}
             </li>
           </div>
-          <div v-if="dataUsers.length" class="info_title">
+          <div v-if="$store.getters['TaskModule/getCountAddedUsers']" class="info_title">
             Специалисты:
             <li
-              v-for="(item, index) in dataUsers"
+              v-for="(item, index) in $store.state.TaskModule.dataUsers"
               :key="index"
               class="text"
             >
@@ -356,7 +373,7 @@
             </li>
           </div>
           <div
-            v-if="taskData.notes !== ''"
+            v-if="$store.state.TaskModule.taskData.notes !== ''"
             style="display: grid; grid-row-gap: 10px;"
           >
             <div style="display: flex; align-items: center">
@@ -367,7 +384,7 @@
               />
             </div>
             <v-textarea
-              v-model="taskData.notes"
+              v-model="$store.state.TaskModule.taskData.notes"
               :hide-details="true"
               clearable
               color="#000000"
@@ -387,7 +404,7 @@
         class="btn"
         :local-class="'invite_button style_button'"
         :local-text="'Выбрать специалистов'"
-        :is-disabled="! taskData.services.length"
+        :is-disabled="! $store.getters['TaskModule/getCountServices']"
         @click-button="nextStep"
       >
         <v-icon>mdi-chevron-right</v-icon>
@@ -405,7 +422,7 @@
       <ButtonStyled
         :local-class="'invite_button style_button'"
         :local-text="'Просмотреть специалистов'"
-        :is-disabled="! taskData.ids_users.length || ! taskData.services.length"
+        :is-disabled="! $store.getters['TaskModule/getCountAddedUsers'] || ! $store.getters['TaskModule/getCountServices']"
         @click-button="nextStep"
       >
         <v-icon>mdi-chevron-right</v-icon>
@@ -423,7 +440,7 @@
       <ButtonStyled
         :local-class="'invite_button style_button'"
         :local-text="'Перейти к итогу'"
-        :is-disabled="! taskData.ids_users.length || ! taskData.services.length"
+        :is-disabled="! $store.getters['TaskModule/getCountAddedUsers'] || ! $store.getters['TaskModule/getCountServices']"
         @click-button="nextStep"
       >
         <v-icon>mdi-chevron-right</v-icon>
@@ -454,7 +471,6 @@ import IconTooltip from '../Common/IconTooltip.vue';
 import DropDownMenuStyled from '../Common/DropDownMenuStyled.vue'
 import MiniUserCard from '../User/MiniUserCard.vue'
 import ServiceCard from './ServiceCard.vue';
-import { Service, ServiceDataConstructor, TaskData } from '~/helpers/constructors';
 import UniversalAddInput from '~/components/Common/UniversalAddInput';
 
 export default {
@@ -483,14 +499,11 @@ export default {
     currentTask: {
       type: Object,
       default: null
-    }
+    },
   },
   data() {
     return {
-      taskData: new TaskData(),
-      dataUsers: [],
       showDeleteOneUserModal: false,
-      e1: 0,
       tab: null,
     };
   },
@@ -503,22 +516,16 @@ export default {
         return this.$store.state.CollaborationModule.listServices;
       }
     },
-    getServicesCodes() {
-      return this.taskData.services.map((item) => item.service_data.code);
-    },
   },
   watch: {
-    'getServicesCodes':{
+    '$store.getters.TaskModule.getServiceCodes':{
       async handler(v) {
-        await this.$store.dispatch('CollaborationModule/getListRatedUsers', this.getServicesCodes);
+        await this.$store.dispatch('TaskModule/getListRatedUsers');
       }
     },
   },
   async mounted() {
-    if (this.currentTask) {
-      this.taskData = this.currentTask;
-    }
-    this.taskData.id_object = this.$store.getters['Objects/getIdCurrentObject'];
+    this.$store.state.TaskModule.taskData.id_object = this.$store.getters['Objects/getIdCurrentObject'];
 
     if (this.listServicesAvailableToAdd.length) return false;
     if (!this.$store.state.CollaborationModule.listServices.length) {
@@ -527,82 +534,28 @@ export default {
 
   },
   methods: {
-    getValueField(str) {
-      return (str) || '';
-    },
-
-    closeDeleteOneUserModal() {
-      this.showDeleteOneUserModal = false;
-    },
-
-    setSelectedUsersIdsLocal(obj) {
-      this.selectedUser = obj;
-    },
-
     addService(obj) {
-      if (!obj) return false;
-
-      if (this.taskData.services.find(item => item.id_services === obj.id)) {
-        this.$toast.error('Такая услуга уже добавлена');
-        return false;
-      }
-
-      this.taskData.services.push(new Service(
-        obj.id,
-        [],
-        '',
-        '1',
-        new ServiceDataConstructor(
-          obj.code,
-          obj.name,
-          obj.description
-        )
-      ));
-
-      this.$toast.success('Услуга добавлена');
+        this.$store.dispatch('TaskModule/addService', obj)
     },
-
-    setPrice(index, price) {
-      this.taskData.services[index].price = price;
-    },
-    // из массива всех специалистов показать только тех у кого есть совпадение по услугам
-
-
     addUser(userData) {
-      if (this.taskData.ids_users.includes(userData.id)) {
-        this.$toast.error('Исполнитель уже добавлен');
-        return false;
-      }
-
-      this.taskData.ids_users.push(userData.id);
-      this.dataUsers.push(userData);
-
-      this.$toast.success('Исполнитель добавлен');
+      this.$store.dispatch('TaskModule/addUser', userData)
     },
-
+    setPrice(index, price) {
+      this.$store.state.TaskModule.taskData.services[index].price = price;
+    },
+    setQuantity(index, quantity) {
+      this.$store.state.TaskModule.taskData.services[index].quantity = quantity
+    },
     async sendTask() {
-      if (!this.taskData.services.length) {
-        this.$toast.info('Выберите услугу');
-        return false;
-      }
-
-      if (!this.taskData.ids_users.length) {
-        this.$toast.info('Добавьте исполнителя');
-        return false;
-      }
-
-      const response = await this.$store.dispatch(
-        'CollaborationModule/setTaskByObject',
-        this.taskData
-      );
-
-      this.$toast.success(response.message);
-      this.$emit('close-modal');
-
-      // TODO: Доделать дестрой
-      // this.dataUsers = ''
-      // this.taskData = new TaskData()
+      await this.$store.dispatch('TaskModule/sendTask')
     },
+    deleteService(service) {
+      this.$store.dispatch('TaskModule/deleteService', service)
+    },
+    deleteUser(id, data) {
+      this.$store.dispatch('TaskModule/deleteUser', id, data)
+    },
+
     nextStep() {
       if (this.tab === 0) {
         this.tab = 1
@@ -631,82 +584,6 @@ export default {
         return false
       }
     },
-    deleteOneService(serviceToRemove) {
-      this.taskData.services.splice(serviceToRemove, 1);
-
-      this.$toast.success('Услуга удалена');
-    },
-
-    deleteOneUser(idUserToRemove, dataUserToRemove) {
-      this.taskData.ids_users.splice(idUserToRemove, 1);
-      this.dataUsers.splice(dataUserToRemove, 1);
-
-      this.$toast.success('Исполнитель удален');
-    },
-    getMatchPercentage(ratedUserServices) {
-      const taskServicesLength = this.taskData.services.length
-      const userServicesCodes = ratedUserServices.map((elem) => elem.code)
-
-      const taskServicesCodes = this.getServicesCodes
-
-      const resultArr = []
-
-      for (const elem of userServicesCodes) {
-        if (taskServicesCodes.includes(elem)) {
-          resultArr.push(elem)
-        }
-      }
-
-      let result = Math.floor((resultArr.length / taskServicesLength) * 100)
-
-      if (result > 100) {
-        result = '100%'
-      } else {
-        result = result + '%'
-      }
-
-      return result
-    },
-    getCountUserServicesToMatch(ratedUserServices) {
-      const taskServicesLength = this.taskData.services.length
-      const userServicesCodes = ratedUserServices.map((elem) => elem.code)
-
-      const taskServicesCodes = this.getServicesCodes
-
-      const resultArr = []
-
-      for (const elem of userServicesCodes) {
-        if (taskServicesCodes.includes(elem)) {
-          resultArr.push(elem)
-        }
-      }
-
-      return resultArr.length + ' из ' + taskServicesLength
-    },
-    getListServicesOfUserToExecute(ratedUserServices) {
-      const userServicesName = ratedUserServices
-        .map((elem) => elem.name)
-
-      const taskServicesName = this.taskData.services
-        .map((elem) => elem.service_data.name)
-
-      const resultArr = []
-
-      for (const elem of userServicesName) {
-        if (taskServicesName.includes(elem)) {
-          resultArr.push(elem)
-        }
-      }
-
-      return resultArr
-    },
-    // async getPriceByUser(idUser, services) {
-    //   console.log('getPriceByUser', idUser, services)
-    //
-    //
-    //
-    //   return await this.$store.dispatch('CollaborationModule/getLastEntryByUserServices', idUser, services)
-    // }
   }
 };
 </script>

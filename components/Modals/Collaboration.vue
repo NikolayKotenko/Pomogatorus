@@ -84,15 +84,14 @@ export default {
 
 .collaboration {
   padding: 20px;
-  //position: absolute;
-  //top: 0;
-  //right: 0;
-  //z-index: 9999;
+  border-radius: 30px;
   background-color: white;
   overflow: auto;
   width: 740px;
   max-height: 840px;
+  min-height: 500px;
   box-shadow: $shadowBox;
+  margin: 4px 4px 10px 4px;
 
 
   .header {

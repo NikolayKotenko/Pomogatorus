@@ -1,21 +1,32 @@
 <template>
   <v-dialog
-    v-model="showModal"
+    v-model="$store.state.TaskModule.stateModal"
     class="modal"
     persistent
     width="850"
   >
-    <Task
-      :get-services-tethered-by-user-object="getServicesTetheredByUserObject"
-      :get-state-tethered-user-in-object="getStateTetheredUserInObject"
-      @close-modal="closeModal"
-    />
+    <Task/>
   </v-dialog>
+<!--  <v-dialog -->
+<!--    v-model="$store.state.TaskModule.stateModal" -->
+<!--    class="modal" -->
+<!--    persistent -->
+<!--    width="850" -->
+<!--  > -->
+<!--    <template #activator="{ on, attrs }"> -->
+<!--      <div -->
+<!--        v-bind="attrs" -->
+<!--        v-on="on" -->
+<!--      > -->
+<!--        <slot name="text"/> -->
+<!--      </div> -->
+<!--    </template> -->
+<!--    <slot name="content"/> -->
+<!--  </v-dialog> -->
 </template>
 
 <script>
 import Task from '../Collaboration/Task.vue';
-import { setStateModalByUrlHash } from '~/helpers/urlHelper';
 
 export default {
   name: 'TaskModal',
@@ -34,33 +45,40 @@ export default {
     getServicesTetheredByUserObject: {
       type: Array,
       default: () => ([])
+    },
+    userId: {
+      type: Number,
+      default: null
     }
   },
   data() {
     return {
-      showModal: false
+      selectedUserId: null
     };
   },
+  created() {
+    this.$on('add-user-to-task', userId =>{
+      this.selectedUserId = userId
+    })
+  },
   methods: {
-    closeModal() {
-      this.showModal = false;
-      setStateModalByUrlHash('inviteUserModal', false);
-    },
-    openModal() {
-      if (!this.$store.getters.stateAuth) {
-        this.$store.commit('set_modal_auth', true);
-        setStateModalByUrlHash('inviteUserModal', false);
-        return false;
-      }
-      // TODO доделать когда будет разделение прав
-      if (!this.$store.getters['Objects/getIdCurrentObject']) {
-        setStateModalByUrlHash('createObjectModal', true);
-        return false;
-      }
-
-      this.showModal = true;
-      setStateModalByUrlHash('inviteUserModal', true);
-    }
+    // closeModal() {
+    //   setStateModalByUrlHash('inviteUserModal', false);
+    // },
+    // openModal() {
+    //   if (!this.$store.getters.stateAuth) {
+    //     this.$store.commit('set_modal_auth', true);
+    //     setStateModalByUrlHash('inviteUserModal', false);
+    //     return false;
+    //   }
+    //   // TODO доделать когда будет разделение прав
+    //   if (!this.$store.getters['Objects/getIdCurrentObject']) {
+    //     setStateModalByUrlHash('createObjectModal', true);
+    //     return false;
+    //   }
+    //
+    //   setStateModalByUrlHash('inviteUserModal', true);
+    // }
   }
 };
 </script>

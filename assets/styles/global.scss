@@ -15,9 +15,6 @@ input:focus::placeholder {
   border-radius: 15px;
 }
 
-.v-menu__content {
-  border-radius: 5px !important;
-}
 
 .universal_interface {
   border-radius: 15px;
@@ -35,10 +32,6 @@ $max-width: 1140px;
   box-shadow: 0px 5px 20px 7px rgba(34, 60, 80, 0.2) !important;
 }
 
-.border-hover {
-  outline: 1px solid #FFDB58;
-  border-radius: 5px;
-}
 
 .background-hover {
   background: #FFF4CB;

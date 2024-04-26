@@ -1,8 +1,9 @@
 @import 'assets/fonts/GoogleSans/style.css';
 @import 'assets/fonts/OpenSans/stylesheet.css';
+@import 'assets/fonts/Inter/style.css';
 
 .mainTitleFont {
-  font-family: 'Roboto', sans-serif !important;
+  font-family: 'Inter', sans-serif !important;
   color: #000000;
   font-weight: 700;
   font-size: 2em;
@@ -10,14 +11,14 @@
 }
 
 .titleFont {
-  font-family: 'Roboto', sans-serif !important;
+  font-family: 'Inter', sans-serif !important;
   color: #000000;
   font-weight: 500;
   font-size: 1.2em;
 }
 
 .mainContentFont {
-  font-family: 'Roboto', sans-serif !important;
+  font-family: 'Inter', sans-serif !important;
   font-size: 1em;
   color: #000000;
 }

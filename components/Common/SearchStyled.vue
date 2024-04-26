@@ -2,7 +2,7 @@
   <VCombobox
     v-model="currentData"
     :chips="isChips"
-    :class="isClass"
+    :class="isCustomClass"
     :clearable="(localSearchInputSync || localSelected) ? isClearable : false"
     :dense="isDense"
     :disabled="isDisabled"
@@ -21,7 +21,7 @@
     :rounded="isRounded"
     :search-input.sync="localSearchInputSync"
     background-color="#ffffff"
-    color="#95D7AE"
+    color="black"
     @change="$emit('change-search', localSelected)"
     @click:clear="$emit('click-clear')"
     @update:search-input="$emit('update-search-input', localSearchInputSync)"
@@ -66,6 +66,7 @@
         <span style="font-size: 0.8em; color: #B6B6B6;">{{ data.item.address }}</span>
       </v-list-item-content>
     </template>
+
     <!--
  <template v-if="isCustomTemplateSelections" #item="data">
       <v-list-item-content @click="watchDataRedirect(data.item)">
@@ -111,13 +112,17 @@ export default {
   name: 'SearchStyled',
   components: { CardInviteUser, HashTagStyled },
   props: {
-    isClass: {
-      type: String,
-      default: ''
+    isCustomClass: {
+      type: Boolean,
+      default: false
     },
     isOutlined: {
       type: Boolean,
       default: true
+    },
+    fullWidth: {
+      type: String,
+      default: ''
     },
     isDense: {
       type: Boolean,
@@ -272,7 +277,7 @@ export default {
 
 <style lang="scss" scoped>
 .v-text-field--rounded {
-  border-radius: 5px !important;
+  border-radius: 25px !important;
 }
 
 .search_item {
@@ -299,56 +304,7 @@ export default {
   display: none !important;
 }
 
-.styleSearch {
 
-  &.primary--text {
-    color: #95D7AE !important;
-  }
-
-  font-size: 1.8em !important;
-  border-radius: 5px;
-  //min-width: 1144px;
-
-  .v-input__slot {
-    height: 40px;
-  }
-
-  .v-select__selections {
-    height: 40px;
-  }
-
-  .v-input__append-inner {
-    .v-input__icon--append {
-      //margin-top: 8px;
-    }
-
-    //height: 60px;
-    //display: flex;
-    //align-items: center;
-    //padding: 0;
-    //margin: 0;
-  }
-
-  .v-select__slot {
-    color: #37392E !important;
-
-    input {
-      color: black;
-    }
-
-    input::placeholder {
-      color: #878787;
-      font-size: 0.8em;
-
-    }
-  }
-
-  .mdi-close {
-    font-size: 1em;
-    align-content: center;
-    color: $orange-color !important;
-  }
-}
 
 .selectIcon {
   margin-right: 5px;

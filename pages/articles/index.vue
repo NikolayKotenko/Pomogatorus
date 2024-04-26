@@ -24,21 +24,25 @@
       <!--      &lt;!&ndash;      > &ndash;&gt; -->
       <!--      &lt;!&ndash;      </ChipsStyled> &ndash;&gt; -->
       <!--    </div> -->
+      <SubHeader/>
       <div v-if="listArticles.length" class="list_container">
-        <Article v-for="(article, index) in listArticles" :key="index" :article="article"/>
+        <div v-for="(article, index) in listArticles" :key="index">
+          <v-divider style="margin: 0 30px 20px 30px; border-width: 0.1px;"/>
+          <Article :article="article"/>
+        </div>
       </div>
-
-      <v-overlay :value="!loadComponent">
-        <v-progress-circular
-          indeterminate
-          size="64"
-        />
-      </v-overlay>
     </div>
+    <v-overlay :value="!loadComponent">
+      <v-progress-circular
+        indeterminate
+        size="64"
+      />
+    </v-overlay>
   </v-container>
 </template>
 
 <script>
+import SubHeader from '../../components/SubHeader.vue'
 import Article from '@/components/Article/Article'
 import SearchStyled from '@/components/Common/SearchStyled.vue';
 import Request from '~/services/request';
@@ -46,7 +50,7 @@ import constructFilterQuery from '~/utils/constructFilterQuery';
 
 export default {
   name: 'index.vue',
-  components: { Article , SearchStyled  },
+  components: { SubHeader, Article , SearchStyled  },
   data: () => ({
     selectedArticle: null,
     selectedChips: '',

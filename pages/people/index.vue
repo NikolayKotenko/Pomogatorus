@@ -11,9 +11,10 @@
 <script>
 
 import PeopleCard from '../../components/People/PeopleCard.vue'
+import UniversalFilter from '../../components/Common/UniversalFilter.vue'
 
 export default {
-  components: { PeopleCard },
+  components: { UniversalFilter, PeopleCard },
   data() {
     return {}
 
@@ -28,5 +29,6 @@ export default {
 .people_wrapper {
   display: grid;
   grid-row-gap: 20px;
+  align-items: center;
 }
 </style>

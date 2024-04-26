@@ -1,80 +1,156 @@
 <template>
   <v-container class="filter_container">
-    <section class="filter_header">
-      <h3>Фильтр оборудования</h3>
-      <div class="characteristics_display">
-        <span>Выводить в списочный результат</span>
-        <span>Выводить в персональное отображение</span>
-      </div>
-    </section>
-    <section class="filter_list">
-      <div class="filter_wrapper">
-        <div class="characteristic_content">
-          <div class="characteristic_title">
-            Мощность:
+    <!-- Параметры для отображения -->
+    <DropDownMenuStyled
+      :is-offset-y="true"
+    >
+      <template #icon>
+        <IconTooltip
+          :color-icon="'#b3b3b3'"
+          :icon-text="'mdi-cog-outline'"
+          :size-icon="'32'"
+          :text-tooltip="'Параметры для отображения'"
+        />
+      </template>
+      <template #content>
+        <div class="options_wrapper">
+          <div class="header_title">
+            Параметры для отображения
           </div>
-          <div class="characteristic_setting">
-            <v-range-slider
-              max="50"
-              min="-50"
-              color="#95D7AE"
-            />
+          <div class="option_container">
+            <v-checkbox hide-details/>
+            <div class="option_title">
+              Артикул
+            </div>
           </div>
+          <div class="option_container">
+            <v-checkbox hide-details/>
+            <div class="option_title">
+              Мощность кВт
+            </div>
+          </div>
+          <div class="option_container">
+            <v-checkbox hide-details/>
+            <div class="option_title">
+              Вид топлива
+            </div>
+          </div>
+          <div class="option_container">
+            <v-checkbox hide-details/>
+            <div class="option_title">
+              Камера сгорания
+            </div>
+          </div>
+          <ButtonStyled
+            :local-class="'style_button'"
+            :local-text="'Отобразить выбранное'"
+          />
         </div>
-        <div class="characteristic_switch_buttons">
-          <v-switch color="#95D7AE"/>
-          <v-switch color="#95D7AE"/>
+      </template>
+    </DropDownMenuStyled>
+
+    <div class="line"/>
+
+    <!-- Фильтры -->
+    <DropDownMenuStyled
+      :is-offset-y="true"
+      :is-left="true"
+    >
+      <template #icon>
+        <IconTooltip
+          :color-icon="'#b3b3b3'"
+          :icon-text="'mdi-filter'"
+          :size-icon="'32'"
+          :text-tooltip="'Фильтры'"
+        />
+      </template>
+      <template #content>
+        <div class="options_wrapper">
+          <div class="header_title">
+            Фильтры
+          </div>
+          <div class="option_container">
+            <v-checkbox hide-details/>
+            <div class="option_title">
+              Артикул
+            </div>
+          </div>
+          <div class="option_container">
+            <v-checkbox hide-details/>
+            <div class="option_title">
+              Мощность кВт
+            </div>
+          </div>
+          <div class="option_container">
+            <v-checkbox hide-details/>
+            <div class="option_title">
+              Вид топлива
+            </div>
+          </div>
+          <div class="option_container">
+            <v-checkbox hide-details/>
+            <div class="option_title">
+              Камера сгорания
+            </div>
+          </div>
+          <ButtonStyled
+            :local-class="'style_button'"
+            :local-text="'Отфильтровать'"
+          />
         </div>
-      </div>
-      <div class="filter_wrapper"/>
-    </section>
+      </template>
+    </DropDownMenuStyled>
   </v-container>
 </template>
 <script>
+import DropDownMenuStyled from './DropDownMenuStyled.vue'
+import IconTooltip from './IconTooltip.vue'
+import ButtonStyled from './ButtonStyled.vue'
+
 export default {
-  name: 'UniversalFilter'
+  name: 'UniversalFilter',
+  components: { ButtonStyled, IconTooltip, DropDownMenuStyled },
+  props: {
+    dataObject: {
+      type: Object,
+      require: true,
+      default: () => ({})
+    }
+  },
 }
 </script>
 
 <style lang="scss" scoped>
-.filter_container{
-  background-color: #FFFFFF;
-  padding: 20px;
-  width: 750px;
+@import 'assets/styles/style';
+
+.filter_container {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  grid-column-gap: 10px;
+  .line {
+    width: 100%;
+    border-top: 2px solid $grey-text-color;
+  }
+}
+
+.options_wrapper {
   display: grid;
   grid-row-gap: 20px;
-  .filter_header{
+  padding: 20px;
+  width: 400px;
+  background-color: $background-element-color;
+  .header_title {
+    font-size: 1.2em;
+    font-weight: 700;
+  }
+  .option_container {
     display: flex;
-    justify-content: space-between;
-    .characteristics_display{
-      max-width: 220px;
-      display: flex;
-      grid-column-gap: 20px;
-    }
-  }
-  .filter_list{
-    display: grid;
-    grid-row-gap: 20px;
-    .filter_wrapper{
-      display: flex;
-      padding: 20px;
-      border-radius: 5px;
-      border: 0.5px solid #8A8784;
-      grid-column-gap: 50px;
-      .characteristic_content{
-        .characteristic_title{
+    grid-column-gap: 10px;
+    .option_title{
 
-        }
-        .characteristic_setting{
-          width: 450px;
-        }
-      }
-      .characteristic_switch_buttons{
-        display: flex;
-        justify-content: space-between;
-        width: 150px;
-      }
     }
   }
+
 }
 </style>

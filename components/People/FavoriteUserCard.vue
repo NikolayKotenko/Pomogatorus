@@ -46,20 +46,9 @@
         />
       </template>
       <template #content>
-        <div class="action_menu">
-          <div class="menu_elem">
-            Пригласить на объект
-          </div>
-          <div
-            class="menu_elem"
-            @click="$store.dispatch('CollaborationModule/deleteFavoriteUser', userObject._users.id)"
-          >
-            Убрать из избранных специалистов
-          </div>
-          <div class="menu_elem">
-            Не рекомедовать этого пользователя
-          </div>
-        </div>
+        <UserActionsButton
+          :user-object="userObject._users"
+        />
       </template>
     </DropDownMenuStyled>
   </div>
@@ -70,9 +59,10 @@
 import DropDownMenuStyled from '../Common/DropDownMenuStyled.vue'
 import MiniUserCard from '../User/MiniUserCard.vue'
 import IconTooltip from '../Common/IconTooltip.vue'
+import UserActionsButton from '../Common/UserActionsButton.vue'
 
 export default {
-  components: { IconTooltip, MiniUserCard, DropDownMenuStyled },
+  components: { UserActionsButton, IconTooltip, MiniUserCard, DropDownMenuStyled },
   props: {
     userObject: {
       type: Object,

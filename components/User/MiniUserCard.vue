@@ -47,20 +47,9 @@
           />
         </template>
         <template #content>
-          <div class="action_menu">
-            <div class="menu_elem">
-              Пригласить на объект
-            </div>
-            <div
-              class="menu_elem"
-              @click="addOrDeleteFavoritesUser(userObject.id)"
-            >
-              {{ ! stateCurrentUser ? 'Добавить в избранные специалисты' : 'Убрать из избранных специалистов' }}
-            </div>
-            <div class="menu_elem">
-              Не рекомедовать этого пользователя
-            </div>
-          </div>
+          <UserActionsButton
+            :user-object="userObject"
+          />
         </template>
       </DropDownMenuStyled>
     </div>
@@ -185,11 +174,12 @@ import DropDownMenuStyled from '../Common/DropDownMenuStyled.vue';
 import IconTooltip from '../Common/IconTooltip.vue';
 import BrandCard from '../Common/BrandCard.vue';
 import TooltipStyled from '../Common/TooltipStyled.vue';
+import UserActionsButton from '../Common/UserActionsButton.vue'
 
 
 export default {
   name: 'MiniUserCard',
-  components: { DropDownMenuStyled, IconTooltip, TooltipStyled, BrandCard },
+  components: { UserActionsButton, DropDownMenuStyled, IconTooltip, TooltipStyled, BrandCard },
   props: {
     userObject: {
       type: Object,

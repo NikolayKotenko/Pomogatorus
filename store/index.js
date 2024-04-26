@@ -13,13 +13,14 @@ import CollaborationModule from './modules/collaboration'
 import NomenclatureModule from './modules/nomenclature'
 import NotificationModule from './modules/notification'
 import BrandsModule from './modules/brands'
+import TaskModule from './modules/task'
 
 const createStore = () => {
   return new Vuex.Store({
     state: {
       BASE_URL:
         process.env.NODE_ENV === 'development'
-          ? 'https://api.agregatorus.com'
+          ? 'https://api-test.agregatorus.com'
           : 'https://api.agregatorus.com',
       show_header: false,
       breadcrumbs: [],
@@ -129,7 +130,7 @@ const createStore = () => {
             visible: true,
           },
           {
-            title: 'Уведомления',
+            title: 'Заявки',
             path: '/notifications',
             icon: 'mdi-bell-outline',
             visible: true,
@@ -139,13 +140,6 @@ const createStore = () => {
             path: '/people',
             icon: 'mdi-account-group-outline',
             visible: true
-          },
-          {
-            title: 'Найти мастера',
-            path: '#inviteUserModal=true',
-            icon: 'mdi-plus',
-            visible: true,
-            divider: true,
           },
           {
             title: 'Агенты',
@@ -311,7 +305,8 @@ const createStore = () => {
       CollaborationModule,
       NomenclatureModule,
       NotificationModule,
-      BrandsModule
+      BrandsModule,
+      TaskModule
     },
   })
 }

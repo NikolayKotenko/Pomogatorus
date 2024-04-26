@@ -191,14 +191,7 @@
             <!--                  </v-card> -->
             <!--                </v-dialog> -->
             <!--              </template> -->
-            <TaskModal
-              ref="inviteUserModal"
-              :get-services-tethered-by-user-object="
-                getServicesTetheredByUserObject
-              "
-              :get-state-tethered-user-in-object="getStateTetheredUserInObject"
-              :list-services-available-to-add="userObject.services"
-            />
+            <TaskModal/>
           </div>
         </section>
       </section>
@@ -285,14 +278,14 @@ export default {
     getValueField(str) {
       return str || ''
     },
-    openModal() {
-      this.$store.commit('CollaborationModule/setListServices', [])
-
-      this.$refs.inviteUserModal.openModal()
-    },
-    closeModal() {
-      this.$refs.inviteUserModal.closeModal()
-    },
+    // openModal() {
+    //   this.$store.commit('CollaborationModule/setListServices', [])
+    //
+    //   this.$refs.inviteUserModal.openModal()
+    // },
+    // closeModal() {
+    //   this.$refs.inviteUserModal.closeModal()
+    // },
 
     async localDeleteServiceUserByObject() {
       let response = null
