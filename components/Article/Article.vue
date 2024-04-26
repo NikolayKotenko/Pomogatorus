@@ -13,9 +13,9 @@
           cover
           height="100%"
         />
-        <!--        <div class="article_likes" @click="$event.stopPropagation()"> -->
-        <ViewsAndLikes class="article_likes" :is-big-article="true" :article="article"/>
-        <!--        </div> -->
+        <div @click="$event.stopPropagation()">
+          <ViewsAndLikes class="article_likes" :is-big-article="true" :article="article"/>
+        </div>
       </div>
       <div class="footer_wrapper">
         <div class="article_name">
@@ -122,7 +122,7 @@ export default {
   }
 
   &__img_container {
-    height: 320x;
+    height: 320px;
     width: auto;
     display: flex;
     align-content: center;

@@ -254,12 +254,6 @@
       <!--          /> -->
       <!--        </div> -->
       <!--      </v-toolbar-items> -->
-
-      <v-overlay
-        :value="!$store.getters.stateAuth"
-        opacity="1"
-        style="border-radius: 30px;"
-      />
     </v-container>
 
     <!-- Глобальные модалки -->
@@ -270,28 +264,25 @@
 <script>
 import { mapState } from 'vuex';
 import TooltipStyled from './Common/TooltipStyled';
-import CurrentObjects from './Widgets/CurrentObjects.vue';
 import Collaboration from './Modals/Collaboration.vue';
 import SearchStyled from './Common/SearchStyled.vue';
 import IconTooltip from './Common/IconTooltip.vue';
 import DropDownMenuStyled from './Common/DropDownMenuStyled.vue';
 import TaskModal from './Collaboration/TaskModal.vue';
-import MiniUserCard from './User/MiniUserCard.vue'
 import ButtonStyled from './Common/ButtonStyled.vue'
 import FavoritesBrands from './Brands/FavoritesBrands.vue'
 import { getNameStateModalByUrlHash } from '~/helpers/urlHelper';
 import CreateObjectModal from '~/components/Modals/CreateObjectModal';
 
 export default {
+  // eslint-disable-next-line vue/multi-word-component-names
   name: 'Header',
   components: {
     FavoritesBrands,
     ButtonStyled,
-    MiniUserCard,
     CreateObjectModal,
     SearchStyled,
     Collaboration,
-    CurrentObjects,
     TooltipStyled,
     IconTooltip,
     DropDownMenuStyled,
