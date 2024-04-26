@@ -18,6 +18,7 @@
       <div
         class="wrapper"
         @click="setLikesDislikes(stateLike ? null : 1)"
+        @submit.prevent="$store.dispatch('linkToArticle', article.id)"
       >
         <v-icon :class="{active: stateLike}" class="icons">
           mdi-thumb-up
