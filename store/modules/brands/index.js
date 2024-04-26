@@ -4,8 +4,9 @@ export default {
   namespaced: true,
   state: {
     listBrands: [],
-    listFavoriteBrands: [],
+    listAddedBrands: [],
     isLoading: false,
+    listFavoritesBrands: []
   },
   mutations: {
     setLoading(state, payload) {
@@ -15,10 +16,14 @@ export default {
       state.listBrands = []
       state.listBrands = payload
     },
-    set_list_favorite_brands(state, payload) {
-      state.listFavoriteBrands = []
-      state.listFavoriteBrands = payload
+    set_list_added_brands(state, payload) {
+      state.listAddedBrands = []
+      state.listAddedBrands = payload
     },
+    set_list_favorites_brands(state, payload) {
+      state.listFavoritesBrands = []
+      state.listFavoritesBrands = payload
+    }
   },
   actions: {
     async getListBrands({ commit }) {
@@ -53,6 +58,42 @@ export default {
       )
 
       await dispatch('getCurrentUserData', null, { root: true })
+
+      commit('setLoading', false)
+    },
+    async getListFavoritesBrands({ commit, rootGetters }){
+      const response = await Request.get(
+        this.state.BASE_URL + '/m-to-m/favorites-brands', {
+          id_user: rootGetters.getUserId
+        }
+      )
+
+      commit('set_list_favorites_brands', response.data)
+    },
+    async addBrandsToFavoritesBrands({ commit, rootGetters, state, dispatch }, idBrand) {
+      commit('setLoading', true)
+
+      await Request.post(
+        this.state.BASE_URL + '/m-to-m/favorites-brands/add', {
+          id_brand: idBrand,
+          id_user: rootGetters.getUserId
+        })
+
+      await dispatch('getListFavoritesBrands')
+
+      commit('setLoading', false)
+    },
+    async deleteBrandsByFavoritesBrands({ commit, rootGetters, state, dispatch }, idBrand) {
+      commit('setLoading', true)
+
+      await Request.delete(
+        this.state.BASE_URL + '/m-to-m/favorites-brands/remove',
+        {
+          id_brand: idBrand,
+          id_user: rootGetters.getUserId
+        })
+
+      await dispatch('getListFavoritesBrands')
 
       commit('setLoading', false)
     }

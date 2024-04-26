@@ -1,16 +1,14 @@
 <template>
-  <div class="subheader custom_grid_system">
-    <v-breadcrumbs :items="$store.state.breadcrumbs">
+  <div class="subheader">
+    <v-breadcrumbs :items="$store.state.breadcrumbs" divider="•">
       <template #item="{ item }">
         <v-breadcrumbs-item
           :href="item.to"
           :disabled="item.disabled"
+          class="item_style"
         >
           {{ item.text }}
         </v-breadcrumbs-item>
-      </template>
-      <template #divider>
-        <v-icon>mdi-chevron-right</v-icon>
       </template>
     </v-breadcrumbs>
   </div>
@@ -74,11 +72,17 @@ class ConstructBreadcrumbs
 
 <style scoped lang="scss">
 .subheader {
-  max-width: 1160px;
+  max-width: 850px;
   margin: 0 auto;
   width: 100%;
   .v-breadcrumbs{
-    padding-left: 12px;
+    padding: 40px 0;
+    .item_style {
+      font-size: 0.88em;
+      color: #7D7D7D !important;
+      text-transform: lowercase;
+
+    }
   }
 }
 </style>

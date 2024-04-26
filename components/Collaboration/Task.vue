@@ -35,7 +35,7 @@
       <v-tab
         :key="2"
       >
-        Приглашенные специалисты
+        Выбранные специалисты
         <v-badge
           :content="$store.getters['TaskModule/getCountAddedUsers']"
           :value="$store.getters['TaskModule/getCountAddedUsers']"

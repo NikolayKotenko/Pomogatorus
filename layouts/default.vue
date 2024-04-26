@@ -1,15 +1,12 @@
 <template>
   <v-app class="app">
-    <Header/>
+    <Header class="header_wrapper"/>
     <BurgerMenu v-if="!$device.isDesktop"/>
-    <div v-if="$device.isDesktop && loadComponent" style="min-height: 57px;">
-      <SubHeader/>
-    </div>
     <v-main id="main_content" class="main">
-      <VerticalMenu
-        v-if="$store.state.stateVerticalMenu"
-        class="fixed_left_menu"
-      />
+      <!--      <VerticalMenu -->
+      <!--        v-if="$store.state.stateVerticalMenu" -->
+      <!--        class="fixed_left_menu" -->
+      <!--      /> -->
       <Nuxt class="custom_grid_system main__left_column"/>
 
       <!--   WIDGETS   -->
@@ -189,7 +186,7 @@ body {
 }
 
 .app {
-  background: $background-color !important;
+  background-color: #F2F2F2 !important;
 }
 
 ::v-deep .v-btn {
@@ -197,12 +194,21 @@ body {
   background-color: unset !important;
 }
 
+.header_wrapper {
+  position: sticky !important;
+  margin: 40px 100px 84px 100px !important;
+}
+
 .main {
-  width: $max-width;
+  background-color: #DFDFDF;
+  background-size: 100%;
+  width: 100%;
+
   //max-width: $max-width;
   margin: 5px auto 0 auto;
-  border-radius: 20px;
+  border-radius: 124px;
   padding: unset !important;
+
 
   &__left_column {
     width: 100%;

@@ -249,11 +249,6 @@ export default {
 <style lang='scss'>
 @import '@/assets/styles/global.scss';
 
-.v-menu__content {
-  &:hover {
-    @extend .border-hover;
-  }
-}
 
 .selector-custom {
   .v-select__selections {

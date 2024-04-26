@@ -130,7 +130,7 @@ const createStore = () => {
             visible: true,
           },
           {
-            title: 'Уведомления',
+            title: 'Заявки',
             path: '/notifications',
             icon: 'mdi-bell-outline',
             visible: true,

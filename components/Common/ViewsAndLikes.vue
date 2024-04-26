@@ -1,16 +1,18 @@
 <template>
-  <div class="views_and_likes_wrapper">
-    <TooltipStyled :is-top="true" :title="'Кол-во просмотров'">
-      <div
-        class="wrapper"
-        :class="{'animation_pulse': animationViews}"
-      >
-        <v-icon class="icons" :class="{'hover': animationViews}">
-          mdi-eye-outline
-        </v-icon>
-        <span>{{ getViews }}</span>
-      </div>
-    </TooltipStyled>
+  <div :class="{ views_and_likes_wrapper: !isBigArticle, is_big_article_style: isBigArticle}">
+    <template v-if="! isBigArticle">
+      <TooltipStyled :is-top="true" :title="'Кол-во просмотров'">
+        <div
+          class="wrapper"
+          :class="{'animation_pulse': animationViews}"
+        >
+          <v-icon class="icons" :class="{'hover': animationViews}">
+            mdi-eye-outline
+          </v-icon>
+          <span class="text">{{ getViews }}</span>
+        </div>
+      </TooltipStyled>
+    </template>
 
     <TooltipStyled :is-top="true" :title="'Понравилось'">
       <div
@@ -18,11 +20,13 @@
         @click="setLikesDislikes(stateLike ? null : 1)"
       >
         <v-icon :class="{active: stateLike}" class="icons">
-          mdi-thumb-up-outline
+          mdi-thumb-up
         </v-icon>
-        <span>{{ getCountLike }}</span>
+        <span class="text">{{ getCountLike }}</span>
       </div>
     </TooltipStyled>
+
+    <v-divider vertical style="border-width: 1px; border-color: #DFDFDF !important;"/>
 
     <TooltipStyled :is-top="true" :title="'Не понравилось'">
       <div
@@ -30,9 +34,9 @@
         @click="setLikesDislikes(stateDislike ? null : 0)"
       >
         <v-icon :class="{active: stateDislike}" class="icons">
-          mdi-thumb-down-outline
+          mdi-thumb-down
         </v-icon>
-        <span>{{ getCountDisLike }}</span>
+        <span class="text">{{ getCountDisLike }}</span>
       </div>
     </TooltipStyled>
   </div>
@@ -52,6 +56,10 @@ export default {
       }
     },
     viewAction: {
+      type: Boolean,
+      default: false
+    },
+    isBigArticle: {
       type: Boolean,
       default: false
     }
@@ -186,7 +194,26 @@ export default {
     align-items: center;
   }
 }
-
+.is_big_article_style {
+  display: flex;
+  align-items: center;
+  grid-column-gap: 1em;
+  background: rgba(119, 119, 119, .3);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  padding: 18px 22px;
+  border-radius: 30px;
+  transition: $transition;
+  &:hover {
+    box-shadow: $shadowBox;
+  }
+  .icons {
+    color: #FFFFFF;
+  }
+  .text {
+    color: #FFFFFF;
+  }
+}
 
 
 

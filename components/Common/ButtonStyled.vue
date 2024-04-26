@@ -5,6 +5,8 @@
     :href="href"
     :loading="isLoading"
     :nuxt="isNuxtLink"
+    :max-width="maxWidth"
+    :max-height="maxHeight"
     @click="$emit('click-button')"
   >
     <template v-if="customSlot">
@@ -63,6 +65,14 @@ export default {
     unsetWidth: {
       type: Boolean,
       default: false
+    },
+    maxWidth: {
+      type: String,
+      default: ''
+    },
+    maxHeight: {
+      type: String,
+      default: ''
     }
   },
   computed: {
@@ -86,7 +96,7 @@ export default {
   //font-style: normal !important;
   font-size: 1em;
   border-radius: 25px;
-  border: 1px solid #000000;
+  border: 2px solid #000000;
   transition: $transition;
 
   &:hover {
