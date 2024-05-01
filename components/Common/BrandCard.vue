@@ -21,57 +21,61 @@
     <v-expansion-panels>
       <v-expansion-panel>
         <v-expansion-panel-header>
-          Специаслисты занимающиеся Монтажем {{ brandObject.name }}
+          Специалисты занимающиеся Монтажем {{ brandObject.name }}
         </v-expansion-panel-header>
-        <v-expansion-panel-content
-          v-for="(item, index) in localListUsersByBrand"
-          :key="index"
-        >
-          <div class="user_card">
-            <v-avatar size="50">
-              <v-img
-                src="https://www.wrestlezone.com/wp-content/uploads/sites/8/2023/12/kurt-angle-meme-machine.jpg?resize=1024,576"
-              />
-            </v-avatar>
-            <div class="user_fio">
-              {{ item.user_fio }}
-              <div class="rating">
-                <v-rating
-                  :value="4"
-                  background-color="#B3B3B3"
-                  color="#95D7AE"
-                  empty-icon="mdi-star-outline"
-                  full-icon="mdi-star"
-                  half-icon="mdi-star-half-full"
-                  hover
-                  length="5"
-                  readonly
-                  size="16"
+        <v-expansion-panel-content>
+          <div class="user_cards_wrapper">
+            <div
+              v-for="(item, index) in localListUsersByBrand"
+              :key="index"
+              class="user_card"
+            >
+              <v-avatar size="50">
+                <v-img
+                  src="https://www.wrestlezone.com/wp-content/uploads/sites/8/2023/12/kurt-angle-meme-machine.jpg?resize=1024,576"
                 />
-                <span>12 отзывов</span>
+              </v-avatar>
+              <div class="user_fio">
+                {{ item.user_fio }}
+                <div class="rating">
+                  <v-rating
+                    :value="4"
+                    background-color="#B3B3B3"
+                    color="#95D7AE"
+                    empty-icon="mdi-star-outline"
+                    full-icon="mdi-star"
+                    half-icon="mdi-star-half-full"
+                    hover
+                    length="5"
+                    readonly
+                    size="16"
+                  />
+                  <span>12 отзывов</span>
+                </div>
+              </div>
+              <div class="user_actions">
+                <DropDownMenuStyled
+                  :close-on-content-click="true"
+                  :is-top="true"
+                  style="z-index: 999 !important;"
+                >
+                  <template #icon>
+                    <IconTooltip
+                      :icon-text="'mdi-dots-horizontal'"
+                      :text-tooltip="'Действия с пользователем'"
+                      :size-icon="'24'"
+                      :color-icon="'#B3B3B3'"
+                      style="z-index: 998 !important;"
+                    />
+                  </template>
+                  <template #content>
+                    <UserActionsButton
+                      :user-object="item"
+                    />
+                  </template>
+                </DropDownMenuStyled>
               </div>
             </div>
-            <div class="user_actions">
-              <DropDownMenuStyled
-                :close-on-content-click="true"
-                :is-top="true"
-              >
-                <template #icon>
-                  <IconTooltip
-                    :icon-text="'mdi-dots-horizontal'"
-                    :text-tooltip="'Действия с пользователем'"
-                    :size-icon="'24'"
-                    :color-icon="'#B3B3B3'"
-                  />
-                </template>
-                <template #content>
-                  <UserActionsButton
-                    :user-object="item"
-                  />
-                </template>
-              </DropDownMenuStyled>
-            </div>
-
           </div>
         </v-expansion-panel-content>
       </v-expansion-panel>
@@ -124,6 +128,9 @@ export default {
 
 .v-expansion-panel-content {
   background: #DDDDDD !important;
+  max-height: 210px;
+  overflow: auto;
+  box-shadow: inset 0 -4px 7px 0 rgba(0, 0, 0, 0.25);
 }
 
 .action_menu {
@@ -147,6 +154,7 @@ export default {
   padding: 20px;
   background-color: #FFFFFF;
   max-width: 500px;
+  max-height: 600px;
   border-radius: 30px;
   box-shadow: $shadowBox;
   margin: 4px 4px 10px 4px;
@@ -169,29 +177,33 @@ export default {
 
   }
 }
-
-.user_card {
-  display: flex;
-  background: #FFFFFF;
-  border-radius: 30px;
-  margin-top: 20px;
-  padding: 6px 20px 6px 6px;
-  align-content: center;
-  justify-content: space-between;
-  grid-column-gap: 10px;
-  .user_fio {
-    margin-right: auto;
-    .rating {
-      display: flex;
-      grid-column-gap: 10px;
-      color: #8A8784;
-      font-size: 0.9em;
+.user_cards_wrapper {
+  margin: 20px 0;
+  display: grid;
+  grid-row-gap: 10px;
+  .user_card {
+    display: flex;
+    background: #FFFFFF;
+    border-radius: 30px;
+    padding: 6px 20px 6px 6px;
+    align-content: center;
+    justify-content: space-between;
+    grid-column-gap: 10px;
+    .user_fio {
+      margin-right: auto;
+      .rating {
+        display: flex;
+        grid-column-gap: 10px;
+        color: #8A8784;
+        font-size: 0.9em;
+      }
+    }
+    .user_actions {
+      display: grid;
+      align-content: center;
     }
   }
-  .user_actions {
-    display: grid;
-    align-content: center;
-  }
 }
+
 
 </style>
