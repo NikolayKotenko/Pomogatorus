@@ -101,9 +101,9 @@ const createStore = () => {
         return [
           {
             title: 'Главная',
-            path: '/',
+            path: '/main',
             icon: 'mdi-home-variant-outline',
-            visible: false,
+            visible: true,
           },
           {
             title: 'Статьи',
@@ -136,7 +136,7 @@ const createStore = () => {
             visible: true,
           },
           {
-            title: 'Люди',
+            title: 'Специалисты',
             path: '/people',
             icon: 'mdi-account-group-outline',
             visible: true
