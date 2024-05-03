@@ -47,6 +47,105 @@
         rty
       </div>
     </div>
+    <div class="steppers_wrapper">
+      <div class="steppers_header">
+        <v-divider vertical style="border-width: 2px; border-color: #F79256;"/>
+        <div class="header_container">
+          <div class="header_text">
+            Как работает помогаторус?
+          </div>
+          <div class="header_sub_text">
+            Мы предаставляем базу мастеров по монтажу сантехнического оборудования,
+            базу клиентов нуждающихся в услугах мастреа по монтажу,
+            полезные статьи в сфере сантехнического оборудования и тематические подборки
+          </div>
+        </div>
+      </div>
+      <div class="steppers_cards">
+        <div class="step_card">
+          1.
+          <div class="step_text">
+            Вы  регистрируетесь на портале и заполняете личную информацию
+          </div>
+          <img
+            :src="require(`~/assets/svg/icons/check_circle_box.svg`)"
+            style="position: absolute;
+                   right: 20px;
+                   top: 20px;"
+          >
+        </div>
+        <div class="step_card">
+          2.
+          <div class="step_text">
+            Вносите актуальную информацию о своём объекте недвижимости/доме
+          </div>
+          <img
+            :src="require(`~/assets/svg/icons/check_circle_box.svg`)"
+            style="position: absolute;
+                   right: 20px;
+                   top: 20px;"
+          >
+        </div>
+        <div class="step_card">
+          3.
+          <div class="step_text">
+            Находите нужного специалиста и получаете помощь по своему объекту
+          </div>
+          <img
+            :src="require(`~/assets/svg/icons/check_circle_box.svg`)"
+            style="position: absolute;
+                   right: 20px;
+                   top: 20px;"
+          >
+        </div>
+      </div>
+      <div class="changing_block_wrapper">
+        <div class="changing_header"/>
+        <div class="changing_cards"/>
+      </div>
+    </div>
+    <div class="recommended_articles_wrapper">
+      <div class="recommended_articles_header">
+        <div class="text">
+          Интересные статьи
+        </div>
+        <div class="link_more_btn">
+          Посмотреть всё
+        </div>
+      </div>
+      <v-slide-group
+        prev-icon="mdi-arrow-left-circle-outline"
+        next-icon="mdi-arrow-right-circle-outline"
+        show-arrows
+        class="recommended_article_slider"
+      >
+        <v-slide-item>
+          <div class="article_card">
+            123
+          </div>
+        </v-slide-item>
+        <v-slide-item>
+          <div class="article_card">
+            123
+          </div>
+        </v-slide-item>
+        <v-slide-item>
+          <div class="article_card">
+            123
+          </div>
+        </v-slide-item>
+        <v-slide-item>
+          <div class="article_card">
+            123
+          </div>
+        </v-slide-item>
+        <v-slide-item>
+          <div class="article_card">
+            123
+          </div>
+        </v-slide-item>
+      </v-slide-group>
+    </div>
     <TaskModal/>
   </v-container>
 </template>
@@ -205,6 +304,96 @@ export default {
       background-color: #111111;
       border-radius: 30px;
       padding: 40px;
+    }
+  }
+  .steppers_wrapper {
+    padding: 40px 0;
+    width: 100%;
+    background-color: #DDDDDD;
+    .steppers_header {
+      max-width: 1288px;
+      margin: 40px auto;
+      left: auto;
+      right: auto;
+      display: flex;
+      grid-column-gap: 20px;
+      .header_container {
+        max-width: 700px;
+        .header_text {
+          font-size: 2.5em;
+        }
+        .header_sub_text {
+
+        }
+      }
+    }
+    .steppers_cards {
+      max-width: 1288px;
+      margin: 40px auto;
+      left: auto;
+      right: auto;
+      display: flex;
+      grid-column-gap: 20px;
+      .step_card {
+        width: 100%;
+        background-color: #F2F2F2;
+        height: 214px;
+        border-radius: 30px;
+        position: relative;
+        font-size: 4.4em;
+        font-weight: 700;
+        padding: 40px 0 0 40px;
+        .step_text {
+          font-size: 20px;
+          font-weight: 400;
+          line-height: 1;
+        .check_icon {
+          position: absolute;
+          right: 20px;
+          top: 20px;
+        }
+        }
+      }
+    }
+
+  }
+  .recommended_articles_wrapper {
+    max-width: 1430px;
+    margin: 150px auto;
+    left: auto;
+    right: auto;
+    .recommended_articles_header {
+      display: flex;
+      justify-content: space-between;
+      align-content: center;
+      margin: 0 88px 20px 88px;
+      .text {
+        font-size: 2.5em;
+      }
+      .link_more_btn {
+        text-transform: uppercase;
+        padding: 0 34px;
+        border: 1px solid #111111;
+        border-radius: 30px;
+        display: flex;
+        align-items: center;
+        height: 40px;
+        cursor: pointer;
+      }
+    }
+    .recommended_article_slider {
+      width: 100%;
+      display: flex;
+      .v-icon {
+        font-size: 40px;
+      }
+      .article_card {
+        background-color: #7D7D7D;
+        height: 250px;
+        width: 430px;
+        margin: 0 8px;
+        border-radius: 30px;
+      }
     }
   }
 }
