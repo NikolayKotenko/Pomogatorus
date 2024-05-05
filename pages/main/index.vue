@@ -341,7 +341,6 @@
 <script>
 
 import TaskModal from '../../components/Collaboration/TaskModal.vue'
-import Article from '../../components/Article/Article.vue';
 import BrandCard from '../../components/Common/BrandCard.vue';
 import DropDownMenuStyled from '../../components/Common/DropDownMenuStyled.vue';
 
