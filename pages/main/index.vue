@@ -347,10 +347,7 @@ import DropDownMenuStyled from '../../components/Common/DropDownMenuStyled.vue';
 
 export default {
   components: {
-    DropDownMenuStyled, BrandCard,
-    Article,
-    TaskModal
-
+    DropDownMenuStyled, BrandCard, TaskModal
   },
   data() {
 
@@ -451,7 +448,7 @@ export default {
         background: rgba(221, 221, 221, .3);
         -webkit-backdrop-filter: blur(10px);
         backdrop-filter: blur(10px);
-        box-shadow: 0px 0px 30px 15px rgba(255,255,255, .1);
+        box-shadow: 0 0 30px 15px rgba(255,255,255, .1);
       }
     }
   }
