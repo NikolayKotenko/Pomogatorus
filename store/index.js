@@ -20,7 +20,7 @@ const createStore = () => {
     state: {
       BASE_URL:
         process.env.NODE_ENV === 'development'
-          ? 'https://api-test.agregatorus.com'
+          ? 'https://api.agregatorus.com'
           : 'https://api.agregatorus.com',
       show_header: false,
       breadcrumbs: [],

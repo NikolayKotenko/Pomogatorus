@@ -44,7 +44,26 @@
         </div>
       </div>
       <div class="brands_grid_elem grid-area5">
-        rty
+        <div
+          v-for="(brand, index) in $store.state.BrandsModule.listBrands"
+          :key="index"
+          class="brand_card"
+        >
+          <DropDownMenuStyled
+            :is-left="true"
+            :is-offset-y="true"
+            :open-on-hover="true"
+          >
+            <template #icon>
+              <v-img :src="getBrandPhoto(brand)" width="120"/>
+            </template>
+            <template #content>
+              <BrandCard
+                :brand-object="brand"
+              />
+            </template>
+          </DropDownMenuStyled>
+        </div>
       </div>
     </div>
     <div class="steppers_wrapper">
@@ -99,52 +118,221 @@
           >
         </div>
       </div>
-      <div class="changing_block_wrapper">
-        <div class="changing_header"/>
-        <div class="changing_cards"/>
-      </div>
+<!--      <div class="changing_block_wrapper">-->
+<!--        <div class="changing_header">-->
+<!--          <div class="header_container_text">-->
+<!--            Мастера поблизости-->
+<!--          </div>-->
+<!--          <v-btn-->
+<!--            class="link_more_btn"-->
+<!--            :href="'/people/'"-->
+<!--          >-->
+<!--            Больше мастеров-->
+<!--          </v-btn>-->
+<!--        </div>-->
+<!--        <v-slide-group-->
+<!--          show-arrows-->
+<!--          class="masters_cards_slider"-->
+<!--        >-->
+<!--          <v-slide-item>-->
+<!--            <div class="recommended_master_card">-->
+<!--              <div class="master_info">-->
+<!--                <v-avatar size="80">-->
+<!--                  <v-img src="https://www.wrestlezone.com/wp-content/uploads/sites/8/2023/12/kurt-angle-meme-machine.jpg?resize=1024,576"/>-->
+<!--                </v-avatar>-->
+<!--                <div class="master_name_rating">-->
+<!--                  <div class="name">-->
+<!--                    Иван Иванов-->
+<!--                  </div>-->
+<!--                  <div class="rating">-->
+<!--                    12 отзывов-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <v-divider style="margin: 14px 0;"/>-->
+<!--              <div class="master_characteristics">-->
+<!--                Челябинск • Более 10 лет опыта • Мастер по монтажу-->
+<!--              </div>-->
+<!--              <div class="master_btns">-->
+<!--                <div class="middle_price">-->
+<!--                  от 2000 за услугу-->
+<!--                </div>-->
+<!--                <v-btn class="add_on_object_btn">-->
+<!--                  пригласить на объект-->
+<!--                </v-btn>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </v-slide-item>-->
+<!--          <v-slide-item>-->
+<!--            <div class="recommended_master_card">-->
+<!--              <div class="master_info">-->
+<!--                <v-avatar size="80">-->
+<!--                  <v-img src="https://www.wrestlezone.com/wp-content/uploads/sites/8/2023/12/kurt-angle-meme-machine.jpg?resize=1024,576"/>-->
+<!--                </v-avatar>-->
+<!--                <div class="master_name_rating">-->
+<!--                  <div class="name">-->
+<!--                    Иван Иванов-->
+<!--                  </div>-->
+<!--                  <div class="rating">-->
+<!--                    12 отзывов-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <v-divider style="margin: 14px 0;"/>-->
+<!--              <div class="master_characteristics">-->
+<!--                Челябинск • Более 10 лет опыта • Мастер по монтажу-->
+<!--              </div>-->
+<!--              <div class="master_btns">-->
+<!--                <div class="middle_price">-->
+<!--                  от 2000 за услугу-->
+<!--                </div>-->
+<!--                <v-btn class="add_on_object_btn">-->
+<!--                  пригласить на объект-->
+<!--                </v-btn>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </v-slide-item>-->
+<!--          <v-slide-item>-->
+<!--            <div class="recommended_master_card">-->
+<!--              <div class="master_info">-->
+<!--                <v-avatar size="80">-->
+<!--                  <v-img src="https://www.wrestlezone.com/wp-content/uploads/sites/8/2023/12/kurt-angle-meme-machine.jpg?resize=1024,576"/>-->
+<!--                </v-avatar>-->
+<!--                <div class="master_name_rating">-->
+<!--                  <div class="name">-->
+<!--                    Иван Иванов-->
+<!--                  </div>-->
+<!--                  <div class="rating">-->
+<!--                    12 отзывов-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <v-divider style="margin: 14px 0;"/>-->
+<!--              <div class="master_characteristics">-->
+<!--                Челябинск • Более 10 лет опыта • Мастер по монтажу-->
+<!--              </div>-->
+<!--              <div class="master_btns">-->
+<!--                <div class="middle_price">-->
+<!--                  от 2000 за услугу-->
+<!--                </div>-->
+<!--                <v-btn class="add_on_object_btn">-->
+<!--                  пригласить на объект-->
+<!--                </v-btn>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </v-slide-item>-->
+<!--        </v-slide-group>-->
+<!--      </div>-->
     </div>
-    <div class="recommended_articles_wrapper">
+    <div class="recommended_articles_and_tags_wrapper">
       <div class="recommended_articles_header">
-        <div class="text">
+        <div class="header_container_text">
           Интересные статьи
         </div>
-        <div class="link_more_btn">
+        <v-btn class="link_more_btn" :href="'/articles/'">
           Посмотреть всё
-        </div>
+        </v-btn>
       </div>
       <v-slide-group
-        prev-icon="mdi-arrow-left-circle-outline"
-        next-icon="mdi-arrow-right-circle-outline"
         show-arrows
         class="recommended_article_slider"
       >
         <v-slide-item>
           <div class="article_card">
-            123
+            <v-img
+              src="https://storage.yandexcloud.net/sdvor-production-wiki-goods/media/633965da-6b1d-4ef1-965a-751daf3765b0.jpeg"
+              class="article_img"
+              cover
+            />
+            <div class="article_name">
+              Как избежать поломки отопительного оборудования
+            </div>
           </div>
         </v-slide-item>
         <v-slide-item>
           <div class="article_card">
-            123
+            <v-img
+              src="https://storage.yandexcloud.net/sdvor-production-wiki-goods/media/633965da-6b1d-4ef1-965a-751daf3765b0.jpeg"
+              class="article_img"
+              cover
+            />
+            <div class="article_name">
+              Как избежать поломки отопительного оборудования
+            </div>
           </div>
         </v-slide-item>
         <v-slide-item>
           <div class="article_card">
-            123
+            <v-img
+              src="https://storage.yandexcloud.net/sdvor-production-wiki-goods/media/633965da-6b1d-4ef1-965a-751daf3765b0.jpeg"
+              class="article_img"
+              cover
+            />
+            <div class="article_name">
+              Как избежать поломки отопительного оборудования
+            </div>
           </div>
         </v-slide-item>
         <v-slide-item>
           <div class="article_card">
-            123
+            <v-img
+              src="https://storage.yandexcloud.net/sdvor-production-wiki-goods/media/633965da-6b1d-4ef1-965a-751daf3765b0.jpeg"
+              class="article_img"
+              cover
+            />
+            <div class="article_name">
+              Как избежать поломки отопительного оборудования
+            </div>
           </div>
         </v-slide-item>
         <v-slide-item>
           <div class="article_card">
-            123
+            <v-img
+              src="https://storage.yandexcloud.net/sdvor-production-wiki-goods/media/633965da-6b1d-4ef1-965a-751daf3765b0.jpeg"
+              class="article_img"
+              cover
+            />
+            <div class="article_name">
+              Как избежать поломки отопительного оборудования
+            </div>
           </div>
         </v-slide-item>
       </v-slide-group>
+
+      <div class="recommended_articles_header">
+        <div class="header_container_text">
+          Популярные тэги
+        </div>
+        <v-btn class="link_more_btn" :href="'/podborki/'">
+          Посмотреть всё
+        </v-btn>
+      </div>
+      <v-chip-group>
+        <v-chip
+          v-for="(tag, index) in $store.state.PopularSelectionsModule.list_selections"
+          :key="index"
+          color="black"
+          text-color="white"
+          class="chip_style"
+          :href="'/podborki/' + tag.code"
+        >
+          {{ tag.name }}
+        </v-chip>
+      </v-chip-group>
+    </div>
+    <div
+      v-if="!$store.getters.stateAuth"
+      class="registration_wrapper"
+    >
+      <div class="registration_header">
+        Стать клиентом “Помогаторус” очень просто! Пройдите быструю регистрацию и пользуйтесь преимуществоми сайта прямо сейчас!
+      </div>
+      <v-btn
+        class="registration_btn"
+        @click="openAuthModal"
+      >
+        Зарегистрироваться
+      </v-btn>
     </div>
     <TaskModal/>
   </v-container>
@@ -153,9 +341,14 @@
 <script>
 
 import TaskModal from '../../components/Collaboration/TaskModal.vue'
+import Article from '../../components/Article/Article.vue';
+import BrandCard from '../../components/Common/BrandCard.vue';
+import DropDownMenuStyled from '../../components/Common/DropDownMenuStyled.vue';
 
 export default {
   components: {
+    DropDownMenuStyled, BrandCard,
+    Article,
     TaskModal
 
   },
@@ -164,11 +357,24 @@ export default {
   },
   mounted() {
     this.$store.dispatch('CollaborationModule/getListAllUsers')
+    this.$store.dispatch('getListArticles')
+    this.$store.dispatch('PopularSelectionsModule/getListSelections')
+    this.$store.dispatch('BrandsModule/getListBrands')
   },
   methods: {
     openModal() {
       this.$store.dispatch('TaskModule/openModal')
     },
+    getBrandPhoto(elem) {
+      if (elem.e_client_files.length) {
+        return elem.e_client_files[0].url
+      }
+    },
+    openAuthModal() {
+      if (!this.$store.getters.stateAuth) {
+        this.$store.state.listModal[0].isOpen = true;
+      }
+    }
   }
 }
 
@@ -281,6 +487,7 @@ export default {
       .merits_elem_text {
         font-size: 24px;
         line-height: 1;
+        font-weight: 300;
       }
     }
     .orange_elem {
@@ -297,6 +504,7 @@ export default {
       .merits_elem_text {
         font-size: 24px;
         line-height: 1;
+        font-weight: 300;
       }
     }
     .brands_grid_elem {
@@ -304,12 +512,22 @@ export default {
       background-color: #111111;
       border-radius: 30px;
       padding: 40px;
+      display: flex;
+      grid-column-gap: 20px;
+      .brand_card {
+      }
     }
   }
   .steppers_wrapper {
     padding: 40px 0;
-    width: 100%;
     background-color: #DDDDDD;
+    width: 100vw; /* 100% ширины экрана */
+    position: relative;
+    left: 50%; /* Центрируем блок */
+    right: 50%;
+    margin-left: -50vw; /* Корректируем положение на половину ширины экрана */
+    margin-right: -50vw;
+    justify-content: center;
     .steppers_header {
       max-width: 1288px;
       margin: 40px auto;
@@ -355,9 +573,81 @@ export default {
         }
       }
     }
+    .changing_block_wrapper {
+      max-width: 1430px;
+      margin: 40px auto;
+      left: auto;
+      right: auto;
+      .changing_header {
+        display: flex;
+        justify-content: space-between;
+        align-content: center;
+        margin: 0 88px 20px 88px;
+      }
+      .masters_cards_slider {
+        width: 100%;
+        display: flex;
+        margin-bottom: 150px;
+        .v-icon {
+          font-size: 40px;
+        }
+        .recommended_master_card {
+          width: 430px;
+          border-radius: 30px;
+          background-color: #F2F2F2;
+          padding: 40px;
+          .master_info {
+            display: flex;
+            grid-column-gap: 20px;
+            .master_name_rating {
+              display: grid;
+              .name {
+                font-size: 1.5em;
+                line-height: 1;
+              }
+              .rating {
+                font-size: 1.25em;
+                line-height: 1;
+                color: #8A8784;
+              }
+            }
+          }
+          .master_characteristics {
+            font-size: 1.25em;
+            text-wrap: wrap;
+            letter-spacing: normal;
+          }
+          .master_btns {
+            display: grid;
+            justify-content: center;
+            grid-row-gap: 20px;
+            margin-top: 40px;
+            .middle_price {
+              width: 230px;
+              height: 40px;
+              border-radius: 30px;
+              background-color: #DDDDDD;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              font-size: 1.25em;
+              font-weight: 700;
+            }
+            .add_on_object_btn {
+              width: 230px;
+              height: 40px;
+              border-radius: 30px;
+              border: 1px solid #ED7100;
+              text-transform: lowercase;
+              letter-spacing: normal;
+            }
+          }
+        }
+      }
+    }
 
   }
-  .recommended_articles_wrapper {
+  .recommended_articles_and_tags_wrapper {
     max-width: 1430px;
     margin: 150px auto;
     left: auto;
@@ -367,23 +657,12 @@ export default {
       justify-content: space-between;
       align-content: center;
       margin: 0 88px 20px 88px;
-      .text {
-        font-size: 2.5em;
-      }
-      .link_more_btn {
-        text-transform: uppercase;
-        padding: 0 34px;
-        border: 1px solid #111111;
-        border-radius: 30px;
-        display: flex;
-        align-items: center;
-        height: 40px;
-        cursor: pointer;
-      }
+
     }
     .recommended_article_slider {
       width: 100%;
       display: flex;
+      margin-bottom: 150px;
       .v-icon {
         font-size: 40px;
       }
@@ -393,9 +672,94 @@ export default {
         width: 430px;
         margin: 0 8px;
         border-radius: 30px;
+        position: relative;
+        .article_img {
+          position: absolute;
+          box-shadow: inset 0 0 10px rgba(0,0,0,0.9);
+          border-radius: 30px;
+          height: 250px;
+        }
+        .article_img:after {
+          content: "";
+          display: block;
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          top: 0;
+          left: 0;
+          background: transparent;
+          background-image: linear-gradient(to bottom, #ffffff, #000000);
+          opacity: 0.5;
+
+        }
+        .article_name {
+          position: absolute;
+          color: #FFFFFF;
+          font-size: 1.5em;
+          font-weight: 700;
+          bottom: 20px;
+          left: 20px;
+          max-width: 370px;
+          text-wrap: wrap;
+          line-height: 1;
+        }
       }
+    }
+    .chip_style {
+      height: 80px;
+      font-size: 1.5em;
+      padding: 0 50px;
+      border-radius: 30px;
+    }
+  }
+  .registration_wrapper {
+    height: 200px;
+    background-color: #111111;
+    display: grid;
+    align-content: center;
+    width: 100vw; /* 100% ширины экрана */
+    position: relative;
+    left: 50%; /* Центрируем блок */
+    right: 50%;
+    margin-left: -50vw; /* Корректируем положение на половину ширины экрана */
+    margin-right: -50vw;
+    justify-content: center;
+    .registration_header {
+      color: #FFFFFF;
+      font-size: 1.5em;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .registration_btn {
+      text-transform: none;
+      padding: 0 34px;
+      border: 1px solid #FFFFFF;
+      background-color: #111111;
+      color: #FFFFFF;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      height: 40px;
+      cursor: pointer;
+      letter-spacing: normal;
+      margin: auto;
     }
   }
 }
 
+
+.header_container_text {
+  font-size: 2.5em;
+}
+.link_more_btn {
+  text-transform: uppercase;
+  padding: 0 34px;
+  border: 1px solid #111111;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  height: 40px;
+  cursor: pointer;
+  letter-spacing: normal;
+}
 </style>
