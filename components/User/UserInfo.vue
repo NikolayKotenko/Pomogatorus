@@ -270,10 +270,6 @@ export default {
     ],
     deleteBrandModal: false
   }),
-  async mounted() {
-    await this.$store.dispatch('CollaborationModule/getListServices')
-    await this.$store.dispatch('BrandsModule/getListBrands')
-  },
   computed: {
     ...mapState({
       isUpdating: (state) => state.UserSettings.isUpdating,
@@ -286,6 +282,10 @@ export default {
     isMobile() {
       return this.$device.isMobile
     },
+  },
+  async mounted() {
+    await this.$store.dispatch('CollaborationModule/getListServices')
+    await this.$store.dispatch('BrandsModule/getListBrands')
   },
   methods: {
     openModal() {

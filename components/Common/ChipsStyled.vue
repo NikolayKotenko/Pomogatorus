@@ -111,12 +111,12 @@ export default {
   transition: $transition;
 
   &:hover {
-    background: #95D7AE !important;
+    background: #ED7100 !important;
     transition: 0.4s;
   }
 
   &.v-chip.v-chip--outlined.v-chip.v-chip {
-    background-color: #95D7AE !important;
+    background-color: #ED7100 !important;
 
   }
 

@@ -189,7 +189,7 @@ export default {
 
 
   &.primary--text {
-    color: $green-color !important;
+    color: #ED7100 !important;
   }
 }
 

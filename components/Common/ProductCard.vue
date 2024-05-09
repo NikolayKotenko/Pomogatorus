@@ -396,9 +396,7 @@ export default {
 </style>
 
 <style lang="scss">
-.v-tabs-items {
-  margin-right: 20px;
-}
+
 .v-input--selection-controls {
   margin: 0;
   padding: 0;

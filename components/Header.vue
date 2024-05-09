@@ -96,16 +96,39 @@
                   </div>
                   <v-divider style="border-color: black;"/>
                   <div class="actions_list">
-                    <div
-                      class="action_elem"
-                      @click="$store.commit('set_modal_auth', true)"
+
+                    <DropDownMenuStyled
+                      :is-left="true"
+                      :is-offset-y="true"
+                      :close-on-click-outside="true"
+                      :nudge-top="156"
+                      :nudge-right="44"
                     >
-                      <img
-                        :src="require(`~/assets/svg/icons/account_icon.svg`)"
-                        alt="help"
-                      >
-                      Личный кабинет
-                    </div>
+                      <template #icon>
+                        <div class="action_elem">
+                          <img
+                            :src="require(`~/assets/svg/icons/account_icon.svg`)"
+                            alt="help"
+                          >
+                          Личный кабинет
+                        </div>
+                      </template>
+                      <template #content>
+                        <UserPersonalAccount/>
+                      </template>
+                    </DropDownMenuStyled>
+
+
+<!--                    <div-->
+<!--                      class="action_elem"-->
+<!--                      @click="$store.commit('set_modal_auth', true)"-->
+<!--                    >-->
+<!--                      <img-->
+<!--                        :src="require(`~/assets/svg/icons/account_icon.svg`)"-->
+<!--                        alt="help"-->
+<!--                      >-->
+<!--                      Личный кабинет-->
+<!--                    </div>-->
                     <div class="action_elem">
                       <img
                         :src="require(`~/assets/svg/icons/ph_building-office.svg`)"
@@ -271,6 +294,7 @@ import DropDownMenuStyled from './Common/DropDownMenuStyled.vue';
 import TaskModal from './Collaboration/TaskModal.vue';
 import ButtonStyled from './Common/ButtonStyled.vue'
 import FavoritesBrands from './Brands/FavoritesBrands.vue'
+import UserPersonalAccount from './User/UserPersonalAccount.vue'
 import { getNameStateModalByUrlHash } from '~/helpers/urlHelper';
 import CreateObjectModal from '~/components/Modals/CreateObjectModal';
 
@@ -287,6 +311,7 @@ export default {
     IconTooltip,
     DropDownMenuStyled,
     TaskModal,
+    UserPersonalAccount
   },
   props: {},
   data() {

@@ -102,14 +102,14 @@
             @submit.prevent="localCreateUser(`component_wrapper-${index_component}`)"
           >
             <div class="pesonal_info">
-              <v-checkbox 
+              <v-checkbox
                 v-model="checkbox"
                 color="#95D7AE"
-        
+
               >
                 <template v-slot:label>
                   <div class="info_text">
-                    Я даю согласние на 
+                    Я даю согласние на
                     <v-tooltip bottom>
                       <template v-slot:activator="{ on }">
                         <a
@@ -128,7 +128,7 @@
                 </template>
               </v-checkbox>
             </div>
-            
+
             <div class="quiz_container">
               <div class="quiz_title">
                 Чем планируете заниматься?
@@ -146,13 +146,13 @@
                 hide-details
               />
             </div>
-            
+
             <div class="autorize_wrapper">
               <v-btn
                   class="autorize_btn"
                   :disabled="! checkbox"
                 >
-        
+
                   <div class="autorize_text">
                     {{ authorizationSocials[0].text }}
                   </div>
@@ -165,9 +165,9 @@
                   @callback="yourCallbackFunction"
                 />
               </client-only>
-              
+
               <!-- <script src="https://yastatic.net/s3/passport-sdk/autofill/v1/sdk-suggest-with-polyfills-latest.js"></script>
-              
+
               <script>
                 window.onload = function() {
                   window.YaAuthSuggest.init(
@@ -193,12 +193,12 @@
                 }
 
               </script> -->
-                                    
+
               <v-btn
                 :disabled="! checkbox"
                 class="autorize_btn"
               >
-                
+
                 <div class="autorize_text">
                   {{ authorizationSocials[2].text }}
                 </div>
@@ -208,7 +208,7 @@
                 class="autorize_btn"
                 @click="registrationByMail = true"
               >
-              
+
                 <div class="autorize_text">
                   {{ authorizationSocials[3].text }}
                 </div>
@@ -216,7 +216,7 @@
             </div>
 
 
-            <div 
+            <div
               v-if="registrationByMail"
               class="forms_input"
             >
@@ -261,7 +261,7 @@
                 local-class="style_button"
                 type="submit"
               />
-              
+
             </div>
           </v-form>
         </v-tab-item>
@@ -303,7 +303,7 @@ if (process.client) {
 }
 
 
-export default {  
+export default {
   name: 'LoginAuth',
   components: { ButtonStyled, vueTelegramLogin },
   data() {
@@ -497,7 +497,7 @@ export default {
       elem.remove();
       this.$store.dispatch('deleteComponent', this.index_component);
     },
-  
+
   }
 };
 </script>
@@ -616,13 +616,13 @@ $yellowBackground: rgb(255, 244, 203);
   }
 }
 
-.v-tabs-items {
-  margin-top: 10px !important;
-
-  button {
-    //margin-top: 10px;
-  }
-}
+//.v-tabs-items {
+//  margin-top: 10px !important;
+//
+//  button {
+//    //margin-top: 10px;
+//  }
+//}
 
 .v-tab {
   font-size: 1em;
