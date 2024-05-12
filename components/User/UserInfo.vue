@@ -9,7 +9,7 @@
       </v-icon>
     </div>
 
-    <v-tabs v-model="tab" color="#000000" grow @change="checkServicesTab">
+    <v-tabs v-model="tab" color="#000000" grow @change="checkServicesTab(tab)">
       <v-tab :key="0">
         <span class="tab_header">{{
           isLoggedIn ? 'Общая информация' : 'Авторизация'

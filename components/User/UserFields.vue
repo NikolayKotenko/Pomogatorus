@@ -338,11 +338,10 @@ export default {
 }
 
 .general_info_wrapper {
-  display: grid;
-  grid-row-gap: 10px;
+  display: inline-block;
   font-family: 'Inter', sans-serif;
   margin-top: 16px;
-  max-height: 540px;
+  height: 540px;
   overflow: auto;
   padding: 20px 0;
   background-color: #DDDDDD;
@@ -352,7 +351,7 @@ export default {
     display: flex;
     grid-column-gap: 10px;
     padding: 16px 20px;
-    margin: 0 20px;
+    margin: 0 20px 10px;
     background-color: #FFFFFF;
     border-radius: 15px;
     .fio_info {
@@ -373,7 +372,7 @@ export default {
     display: grid;
     grid-row-gap: 20px;
     padding: 16px 20px;
-    margin: 0 20px;
+    margin: 0 20px 10px;
     background-color: #FFFFFF;
     border-radius: 15px;
     .section_header {

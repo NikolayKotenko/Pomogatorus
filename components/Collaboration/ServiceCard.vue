@@ -1,5 +1,5 @@
 <template>
-  <v-card class="card_wrapper">
+  <v-card class="card_wrapper" elevation="0">
     <div class="card_header">
       <div class="title_and_equip">
         <li class="service_title">
@@ -87,7 +87,7 @@
         </div>
         <IconTooltip
           :color-icon="'#8A8784'"
-          :icon-text="'mdi-delete-outline'"
+          :icon-text="'mdi-close'"
           :size-icon="'32'"
           :text-tooltip="'Удалить услугу'"
           @click-icon="showDeleteOneServiceModal = true"
@@ -248,7 +248,7 @@ export default {
       grid-template-columns: 2fr 1.4fr 0.1fr;
 
       .service_title {
-        font-size: 1.3em;
+        font-weight: 600;
         display: inline-flex;
         grid-column-gap: 10px;
       }
