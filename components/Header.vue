@@ -96,11 +96,31 @@
                   </div>
                   <v-divider style="border-color: black;"/>
                   <div class="actions_list">
-
+                    <!--                    <v-menu -->
+                    <!--                      :close-on-content-click="false" -->
+                    <!--                      offset-y -->
+                    <!--                      nudge-top="156" -->
+                    <!--                      nudge-right="44" -->
+                    <!--                    > -->
+                    <!--                      <template #activator="{ on, attrs }"> -->
+                    <!--                        <div -->
+                    <!--                          v-bind="attrs" -->
+                    <!--                          class="action_elem" -->
+                    <!--                          v-on="on" -->
+                    <!--                          @click="openAccountMenu" -->
+                    <!--                        > -->
+                    <!--                          <img -->
+                    <!--                            :src="require(`~/assets/svg/icons/account_icon.svg`)" -->
+                    <!--                            alt="help" -->
+                    <!--                          > -->
+                    <!--                          Личный кабинет -->
+                    <!--                        </div> -->
+                    <!--                      </template> -->
+                    <!--                      <UserPersonalAccount v-show="$store.state.UserSettings.stateVisibleMenu"/> -->
+                    <!--                    </v-menu> -->
                     <DropDownMenuStyled
                       :is-left="true"
                       :is-offset-y="true"
-                      :close-on-click-outside="true"
                       :nudge-top="156"
                       :nudge-right="44"
                     >
@@ -119,16 +139,17 @@
                     </DropDownMenuStyled>
 
 
-<!--                    <div-->
-<!--                      class="action_elem"-->
-<!--                      @click="$store.commit('set_modal_auth', true)"-->
-<!--                    >-->
-<!--                      <img-->
-<!--                        :src="require(`~/assets/svg/icons/account_icon.svg`)"-->
-<!--                        alt="help"-->
-<!--                      >-->
-<!--                      Личный кабинет-->
-<!--                    </div>-->
+
+                    <!--                    <div -->
+                    <!--                      class="action_elem" -->
+                    <!--                      @click="$store.commit('set_modal_auth', true)" -->
+                    <!--                    > -->
+                    <!--                      <img -->
+                    <!--                        :src="require(`~/assets/svg/icons/account_icon.svg`)" -->
+                    <!--                        alt="help" -->
+                    <!--                      > -->
+                    <!--                      Личный кабинет -->
+                    <!--                    </div> -->
                     <div class="action_elem">
                       <img
                         :src="require(`~/assets/svg/icons/ph_building-office.svg`)"
@@ -403,6 +424,12 @@ export default {
 
   },
   methods: {
+    openAccountMenu() {
+
+      this.$store.commit('UserSettings/setStateVisibleMenu', true)
+      console.log('openMenu', this.$store.state.UserSettings.stateVisibleMenu)
+    },
+
     openModal() {
       this.$store.dispatch('TaskModule/openModal')
     },

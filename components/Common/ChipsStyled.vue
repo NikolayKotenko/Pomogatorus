@@ -116,7 +116,7 @@ export default {
   }
 
   &.v-chip.v-chip--outlined.v-chip.v-chip {
-    background-color: #ED7100 !important;
+    background-color: #EEEEEE !important;
 
   }
 

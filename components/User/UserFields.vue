@@ -130,84 +130,84 @@
           </div>
         </div>
       </div>
-<!--      <v-row>-->
-<!--        <v-col>-->
-<!--          <InputStyled-->
-<!--            :class="'styleTextField'"-->
-<!--            :data="form.first_name"-->
-<!--            :is-label="'Имя'"-->
-<!--            :is-outlined="true"-->
-<!--            @update-input="setFirstNameData"-->
-<!--          />-->
-<!--        </v-col>-->
-<!--        <v-col>-->
-<!--          <InputStyled-->
-<!--            :class="'styleTextField'"-->
-<!--            :data="form.middle_name"-->
-<!--            :is-label="'Фамилия'"-->
-<!--            :is-outlined="true"-->
-<!--            @update-input="setMiddleNameData"-->
-<!--          />-->
-<!--        </v-col>-->
-<!--        <v-col>-->
-<!--          <InputStyled-->
-<!--            :class="'styleTextField'"-->
-<!--            :data="form.last_name"-->
-<!--            :is-label="'Отчество'"-->
-<!--            :is-outlined="true"-->
-<!--            @update-input="setLastNameData"-->
-<!--          />-->
-<!--        </v-col>-->
-<!--      </v-row>-->
+      <!--      <v-row> -->
+      <!--        <v-col> -->
+      <!--          <InputStyled -->
+      <!--            :class="'styleTextField'" -->
+      <!--            :data="form.first_name" -->
+      <!--            :is-label="'Имя'" -->
+      <!--            :is-outlined="true" -->
+      <!--            @update-input="setFirstNameData" -->
+      <!--          /> -->
+      <!--        </v-col> -->
+      <!--        <v-col> -->
+      <!--          <InputStyled -->
+      <!--            :class="'styleTextField'" -->
+      <!--            :data="form.middle_name" -->
+      <!--            :is-label="'Фамилия'" -->
+      <!--            :is-outlined="true" -->
+      <!--            @update-input="setMiddleNameData" -->
+      <!--          /> -->
+      <!--        </v-col> -->
+      <!--        <v-col> -->
+      <!--          <InputStyled -->
+      <!--            :class="'styleTextField'" -->
+      <!--            :data="form.last_name" -->
+      <!--            :is-label="'Отчество'" -->
+      <!--            :is-outlined="true" -->
+      <!--            @update-input="setLastNameData" -->
+      <!--          /> -->
+      <!--        </v-col> -->
+      <!--      </v-row> -->
 
-<!--      <v-row>-->
-<!--        <v-col>-->
-<!--          <InputStyled-->
-<!--            :class="'styleTextField'"-->
-<!--            :data="form.email"-->
-<!--            :is-label="'Email'"-->
-<!--            :is-outlined="true"-->
-<!--            :rules="emailRules"-->
-<!--            color="#95D7AE"-->
-<!--            @update-input="setEmailData"-->
-<!--          />-->
-<!--        </v-col>-->
-<!--        <v-col>-->
-<!--          &lt;!&ndash;          TODO: Разобраться с маской телефона. После использовать компонент "InputStyled" &ndash;&gt;-->
-<!--          <VTextField-->
-<!--            v-model="form.telephone"-->
-<!--            v-mask="mask"-->
-<!--            color="#95D7AE"-->
-<!--            dense-->
-<!--            label="Телефон"-->
-<!--            outlined-->
-<!--            @change="setData"-->
-<!--          />-->
-<!--        </v-col>-->
-<!--      </v-row>-->
-<!--      <v-row>-->
-<!--        <v-col/>-->
-<!--      </v-row>-->
+      <!--      <v-row> -->
+      <!--        <v-col> -->
+      <!--          <InputStyled -->
+      <!--            :class="'styleTextField'" -->
+      <!--            :data="form.email" -->
+      <!--            :is-label="'Email'" -->
+      <!--            :is-outlined="true" -->
+      <!--            :rules="emailRules" -->
+      <!--            color="#95D7AE" -->
+      <!--            @update-input="setEmailData" -->
+      <!--          /> -->
+      <!--        </v-col> -->
+      <!--        <v-col> -->
+      <!--          &lt;!&ndash;          TODO: Разобраться с маской телефона. После использовать компонент "InputStyled" &ndash;&gt; -->
+      <!--          <VTextField -->
+      <!--            v-model="form.telephone" -->
+      <!--            v-mask="mask" -->
+      <!--            color="#95D7AE" -->
+      <!--            dense -->
+      <!--            label="Телефон" -->
+      <!--            outlined -->
+      <!--            @change="setData" -->
+      <!--          /> -->
+      <!--        </v-col> -->
+      <!--      </v-row> -->
+      <!--      <v-row> -->
+      <!--        <v-col/> -->
+      <!--      </v-row> -->
     </template>
 
-<!--    <div class="roles_wrapper">-->
-<!--      <span class="roles_wrapper_title">Кто вы?</span>-->
-<!--      <v-checkbox-->
-<!--        v-for="(type, index) in types"-->
-<!--        :key="index"-->
-<!--        v-model.number="form[type.key]"-->
-<!--        :append-icon="type.icon"-->
-<!--        :false-value="0"-->
-<!--        :label="type.text"-->
-<!--        :true-value="1"-->
-<!--        class="roles_style"-->
-<!--        color="#95D7AE"-->
-<!--        dense-->
-<!--        hide-details-->
-<!--        @change="setData"-->
-<!--      />-->
-<!--    </div>-->
-<!--    <MapServiceArea/>-->
+    <!--    <div class="roles_wrapper"> -->
+    <!--      <span class="roles_wrapper_title">Кто вы?</span> -->
+    <!--      <v-checkbox -->
+    <!--        v-for="(type, index) in types" -->
+    <!--        :key="index" -->
+    <!--        v-model.number="form[type.key]" -->
+    <!--        :append-icon="type.icon" -->
+    <!--        :false-value="0" -->
+    <!--        :label="type.text" -->
+    <!--        :true-value="1" -->
+    <!--        class="roles_style" -->
+    <!--        color="#95D7AE" -->
+    <!--        dense -->
+    <!--        hide-details -->
+    <!--        @change="setData" -->
+    <!--      /> -->
+    <!--    </div> -->
+    <!--    <MapServiceArea/> -->
   </v-form>
 </template>
 
@@ -344,7 +344,7 @@ export default {
   height: 540px;
   overflow: auto;
   padding: 20px 0;
-  background-color: #DDDDDD;
+  background-color: #EEEEEE;
   border-top-left-radius: 30px;
   border-top-right-radius: 30px;
   .fio_info_wrapper {

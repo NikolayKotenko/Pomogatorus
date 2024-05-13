@@ -126,6 +126,13 @@
       </v-tab-item>
     </v-tabs>
     <div class="buttons_wrapper">
+      <!--      <ButtonStyled -->
+      <!--        v-if="isLoggedIn" -->
+      <!--        :is-loading="isUpdating" -->
+      <!--        :local-text="'назад'" -->
+      <!--        local-class="style_button saveLogoutBtn" -->
+      <!--        @click-button="hiddenMenu" -->
+      <!--      /> -->
       <ButtonStyled
         v-if="isLoggedIn"
         :is-loading="isUpdating"
@@ -141,12 +148,12 @@
 import { mapState } from 'vuex';
 import ServiceCard from '../Collaboration/ServiceCard.vue';
 import ButtonStyled from '../Common/ButtonStyled.vue';
-import UserFields from './UserFields.vue';
-import { MtoMUsersServices } from '~/helpers/constructors';
 import BrandCard from '../Common/BrandCard.vue';
 import IconTooltip from '../Common/IconTooltip.vue';
 import DropDownMenuStyled from '../Common/DropDownMenuStyled.vue';
 import UniversalAddInput from '../Common/UniversalAddInput.vue';
+import UserFields from './UserFields.vue';
+import { MtoMUsersServices } from '~/helpers/constructors';
 
 
 export default {
@@ -155,7 +162,7 @@ export default {
     isChanged: false,
     isValid: false,
     data: {},
-    tab: 0
+    tab: 0,
   }),
   computed: {
     ...mapState({
@@ -172,6 +179,11 @@ export default {
     await this.$store.dispatch('UserSettings/getUserServices')
   },
   methods: {
+    hiddenMenu() {
+
+      this.$store.commit('UserSettings/setStateVisibleMenu', false)
+      console.log('hidden',  this.$store.state.UserSettings.stateVisibleMenu)
+    },
     setChanged(value) {
       this.isChanged = value
     },
@@ -298,6 +310,7 @@ export default {
   .buttons_wrapper {
     padding: 20px 40px;
     position: absolute;
+    display: flex;
     bottom: 0;
   }
 
@@ -310,7 +323,7 @@ export default {
   height: 540px;
   overflow: auto;
   padding: 20px 0;
-  background-color: #DDDDDD;
+  background-color: #EEEEEE;
   border-top-left-radius: 30px;
   border-top-right-radius: 30px;
   .title {
@@ -336,7 +349,7 @@ export default {
   height: 540px;
   overflow: auto;
   padding: 20px 0;
-  background-color: #DDDDDD;
+  background-color: #EEEEEE;
   border-top-left-radius: 30px;
   border-top-right-radius: 30px;
   .title {
