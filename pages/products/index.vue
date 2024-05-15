@@ -1,5 +1,5 @@
 <template>
-  <v-container class="products">
+  <v-container class="products_page_wrapper">
     <!--    <div class="search_container"> -->
     <!--      <SearchStyled -->
     <!--        :is-class="'styleSearch'" -->
@@ -33,7 +33,7 @@
     <!--        </v-menu> -->
     <!--      </TooltipStyled> -->
     <!--    </div> -->
-    <UniversalFilter/>
+    <!--    <UniversalFilter/> -->
     <ProductCard
       v-for="(item) in $store.state.NomenclatureModule.listNomenclature"
       :key="item.id"
@@ -52,7 +52,7 @@
   </v-container>
 </template>
 <script>
-import ProductCard from '../../components/Common/ProductCard.vue';
+import ProductCard from '../../components/Products/ProductCard.vue';
 import UniversalFilter from '../../components/Common/UniversalFilter.vue'
 
 export default {
@@ -72,6 +72,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.products_page_wrapper {
+  display: grid;
+  row-gap:10px;
+  justify-content: center;
+
+}
 .search_container {
   display: flex;
   grid-column-gap: 1em;

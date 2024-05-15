@@ -1,6 +1,6 @@
 <template>
   <IconTooltip
-    :size-icon="'32'"
+    :size-icon="'28'"
     :color-icon="! stateCurrentNomenclature ? '#B3B3B3' : '#95D7AE'"
     :icon-text="! stateCurrentNomenclature ? 'mdi-heart-outline' : 'mdi-heart'"
     :text-tooltip="! stateCurrentNomenclature ? 'Добавить в избранное' : 'Убрать из избранного'"
