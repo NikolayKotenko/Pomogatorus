@@ -108,7 +108,7 @@ export default {
 .desktop_style {
   height: 3.2em !important;
   width: 14.2em;
-  max-height: 45px;
+  max-height: 40px;
   max-width: 200px;
 }
 
@@ -135,4 +135,5 @@ export default {
 
   }
 }
+
 </style>

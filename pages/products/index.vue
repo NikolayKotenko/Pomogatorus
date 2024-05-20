@@ -61,6 +61,8 @@ export default {
   components: { UniversalFilter, ProductCard },
   async mounted() {
     await this.getNextPageData();
+    await this.$store.dispatch('NomenclatureModule/getListNomenclature');
+    await this.$store.dispatch('NomenclatureModule/getListFavoriteNomenclatureByUserAndObjectId')
   },
   methods: {
     async getNextPageData() {

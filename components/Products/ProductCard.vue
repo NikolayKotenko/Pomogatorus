@@ -16,9 +16,9 @@
           </div>
           <h3>{{ data.name }}</h3>
         </div>
-        <AddToFavoriteNomenclatures
-          :favorite-object="favoriteData"
-        />
+        <!--        <AddToFavoriteNomenclatures -->
+        <!--          :favorite-object="favoriteData" -->
+        <!--        /> -->
       </div>
       <div class="product_info_list">
         <div>Монтаж: </div>
@@ -58,139 +58,157 @@
       <!--      </div> -->
 
       <!-- Меню Кнопок -->
-      <div class="product_buttons">
-        <div class="product_icons">
-          <!-- Модальное окно. Детальная карточка товара -->
-          <TooltipStyled
-            :is-top="true"
-            :title="'Подробнее о товаре'"
-          >
-            <v-dialog
-              v-model="showModal"
-              width="700"
-            >
-              <template #activator="{ on, attrs }">
-                <v-icon
-                  size="36"
-                  v-bind="attrs"
-                  color="#000000"
-                  v-on="on"
-                  @click="getFilteredListNomenclaturesByFamily(data)"
-                >
-                  mdi-list-box-outline
-                </v-icon>
-              </template>
-
-              <v-card class="detail_card_product">
-                <!-- Семейство Оборудования -->
-                <div class="header">
-                  <div class="family_name">
-                    <span>Семейство:</span>
-                    <div class="card_name">
-                      {{ data._family.name }}
-                    </div>
-                  </div>
-                  <AddToFavoriteNomenclatures
-                    :favorite-object="favoriteData"
-                  />
-                </div>
-
-
-                <!-- Фотографии Оборудования -->
-                <div class="product_photos">
-                  <ViewerStyled
-                    :images="data._family.photos"
-                    class="photos_container"
-                  >
-                    <img
-                      v-for="(image, index) in data._family.photos"
-                      :key="index"
-                      :src="image.url"
-                      alt=""
-                      class="photo"
-                    >
-                  </ViewerStyled>
-                  <div class="main_photo_wrapper">
-                    <v-img
-                      :src="getMainProductPhoto"
-                      class="main_photo"
-                      contain
-                    />
-                  </div>
-                </div>
-
-                <v-divider/>
-
-                <!-- Модели Оборудования -->
-                <div class="family_slider">
-                  <span>Модели:</span>
-                  <v-tabs
-                    show-arrows
-                    color="#000000"
-                    class="slider"
-                  >
-                    <v-tabs-slider color="#95D7AE"/>
-                    <v-tab
-                      v-for="(item, index) in listFamilyNomenclatures"
-                      :key="index"
-                    >
-                      {{ item.name }}
-                    </v-tab>
-                    <v-tab-item/>
-                  </v-tabs>
-                </div>
-                <!-- Инфорамация об Оборудовании -->
-                <div class="product_detail_info">
-                  <v-tabs
-                    color="#95D7AE"
-                    vertical
-                    style="display: flex; flex-direction: row-reverse;"
-                  >
-                    <v-tab :key="0">
-                      Описание
-                    </v-tab>
-                    <v-tab :key="1">
-                      Характеристики
-                    </v-tab>
-                    <v-tab :key="2">
-                      Документация
-                    </v-tab>
-                    <v-tab-item :key="0">
-                      <div>
-                        <span class="product_description">
-                          {{ data._family.description }}
-                        </span>
-                      </div>
-                    </v-tab-item>
-                    <v-tab-item :key="1">
-                      <div class="product_characteristics">
-                        <div class="switch">
-                          <v-switch color="#95D7AE" hide-details/>
-                          <span>Только различающиеся характеристики</span>
-                        </div>
-                        <li>Артикул: {{ data.vendor_code }}</li>
-                        <li
-                          v-for="(character, index) in data._nomenclature_characteristics"
-                          :key="index"
-                        >
-                          {{ character.name }}: {{ character.value }}{{ character.postfix }}
-                        </li>
-                      </div>
-                    </v-tab-item>
-                    <v-tab-item :key="2">
-                      <div class="product_documents"/>
-                    </v-tab-item>
-                  </v-tabs>
-                </div>
-                <ButtonStyled
-                  :local-class="'style_close'"
-                  :local-text="'Закрыть'"
-                  @click-button="closeModal"
-                />
-              </v-card>
-            </v-dialog>
-          </TooltipStyled>
+      <div class="card_footer">
+        <div class="product_price">
+          1234₽
         </div>
+        <ButtonStyled
+          v-if="! stateCurrentNomenclature"
+          :local-text=" 'Добавить в объект'"
+          class="add_to_object_style"
+          @click-button="addToObject"
+        />
+        <ButtonStyled
+          v-if="stateCurrentNomenclature"
+          :local-text="'Уже в объекте'"
+          class="active_add_btn"
+          @click-button="deleteFromObject"
+        />
+
+
+
+        <!--        <div class="product_icons"> -->
+        <!--          &lt;!&ndash; Модальное окно. Детальная карточка товара &ndash;&gt; -->
+        <!--          <TooltipStyled -->
+        <!--            :is-top="true" -->
+        <!--            :title="'Подробнее о товаре'" -->
+        <!--          > -->
+        <!--            <v-dialog -->
+        <!--              v-model="showModal" -->
+        <!--              width="700" -->
+        <!--            > -->
+        <!--              <template #activator="{ on, attrs }"> -->
+        <!--                <v-icon -->
+        <!--                  size="36" -->
+        <!--                  v-bind="attrs" -->
+        <!--                  color="#000000" -->
+        <!--                  v-on="on" -->
+        <!--                  @click="getFilteredListNomenclaturesByFamily(data)" -->
+        <!--                > -->
+        <!--                  mdi-list-box-outline -->
+        <!--                </v-icon> -->
+        <!--              </template> -->
+
+        <!--              <v-card class="detail_card_product"> -->
+        <!--                &lt;!&ndash; Семейство Оборудования &ndash;&gt; -->
+        <!--                <div class="header"> -->
+        <!--                  <div class="family_name"> -->
+        <!--                    <span>Семейство:</span> -->
+        <!--                    <div class="card_name"> -->
+        <!--                      {{ data._family.name }} -->
+        <!--                    </div> -->
+        <!--                  </div> -->
+        <!--                  <AddToFavoriteNomenclatures -->
+        <!--                    :favorite-object="favoriteData" -->
+        <!--                  /> -->
+        <!--                </div> -->
+
+
+        <!--                &lt;!&ndash; Фотографии Оборудования &ndash;&gt; -->
+        <!--                <div class="product_photos"> -->
+        <!--                  <ViewerStyled -->
+        <!--                    :images="data._family.photos" -->
+        <!--                    class="photos_container" -->
+        <!--                  > -->
+        <!--                    <img -->
+        <!--                      v-for="(image, index) in data._family.photos" -->
+        <!--                      :key="index" -->
+        <!--                      :src="image.url" -->
+        <!--                      alt="" -->
+        <!--                      class="photo" -->
+        <!--                    > -->
+        <!--                  </ViewerStyled> -->
+        <!--                  <div class="main_photo_wrapper"> -->
+        <!--                    <v-img -->
+        <!--                      :src="getMainProductPhoto" -->
+        <!--                      class="main_photo" -->
+        <!--                      contain -->
+        <!--                    /> -->
+        <!--                  </div> -->
+        <!--                </div> -->
+
+        <!--                <v-divider/> -->
+
+        <!--                &lt;!&ndash; Модели Оборудования &ndash;&gt; -->
+        <!--                <div class="family_slider"> -->
+        <!--                  <span>Модели:</span> -->
+        <!--                  <v-tabs -->
+        <!--                    show-arrows -->
+        <!--                    color="#000000" -->
+        <!--                    class="slider" -->
+        <!--                  > -->
+        <!--                    <v-tabs-slider color="#95D7AE"/> -->
+        <!--                    <v-tab -->
+        <!--                      v-for="(item, index) in listFamilyNomenclatures" -->
+        <!--                      :key="index" -->
+        <!--                    > -->
+        <!--                      {{ item.name }} -->
+        <!--                    </v-tab> -->
+        <!--                    <v-tab-item/> -->
+        <!--                  </v-tabs> -->
+        <!--                </div> -->
+        <!--                &lt;!&ndash; Инфорамация об Оборудовании &ndash;&gt; -->
+        <!--                <div class="product_detail_info"> -->
+        <!--                  <v-tabs -->
+        <!--                    color="#95D7AE" -->
+        <!--                    vertical -->
+        <!--                    style="display: flex; flex-direction: row-reverse;" -->
+        <!--                  > -->
+        <!--                    <v-tab :key="0"> -->
+        <!--                      Описание -->
+        <!--                    </v-tab> -->
+        <!--                    <v-tab :key="1"> -->
+        <!--                      Характеристики -->
+        <!--                    </v-tab> -->
+        <!--                    <v-tab :key="2"> -->
+        <!--                      Документация -->
+        <!--                    </v-tab> -->
+        <!--                    <v-tab-item :key="0"> -->
+        <!--                      <div> -->
+        <!--                        <span class="product_description"> -->
+        <!--                          {{ data._family.description }} -->
+        <!--                        </span> -->
+        <!--                      </div> -->
+        <!--                    </v-tab-item> -->
+        <!--                    <v-tab-item :key="1"> -->
+        <!--                      <div class="product_characteristics"> -->
+        <!--                        <div class="switch"> -->
+        <!--                          <v-switch color="#95D7AE" hide-details/> -->
+        <!--                          <span>Только различающиеся характеристики</span> -->
+        <!--                        </div> -->
+        <!--                        <li>Артикул: {{ data.vendor_code }}</li> -->
+        <!--                        <li -->
+        <!--                          v-for="(character, index) in data._nomenclature_characteristics" -->
+        <!--                          :key="index" -->
+        <!--                        > -->
+        <!--                          {{ character.name }}: {{ character.value }}{{ character.postfix }} -->
+        <!--                        </li> -->
+        <!--                      </div> -->
+        <!--                    </v-tab-item> -->
+        <!--                    <v-tab-item :key="2"> -->
+        <!--                      <div class="product_documents"/> -->
+        <!--                    </v-tab-item> -->
+        <!--                  </v-tabs> -->
+        <!--                </div> -->
+        <!--                <ButtonStyled -->
+        <!--                  :local-class="'style_close'" -->
+        <!--                  :local-text="'Закрыть'" -->
+        <!--                  @click-button="closeModal" -->
+        <!--                /> -->
+        <!--              </v-card> -->
+        <!--            </v-dialog> -->
+        <!--          </TooltipStyled> -->
+        <!--        </div> -->
       </div>
     </div>
 
@@ -225,7 +243,7 @@ export default {
         { action: 'Оформить акт тех.обслуживания', value: 3 },
         { action: 'Оформить акт утилизации', value: 4 }
       ],
-      listFamilyNomenclatures: []
+      listFamilyNomenclatures: [],
     };
   },
   computed: {
@@ -239,7 +257,9 @@ export default {
           this.data?.id
         )
     },
-
+    stateCurrentNomenclature() {
+      return this.$store.state.NomenclatureModule.listFavoriteNomenclature.some((elem) => elem.id_nomenclature === this.data.id)
+    },
   },
   watch: {
     '$store.state.Objects.currentObject.id':{
@@ -248,10 +268,10 @@ export default {
 
         await this.$store.dispatch('NomenclatureModule/getListFavoriteNomenclatureByUserAndObjectId');
       }
-    }
+    },
   },
   async mounted() {
-    await this.$store.dispatch('NomenclatureModule/getListNomenclature');
+    await this.$store.dispatch('NomenclatureModule/getListFavoriteNomenclatureByUserAndObjectId');
   },
   methods: {
     changeFavoriteProduct() {
@@ -268,7 +288,18 @@ export default {
         .filter((elem) =>
           elem?._family?.id === objData?._family?.id
         )
-    }
+    },
+    async addToObject() {
+      await this.$store.dispatch('NomenclatureModule/setFavoritesNomenclatureByObject', this.data.id)
+
+      this.$toast.success('Оборудование добавленно на объект')
+    },
+    async deleteFromObject() {
+      await this.$store.dispatch('NomenclatureModule/deleteOneFavoriteNomenclature', this.data.id)
+
+      this.$toast.success('Оборудование удаленно из объекта')
+    },
+
   }
 
 };
@@ -323,14 +354,38 @@ export default {
 
   }
 
-  .product_buttons {
-    display: grid;
-
-    .product_icons {
-      display: inline-flex;
-      margin-bottom: auto;
-      justify-content: flex-end;
+  .card_footer {
+    display: flex;
+    justify-content: flex-end;
+    grid-column-gap: 20px;
+    align-items: center;
+    margin-top: auto;
+    .product_price {
+      font-size: 1.25em;
+      font-weight: 600;
     }
+    .add_to_object_style {
+      border-radius: 15px;
+      background-color: #DDDDDD;
+      box-shadow: none;
+      font-weight: 600;
+      border: none;
+      &:hover {
+        box-shadow: $shadowBox;
+      }
+    }
+    .active_add_btn {
+      border-radius: 15px;
+      background-color: #FF6347;
+      color: #FFFFFF;
+      box-shadow: none;
+      font-weight: 600;
+      border: none;
+      &:hover {
+        box-shadow: $shadowBox;
+      }
+    }
+
   }
 
   //.add_to_favorites_btn {

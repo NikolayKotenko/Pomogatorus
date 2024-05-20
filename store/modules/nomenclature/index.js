@@ -34,37 +34,35 @@ export default {
       })
       return response
     },
-    async setFavoritesNomenclatureByObject({ rootGetters, commit, dispatch }, object) {
-      const response = await Request.post(
-        this.state.BASE_URL + '/m-to-m/favorites/add',
-        object
-      );
-      // Вызов диспатча в одном компоненте
-      await dispatch('getListFavoriteNomenclatureByUserAndObjectId')
+    async getListFavoriteNomenclatureByUserAndObjectId({ commit, rootGetters }) {
+      const response = await Request.get(
+        this.state.BASE_URL + '/m-to-m/favorites-nomenclature', {
+          id_object: rootGetters['Objects/getIdCurrentObject'],
+          id_user: rootGetters.getUserId
+        }
+      )
+
+      commit('set_list_favorite_nomenclature', response.data)
 
       return response
     },
-    async getListFavoriteNomenclatureByUserAndObjectId(
-      { commit, rootGetters }) {
-      // if (!rootGetters.getUserId) return false
-      // if (!rootGetters['Objects/getIdCurrentObject']) return false
-      //
-      // // commit('setLoadingObjects', true)
-      //
-      // const response = await Request.get(
-      //   this.state.BASE_URL + `/m-to-m/favorites?id_user=${rootGetters.getUserId}&id_object=${rootGetters['Objects/getIdCurrentObject']}`
-      // )
-      // commit('set_list_favorite_nomenclature', response.data)
-      //
-      // // commit('setLoadingObjects', false)
-      //
-      // return response
+    async setFavoritesNomenclatureByObject({ rootGetters, state, commit, dispatch }, productId) {
+      await Request.post(
+        this.state.BASE_URL + '/m-to-m/favorites-nomenclature/add', {
+          id_object: rootGetters['Objects/getIdCurrentObject'],
+          id_user: rootGetters.getUserId,
+          id_nomenclature: productId
+        },)
+      // Вызов диспатча в одном компоненте
+      await dispatch('getListFavoriteNomenclatureByUserAndObjectId')
     },
-    async deleteOneFavoriteNomenclature({ dispatch }, object) {
+    async deleteOneFavoriteNomenclature({ dispatch, rootGetters }, productId) {
       await Request.delete(
-        this.state.BASE_URL + '/m-to-m/favorites/remove',
-        object
-      );
+        this.state.BASE_URL + '/m-to-m/favorites-nomenclature/remove', {
+          id_object: rootGetters['Objects/getIdCurrentObject'],
+          id_user: rootGetters.getUserId,
+          id_nomenclature: productId
+        },)
 
       await dispatch('getListFavoriteNomenclatureByUserAndObjectId')
     }
@@ -73,6 +71,6 @@ export default {
   getters: {
     getCountFavoriteNomenclatures(state) {
       return state.listFavoriteNomenclature.length
-    }
+    },
   },
 }
