@@ -177,8 +177,8 @@ function getUrl(req, res) {
   const port = process.env.PORT || PORT
   const fullUrl = `${protocol}://${host}:${port}${url}`
   return fullUrl.includes('pomogatorus')
-    ? 'https://api.agregatorus.com'
-    : 'https://api.agregatorus.com'
+    ? process.env.VUE_APP_BACKEND_SERVER_PROD
+    : process.env.VUE_APP_BACKEND_SERVER_DEV
 }
 
 function parseCookies(cookieHeader) {

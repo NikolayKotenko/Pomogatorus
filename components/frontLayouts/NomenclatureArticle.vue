@@ -38,87 +38,7 @@
 
           <!--     SUCCESS STATE     -->
           <template v-else>
-            <div
-              class="c-slider__content"
-              draggable="false"
-            >
-              <template v-if="getPhoto(slide.data)">
-                <img :alt="slide.data.name" :src="getPhoto(slide.data)">
-              </template>
-
-              <!--     NO PHOTO     -->
-              <template v-else>
-                <img :alt="slide.data.name" draggable="false" src="https://baxi.ru/photo/ECO_Nova_004.png">
-              </template>
-              <!--     TODO: Убрать моковую картинку         -->
-              <!--              <template> -->
-              <!--                <img :alt="slide.data.name" :src="require('~/assets/images/noImage.webp')"> -->
-              <!--              </template> -->
-            </div>
-
-            <!--     INFO     -->
-            <div class="c-slider__info">
-              <h4 class="c-slider__info__label">
-                {{ slide.data.name }}
-              </h4>
-
-              <div class="c-slider__info__wrapper">
-                <!--     HOVER INFO     -->
-                <div class="c-slider__info__wrapper__left">
-                  <div
-                    v-for="(option, index) in cardFields"
-                    :key="index"
-                    class="c-slider__info__wrapper__left__options"
-                  >
-                    <span class="c-slider-option">
-                      <span class="c-slider-option__label">{{ option.label }}: </span>
-                      <span
-                        class="c-slider-option__value"
-                      >{{ slide.data[option.value] ? slide.data[option.value] : mockData[option.value] }}</span>
-                    </span>
-                  </div>
-                </div>
-
-                <!--     CLICK ICONS     -->
-                <div class="c-slider__info__wrapper__right">
-                  <TooltipStyled
-                    :title="'Добавить в избранное'"
-                  >
-                    <v-icon
-                      color="#ffffff"
-                      large
-                      @click="changeFavoriteProduct"
-                    >
-                      mdi-star-outline
-                    </v-icon>
-                  </TooltipStyled>
-
-                  <TooltipStyled
-                    :title="'Добавить в купленное'"
-                  >
-                    <v-icon
-                      color="#ffffff"
-                      large
-                      @click="addBoughtProduct"
-                    >
-                      mdi-cart-check
-                    </v-icon>
-                  </TooltipStyled>
-
-                  <TooltipStyled
-                    :title="'Добавить в установленное'"
-                  >
-                    <v-icon
-                      color="#ffffff"
-                      large
-                      @click="addInstalledProduct"
-                    >
-                      mdi-wrench-check-outline
-                    </v-icon>
-                  </TooltipStyled>
-                </div>
-              </div>
-            </div>
+            <NomenclatureCard :nomenclature-data="slide" @click="onCLickNomenclature"/>
           </template>
         </div>
       </div>
@@ -128,7 +48,7 @@
 
 <script>
 import VueSlickCarousel from 'vue-slick-carousel'
-import TooltipStyled from '../Common/TooltipStyled.vue'
+import NomenclatureCard from '../Nomenclature/NomenclatureCard'
 
 import Request from '@/services/request'
 
@@ -139,8 +59,8 @@ import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
 export default {
   name: 'NomenclatureArticle',
   components: {
-    VueSlickCarousel,
-    TooltipStyled
+    NomenclatureCard,
+    VueSlickCarousel
   },
   data: () => ({
     index_component: null,
@@ -171,31 +91,31 @@ export default {
       'dots': false,
       'infinite': true,
       'speed': 500,
-      'slidesToShow': 4,
-      'slidesToScroll': 4,
-      'initialSlide': 0,
+      'slidesToShow': 3,
+      'slidesToScroll': 3,
+      'variableWidth': true,
       'responsive': [
         {
           'breakpoint': 1024,
           'settings': {
             'slidesToShow': 3,
-            'slidesToScroll': 3,
-            'infinite': true
+            'slidesToScroll': 3
           }
         },
         {
-          'breakpoint': 600,
+          'breakpoint': 768,
           'settings': {
             'slidesToShow': 2,
             'slidesToScroll': 2,
-            'initialSlide': 2
+            'variableWidth': false
           }
         },
         {
           'breakpoint': 480,
           'settings': {
             'slidesToShow': 1,
-            'slidesToScroll': 1
+            'slidesToScroll': 1,
+            'variableWidth': false
           }
         }
       ]
@@ -247,17 +167,24 @@ export default {
         return null
       }
     },
-
-    /* ACTIONS */
-    changeFavoriteProduct() {
-      this.$toast.success('Добавленно в избранное', { duration: 5000 })
-    },
-    addBoughtProduct() {
-      this.$toast.success('Добавленно в купленное', { duration: 5000 })
-    },
-    addInstalledProduct() {
-      this.$toast.success('Добавленно в установленное', { duration: 5000 })
+    onCLickNomenclature() {
     }
   }
 }
 </script>
+
+<style lang='scss'>
+.c-slider-wrapper {
+  .slick-track {
+    //display: flex !important;
+    //column-gap: 20px !important;
+  }
+
+  .slick-slide {
+    //display: flex !important;
+    //align-items: center !important;
+    //justify-content: center !important;
+    //margin: 0 10px;
+  }
+}
+</style>
