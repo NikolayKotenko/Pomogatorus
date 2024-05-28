@@ -6,6 +6,7 @@ export default {
     userData: {},
     defaultUserData: {},
     isLogout: false,
+    stateAuthModal: false,
   },
   mutations: {
     //  AUTH
@@ -26,9 +27,19 @@ export default {
     set_isLogout(state, payload) {
       state.isLogout = payload
     },
+    set_auth_modal_state(state, payload) {
+      state.stateAuthModal = payload
+    }
   },
   actions: {
     // AUTH
+    openAuthModal({ commit }) {
+      commit('set_auth_modal_state', true)
+    },
+    closeAuthModal({ commit }) {
+      commit('set_auth_modal_state', false)
+    },
+
     async refreshTokens({ commit }) {
       const tokensData = await Request.post(
         window.location.origin + '/api/auth/refresh'

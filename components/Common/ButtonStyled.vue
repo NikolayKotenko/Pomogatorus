@@ -122,6 +122,18 @@ export default {
     color: #FFFFFF;
   }
 }
+.v-btn.style_wide_button {
+  background-color: $background-element-color !important;
+  color: $black-text-color;
+  border: 1px solid #000000;
+  max-width: 560px !important;
+  width: 560px !important;
+  transition: $transition;
+  &:hover {
+    background: #000000 !important;
+    color: #FFFFFF;
+  }
+}
 
 
 .style_close {

@@ -63,7 +63,7 @@
                 <template #append-outer>
                   <v-tooltip bottom>
                     <template #activator="{ on }">
-                      <v-icon @click="localResendUserPass(`component_wrapper-${index_component}`)" v-on="on">
+                      <v-icon @click="localResendUserPass()" v-on="on">
                         mdi-lock-reset
                       </v-icon>
                     </template>
@@ -105,19 +105,18 @@
               <v-checkbox
                 v-model="checkbox"
                 color="#95D7AE"
-
               >
-                <template v-slot:label>
+                <template #label>
                   <div class="info_text">
                     Я даю согласние на
                     <v-tooltip bottom>
-                      <template v-slot:activator="{ on }">
+                      <template #activator="{ on }">
                         <a
                           class="info_link"
                           target="_blank"
+                          color="#95D7AE"
                           v-on="on"
                           @click.stop
-                          color="#95D7AE"
                         >
                           обработку персональных данных.
                         </a>
@@ -149,13 +148,12 @@
 
             <div class="autorize_wrapper">
               <v-btn
-                  class="autorize_btn"
-                  :disabled="! checkbox"
-                >
-
-                  <div class="autorize_text">
-                    {{ authorizationSocials[0].text }}
-                  </div>
+                class="autorize_btn"
+                :disabled="! checkbox"
+              >
+                <div class="autorize_text">
+                  {{ authorizationSocials[0].text }}
+                </div>
               </v-btn>
               <client-only>
                 <vue-telegram-login
@@ -166,7 +164,8 @@
                 />
               </client-only>
 
-              <!-- <script src="https://yastatic.net/s3/passport-sdk/autofill/v1/sdk-suggest-with-polyfills-latest.js"></script>
+              <!--
+ <script src="https://yastatic.net/s3/passport-sdk/autofill/v1/sdk-suggest-with-polyfills-latest.js"></script>
 
               <script>
                 window.onload = function() {
@@ -192,13 +191,13 @@
                   .catch(error => console.log('Обработка ошибки', error))
                 }
 
-              </script> -->
+              </script>
+-->
 
               <v-btn
                 :disabled="! checkbox"
                 class="autorize_btn"
               >
-
                 <div class="autorize_text">
                   {{ authorizationSocials[2].text }}
                 </div>
@@ -208,7 +207,6 @@
                 class="autorize_btn"
                 @click="registrationByMail = true"
               >
-
                 <div class="autorize_text">
                   {{ authorizationSocials[3].text }}
                 </div>
@@ -261,7 +259,6 @@
                 local-class="style_button"
                 type="submit"
               />
-
             </div>
           </v-form>
         </v-tab-item>
@@ -468,7 +465,7 @@ export default {
       }
       this.alertCall(res);
     },
-    async localResendUserPass(index_component) {
+    async localResendUserPass() {
       if (this.$refs.email_user.validate(true) === false) return false;
 
       this.loading = true;
@@ -476,7 +473,6 @@ export default {
       const res = await this.$store.dispatch('resendUserPass', {
         email: this.email_user,
         name: this.name,
-        id_dom_elem: index_component,
         full_url: window.location.href
       });
       if (res.codeResponse === 404) {

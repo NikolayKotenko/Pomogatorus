@@ -158,6 +158,17 @@
                       Ваш текущий объект
                     </div>
 
+                    <div
+                      class="action_elem"
+                      @click="$store.dispatch('openAuthModal')"
+                    >
+                      <img
+                        :src="require(`~/assets/svg/icons/ph_building-office.svg`)"
+                        alt="help"
+                      >
+                      Войти или зарег
+                    </div>
+
                     <!-- Ваши специалисты -->
                     <DropDownMenuStyled
                       :is-left="true"
@@ -226,7 +237,7 @@
               :local-text="'Войти'"
               :max-width="'80'"
               :max-height="'30'"
-              @click-button="$store.commit('set_modal_auth', true)"
+              @click-button="$store.dispatch('openAuthModal')"
             />
           </div>
         </div>
@@ -302,6 +313,7 @@
 
     <!-- Глобальные модалки -->
     <TaskModal/>
+    <AuthModal/>
     <CreateObjectModal ref="createObjectModal"/>
   </v-app-bar>
 </template>
@@ -316,6 +328,7 @@ import TaskModal from './Collaboration/TaskModal.vue';
 import ButtonStyled from './Common/ButtonStyled.vue'
 import FavoritesBrands from './Brands/FavoritesBrands.vue'
 import UserPersonalAccount from './User/UserPersonalAccount.vue'
+import AuthModal from './frontLayouts/AuthModal'
 import { getNameStateModalByUrlHash } from '~/helpers/urlHelper';
 import CreateObjectModal from '~/components/Modals/CreateObjectModal';
 
@@ -323,6 +336,7 @@ export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Header',
   components: {
+    AuthModal,
     FavoritesBrands,
     ButtonStyled,
     CreateObjectModal,
@@ -433,6 +447,11 @@ export default {
     openModal() {
       this.$store.dispatch('TaskModule/openModal')
     },
+
+    // openAuthModal() {
+    //   this.$store.dispatch('openAuthModal')
+    // },
+
 
     logout() {
       this.$store.dispatch('logout')
