@@ -49,7 +49,7 @@
 <script>
 import VueSlickCarousel from 'vue-slick-carousel'
 import NomenclatureCard from '../Nomenclature/NomenclatureCard'
-
+import constructFilterQuery from '~/utils/constructFilterQuery'
 import Request from '@/services/request'
 
 import 'vue-slick-carousel/dist/vue-slick-carousel.css'
@@ -148,15 +148,29 @@ export default {
         })
       }
     },
-    getNomenclatureInfo() {
-      this.nomenclatureList.forEach(async (elem) => {
-        const result = await Request.get(
-          `${this.$store.state.BASE_URL}/entity/nomenclature/${elem.id}`
-        )
-
-        elem.data = result?.data ?? null
-        elem.isLoading = false
+    async getNomenclatureInfo() {
+      const values = []
+      
+      this.nomenclatureList.map(elem => elem.id).filter((value, index, array) => array.indexOf(value) === index).forEach((elem) => {
+        values.push({ ids_nomenclatures: elem })
       })
+
+      const query = constructFilterQuery(values, true)
+
+      const result = await Request.get(
+        `${this.$store.state.BASE_URL}/entity/nomenclature${query}`
+      )
+
+      console.log('RESULT', result)
+
+      // this.nomenclatureList.forEach(async (elem) => {
+      //   const result = await Request.get(
+      //     `${this.$store.state.BASE_URL}/entity/nomenclature/${elem.id}`
+      //   )
+      //
+      //   elem.data = result?.data ?? null
+      //   elem.isLoading = false
+      // })
     },
     getPhoto(slide) {
       const url = (slide?._family?.photos && slide?._family?.photos[0]) ?? null
