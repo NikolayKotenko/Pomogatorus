@@ -77,6 +77,8 @@ export default {
 <style lang="scss" scoped>
 .map_service_area {
   width: 100%;
+  padding: 20px;
+  border-radius: 30px;
 
   .chips_list {
     font-size: 0.8em;

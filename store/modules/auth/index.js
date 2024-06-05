@@ -142,6 +142,14 @@ export default {
     },
     getCountFavoriteBrands(state) {
       return state.userData.brands.length
+    },
+    getCitiesByUser(state) {
+      if (state.userData && state.userData.cities) {
+        return  state.userData.cities.map((obj) => obj.city).join(', ');
+      } else {
+        return '';
+      }
+
     }
   },
 }

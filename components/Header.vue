@@ -118,25 +118,18 @@
                     <!--                      </template> -->
                     <!--                      <UserPersonalAccount v-show="$store.state.UserSettings.stateVisibleMenu"/> -->
                     <!--                    </v-menu> -->
-                    <DropDownMenuStyled
-                      :is-left="true"
-                      :is-offset-y="true"
-                      :nudge-top="156"
-                      :nudge-right="44"
-                    >
-                      <template #icon>
-                        <div class="action_elem">
-                          <img
-                            :src="require(`~/assets/svg/icons/account_icon.svg`)"
-                            alt="help"
-                          >
-                          Личный кабинет
-                        </div>
-                      </template>
-                      <template #content>
-                        <UserPersonalAccount/>
-                      </template>
-                    </DropDownMenuStyled>
+                    <div class="action_elem">
+                      <router-link
+                        to="/profile"
+                        style="color: unset; text-decoration: unset; display: flex; align-items: center; grid-column-gap: 10px"
+                      >
+                        <img
+                          :src="require(`~/assets/svg/icons/account_icon.svg`)"
+                          alt="help"
+                        >
+                        Личный кабинет
+                      </router-link>
+                    </div>
 
                     <!-- Ваш текущий объект -->
                     <DropDownMenuStyled

@@ -81,8 +81,7 @@ export default {
 
 <style lang="scss" scoped>
 .add_services {
-  margin: 5px 2px;
-  padding: 10px;
+  margin: 20px;
   height: 60px;
   display: flex;
   justify-content: space-between;
@@ -92,7 +91,6 @@ export default {
   .search_service {
     max-width: 650px;
     border-radius: 4px !important;
-
 
     .wrapper_append {
       display: grid;
