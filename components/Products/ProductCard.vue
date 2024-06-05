@@ -1,5 +1,5 @@
 <template>
-  <div class="product_card_wrapper">
+  <div class="product_card_wrapper" @click="$store.dispatch('NomenclatureModule/openProductModal')">
     <!-- Общая информация -->
     <div class="empty_placeholder">
       <v-img
@@ -213,6 +213,7 @@
     </div>
 
     <!-- Избранное -->
+    <ProductModal :current-product="data"/>
   </div>
 </template>
 
@@ -223,11 +224,12 @@ import ButtonStyled from '../Common/ButtonStyled.vue';
 import ViewerStyled from '../Common/ViewerStyled.vue';
 import IconTooltip from '../Common/IconTooltip.vue';
 import AddToFavoriteNomenclatures from '../Common/AddToFavoriteNomenclatures.vue';
+import ProductModal from './ProductModal.vue'
 import { FavoriteNomenclature } from '~/helpers/constructors';
 
 export default {
   name: 'ProductCard',
-  components: { ViewerStyled, ButtonStyled, TooltipStyled, SelectStyled, IconTooltip, AddToFavoriteNomenclatures },
+  components: { ProductModal, ViewerStyled, ButtonStyled, TooltipStyled, SelectStyled, IconTooltip, AddToFavoriteNomenclatures },
   props: {
     data: {
       type: Object,
@@ -277,8 +279,8 @@ export default {
     changeFavoriteProduct() {
       this.$toast.success('Добавленно в избранное', { duration: 5000 });
     },
-    openModal() {
-      this.showModal = true;
+    openProductCard() {
+      this.$store.dispatch('NomenclatureModule/openProductModal')
     },
     closeModal() {
       this.showModal = false;
@@ -316,7 +318,7 @@ export default {
   height: 270px;
   max-width: 850px;
   padding: 20px;
-  background-color: #F2F2F2;
+  background-color: #FFFFFF;
   border-radius: 30px;
   transition: $transition;
   cursor: pointer;
@@ -408,106 +410,6 @@ export default {
   align-items: center;
 }
 
-.detail_card_product {
-  display: inline-grid;
-  grid-row-gap: 20px;
-  width: 700px;
-  // min-height: 700px !important;
-  // max-height: 700px !important;
-  overflow: auto;
-  padding: 20px;
-  .header {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-
-    .family_name{
-      display: flex;
-      align-items: center;
-
-      .card_name {
-      font-size: 1.5em;
-      font-weight: 700;
-      margin-left: 1em;
-    }
-    }
-
-  }
-
-
-  .product_photos {
-    display: flex;
-    max-height: 220px;
-    width: 100%;
-
-    .main_photo_wrapper {
-      display: flex;
-      justify-content: center;
-      width: 100%;
-
-      .main_photo {
-        height: auto;
-        max-width: 300px;
-      }
-    }
-
-    .photo {
-      display: grid;
-      max-height: 70px;
-      max-width: 70px;
-      cursor: pointer;
-      transition: $transition;
-      margin-bottom: 10px;
-
-      &:hover {
-        background: rgba(0, 0, 0, 0.05);
-      }
-    }
-
-  }
-
-  .family_slider{
-    display: flex;
-    align-items: center;
-    .slider {
-
-    }
-  }
-
-  .product_detail_info {
-    height: 350px;
-
-
-    .product_description {
-
-    }
-
-    .product_characteristics {
-      color: #8A8784;
-      margin-top: auto;
-      .switch {
-        display: flex;
-        align-items: center;
-        color: #000000;
-        margin-bottom: 20px;
-      }
-    }
-  }
-
-}
-
-.product_detail_buttons {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-
-}
-
-.function_btn {
-  width: 320px;
-  max-width: 320px;
-  margin-bottom: 0;
-}
 </style>
 
 <style lang="scss">

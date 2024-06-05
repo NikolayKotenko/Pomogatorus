@@ -142,6 +142,12 @@ const createStore = () => {
             visible: true
           },
           {
+            title: 'Личный кабинет',
+            path: '/profile',
+            icon: 'mdi-account',
+            visible: false
+          },
+          {
             title: 'Агенты',
             path: '/agents',
             icon: 'mdi-account-group',

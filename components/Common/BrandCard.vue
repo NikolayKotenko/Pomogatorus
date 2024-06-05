@@ -10,6 +10,14 @@
         max-width="60"
         contain
       />
+      <template v-if="! isUserAccount">
+        <div v-if="! stateCurrentBrand" class="add_to_favorites" @click="$store.dispatch('BrandsModule/addBrandsToFavoritesBrands', brandObject.id)">
+          Добавить в избранное
+        </div>
+        <div v-if="stateCurrentBrand" class="delete_to_favorites" @click="$store.dispatch('BrandsModule/deleteBrandsByFavoritesBrands', brandObject.id)">
+          Убрать из избранного
+        </div>
+      </template>
     </div>
 
     <v-divider style="margin: 10px 0 10px 0;"/>
@@ -80,7 +88,6 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
-
   </div>
 </template>
 
@@ -98,6 +105,10 @@ export default {
       type: Object,
       require: true,
       default: () => ({})
+    },
+    isUserAccount: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -105,9 +116,15 @@ export default {
       localListUsersByBrand: []
     }
   },
+  computed: {
+    stateCurrentBrand() {
+      return this.$store.state.BrandsModule.listFavoritesBrands.some((elem) => elem.id_brand === this.brandObject.id)
+    },
+  },
   async mounted() {
     await this.$store.dispatch('CollaborationModule/getListAllUsers')
     await this.getListUsersByBrandLocal()
+    await this.$store.dispatch('BrandsModule/getListFavoritesBrands')
   },
   methods: {
     getBrandPhoto(elem) {
@@ -160,6 +177,22 @@ export default {
   margin: 4px 4px 10px 4px;
   .top_wrapper{
     display: flex;
+    align-items: center;
+    .add_to_favorites {
+      margin-left: auto;
+      cursor: pointer;
+      border-radius: 15px;
+      background-color: #DDDDDD;
+      padding: 10px;
+    }
+    .delete_to_favorites {
+      margin-left: auto;
+      cursor: pointer;
+      border-radius: 15px;
+      background-color: #FF6347;
+      color: #FFFFFF;
+      padding: 10px;
+    }
     .brand_name {
       font-weight: 400;
       font-size: 2.2em;
@@ -204,6 +237,5 @@ export default {
     }
   }
 }
-
 
 </style>

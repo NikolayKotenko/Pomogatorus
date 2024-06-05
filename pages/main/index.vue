@@ -60,6 +60,7 @@
             <template #content>
               <BrandCard
                 :brand-object="brand"
+                :is-user-account="false"
               />
             </template>
           </DropDownMenuStyled>
@@ -118,111 +119,111 @@
           >
         </div>
       </div>
-<!--      <div class="changing_block_wrapper">-->
-<!--        <div class="changing_header">-->
-<!--          <div class="header_container_text">-->
-<!--            Мастера поблизости-->
-<!--          </div>-->
-<!--          <v-btn-->
-<!--            class="link_more_btn"-->
-<!--            :href="'/people/'"-->
-<!--          >-->
-<!--            Больше мастеров-->
-<!--          </v-btn>-->
-<!--        </div>-->
-<!--        <v-slide-group-->
-<!--          show-arrows-->
-<!--          class="masters_cards_slider"-->
-<!--        >-->
-<!--          <v-slide-item>-->
-<!--            <div class="recommended_master_card">-->
-<!--              <div class="master_info">-->
-<!--                <v-avatar size="80">-->
-<!--                  <v-img src="https://www.wrestlezone.com/wp-content/uploads/sites/8/2023/12/kurt-angle-meme-machine.jpg?resize=1024,576"/>-->
-<!--                </v-avatar>-->
-<!--                <div class="master_name_rating">-->
-<!--                  <div class="name">-->
-<!--                    Иван Иванов-->
-<!--                  </div>-->
-<!--                  <div class="rating">-->
-<!--                    12 отзывов-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--              <v-divider style="margin: 14px 0;"/>-->
-<!--              <div class="master_characteristics">-->
-<!--                Челябинск • Более 10 лет опыта • Мастер по монтажу-->
-<!--              </div>-->
-<!--              <div class="master_btns">-->
-<!--                <div class="middle_price">-->
-<!--                  от 2000 за услугу-->
-<!--                </div>-->
-<!--                <v-btn class="add_on_object_btn">-->
-<!--                  пригласить на объект-->
-<!--                </v-btn>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </v-slide-item>-->
-<!--          <v-slide-item>-->
-<!--            <div class="recommended_master_card">-->
-<!--              <div class="master_info">-->
-<!--                <v-avatar size="80">-->
-<!--                  <v-img src="https://www.wrestlezone.com/wp-content/uploads/sites/8/2023/12/kurt-angle-meme-machine.jpg?resize=1024,576"/>-->
-<!--                </v-avatar>-->
-<!--                <div class="master_name_rating">-->
-<!--                  <div class="name">-->
-<!--                    Иван Иванов-->
-<!--                  </div>-->
-<!--                  <div class="rating">-->
-<!--                    12 отзывов-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--              <v-divider style="margin: 14px 0;"/>-->
-<!--              <div class="master_characteristics">-->
-<!--                Челябинск • Более 10 лет опыта • Мастер по монтажу-->
-<!--              </div>-->
-<!--              <div class="master_btns">-->
-<!--                <div class="middle_price">-->
-<!--                  от 2000 за услугу-->
-<!--                </div>-->
-<!--                <v-btn class="add_on_object_btn">-->
-<!--                  пригласить на объект-->
-<!--                </v-btn>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </v-slide-item>-->
-<!--          <v-slide-item>-->
-<!--            <div class="recommended_master_card">-->
-<!--              <div class="master_info">-->
-<!--                <v-avatar size="80">-->
-<!--                  <v-img src="https://www.wrestlezone.com/wp-content/uploads/sites/8/2023/12/kurt-angle-meme-machine.jpg?resize=1024,576"/>-->
-<!--                </v-avatar>-->
-<!--                <div class="master_name_rating">-->
-<!--                  <div class="name">-->
-<!--                    Иван Иванов-->
-<!--                  </div>-->
-<!--                  <div class="rating">-->
-<!--                    12 отзывов-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--              <v-divider style="margin: 14px 0;"/>-->
-<!--              <div class="master_characteristics">-->
-<!--                Челябинск • Более 10 лет опыта • Мастер по монтажу-->
-<!--              </div>-->
-<!--              <div class="master_btns">-->
-<!--                <div class="middle_price">-->
-<!--                  от 2000 за услугу-->
-<!--                </div>-->
-<!--                <v-btn class="add_on_object_btn">-->
-<!--                  пригласить на объект-->
-<!--                </v-btn>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </v-slide-item>-->
-<!--        </v-slide-group>-->
-<!--      </div>-->
+      <!--      <div class="changing_block_wrapper"> -->
+      <!--        <div class="changing_header"> -->
+      <!--          <div class="header_container_text"> -->
+      <!--            Мастера поблизости -->
+      <!--          </div> -->
+      <!--          <v-btn -->
+      <!--            class="link_more_btn" -->
+      <!--            :href="'/people/'" -->
+      <!--          > -->
+      <!--            Больше мастеров -->
+      <!--          </v-btn> -->
+      <!--        </div> -->
+      <!--        <v-slide-group -->
+      <!--          show-arrows -->
+      <!--          class="masters_cards_slider" -->
+      <!--        > -->
+      <!--          <v-slide-item> -->
+      <!--            <div class="recommended_master_card"> -->
+      <!--              <div class="master_info"> -->
+      <!--                <v-avatar size="80"> -->
+      <!--                  <v-img src="https://www.wrestlezone.com/wp-content/uploads/sites/8/2023/12/kurt-angle-meme-machine.jpg?resize=1024,576"/> -->
+      <!--                </v-avatar> -->
+      <!--                <div class="master_name_rating"> -->
+      <!--                  <div class="name"> -->
+      <!--                    Иван Иванов -->
+      <!--                  </div> -->
+      <!--                  <div class="rating"> -->
+      <!--                    12 отзывов -->
+      <!--                  </div> -->
+      <!--                </div> -->
+      <!--              </div> -->
+      <!--              <v-divider style="margin: 14px 0;"/> -->
+      <!--              <div class="master_characteristics"> -->
+      <!--                Челябинск • Более 10 лет опыта • Мастер по монтажу -->
+      <!--              </div> -->
+      <!--              <div class="master_btns"> -->
+      <!--                <div class="middle_price"> -->
+      <!--                  от 2000 за услугу -->
+      <!--                </div> -->
+      <!--                <v-btn class="add_on_object_btn"> -->
+      <!--                  пригласить на объект -->
+      <!--                </v-btn> -->
+      <!--              </div> -->
+      <!--            </div> -->
+      <!--          </v-slide-item> -->
+      <!--          <v-slide-item> -->
+      <!--            <div class="recommended_master_card"> -->
+      <!--              <div class="master_info"> -->
+      <!--                <v-avatar size="80"> -->
+      <!--                  <v-img src="https://www.wrestlezone.com/wp-content/uploads/sites/8/2023/12/kurt-angle-meme-machine.jpg?resize=1024,576"/> -->
+      <!--                </v-avatar> -->
+      <!--                <div class="master_name_rating"> -->
+      <!--                  <div class="name"> -->
+      <!--                    Иван Иванов -->
+      <!--                  </div> -->
+      <!--                  <div class="rating"> -->
+      <!--                    12 отзывов -->
+      <!--                  </div> -->
+      <!--                </div> -->
+      <!--              </div> -->
+      <!--              <v-divider style="margin: 14px 0;"/> -->
+      <!--              <div class="master_characteristics"> -->
+      <!--                Челябинск • Более 10 лет опыта • Мастер по монтажу -->
+      <!--              </div> -->
+      <!--              <div class="master_btns"> -->
+      <!--                <div class="middle_price"> -->
+      <!--                  от 2000 за услугу -->
+      <!--                </div> -->
+      <!--                <v-btn class="add_on_object_btn"> -->
+      <!--                  пригласить на объект -->
+      <!--                </v-btn> -->
+      <!--              </div> -->
+      <!--            </div> -->
+      <!--          </v-slide-item> -->
+      <!--          <v-slide-item> -->
+      <!--            <div class="recommended_master_card"> -->
+      <!--              <div class="master_info"> -->
+      <!--                <v-avatar size="80"> -->
+      <!--                  <v-img src="https://www.wrestlezone.com/wp-content/uploads/sites/8/2023/12/kurt-angle-meme-machine.jpg?resize=1024,576"/> -->
+      <!--                </v-avatar> -->
+      <!--                <div class="master_name_rating"> -->
+      <!--                  <div class="name"> -->
+      <!--                    Иван Иванов -->
+      <!--                  </div> -->
+      <!--                  <div class="rating"> -->
+      <!--                    12 отзывов -->
+      <!--                  </div> -->
+      <!--                </div> -->
+      <!--              </div> -->
+      <!--              <v-divider style="margin: 14px 0;"/> -->
+      <!--              <div class="master_characteristics"> -->
+      <!--                Челябинск • Более 10 лет опыта • Мастер по монтажу -->
+      <!--              </div> -->
+      <!--              <div class="master_btns"> -->
+      <!--                <div class="middle_price"> -->
+      <!--                  от 2000 за услугу -->
+      <!--                </div> -->
+      <!--                <v-btn class="add_on_object_btn"> -->
+      <!--                  пригласить на объект -->
+      <!--                </v-btn> -->
+      <!--              </div> -->
+      <!--            </div> -->
+      <!--          </v-slide-item> -->
+      <!--        </v-slide-group> -->
+      <!--      </div> -->
     </div>
     <div class="recommended_articles_and_tags_wrapper">
       <div class="recommended_articles_header">

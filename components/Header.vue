@@ -138,36 +138,27 @@
                       </template>
                     </DropDownMenuStyled>
 
-
-
-                    <!--                    <div -->
-                    <!--                      class="action_elem" -->
-                    <!--                      @click="$store.commit('set_modal_auth', true)" -->
-                    <!--                    > -->
-                    <!--                      <img -->
-                    <!--                        :src="require(`~/assets/svg/icons/account_icon.svg`)" -->
-                    <!--                        alt="help" -->
-                    <!--                      > -->
-                    <!--                      Личный кабинет -->
-                    <!--                    </div> -->
-                    <div class="action_elem">
-                      <img
-                        :src="require(`~/assets/svg/icons/ph_building-office.svg`)"
-                        alt="help"
-                      >
-                      Ваш текущий объект
-                    </div>
-
-                    <div
-                      class="action_elem"
-                      @click="$store.dispatch('openAuthModal')"
+                    <!-- Ваш текущий объект -->
+                    <DropDownMenuStyled
+                      :is-left="true"
+                      :is-offset-y="true"
+                      :close-on-click-outside="true"
+                      :nudge-top="186"
+                      :nudge-right="44"
                     >
-                      <img
-                        :src="require(`~/assets/svg/icons/ph_building-office.svg`)"
-                        alt="help"
-                      >
-                      Войти или зарег
-                    </div>
+                      <template #icon>
+                        <div class="action_elem">
+                          <img
+                            :src="require(`~/assets/svg/icons/ph_building-office.svg`)"
+                            alt="help"
+                          >
+                          Ваш текущий объект
+                        </div>
+                      </template>
+                      <template #content>
+                        <CurrentObjects/>
+                      </template>
+                    </DropDownMenuStyled>
 
                     <!-- Ваши специалисты -->
                     <DropDownMenuStyled
@@ -329,6 +320,8 @@ import ButtonStyled from './Common/ButtonStyled.vue'
 import FavoritesBrands from './Brands/FavoritesBrands.vue'
 import UserPersonalAccount from './User/UserPersonalAccount.vue'
 import AuthModal from './frontLayouts/AuthModal'
+import CardObject from './UserObjects/CardObject.vue'
+import CurrentObjects from './Widgets/CurrentObjects.vue'
 import { getNameStateModalByUrlHash } from '~/helpers/urlHelper';
 import CreateObjectModal from '~/components/Modals/CreateObjectModal';
 
@@ -336,6 +329,8 @@ export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Header',
   components: {
+    CurrentObjects,
+    CardObject,
     AuthModal,
     FavoritesBrands,
     ButtonStyled,

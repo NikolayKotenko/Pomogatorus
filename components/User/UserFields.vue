@@ -51,84 +51,72 @@
     <template v-else>
       <div class="general_info_wrapper">
         <div class="fio_info_wrapper">
-          <v-avatar
-            size="60"
-          >
-            <v-img
-              src="https://www.wrestlezone.com/wp-content/uploads/sites/8/2023/12/kurt-angle-meme-machine.jpg?resize=1024,576"
-            />
-          </v-avatar>
-          <div class="fio_info">
-            <div class="fio_title">
-              ФИО
-            </div>
-            <div class="fio_inputs">
-              <InputStyled
-                :class="'styleTextField'"
-                :data="form.first_name"
-                :placeholder="'Имя'"
-                @update-input="setFirstNameData"
-              />
-              <InputStyled
-                :class="'styleTextField'"
-                :data="form.middle_name"
-                :placeholder="'Фамилия'"
-                @update-input="setMiddleNameData"
-              />
-              <InputStyled
-                :class="'styleTextField'"
-                :data="form.last_name"
-                :placeholder="'Отчество'"
-                @update-input="setLastNameData"
-              />
-            </div>
-          </div>
+          <InputStyled
+            :class="'styleTextField'"
+            :data="form.middle_name"
+            :placeholder="'Фамилия'"
+            :is-label="'Фамилия'"
+            :is-outlined="true"
+            @update-input="setMiddleNameData"
+          />
+          <InputStyled
+            :class="'styleTextField'"
+            :data="form.first_name"
+            :placeholder="'Имя'"
+            :is-label="'Имя'"
+            :is-outlined="true"
+            @update-input="setFirstNameData"
+          />
+          <InputStyled
+            :class="'styleTextField'"
+            :data="form.last_name"
+            :placeholder="'Отчество'"
+            :is-label="'Отчество'"
+            :is-outlined="true"
+            @update-input="setLastNameData"
+          />
+          <v-select
+            :items="types"
+            outlined
+            label="Вид деятельности"
+            hide-details
+            dense
+            multiple
+          />
         </div>
-        <div class="section_wrapper">
-          <div class="section_header">
-            Добавить роль
-          </div>
-          <div class="section_content">
-            <v-select
-              :items="types"
-              hide-details
-              dense
-              multiple
-            />
-          </div>
-        </div>
-        <div class="section_wrapper">
-          <div class="section_header">
-            Контакты
-          </div>
-          <div class="section_content">
-            <v-text-field
-              v-model="form.telephone"
-              v-mask="mask"
-              style="max-width: 150px"
-              color="#ED7100"
-              dense
-              placeholder="Телефон"
-              @change="setData"
-            />
-            <InputStyled
-              :class="'styleTextField'"
-              :data="form.email"
-              :placeholder="'Email'"
-              :rules="emailRules"
-              color="#95D7AE"
-              @update-input="setEmailData"
-            />
-          </div>
-        </div>
-        <div class="section_wrapper">
-          <div class="section_header">
-            Территория обслуживания
-          </div>
-          <div class="section_content">
-            <MapServiceArea/>
-          </div>
-        </div>
+
+        <!--        <div class="section_wrapper"> -->
+        <!--          <div class="section_header"> -->
+        <!--            Контакты -->
+        <!--          </div> -->
+        <!--          <div class="section_content"> -->
+        <!--            <v-text-field -->
+        <!--              v-model="form.telephone" -->
+        <!--              v-mask="mask" -->
+        <!--              style="max-width: 150px" -->
+        <!--              color="#ED7100" -->
+        <!--              dense -->
+        <!--              placeholder="Телефон" -->
+        <!--              @change="setData" -->
+        <!--            /> -->
+        <!--            <InputStyled -->
+        <!--              :class="'styleTextField'" -->
+        <!--              :data="form.email" -->
+        <!--              :placeholder="'Email'" -->
+        <!--              :rules="emailRules" -->
+        <!--              color="#95D7AE" -->
+        <!--              @update-input="setEmailData" -->
+        <!--            /> -->
+        <!--          </div> -->
+        <!--        </div> -->
+        <!--        <div class="section_wrapper"> -->
+        <!--          <div class="section_header"> -->
+        <!--            Территория обслуживания -->
+        <!--          </div> -->
+        <!--          <div class="section_content"> -->
+        <!--            <MapServiceArea/> -->
+        <!--          </div> -->
+        <!--        </div> -->
       </div>
       <!--      <v-row> -->
       <!--        <v-col> -->
@@ -340,32 +328,16 @@ export default {
 .general_info_wrapper {
   display: inline-block;
   font-family: 'Inter', sans-serif;
-  margin-top: 16px;
-  height: 540px;
+  width: 100%;
   overflow: auto;
-  padding: 20px 0;
-  background-color: #EEEEEE;
+  padding: 40px 20px;
   border-top-left-radius: 30px;
   border-top-right-radius: 30px;
   .fio_info_wrapper {
-    display: flex;
-    grid-column-gap: 10px;
-    padding: 16px 20px;
-    margin: 0 20px 10px;
-    background-color: #FFFFFF;
+    display: grid;
+    grid-row-gap: 20px;
     border-radius: 15px;
-    .fio_info {
-      display: grid;
-      align-content: space-around;
-      .fio_title {
-        font-weight: 600;
-        font-size: 0.87em;
-      }
-      .fio_inputs {
-        display: flex;
-        grid-column-gap: 10px;
-      }
-    }
+
 
   }
   .section_wrapper {

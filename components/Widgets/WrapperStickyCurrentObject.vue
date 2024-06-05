@@ -1,28 +1,28 @@
 <template>
   <div class="wrapper_current_object">
-    <v-expansion-panels>
-      <v-expansion-panel>
-        <v-expansion-panel-header>
-          <span class="label">Ваш текущий объект</span>
-        </v-expansion-panel-header>
-        <v-expansion-panel-content>
-          <CurrentObjects ref="object-widget" class="current_local_object"/>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-      <v-expansion-panel>
-        <v-expansion-panel-header>
-          <span class="label">Рекомендуемое оборудование</span>
-        </v-expansion-panel-header>
-        <v-expansion-panel-content>
-          <NomenclatureWidget
-            ref="nomenclature-widget"
-            :class="{'show-widget': isObjectLoaded}"
-            class="nomenclature-widget"
-            style="top: 430px;"
-          />
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-expansion-panels>
+    <!--    <v-expansion-panels> -->
+    <!--      <v-expansion-panel> -->
+    <!--        <v-expansion-panel-header> -->
+    <!--          <span class="label">Ваш текущий объект</span> -->
+    <!--        </v-expansion-panel-header> -->
+    <!--        <v-expansion-panel-content> -->
+    <CurrentObjects ref="object-widget" class="current_local_object"/>
+    <!--        </v-expansion-panel-content> -->
+    <!--      </v-expansion-panel> -->
+    <!--      <v-expansion-panel> -->
+    <!--        <v-expansion-panel-header> -->
+    <!--          <span class="label">Рекомендуемое оборудование</span> -->
+    <!--        </v-expansion-panel-header> -->
+    <!--        <v-expansion-panel-content> -->
+    <!--          <NomenclatureWidget -->
+    <!--            ref="nomenclature-widget" -->
+    <!--            :class="{'show-widget': isObjectLoaded}" -->
+    <!--            class="nomenclature-widget" -->
+    <!--            style="top: 430px;" -->
+    <!--          /> -->
+    <!--        </v-expansion-panel-content> -->
+    <!--      </v-expansion-panel> -->
+    <!--    </v-expansion-panels> -->
   </div>
 </template>
 

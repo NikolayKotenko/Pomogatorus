@@ -7,6 +7,7 @@
     :nuxt="isNuxtLink"
     :max-width="maxWidth"
     :max-height="maxHeight"
+    :elevation="elevation"
     @click="$emit('click-button')"
   >
     <template v-if="customSlot">
@@ -73,6 +74,10 @@ export default {
     maxHeight: {
       type: String,
       default: ''
+    },
+    elevation: {
+      type: Number,
+      default: null
     }
   },
   computed: {
@@ -135,6 +140,30 @@ export default {
   }
 }
 
+.v-btn.style_save_button {
+  background-color: #FF6347 !important;
+  color: #FFFFFF;
+  border: 1px solid #FF6347;
+  transition: $transition;
+  &:hover {
+    background: #FFFFFF !important;
+    border: 1px solid #000000;
+    color: #000000;
+  }
+}
+
+.v-btn.style_object_button {
+  background-color: $background-element-color !important;
+  color: $black-text-color;
+  border: 1px solid #000000;
+  max-width: 375px !important;
+  width: 375px !important;
+  transition: $transition;
+  &:hover {
+    background: #000000 !important;
+    color: #FFFFFF;
+  }
+}
 
 .style_close {
   background: $background-element-color !important;

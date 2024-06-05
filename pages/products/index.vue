@@ -49,16 +49,19 @@
     >
       {{ $store.getters.statePaginationHasMorePage ? "Показать еще" : "Показаны все элементы" }}
     </v-btn>
+    <!--    <WrapperStickyCurrentObject class="current_object_sticky"/> -->
   </v-container>
 </template>
 <script>
 import ProductCard from '../../components/Products/ProductCard.vue';
 import UniversalFilter from '../../components/Common/UniversalFilter.vue'
+import Right from '../../components/CascadModels/Right.vue'
+import WrapperStickyCurrentObject from '../../components/Widgets/WrapperStickyCurrentObject.vue'
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'index.vue',
-  components: { UniversalFilter, ProductCard },
+  components: { WrapperStickyCurrentObject, Right, UniversalFilter, ProductCard },
   async mounted() {
     await this.getNextPageData();
     await this.$store.dispatch('NomenclatureModule/getListNomenclature');
@@ -78,6 +81,11 @@ export default {
   display: grid;
   row-gap:10px;
   justify-content: center;
+  position: relative;
+  .current_object_sticky {
+    position: absolute;
+    right: - 150px;
+  }
 
 }
 .search_container {
