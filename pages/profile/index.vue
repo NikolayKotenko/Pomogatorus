@@ -1,132 +1,62 @@
 <template>
-  <v-container class="profile_container">
-    <div class="left_column_wrapper">
-      <div class="user_avatar">
-        <v-avatar size="100">
-          <v-img
-            src="https://www.wrestlezone.com/wp-content/uploads/sites/8/2023/12/kurt-angle-meme-machine.jpg?resize=1024,576"
-          />
-        </v-avatar>
-        <div class="user_info">
-          <div class="name">
-            {{ userData.user_fio }}
-          </div>
-          <div class="mail">
-            {{ userData.email }}
+  <v-container>
+    <SubHeader/>
+    <div class="profile_container">
+      <div class="left_column_wrapper">
+        <div class="user_avatar">
+          <v-avatar size="100">
+            <v-img
+              src="https://www.wrestlezone.com/wp-content/uploads/sites/8/2023/12/kurt-angle-meme-machine.jpg?resize=1024,576"
+            />
+          </v-avatar>
+          <div class="user_info">
+            <div class="name">
+              {{ userData.user_fio }}
+            </div>
+            <div class="mail">
+              {{ userData.email }}
+            </div>
           </div>
         </div>
-      </div>
-      <div class="menu_tabs">
-        <v-tabs v-model="tab" hide-slider vertical background-color="#DFDFDF">
-          <v-tab :key="0">
-            <img :src="require(`~/assets/svg/icons/profile_icon.svg`)">
-            Ваша информация
-          </v-tab>
-          <v-tab :key="1">
-            <img :src="require(`~/assets/svg/icons/wrench_icon.svg`)">
-            Информация специалиста
-          </v-tab>
-          <v-tab :key="2">
-            <img :src="require(`~/assets/svg/icons/password_icon.svg`)">
-            Настройки входа
-          </v-tab>
-        </v-tabs>
-      </div>
-    </div>
-    <div class="right_column_wrapper">
-      <v-tabs-items v-model="tab">
-        <v-tab-item :key="0">
-          <div class="tab_header">
-            <v-divider vertical style="border-width: 3px; border-color: #000000;"/>
-            <div v-if="isChangeGeneralInfo" class="header_name">
-              Изменить информацию
-            </div>
-            <div v-else class="header_name">
+        <div class="menu_tabs">
+          <v-tabs v-model="tab" hide-slider vertical background-color="#DFDFDF">
+            <v-tab :key="0">
+              <img :src="require(`~/assets/svg/icons/profile_icon.svg`)">
               Ваша информация
-            </div>
-          </div>
-          <div v-if="!isChangeGeneralInfo" class="tab_sub_header">
-            Редактируйте общую информацию о себе
-          </div>
-
-          <!-- Если isChangeGeneralInfo = true, редактируемые поля -->
-          <div v-if="isChangeGeneralInfo" class="editable_general_info_wrapper">
-            <UserFields @is-changed="setChanged" @new-data="setData"/>
-          </div>
-          <ButtonStyled
-            v-if="isLoggedIn && isChangeGeneralInfo === true "
-            :is-loading="isUpdating"
-            :local-text="'Сохранить'"
-            :elevation="0"
-            class="save_btn"
-            local-class="style_save_button"
-            @click-button="saveUser"
-          />
-
-
-          <!-- Если isChangeGeneralInfo = false, нередактируемые поля -->
-          <div v-else class="general_info_wrapper">
-            <div class="wrapper_title">
-              Общая информация
-            </div>
-            <v-divider style="border-color: #DDDDDD;"/>
-            <v-simple-table class="table_info" disabled>
-              <tbody>
-                <tr class="table_content">
-                  <td>Фамилия</td>
-                  <td class="table_right_content_text">
-                    {{ userData.middle_name }}
-                  </td>
-                </tr>
-                <tr class="table_content">
-                  <td>Имя</td>
-                  <td class="table_right_content">
-                    {{ userData.first_name }}
-                  </td>
-                </tr>
-                <tr class="table_content">
-                  <td>Отчество</td>
-                  <td class="table_right_content">
-                    {{ userData.last_name }}
-                  </td>
-                </tr>
-                <tr class="table_content">
-                  <td>Вид деятельности</td>
-                  <td class="table_right_content">
-                    -
-                  </td>
-                </tr>
-              </tbody>
-            </v-simple-table>
-            <v-divider style="border-color: #DDDDDD;"/>
-            <div class="info_footer_wrapper">
-              <div class="change_info_btn" @click="isChangeGeneralInfo = true">
-                <span class="btn_text">изменить</span>
+            </v-tab>
+            <v-tab :key="1">
+              <img :src="require(`~/assets/svg/icons/wrench_icon.svg`)">
+              Информация специалиста
+            </v-tab>
+            <v-tab :key="2">
+              <img :src="require(`~/assets/svg/icons/password_icon.svg`)">
+              Настройки входа
+            </v-tab>
+          </v-tabs>
+        </div>
+      </div>
+      <div class="right_column_wrapper">
+        <v-tabs-items v-model="tab">
+          <v-tab-item :key="0">
+            <div class="tab_header">
+              <v-divider vertical style="border-width: 3px; border-color: #000000;"/>
+              <div v-if="isChangeGeneralInfo" class="header_name">
+                Изменить информацию
+              </div>
+              <div v-else class="header_name">
+                Ваша информация
               </div>
             </div>
-          </div>
-        </v-tab-item>
-        <v-tab-item :key="1">
-          <div class="tab_header">
-            <v-divider vertical style="border-width: 3px; border-color: #000000;"/>
-            <div v-if="isChangeServicesInfo || isChangeCitiesInfo || isChangeBrandInfo" class="header_name">
-              Изменить информацию
+            <div v-if="!isChangeGeneralInfo" class="tab_sub_header">
+              Редактируйте общую информацию о себе
             </div>
-            <div v-else class="header_name">
-              Информация специалиста
-            </div>
-          </div>
-          <div v-if="! isChangeServicesInfo && ! isChangeCitiesInfo && ! isChangeBrandInfo" class="tab_sub_header">
-            Редактируйте вашу информацию как специалиста
-          </div>
 
-          <div v-if="isShowCitiesInfo">
-            <!-- Если isChangeCitiesInfo = true, редактируемые поля -->
-            <div v-if="isChangeCitiesInfo" class="editable_general_info_wrapper">
-              <MapServiceArea/>
+            <!-- Если isChangeGeneralInfo = true, редактируемые поля -->
+            <div v-if="isChangeGeneralInfo" class="editable_general_info_wrapper">
+              <UserFields @is-changed="setChanged" @new-data="setData"/>
             </div>
             <ButtonStyled
-              v-if="isLoggedIn && isChangeCitiesInfo === true "
+              v-if="isLoggedIn && isChangeGeneralInfo === true "
               :is-loading="isUpdating"
               :local-text="'Сохранить'"
               :elevation="0"
@@ -135,90 +65,164 @@
               @click-button="saveUser"
             />
 
-            <!-- Если isChangeCitiesInfo = false, нередактируемые поля -->
-            <div v-if="! isChangeCitiesInfo" class="general_info_wrapper">
+
+            <!-- Если isChangeGeneralInfo = false, нередактируемые поля -->
+            <div v-else class="general_info_wrapper">
               <div class="wrapper_title">
-                Территория обслуживания
+                Общая информация
               </div>
               <v-divider style="border-color: #DDDDDD;"/>
-              <v-simple-table class="table_info" disabled>
-                <tbody>
-                  <tr class="table_content">
-                    <td>Город/населенный пункт</td>
-                    <td class="table_right_content_text">
-                      {{ $store.getters['getCitiesByUser'] }}
-                    </td>
-                  </tr>
-                  <tr class="table_content">
-                    <td>Радиус обслуживания</td>
-                    <td class="table_right_content">
-                      {{ userData.range_area }}
-                    </td>
-                  </tr>
-                </tbody>
-              </v-simple-table>
+              <div class="table_info" disabled>
+                <div class="table_content">
+                  <div class="table_left_content_text">Фамилия</div>
+                  <div class="table_right_content_text">
+                    {{ userData.middle_name }}
+                  </div>
+                </div>
+                <v-divider style="border-color: #DDDDDD;"/>
+                <div class="table_content">
+                  <div class="table_left_content_text">Имя</div>
+                  <div class="table_right_content_text">
+                    {{ userData.first_name }}
+                  </div>
+                </div>
+                <v-divider style="border-color: #DDDDDD;"/>
+                <div class="table_content">
+                  <div class="table_left_content_text">Отчество</div>
+                  <div class="table_right_content_text">
+                    {{ userData.last_name }}
+                  </div>
+                </div>
+                <v-divider style="border-color: #DDDDDD;"/>
+                <div class="table_content">
+                  <div class="table_left_content_text">Вид деятельности</div>
+                  <div class="table_right_content_text">
+                    -
+                  </div>
+                </div>
+              </div>
               <v-divider style="border-color: #DDDDDD;"/>
               <div class="info_footer_wrapper">
-                <div class="change_info_btn" @click="changeCitiesInfo">
+                <div class="change_info_btn" @click="isChangeGeneralInfo = true">
                   <span class="btn_text">изменить</span>
                 </div>
               </div>
             </div>
-          </div>
+          </v-tab-item>
+          <v-tab-item :key="1">
+            <div class="tab_header">
+              <v-divider vertical style="border-width: 3px; border-color: #000000;"/>
+              <div v-if="isChangeServicesInfo || isChangeCitiesInfo || isChangeBrandInfo" class="header_name">
+                Изменить информацию
+              </div>
+              <div v-else class="header_name">
+                Информация специалиста
+              </div>
+            </div>
+            <div v-if="! isChangeServicesInfo && ! isChangeCitiesInfo && ! isChangeBrandInfo" class="tab_sub_header">
+              Редактируйте вашу информацию как специалиста
+            </div>
 
-          <div v-if="isShowBrandsInfo">
-            <!-- Если isChangeBrandInfo = true, редактируемые поля -->
-            <div v-if="isChangeBrandInfo" class="editable_brand_info_wrapper">
-              <UniversalAddInput
-                class="add_brand_block"
-                :list-items-available-to-add="$store.state.BrandsModule.listBrands"
-                @add-service="addBrand"
+            <div v-if="isShowCitiesInfo">
+              <!-- Если isChangeCitiesInfo = true, редактируемые поля -->
+              <div v-if="isChangeCitiesInfo" class="editable_general_info_wrapper">
+                <MapServiceArea/>
+              </div>
+              <ButtonStyled
+                v-if="isLoggedIn && isChangeCitiesInfo === true "
+                :is-loading="isUpdating"
+                :local-text="'Сохранить'"
+                :elevation="0"
+                class="save_btn"
+                local-class="style_save_button"
+                @click-button="saveCitiesInfo"
               />
-              <v-divider style="border-color: #DDDDDD;"/>
-              <div
-                v-for="(item, index) in $store.getters.getListBrandsByUser"
-                :key="index"
-              >
-                <div class="brand_container">
-                  <div style="text-transform: uppercase">
-                    {{ item.name }}
-                  </div>
-                  <IconTooltip
-                    :color-icon="'#B3B3B3'"
-                    :icon-text="'mdi-close'"
-                    :size-icon="'24'"
-                    :text-tooltip="'Удалить бренд'"
-                    @click-icon="deleteBrand(item)"
-                  />
+
+              <!-- Если isChangeCitiesInfo = false, нередактируемые поля -->
+              <div v-if="! isChangeCitiesInfo" class="general_info_wrapper">
+                <div class="wrapper_title">
+                  Территория обслуживания
                 </div>
                 <v-divider style="border-color: #DDDDDD;"/>
+                <div class="table_info" disabled>
+                  <div class="table_content">
+                    <div class="table_left_content_text">Город/населенный пункт</div>
+                    <div class="table_right_content_text">
+                      {{ $store.getters['getCitiesByUser'] }}
+                    </div>
+                  </div>
+                  <v-divider style="border-color: #DDDDDD;"/>
+                  <div class="table_content">
+                    <div class="table_left_content_text">Радиус обслуживания</div>
+                    <div class="table_right_content">
+                      {{ userData.range_area }}
+                    </div>
+                  </div>
+                </div>
+                <v-divider style="border-color: #DDDDDD;"/>
+                <div class="info_footer_wrapper">
+                  <div class="change_info_btn" @click="changeCitiesInfo">
+                    <span class="btn_text">изменить</span>
+                  </div>
+                </div>
               </div>
-              <div style="height: 50px;"/>
             </div>
-            <ButtonStyled
-              v-if="isLoggedIn && isChangeBrandInfo === true "
-              :is-loading="isUpdating"
-              :local-text="'Сохранить'"
-              :elevation="0"
-              class="save_btn"
-              local-class="style_save_button"
-              @click-button="saveBrandInfo"
-            />
 
-            <!-- Если isChangeBrandInfo = false, нередактируемые поля -->
-            <div v-if="! isChangeBrandInfo" class="general_info_wrapper">
-              <div class="wrapper_title">
-                Предпочитаемые бренды
+            <div v-if="isShowBrandsInfo">
+              <!-- Если isChangeBrandInfo = true, редактируемые поля -->
+              <div v-if="isChangeBrandInfo" class="editable_brand_info_wrapper">
+                <UniversalAddInput
+                  class="add_brand_block"
+                  :list-items-available-to-add="$store.state.BrandsModule.listBrands"
+                  @add-service="addBrand"
+                />
+                <v-divider style="border-color: #DDDDDD;"/>
+                <div
+                  v-for="(item, index) in $store.getters.getListBrandsByUser"
+                  :key="index"
+                >
+                  <div class="brand_container">
+                    <div style="text-transform: uppercase">
+                      {{ item.name }}
+                    </div>
+                    <IconTooltip
+                      :color-icon="'#B3B3B3'"
+                      :icon-text="'mdi-close'"
+                      :size-icon="'24'"
+                      :text-tooltip="'Удалить бренд'"
+                      @click-icon="deleteBrand(item)"
+                    />
+                  </div>
+                  <v-divider style="border-color: #DDDDDD;"/>
+                </div>
+                <div style="height: 50px;"/>
               </div>
-              <v-divider style="border-color: #DDDDDD;"/>
-              <v-simple-table class="table_info" disabled>
-                <tbody>
-                  <tr
-                    v-for="(item, index) in $store.getters.getListBrandsByUser"
-                    :key="index"
+              <ButtonStyled
+                v-if="isLoggedIn && isChangeBrandInfo === true "
+                :is-loading="isUpdating"
+                :local-text="'Сохранить'"
+                :elevation="0"
+                class="save_btn"
+                local-class="style_save_button"
+                @click-button="saveBrandInfo"
+              />
+
+              <!-- Если isChangeBrandInfo = false, нередактируемые поля -->
+              <div v-if="! isChangeBrandInfo" class="general_info_wrapper">
+                <div class="wrapper_title">
+                  Предпочитаемые бренды
+                </div>
+                <v-divider style="border-color: #DDDDDD;"/>
+                <div
+                  class="table_info"
+                  v-for="(item, index) in $store.getters.getListBrandsByUser"
+                  :key="index"
+                  disabled
+                >
+                  <div
                     class="table_content"
                   >
-                    <td>
+                    <div>
                       <DropDownMenuStyled
                         :is-left="true"
                         :is-offset-y="true"
@@ -236,172 +240,233 @@
                           />
                         </template>
                       </DropDownMenuStyled>
-                    </td>
-                    <td class="table_right_content_text">
+                    </div>
+                    <div class="table_right_content_text">
                       {{ item.name }}
-                    </td>
-                  </tr>
-                </tbody>
-              </v-simple-table>
-              <v-divider style="border-color: #DDDDDD;"/>
-              <div class="info_footer_wrapper">
-                <div class="change_info_btn" @click="changeBrandsInfo">
-                  <span class="btn_text">изменить</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div v-if="isShowServicesInfo">
-            <!-- Если isChangeServicesInfo = true, редактируемые поля -->
-            <div v-if="isChangeServicesInfo" class="editable_brand_info_wrapper">
-              <UniversalAddInput
-                :list-items-available-to-add="
-                  $store.getters['UserSettings/getListServicesExcludeAdded']
-                "
-                class="add_service_block"
-                @add-service="setServiceByUser"
-              />
-              <v-divider style="border-color: #DDDDDD;"/>
-              <div
-                v-for="(item, index) in $store.state.UserSettings.selectedRawServices"
-                :key="index"
-              >
-                <div class="service_card_style">
-                  <ServiceCard
-                    v-if="item.id"
-                    :key="index"
-                    :is-equipment-exist="false"
-                    :is-loading="$store.state.UserSettings.loading"
-                    :is-quantity-exist="false"
-                    :iteration-key="index + 1"
-                    :list-additional-data-services="
-                      $store.getters['UserSettings/getAdditionalDataByIdServices'](
-                        item.id_services
-                      )
-                    "
-                    :service-object="item"
-                    @delete-one-service="deleteOneService(item, $event)"
-                    @update-price-field="setPrice(item, $event)"
-                  />
+                    </div>
+                  </div>
+                  <v-divider v-if="index !== $store.getters.getListBrandsByUser.length - 1" style="border-color: #DDDDDD;"/>
                 </div>
                 <v-divider style="border-color: #DDDDDD;"/>
+                <div class="info_footer_wrapper">
+                  <div class="change_info_btn" @click="changeBrandsInfo">
+                    <span class="btn_text">изменить</span>
+                  </div>
+                </div>
               </div>
-              <div style="height: 50px;"/>
             </div>
-            <ButtonStyled
-              v-if="isLoggedIn && isChangeServicesInfo === true "
-              :is-loading="isUpdating"
-              :local-text="'Сохранить'"
-              :elevation="0"
-              class="save_btn"
-              local-class="style_save_button"
-              @click-button="saveServicesInfo"
-            />
 
-            <!-- Если isChangeServicesInfo = false, нередактируемые поля -->
-            <div v-if="! isChangeServicesInfo" class="general_info_wrapper">
-              <div class="wrapper_title">
-                Мои услуги
+            <div v-if="isShowServicesInfo">
+              <!-- Если isChangeServicesInfo = true, редактируемые поля -->
+              <div v-if="isChangeServicesInfo" class="editable_brand_info_wrapper">
+                <UniversalAddInput
+                  :list-items-available-to-add="
+                    $store.getters['UserSettings/getListServicesExcludeAdded']"
+                  class="add_service_block"
+                  @add-service="setServiceByUser"
+                />
+                <v-divider style="border-color: #DDDDDD;"/>
+                <div
+                  v-for="(item, index) in $store.state.UserSettings.selectedRawServices"
+                  :key="index"
+                >
+                  <div class="service_card_style">
+                    <ServiceCard
+                      v-if="item.id"
+                      :key="index"
+                      :is-equipment-exist="false"
+                      :is-loading="$store.state.UserSettings.loading"
+                      :is-quantity-exist="false"
+                      :iteration-key="index + 1"
+                      :list-additional-data-services="
+                        $store.getters['UserSettings/getAdditionalDataByIdServices'](item.id_services)"
+                      :service-object="item"
+                      @delete-one-service="deleteOneService(item, $event)"
+                      @update-price-field="setPrice(item, $event)"
+                    />
+                  </div>
+                  <v-divider style="border-color: #DDDDDD;"/>
+                </div>
+                <div style="height: 50px;"/>
               </div>
-              <v-divider style="border-color: #DDDDDD;"/>
+              <ButtonStyled
+                v-if="isLoggedIn && isChangeServicesInfo === true "
+                :is-loading="isUpdating"
+                :local-text="'Сохранить'"
+                :elevation="0"
+                class="save_btn"
+                local-class="style_save_button"
+                @click-button="saveServicesInfo"
+              />
 
-              <v-simple-table class="table_info" disabled>
-                <tbody>
-                  <tr
-                    v-for="(item, index) in $store.state.UserSettings.selectedRawServices"
-                    :key="index"
+              <!-- Если isChangeServicesInfo = false, нередактируемые поля -->
+              <div v-if="! isChangeServicesInfo" class="general_info_wrapper">
+                <div class="wrapper_title">
+                  Мои услуги
+                </div>
+                <v-divider style="border-color: #DDDDDD;"/>
+
+                <div
+                  v-for="(item, index) in $store.state.UserSettings.selectedRawServices"
+                  :key="index"
+                  class="table_info"
+                >
+                  <div
                     class="table_content"
                   >
-                    <td>
+                    <div class="table_left_content_text">
                       {{ item.service_data.name }}
-                    </td>
-                    <td class="table_right_content_text">
+                    </div>
+                    <div class="table_right_content_text">
                       {{ item.price }}
-                    </td>
-                  </tr>
-                </tbody>
-              </v-simple-table>
-              <v-divider style="border-color: #DDDDDD;"/>
-              <div class="info_footer_wrapper">
-                <div class="change_info_btn" @click="changeServicesInfo">
-                  <span class="btn_text">изменить</span>
+                    </div>
+                  </div>
+                  <v-divider v-if="index !== $store.state.UserSettings.selectedRawServices.length - 1" style="border-color: #DDDDDD;"/>
+                </div>
+                <v-divider style="border-color: #DDDDDD;"/>
+                <div class="info_footer_wrapper">
+                  <div class="change_info_btn" @click="changeServicesInfo">
+                    <span class="btn_text">изменить</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </v-tab-item>
-        <v-tab-item :key="2">
-          <div class="tab_header">
-            <v-divider vertical style="border-width: 3px; border-color: #000000;"/>
-            <div class="header_name">
-              Настройки входа
+          </v-tab-item>
+          <v-tab-item :key="2">
+            <div class="tab_header">
+              <v-divider vertical style="border-width: 3px; border-color: #000000;"/>
+              <div class="header_name">
+                Настройки входа
+              </div>
             </div>
-          </div>
-          <div class="tab_sub_header">
-            Редактируйте ваши данные входа
-          </div>
-
-          <div v-if="isShowTelephoneInfo">
-            <!-- Если isChangeCitiesInfo = true, редактируемые поля -->
-            <div v-if="isChangeTelephone" class="editable_general_info_wrapper">
-              <div class="wrapper_title">
-                Номер телефона
-              </div>
-              <v-divider style="border-color: #DDDDDD;"/>
-              <div class="telephone_input">
-                <div>Изменить номер</div>
-                <VTextField
-                  v-model="form.telephone"
-                  v-mask="mask"
-                  dense
-                  class="input_style"
-                  hide-details
-                  label="Телефон"
-                  outlined
-                  @change="setData"
-                />
-              </div>
-
-              <v-divider style="border-color: #DDDDDD;"/>
-              <div style="height: 50px;"/>
+            <div class="tab_sub_header">
+              Редактируйте ваши данные входа
             </div>
-            <ButtonStyled
-              v-if="isLoggedIn && isChangeCitiesInfo === true "
-              :is-loading="isUpdating"
-              :local-text="'Сохранить'"
-              :elevation="0"
-              class="save_btn"
-              local-class="style_save_button"
-              @click-button="saveUser"
-            />
 
-            <!-- Если isChangeCitiesInfo = false, нередактируемые поля -->
-            <div v-if="! isChangeTelephone" class="general_info_wrapper">
-              <div class="wrapper_title">
-                Номер телефона
+            <div v-if="isShowTelephoneInfo">
+              <!-- Если isChangeCitiesInfo = true, редактируемые поля -->
+              <div v-if="isChangeTelephone" class="editable_general_info_wrapper">
+                <div class="wrapper_title">
+                  Номер телефона
+                </div>
+                <v-divider style="border-color: #DDDDDD;"/>
+                <div class="telephone_input">
+                  <div>Изменить номер</div>
+                  <v-text-field
+                    v-model="form.telephone"
+                    v-mask="mask"
+                    dense
+                    class="input_style"
+                    hide-details
+                    label="Телефон"
+                    outlined
+                    @change="setTelephoneData"
+                  />
+                </div>
+
+                <v-divider style="border-color: #DDDDDD;"/>
+                <div style="height: 50px;"/>
               </div>
-              <v-divider style="border-color: #DDDDDD;"/>
-              <v-simple-table class="table_info" disabled>
-                <tbody>
-                  <tr class="table_content">
-                    <td>Номер телефона</td>
-                    <td class="table_right_content_text">
+              <ButtonStyled
+                v-if="isLoggedIn && isChangeTelephone === true "
+                :is-loading="isUpdating"
+                :local-text="'Сохранить'"
+                :elevation="0"
+                class="save_btn"
+                local-class="style_save_button"
+                @click-button="saveTelephoneInfo"
+              />
+
+              <!-- Если isChangeCitiesInfo = false, нередактируемые поля -->
+              <div v-if="! isChangeTelephone" class="general_info_wrapper">
+                <div class="wrapper_title">
+                  Номер телефона
+                </div>
+                <v-divider style="border-color: #DDDDDD;"/>
+                <div class="table_info" disabled>
+                  <div class="table_content">
+                    <div class="table_left_content_text">Номер телефона</div>
+                    <div class="table_right_content_text">
                       {{ userData.telephone }}
-                    </td>
-                  </tr>
-                </tbody>
-              </v-simple-table>
-              <v-divider style="border-color: #DDDDDD;"/>
-              <div class="info_footer_wrapper">
-                <div class="change_info_btn" @click="changeTelephoneInfo">
-                  <span class="btn_text">изменить</span>
+                    </div>
+                  </div>
+                </div>
+                <v-divider style="border-color: #DDDDDD;"/>
+                <div class="info_footer_wrapper">
+                  <div class="change_info_btn" @click="changeTelephoneInfo">
+                    <span class="btn_text">изменить</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </v-tab-item>
-      </v-tabs-items>
+
+            <div v-if="isShowMailInfo">
+              <!-- Если isChangeMail = true, редактируемые поля -->
+              <div v-if="isChangeMail" class="editable_general_info_wrapper">
+                <div class="wrapper_title">
+                  Адрес электронной почты
+                </div>
+                <v-divider style="border-color: #DDDDDD;"/>
+                <div class="old_mail_container">
+                  <div class="container_text">
+                    Старый адрес эл.почты
+                  </div>
+                  <div>
+                    {{ userData.email }}
+                  </div>
+                </div>
+                <v-divider style="border-color: #DDDDDD;"/>
+                <div class="telephone_input">
+                  <div>Новый адрес эл.почты</div>
+                  <InputStyled
+                    :class="'styleTextField'"
+                    :data="form.email"
+                    :is-label="'Email'"
+                    :is-outlined="true"
+                    :rules="emailRules"
+                    class="input_style"
+                    @update-input="setEmailData"
+                  />
+                </div>
+
+                <v-divider style="border-color: #DDDDDD;"/>
+                <div style="height: 50px;"/>
+              </div>
+              <ButtonStyled
+                v-if="isLoggedIn && isChangeMail === true "
+                :is-loading="isUpdating"
+                :local-text="'Сохранить'"
+                :elevation="0"
+                class="save_btn"
+                local-class="style_save_button"
+                @click-button="saveMailInfo"
+              />
+
+              <!-- Если isChangeCitiesInfo = false, нередактируемые поля -->
+              <div v-if="! isChangeMail" class="general_info_wrapper">
+                <div class="wrapper_title">
+                  Адрес электронной почты
+                </div>
+                <v-divider style="border-color: #DDDDDD;"/>
+                <div class="table_info" disabled>
+                  <div class="table_content">
+                    <div class="table_left_content_text">Адрес эл. почты</div>
+                    <div class="table_right_content_text">
+                      {{ userData.email }}
+                    </div>
+                  </div>
+                </div>
+                <v-divider style="border-color: #DDDDDD;"/>
+                <div class="info_footer_wrapper">
+                  <div class="change_info_btn" @click="changeMailInfo">
+                    <span class="btn_text">изменить</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </v-tab-item>
+        </v-tabs-items>
+      </div>
     </div>
   </v-container>
 </template>
@@ -417,11 +482,14 @@ import UniversalAddInput from '../../components/Common/UniversalAddInput.vue'
 import IconTooltip from '../../components/Common/IconTooltip.vue'
 import ServiceCard from '../../components/Collaboration/ServiceCard.vue'
 import { MtoMUsersServices } from '~/helpers/constructors';
+import InputStyled from '../../components/Common/InputStyled.vue';
+import SubHeader from '../../components/SubHeader.vue';
 
 export default {
-  components: { ServiceCard, IconTooltip, UniversalAddInput, BrandCard, DropDownMenuStyled, MapServiceArea, ButtonStyled, UserFields },
+  components: { SubHeader, InputStyled, ServiceCard, IconTooltip, UniversalAddInput, BrandCard, DropDownMenuStyled, MapServiceArea, ButtonStyled, UserFields },
   data () {
     return {
+      data: {},
       tab: null,
       isChangeGeneralInfo: false,
       isChangeCitiesInfo: false,
@@ -483,6 +551,13 @@ export default {
       this.isShowBrandsInfo = false
       this.isShowServicesInfo = false
     },
+    saveCitiesInfo() {
+      this.saveUser()
+
+      this.isChangeCitiesInfo = false
+      this.isShowBrandsInfo = true
+      this.isShowServicesInfo = true
+    },
     changeBrandsInfo() {
       this.isChangeBrandInfo = true
       this.isShowCitiesInfo = false
@@ -508,18 +583,37 @@ export default {
       this.isShowMailInfo = false
       this.isShowPasswordInfo = false
     },
-    showAllInfoBlocks() {
-      this.isShowCitiesInfo = true
-      this.isShowBrandsInfo = true
-      this.isShowServicesInfo = true
+    saveTelephoneInfo() {
+      this.saveUser()
+
+      this.isChangeTelephone = false
+      this.isShowMailInfo = true
+      this.isShowPasswordInfo = true
     },
+    changeMailInfo() {
+      this.isChangeMail = true
+      this.isShowPasswordInfo = false
+      this.isShowTelephoneInfo = false
+    },
+    saveMailInfo() {
+      this.saveUser()
+
+      this.isChangeMail = false
+      this.isShowTelephoneInfo = true
+      this.isShowPasswordInfo =  true
+    },
+
     setChanged(value) {
       this.isChanged = value
     },
+    setEmailData(name) {
+      this.data.email = this.form.email
+    },
+    setTelephoneData(name) {
+      this.data.telephone = this.form.telephone
+    },
     setData(value) {
       this.data = value.data
-      this.data.email_state = this.userData.email_state
-      this.data.telephone_state = this.userData.telephone_state
       this.isValid = value.isValid
     },
     async saveUser() {
@@ -528,8 +622,6 @@ export default {
         data: this.data,
       })
       this.$toast.success('Данные сохранены', { duration: 5000 })
-
-      // await this.showAllInfoBlocks
 
       this.isChangeGeneralInfo = false
       this.isChangeCitiesInfo = false
@@ -685,7 +777,16 @@ export default {
         justify-content: space-between;
         padding: 20px 40px;
         .input_style {
-          max-width: 400px;
+          width: auto;
+          margin-left: 50px;
+        }
+      }
+      .old_mail_container {
+        display: flex;
+        align-items: center;
+        padding: 20px 40px;
+        .container_text {
+          margin-right: 50px;
         }
       }
     }
@@ -728,9 +829,14 @@ export default {
       }
       .table_info {
         padding: 0 20px;
+        display: grid;
         .table_content {
-          &:hover {
-            background: #FFFFFF !important;
+          display: grid;
+          grid-template-columns: 1.2fr 0.8fr;
+          padding: 20px;
+          .table_left_content_text {
+            font-size: 0.875em;
+            color: #777777;
           }
           .table_right_content_text {
             font-size: 1em !important;
