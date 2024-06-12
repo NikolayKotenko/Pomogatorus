@@ -74,28 +74,36 @@
               <v-divider style="border-color: #DDDDDD;"/>
               <div class="table_info" disabled>
                 <div class="table_content">
-                  <div class="table_left_content_text">Фамилия</div>
+                  <div class="table_left_content_text">
+                    Фамилия
+                  </div>
                   <div class="table_right_content_text">
                     {{ userData.middle_name }}
                   </div>
                 </div>
                 <v-divider style="border-color: #DDDDDD;"/>
                 <div class="table_content">
-                  <div class="table_left_content_text">Имя</div>
+                  <div class="table_left_content_text">
+                    Имя
+                  </div>
                   <div class="table_right_content_text">
                     {{ userData.first_name }}
                   </div>
                 </div>
                 <v-divider style="border-color: #DDDDDD;"/>
                 <div class="table_content">
-                  <div class="table_left_content_text">Отчество</div>
+                  <div class="table_left_content_text">
+                    Отчество
+                  </div>
                   <div class="table_right_content_text">
                     {{ userData.last_name }}
                   </div>
                 </div>
                 <v-divider style="border-color: #DDDDDD;"/>
                 <div class="table_content">
-                  <div class="table_left_content_text">Вид деятельности</div>
+                  <div class="table_left_content_text">
+                    Вид деятельности
+                  </div>
                   <div class="table_right_content_text">
                     -
                   </div>
@@ -146,14 +154,18 @@
                 <v-divider style="border-color: #DDDDDD;"/>
                 <div class="table_info" disabled>
                   <div class="table_content">
-                    <div class="table_left_content_text">Город/населенный пункт</div>
+                    <div class="table_left_content_text">
+                      Город/населенный пункт
+                    </div>
                     <div class="table_right_content_text">
                       {{ $store.getters['getCitiesByUser'] }}
                     </div>
                   </div>
                   <v-divider style="border-color: #DDDDDD;"/>
                   <div class="table_content">
-                    <div class="table_left_content_text">Радиус обслуживания</div>
+                    <div class="table_left_content_text">
+                      Радиус обслуживания
+                    </div>
                     <div class="table_right_content">
                       {{ userData.range_area }}
                     </div>
@@ -214,9 +226,9 @@
                 </div>
                 <v-divider style="border-color: #DDDDDD;"/>
                 <div
-                  class="table_info"
                   v-for="(item, index) in $store.getters.getListBrandsByUser"
                   :key="index"
+                  class="table_info"
                   disabled
                 >
                   <div
@@ -385,7 +397,9 @@
                 <v-divider style="border-color: #DDDDDD;"/>
                 <div class="table_info" disabled>
                   <div class="table_content">
-                    <div class="table_left_content_text">Номер телефона</div>
+                    <div class="table_left_content_text">
+                      Номер телефона
+                    </div>
                     <div class="table_right_content_text">
                       {{ userData.telephone }}
                     </div>
@@ -450,7 +464,9 @@
                 <v-divider style="border-color: #DDDDDD;"/>
                 <div class="table_info" disabled>
                   <div class="table_content">
-                    <div class="table_left_content_text">Адрес эл. почты</div>
+                    <div class="table_left_content_text">
+                      Адрес эл. почты
+                    </div>
                     <div class="table_right_content_text">
                       {{ userData.email }}
                     </div>
@@ -481,9 +497,9 @@ import BrandCard from '../../components/Common/BrandCard.vue'
 import UniversalAddInput from '../../components/Common/UniversalAddInput.vue'
 import IconTooltip from '../../components/Common/IconTooltip.vue'
 import ServiceCard from '../../components/Collaboration/ServiceCard.vue'
-import { MtoMUsersServices } from '~/helpers/constructors';
 import InputStyled from '../../components/Common/InputStyled.vue';
 import SubHeader from '../../components/SubHeader.vue';
+import { MtoMUsersServices } from '~/helpers/constructors';
 
 export default {
   components: { SubHeader, InputStyled, ServiceCard, IconTooltip, UniversalAddInput, BrandCard, DropDownMenuStyled, MapServiceArea, ButtonStyled, UserFields },
@@ -517,6 +533,9 @@ export default {
         marketing_and_sales: ''
       },
       mask: '+7 (###) ###-##-##',
+      emailRules: [
+        v => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Введите корректный email'
+      ],
     }
   },
   computed: {

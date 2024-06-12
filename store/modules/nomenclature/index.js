@@ -4,7 +4,8 @@ export default {
   state: {
     listNomenclature: [],
     listFavoriteNomenclature: [],
-    stateProductModal: false
+    stateProductModal: false,
+    idSelectedProduct: null,
   },
   mutations: {
     set_list_nomenclature(state, payload) {
@@ -19,18 +20,11 @@ export default {
       state.listFavoriteNomenclature = []
       state.listFavoriteNomenclature = payload
     },
-    set_state_product_modal(state, payload) {
-      state.stateProductModal = payload
-    }
+    set_selected_product(state, idProduct) {
+      state.idSelectedProduct = idProduct
+    },
   },
   actions: {
-    openProductModal({ commit }) {
-      commit('set_state_product_modal', true)
-    },
-    closeProductModal({ commit }) {
-      commit('set_state_product_modal', false)
-    },
-
     async getListNomenclature({ commit }, query = '') {
       // TODO: Дописать Query запрос
       // const query = 'filter[public_field_filter]=true'

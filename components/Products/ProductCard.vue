@@ -1,5 +1,5 @@
 <template>
-  <div class="product_card_wrapper" @click="$store.dispatch('NomenclatureModule/openProductModal')">
+  <div class="product_card_wrapper" @click="$store.commit('NomenclatureModule/set_selected_product', data.id)">
     <!-- Общая информация -->
     <div class="empty_placeholder">
       <v-img
@@ -58,7 +58,7 @@
       <!--      </div> -->
 
       <!-- Меню Кнопок -->
-      <div class="card_footer">
+      <div class="card_footer" @click="$event.stopPropagation()">
         <div class="product_price">
           1234₽
         </div>
@@ -213,7 +213,7 @@
     </div>
 
     <!-- Избранное -->
-    <ProductModal :current-product="data"/>
+    <ProductModal v-if="data.id === $store.state.NomenclatureModule.idSelectedProduct" :current-product="data"/>
   </div>
 </template>
 
@@ -246,6 +246,7 @@ export default {
         { action: 'Оформить акт утилизации', value: 4 }
       ],
       listFamilyNomenclatures: [],
+      localCurrentProduct: {},
     };
   },
   computed: {
