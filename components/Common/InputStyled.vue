@@ -17,6 +17,7 @@
     :readonly="isReadonly"
     :rounded="isRounded"
     :rules="isRules"
+    :single-line="isSingleLine"
     :solo="isSolo"
     class="styleTextField"
     dense
@@ -45,6 +46,7 @@
     :readonly="isReadonly"
     :rounded="isRounded"
     :rules="isRules"
+    :single-line="isSingleLine"
     :solo="isSolo"
     class="styleTextField"
     dense
@@ -134,6 +136,10 @@ export default {
     isNumber: {
       type: Boolean,
       default: false
+    },
+    isSingleLine: {
+      type: Boolean,
+      default: false
     }
   },
   data: () => ({
@@ -143,41 +149,41 @@ export default {
   computed: {
     computedPlaceholder() {
       if (this.isFocused) {
-        return '';
+        return ''
       }
-      return this.placeholder;
+      return this.placeholder
     },
     currentData: {
       get() {
         if (!this.fullSincProp) {
           if (this.data) {
-            return this.data;
+            return this.data
           }
-          return this.internalData;
+          return this.internalData
         }
 
-        return this.data;
+        return this.data
       },
       set(value) {
         if (!this.data) {
-          this.internalData = value;
+          this.internalData = value
         }
-        this.$emit('update-input', value);
+        this.$emit('update-input', value)
       }
     }
   },
   methods: {
     onClick() {
-      this.$emit('on-click');
+      this.$emit('on-click')
     },
     onChange(value) {
-      this.$emit('on-change', value);
+      this.$emit('on-change', value)
     }
   }
-};
+}
 </script>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 @import 'assets/styles/style';
 
 .v-text-field--rounded {

@@ -33,6 +33,9 @@
     <!--        </v-menu> -->
     <!--      </TooltipStyled> -->
     <!--    </div> -->
+
+    <NomenclatureFilters class="products-filters"/>
+
     <UniversalFilter/>
     <ProductCard
       v-for="(item) in $store.state.NomenclatureModule.listNomenclature"
@@ -47,31 +50,32 @@
       outlined
       @click="getNextPageData"
     >
-      {{ $store.getters.statePaginationHasMorePage ? "Показать еще" : "Показаны все элементы" }}
+      {{ $store.getters.statePaginationHasMorePage ? 'Показать еще' : 'Показаны все элементы' }}
     </v-btn>
   </v-container>
 </template>
 <script>
-import ProductCard from '../../components/Common/ProductCard.vue';
+import ProductCard from '../../components/Common/ProductCard.vue'
 import UniversalFilter from '../../components/Common/UniversalFilter.vue'
+import NomenclatureFilters from '../../components/Nomenclature/NomenclatureFilters'
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'index.vue',
-  components: { UniversalFilter, ProductCard },
+  components: { NomenclatureFilters, UniversalFilter, ProductCard },
   async mounted() {
-    await this.getNextPageData();
+    await this.getNextPageData()
   },
   methods: {
     async getNextPageData() {
-      const response = await this.$store.dispatch('NomenclatureModule/getListNomenclature', this.$route.query);
-      window.history.replaceState({}, '', `/products?cursor=${response.paginationData.cursor}`);
+      const response = await this.$store.dispatch('NomenclatureModule/getListNomenclature', this.$route.query)
+      window.history.replaceState({}, '', `/products?cursor=${response.paginationData.cursor}`)
     }
   }
-};
+}
 </script>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 .search_container {
   display: flex;
   grid-column-gap: 1em;

@@ -150,7 +150,7 @@ export default {
     },
     async getNomenclatureInfo() {
       const values = []
-      
+
       this.nomenclatureList.map(elem => elem.id).filter((value, index, array) => array.indexOf(value) === index).forEach((elem) => {
         values.push({ ids_nomenclatures: elem })
       })
@@ -161,16 +161,25 @@ export default {
         `${this.$store.state.BASE_URL}/entity/nomenclature${query}`
       )
 
-      console.log('RESULT', result)
+      if (!result.data) {
+        this.nomenclatureList.forEach((elem) => {
+          elem.data = null
+          elem.isLoading = false
+        })
+      }
 
-      // this.nomenclatureList.forEach(async (elem) => {
-      //   const result = await Request.get(
-      //     `${this.$store.state.BASE_URL}/entity/nomenclature/${elem.id}`
-      //   )
-      //
-      //   elem.data = result?.data ?? null
-      //   elem.isLoading = false
-      // })
+      this.nomenclatureList.forEach((elem) => {
+        const value = result.data.find((response) => response.id === elem.id)
+
+        if (!value) {
+          elem.data = null
+          elem.isLoading = false
+          return
+        }
+
+        elem.data = value
+        elem.isLoading = false
+      })
     },
     getPhoto(slide) {
       const url = (slide?._family?.photos && slide?._family?.photos[0]) ?? null
