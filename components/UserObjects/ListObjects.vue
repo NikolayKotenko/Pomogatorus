@@ -1,6 +1,10 @@
 <template>
   <div class="modal_wrapper">
     <template>
+      <SubHeader/>
+      <div class="list_objects_header">
+        Список доступных объектов
+      </div>
       <v-card
         v-show="$store.getters.stateAuth"
         class="static_search_breadcrumbs"
@@ -99,6 +103,7 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
+import SubHeader from '../SubHeader.vue'
 import ObjectGlobal from './ObjectGlobal';
 import CardObject from './CardObject.vue';
 import TooltipStyled from '@/components/Common/TooltipStyled';
@@ -108,7 +113,7 @@ import CreateNewObject from '~/components/UserObjects/CreateNewObject';
 
 export default {
   name: 'ListObjects',
-  components: { CreateNewObject, ChipsStyled, TooltipStyled, CardObject, ObjectGlobal, SearchStyled },
+  components: { SubHeader, CreateNewObject, ChipsStyled, TooltipStyled, CardObject, ObjectGlobal, SearchStyled },
   data: () => ({
     object: {},
     showDetail: false,
@@ -257,6 +262,17 @@ export default {
 <style lang="scss">
 @import 'assets/styles/style';
 
+.modal_wrapper {
+  max-width: 890px;
+  margin-left: auto;
+  margin-right: auto;
+  .list_objects_header {
+    font-size: 1.5em;
+    font-weight: 700;
+  }
+}
+
+
 .static_search_breadcrumbs {
   position: sticky;
   display: block;
@@ -392,6 +408,7 @@ export default {
 
   .modal_wrapper {
     justify-self: center;
+
   }
 
 }
