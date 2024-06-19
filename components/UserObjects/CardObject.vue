@@ -16,22 +16,14 @@
           <span class="name">{{ object_data.name }}</span>
           <span class="address">{{ object_data.address }}</span>
         </div>
-        <!--        <div class="share_and_activity"> -->
-        <!--          <TooltipStyled :title="stateCurrentObject ? 'Ваш текущий объект' : 'Выбрать текущим'"> -->
-        <!--            <div class="activity"> -->
-        <!--              <VSimpleCheckbox -->
-        <!--                :value="stateCurrentObject" -->
-        <!--                color="#000000" -->
-        <!--                @click="setObject" -->
-        <!--              /> -->
-        <!--            </div> -->
-        <!--          </TooltipStyled> -->
-        <!--        </div> -->
       </div>
-      <div class="prop_wrapper">
+      <div
+        v-for="(prop, index) in slicedObjProperties"
+        :key="index"
+        class="prop_wrapper"
+      >
         <div
-          v-for="(prop, index) in object_data.m_to_m_objects_properties.slice(1)"
-          :key="index"
+          v-if="prop._code_column !== 'osnovnoe-foto-obekta'"
           class="obj_properties"
         >
           <div class="prop_name">
@@ -109,6 +101,11 @@ export default {
       } else {
         return 0;
       }
+    },
+    slicedObjProperties() {
+      return this.object_data?.m_to_m_objects_properties
+        ?.filter((prop) => prop._code_column !== 'osnovnoe-foto-obekta')
+        .slice(0, 3)
     }
   },
   watch: {},
@@ -136,6 +133,7 @@ export default {
 @import 'assets/styles/style';
 
 .card_obj {
+  font-family: 'Inter', sans-serif;
   display: flex;
   grid-column-gap: 20px;
   max-width: 890px;
@@ -148,6 +146,7 @@ export default {
   background-color: #FFFFFF;
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 20px;
   transition: $transition !important;
   &:hover {
     box-shadow: $shadowBox !important;
@@ -178,6 +177,7 @@ export default {
     width: 100%;
     display: grid;
     height: 100%;
+    min-height: 200px;
     align-content: space-between;
     .header {
       display: flex;
@@ -267,46 +267,46 @@ export default {
 
 }
 
-@media only screen and (max-width: 767px) {
-  .card_obj {
-    flex-direction: column;
-    row-gap: 1rem;
-
-    .footer {
-      flex-direction: column;
-      row-gap: 1rem;
-
-      .more_info {
-        width: 100%;
-      }
-
-      .button {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-      }
-    }
-  }
-  .img {
-    margin-right: 0 !important;
-  }
-  .header {
-    display: grid !important;
-    justify-content: center !important;
-  }
-  .name_and_address {
-    justify-content: center;
-
-    .name {
-      font-size: 1.2em;
-    }
-
-    .address {
-      font-size: 1em;
-    }
-  }
-  .share_and_activity {
-    justify-content: center;
-  }
-}
+//@media only screen and (max-width: 767px) {
+//  .card_obj {
+//    flex-direction: column;
+//    row-gap: 1rem;
+//
+//    .footer {
+//      flex-direction: column;
+//      row-gap: 1rem;
+//
+//      .more_info {
+//        width: 100%;
+//      }
+//
+//      .button {
+//        width: 100%;
+//        display: flex;
+//        justify-content: center;
+//      }
+//    }
+//  }
+//  .img {
+//    margin-right: 0 !important;
+//  }
+//  .header {
+//    display: grid !important;
+//    justify-content: center !important;
+//  }
+//  .name_and_address {
+//    justify-content: center;
+//
+//    .name {
+//      font-size: 1.2em;
+//    }
+//
+//    .address {
+//      font-size: 1em;
+//    }
+//  }
+//  .share_and_activity {
+//    justify-content: center;
+//  }
+//}
 </style>

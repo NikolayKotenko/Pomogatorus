@@ -97,27 +97,33 @@ export default {
 }
 
 .styleChip {
+  font-family: 'Inter', sans-serif;
   //width:100px;
   //white-space: nowrap;
   //overflow: hidden;
   //text-overflow: ellipsis;
+  border-radius: 0 !important;
+  font-size: 1em !important;
 
-  border-radius: 5px;
-  background: #FFFFFF !important;
-  font-size: 1.3em;
-  font-weight: 300;
+  font-weight: 400;
   padding: 0.5em;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+
   transition: $transition;
 
-  &:hover {
-    background: #ED7100 !important;
-    transition: 0.4s;
+
+  //&.v-chip.v-chip--outlined.v-chip.v-chip {
+  //  background-color: #EEEEEE !important;
+  //
+  //
+  //}
+  &.v-chip {
+    border-bottom: 3px solid #DFDFDF !important;
   }
-
-  &.v-chip.v-chip--outlined.v-chip.v-chip {
-    background-color: #EEEEEE !important;
-
+  &.v-chip--active {
+    border-bottom: 3px solid #FF6347 !important;
+  }
+  &.v-chip:before {
+    background-color: #DFDFDF !important;
   }
 
 }

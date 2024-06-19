@@ -7,7 +7,7 @@
       <!--        v-if="$store.state.stateVerticalMenu" -->
       <!--        class="fixed_left_menu" -->
       <!--      /> -->
-      <Nuxt class="custom_grid_system main__left_column"/>
+      <Nuxt :class="{ custom_grid_system, main__left_column: ! isListObjects}"/>
 
       <!--   WIDGETS   -->
       <!--      <WrapperStickyCurrentObject v-if="!listExcludedRightColumn && $device.isDesktop"/> -->
@@ -137,6 +137,11 @@ export default {
     },
     isMain() {
       if (this.$route.path === '/main') {
+        return true
+      }
+    },
+    isListObjects() {
+      if (this.$route.path === '/objects') {
         return true
       }
     }

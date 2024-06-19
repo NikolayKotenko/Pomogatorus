@@ -127,6 +127,24 @@ export default {
     color: #FFFFFF;
   }
 }
+
+.v-btn.new_style_button {
+  padding: 0 20px !important;
+  background-color: #d9d9d9 !important;
+  border: none;
+  border-radius: 15px;
+  text-wrap: nowrap;
+  font-weight: 600 !important;
+  display: flex;
+  align-items: center;
+  width: auto !important;
+  height: 40px;
+  cursor: pointer;
+  font-size: 1em !important;
+  box-shadow: none !important;
+
+}
+
 .v-btn.style_wide_button {
   background-color: $background-element-color !important;
   color: $black-text-color;

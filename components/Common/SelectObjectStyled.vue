@@ -252,9 +252,7 @@ export default {
 
 
 .selector-custom {
-  border-radius: 40px;
   .v-select__selections {
-    overflow: hidden;
 
     input {
       position: absolute !important;
@@ -264,8 +262,8 @@ export default {
   }
   .v-input__control {
     .v-input__slot {
+      font-size: 1.25em;
       box-shadow: none !important;
-      border: 1px solid #DDDDDD !important;
     }
   }
 }
