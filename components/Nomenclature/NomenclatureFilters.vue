@@ -20,6 +20,7 @@
           {{ filter.name }}
         </h5>
 
+        <!--    SLIDER    -->
         <template v-if="filter.type === 'slider'">
           <div class="filter-slider">
             <div class="filter-slider__inputs">
@@ -53,6 +54,27 @@
             />
           </div>
         </template>
+
+        <!--    AUTOCOMPLETE    -->
+        <template v-if="filter.type === 'autocomplete'">
+          <SearchStyled
+            :is-class="'styleSearch'"
+            :is-item-text="'text'"
+            :is-item-value="'text'"
+            :is-items="getItems(filter.key)"
+            :is-loading="$store.state.PopularSelectionsModule.loadingState"
+            :is-placeholder="'Найти'"
+            clear-after-select
+            is-hide-selected
+            @update-search-input="getElemList(filter.api, filter.key)"
+            @select-item="selectItem($event, filter.key)"
+          />
+        </template>
+
+        <!--    SELECT    -->
+        <template v-if="filter.type === 'select'">
+          <div/>
+        </template>
       </div>
     </div>
 
@@ -61,11 +83,12 @@
 </template>
 
 <script>
-import InputStyled from '../Common/InputStyled'
+import InputStyled from '@/components/Common/InputStyled'
+import SearchStyled from '@/components/Common/SearchStyled'
 
 export default {
   name: 'NomenclatureFilters',
-  components: { InputStyled },
+  components: { SearchStyled, InputStyled },
   data: () => ({
     filterPriceStatus: {
       key: 'asc',
@@ -81,16 +104,32 @@ export default {
         value: 'Сначала дорогие'
       }
     ],
+
     filtersList: [
       {
         type: 'slider',
         name: 'Цена',
         value: [0, 100],
+        key: 'price',
         min: 0,
         max: 100
       }
-    ]
-  })
+    ],
+    filterSearchedItems: {},
+  }),
+  methods: {
+    getItems(key) {
+      return this.filterSearchedItems[key] ?? []
+    },
+
+    getElemList(api, key) {
+      const result = []
+      this.filterSearchedItems[key] = result
+    },
+    selectItem(value, key) {
+
+    }
+  }
 }
 </script>
 

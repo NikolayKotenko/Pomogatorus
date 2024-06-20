@@ -82,7 +82,7 @@ export default {
       default: false
     },
     data: {
-      type: String,
+      type: [String, Number],
       default: ''
     },
     isDisabled: {
