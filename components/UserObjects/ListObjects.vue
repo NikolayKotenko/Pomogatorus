@@ -230,24 +230,8 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import 'assets/styles/style';
-
-.v-tab {
-  color: #777777;
-  font-weight: 600;
-  max-height: 25px;
-  margin: 0 20px 0 0!important;
-  padding: 0 !important;
-  border-bottom: 3px solid #DFDFDF;
-}
-.v-tab:before {
-  color: #000000;
-}
-.v-tab--active {
-  color: #000000;
-  border-bottom: 3px solid #FF6347;
-}
 
 .modal_wrapper {
   max-width: 890px !important;

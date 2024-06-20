@@ -64,107 +64,124 @@
         />
         <span v-else class="empty_placeholder"/>
       </div>
-      <div class="object_documents_wrapper"/>
+      <div class="object_documents_wrapper"></div>
     </div>
 
-    <!--    <v-tabs color="#000000"> -->
-    <!--      <v-tab :key="0"> -->
-    <!--        Параметры объекта -->
-    <!--      </v-tab> -->
-    <!--      <v-tab -->
-    <!--        :key="1" -->
-    <!--        @click="$store.dispatch('NomenclatureModule/getListFavoriteNomenclatureByUserAndObjectId')" -->
-    <!--      > -->
-    <!--        Избранное оборудование -->
-    <!--        <v-badge -->
-    <!--          :content="$store.state.NomenclatureModule.listFavoriteNomenclature.length" -->
-    <!--          :value="$store.state.NomenclatureModule.listFavoriteNomenclature.length" -->
-    <!--          color="#95D7AE" -->
-    <!--        /> -->
-    <!--      </v-tab> -->
-    <!--      <v-tab :key="2"> -->
-    <!--        Купленное оборудование -->
-    <!--      </v-tab> -->
-    <!--      <v-tab :key="3"> -->
-    <!--        Установленное оборудование -->
-    <!--      </v-tab> -->
+    <div class="tabs_wrapper">
+      <v-tabs>
+        <v-tab :key="0">
+          Параметры объекта
+        </v-tab>
+        <v-tab :key="1">
+          Оборудование объекта
+        </v-tab>
+        <v-tab :key="2">
+          Люди на объекте
+        </v-tab>
+        <v-tab-item :key="0"></v-tab-item>
+        <v-tab-item :key="1"></v-tab-item>
+        <v-tab-item :key="2"></v-tab-item>
+      </v-tabs>
+    </div>
 
-    <!--      &lt;!&ndash; Параметры объекта &ndash;&gt; -->
-    <!--      <v-tab-item :key="0"> -->
-    <!--        <v-card-text -->
-    <!--          ref="scrollParent" -->
-    <!--          :class="{'object-wrapper-main&#45;&#45;mobile': isMobile, 'object-wrapper-main&#45;&#45;mobile&#45;&#45;move': isMoving}" -->
-    <!--          class="object-wrapper-main" -->
-    <!--          style="height: 1200px;" -->
-    <!--        > -->
-    <!--          <div ref="docContent" class="object-wrapper-documents"> -->
-    <!--            <div class="object-wrapper-documents__img-container"> -->
-    <!--              <span>Фото объекта</span> -->
-    <!--              <div -->
-    <!--                :class="{'dropzone-empty': ! $store.getters.getMainPhotoObject(object) }" -->
-    <!--                class="list-files-styled-wrapper img-activator" -->
-    <!--              > -->
-    <!--                <img -->
-    <!--                  v-if="$store.getters.getMainPhotoObject(object)" -->
-    <!--                  :src="$store.state.BASE_URL + $store.getters.getMainPhotoObject(object).full_path" -->
-    <!--                  :title="$store.getters.getMainPhotoObject(object).title_image" -->
-    <!--                  class="img-hover" -->
-    <!--                  height="100%" -->
-    <!--                  style="object-fit: cover" -->
-    <!--                  width="100%" -->
-    <!--                > -->
-    <!--                <span v-else class="empty-placeholder">Здесь будут фото вашего объекта</span> -->
-    <!--              </div> -->
-    <!--            </div> -->
+        <v-tabs color="#000000">
+          <v-tab :key="0">
+            Параметры объекта
+          </v-tab>
+          <v-tab
+            :key="1"
+            @click="$store.dispatch('NomenclatureModule/getListFavoriteNomenclatureByUserAndObjectId')"
+          >
+            Избранное оборудование
+            <v-badge
+              :content="$store.state.NomenclatureModule.listFavoriteNomenclature.length"
+              :value="$store.state.NomenclatureModule.listFavoriteNomenclature.length"
+              color="#95D7AE"
+            />
+          </v-tab>
+          <v-tab :key="2">
+            Купленное оборудование
+          </v-tab>
+          <v-tab :key="3">
+            Установленное оборудование
+          </v-tab>
 
-    <!--            <div class="object-wrapper-documents__docs"> -->
-    <!--              <span>Прикрепленные документы</span> -->
-    <!--              <ListFilesStyled -->
-    <!--                v-if="objectData.id" -->
-    <!--                :data="object" -->
-    <!--                :id-object="objectData.id" -->
-    <!--                @remove-from-global="removeFromGlobal" -->
-    <!--              /> -->
-    <!--            </div> -->
-    <!--          </div> -->
+          <!-- Параметры объекта -->
+          <v-tab-item :key="0">
+            <v-card-text
+              ref="scrollParent"
+              :class="{'object-wrapper-main--mobile': isMobile, 'object-wrapper-main--mobile--move': isMoving}"
+              class="object-wrapper-main"
+              style="height: 1200px;"
+            >
+              <div ref="docContent" class="object-wrapper-documents">
+                <div class="object-wrapper-documents__img-container">
+                  <span>Фото объекта</span>
+                  <div
+                    :class="{'dropzone-empty': ! $store.getters.getMainPhotoObject(object) }"
+                    class="list-files-styled-wrapper img-activator"
+                  >
+                    <img
+                      v-if="$store.getters.getMainPhotoObject(object)"
+                      :src="$store.state.BASE_URL + $store.getters.getMainPhotoObject(object).full_path"
+                      :title="$store.getters.getMainPhotoObject(object).title_image"
+                      class="img-hover"
+                      height="100%"
+                      style="object-fit: cover"
+                      width="100%"
+                    >
+                    <span v-else class="empty-placeholder">Здесь будут фото вашего объекта</span>
+                  </div>
+                </div>
 
-    <!--          <div class="object-wrapper-tabs"> -->
-    <!--            <TabsCustom -->
-    <!--              ref="tabContent" -->
-    <!--              :data-object="object" -->
-    <!--              :deleted-file="deletedFile" -->
-    <!--              @update-prop="setField" -->
-    <!--              @update-file="setFileField" -->
-    <!--              @change-tab="changeTab" -->
-    <!--              @remove-file="removeFile" -->
-    <!--              @focus-out-field="animationSaveBtn" -->
-    <!--            /> -->
+                <div class="object-wrapper-documents__docs">
+                  <span>Прикрепленные документы</span>
+                  <ListFilesStyled
+                    v-if="objectData.id"
+                    :data="object"
+                    :id-object="objectData.id"
+                    @remove-from-global="removeFromGlobal"
+                  />
+                </div>
+              </div>
 
-    <!--            <div :class="{'show-more': showMore}" class="more-arrow"> -->
-    <!--              <img alt="more" src="@/assets/svg/chevron-more.svg" @click="scrollBot"> -->
-    <!--            </div> -->
-    <!--          </div> -->
-    <!--        </v-card-text> -->
-    <!--      </v-tab-item> -->
+              <div class="object-wrapper-tabs">
+                <TabsCustom
+                  ref="tabContent"
+                  :data-object="object"
+                  :deleted-file="deletedFile"
+                  @update-prop="setField"
+                  @update-file="setFileField"
+                  @change-tab="changeTab"
+                  @remove-file="removeFile"
+                  @focus-out-field="animationSaveBtn"
+                />
 
-    <!--      &lt;!&ndash; Оборудование на объекте &ndash;&gt; -->
-    <!--      <v-tab-item :key="1"> -->
-    <!--        <v-container class="object_products"> -->
-    <!--          <div -->
-    <!--            v-for="(item, index) in $store.state.NomenclatureModule.listFavoriteNomenclature" -->
-    <!--            :key="index" -->
-    <!--          > -->
-    <!--            <span>{{ item.name }}</span> -->
-    <!--          </div> -->
-    <!--        </v-container> -->
-    <!--      </v-tab-item> -->
-    <!--      <v-tab-item :key="2"> -->
-    <!--        <v-container class="object_products"/> -->
-    <!--      </v-tab-item> -->
-    <!--      <v-tab-item :key="3"> -->
-    <!--        <v-container class="object_products"/> -->
-    <!--      </v-tab-item> -->
-    <!--    </v-tabs> -->
+                <div :class="{'show-more': showMore}" class="more-arrow">
+                  <img alt="more" src="@/assets/svg/chevron-more.svg" @click="scrollBot">
+                </div>
+              </div>
+            </v-card-text>
+          </v-tab-item>
+
+          <!-- Оборудование на объекте -->
+          <v-tab-item :key="1">
+            <v-container class="object_products">
+              <div
+                v-for="(item, index) in $store.state.NomenclatureModule.listFavoriteNomenclature"
+                :key="index"
+              >
+                <span>{{ item.name }}</span>
+              </div>
+            </v-container>
+          </v-tab-item>
+          <v-tab-item :key="2">
+            <v-container class="object_products"/>
+          </v-tab-item>
+          <v-tab-item :key="3">
+            <v-container class="object_products"/>
+          </v-tab-item>
+        </v-tabs>
 
     <div class="object-wrapper-footer">
       <template v-if="isMobile">
@@ -524,6 +541,7 @@ export default {
   .images_wrapper {
     display: flex;
     padding: 0 40px;
+    grid-column-gap: 40px;
     .main_photo {
       .img {
         width: 300px;
@@ -532,21 +550,24 @@ export default {
         min-height: 200px;
         border-radius: 15px;
         border: 2px solid #DDDDDD;
-
-        .empty_placeholder {
-          background-color: #DDDDDD;
-          min-width: 300px;
-          min-height: 200px;
-          background-image: url("assets/svg/icons/no_img_icon.svg");
-          background-repeat: no-repeat;
-          background-position: center;
-          background-size: 50%;
-          border-radius: 15px;
-          display: flex;
-        }
+      }
+      .empty_placeholder {
+        background-color: #DDDDDD;
+        min-width: 300px;
+        min-height: 200px;
+        background-image: url("assets/svg/icons/no_img_icon.svg");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 50%;
+        border-radius: 15px;
+        display: flex;
       }
     }
-    .object_documents_wrapper {}
+    .object_documents_wrapper {
+      background-color: #d9d9d9;
+      border-radius: 30px;
+      width: 100%;
+    }
 
   }
 }
