@@ -5,6 +5,8 @@ export default {
   state: {
     listNomenclature: [],
     listFavoriteNomenclature: [],
+    stateProductModal: false,
+    idSelectedProduct: null,
   },
   mutations: {
     set_list_nomenclature(state, payload) {
@@ -18,6 +20,9 @@ export default {
     set_list_favorite_nomenclature(state, payload) {
       state.listFavoriteNomenclature = []
       state.listFavoriteNomenclature = payload
+    },
+    set_selected_product(state, idProduct) {
+      state.idSelectedProduct = idProduct
     },
   },
   actions: {
@@ -35,45 +40,39 @@ export default {
       })
       return response
     },
-    async setFavoritesNomenclatureByObject(
-      { rootGetters, commit, dispatch },
-      object
-    ) {
-      const response = await Request.post(
-        this.state.BASE_URL + '/m-to-m/favorites/add',
-        object
+    async getListFavoriteNomenclatureByUserAndObjectId({ commit, rootGetters }) {
+      const response = await Request.get(
+        this.state.BASE_URL + '/m-to-m/favorites-nomenclature', {
+          id_object: rootGetters['Objects/getIdCurrentObject'],
+          id_user: rootGetters.getUserId
+        }
       )
-      // Вызов диспатча в одном компоненте
-      await dispatch('getListFavoriteNomenclatureByUserAndObjectId')
+
+      commit('set_list_favorite_nomenclature', response.data)
 
       return response
     },
-    async getListFavoriteNomenclatureByUserAndObjectId({
-      commit,
-      rootGetters,
-    }) {
-      // if (!rootGetters.getUserId) return false
-      // if (!rootGetters['Objects/getIdCurrentObject']) return false
-      //
-      // // commit('setLoadingObjects', true)
-      //
-      // const response = await Request.get(
-      //   this.state.BASE_URL + `/m-to-m/favorites?id_user=${rootGetters.getUserId}&id_object=${rootGetters['Objects/getIdCurrentObject']}`
-      // )
-      // commit('set_list_favorite_nomenclature', response.data)
-      //
-      // // commit('setLoadingObjects', false)
-      //
-      // return response
-    },
-    async deleteOneFavoriteNomenclature({ dispatch }, object) {
-      await Request.delete(
-        this.state.BASE_URL + '/m-to-m/favorites/remove',
-        object
-      )
-
+    async setFavoritesNomenclatureByObject({ rootGetters, state, commit, dispatch }, productId) {
+      await Request.post(
+        this.state.BASE_URL + '/m-to-m/favorites-nomenclature/add', {
+          id_object: rootGetters['Objects/getIdCurrentObject'],
+          id_user: rootGetters.getUserId,
+          id_nomenclature: productId
+        },)
+      // Вызов диспатча в одном компоненте
       await dispatch('getListFavoriteNomenclatureByUserAndObjectId')
     },
+    async deleteOneFavoriteNomenclature({ dispatch, rootGetters }, productId) {
+      await Request.delete(
+        this.state.BASE_URL + '/m-to-m/favorites-nomenclature/remove', {
+          id_object: rootGetters['Objects/getIdCurrentObject'],
+          id_user: rootGetters.getUserId,
+          id_nomenclature: productId
+        },)
+
+      await dispatch('getListFavoriteNomenclatureByUserAndObjectId')
+    }
+
   },
   getters: {
     getCountFavoriteNomenclatures(state) {

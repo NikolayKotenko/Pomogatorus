@@ -1,29 +1,6 @@
 <template>
   <v-container class="search_page">
     <div class="wrapper_search">
-      <!--      <SearchStyled -->
-      <!--        :class="'styleSearch'" -->
-      <!--        :is-placeholder="'Поиск тегов, статей'" -->
-      <!--        :is-loading="loading" -->
-      <!--        :is-disabled="loading" -->
-      <!--        :is-items="listVariables" -->
-      <!--        :is-clearable="true" -->
-      <!--        :is-item-text="'text'" -->
-      <!--        :is-item-value="'text'" -->
-      <!--        :is-hide-selected="false" -->
-      <!--        :is-custom-template-selections="true" -->
-      <!--        :internal-data="selectedChips" -->
-      <!--        @update-search-input="localGetListItems" -->
-      <!--        @change-search="setSelected" -->
-      <!--        @click-clear="getListBasedArticles(); selectedChips = ''" -->
-      <!--        @redirect="redirectData" -->
-      <!--      /> -->
-      <!--      &lt;!&ndash;      <ChipsStyled &ndash;&gt; -->
-      <!--      &lt;!&ndash;        :list-chips="$store.state.PopularSelectionsModule.list_selections.map((elem) => elem.name)" &ndash;&gt; -->
-      <!--      &lt;!&ndash;        @click-chip="setChip" &ndash;&gt; -->
-      <!--      &lt;!&ndash;      > &ndash;&gt; -->
-      <!--      &lt;!&ndash;      </ChipsStyled> &ndash;&gt; -->
-      <!--    </div> -->
       <SubHeader/>
       <div v-if="listArticles.length" class="list_container">
         <div v-for="(article, index) in listArticles" :key="index">
@@ -32,7 +9,7 @@
         </div>
       </div>
     </div>
-    <v-overlay :value="!loadComponent">
+    <v-overlay :value="!loadComponent" opacity="1">
       <v-progress-circular
         indeterminate
         size="64"

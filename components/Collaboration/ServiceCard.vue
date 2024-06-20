@@ -1,9 +1,9 @@
 <template>
-  <v-card class="card_wrapper">
+  <v-card class="card_wrapper" elevation="0">
     <div class="card_header">
       <div class="title_and_equip">
         <li class="service_title">
-          <section>{{ iterationKey }}.</section>
+          <!--          <section>{{ iterationKey }}.</section> -->
           <section>{{ serviceObject.service_data.name }}</section>
           <DropDownMenuStyled>
             <template #icon>
@@ -87,7 +87,7 @@
         </div>
         <IconTooltip
           :color-icon="'#8A8784'"
-          :icon-text="'mdi-delete-outline'"
+          :icon-text="'mdi-close'"
           :size-icon="'32'"
           :text-tooltip="'Удалить услугу'"
           @click-icon="showDeleteOneServiceModal = true"
@@ -232,12 +232,9 @@ export default {
 .card_wrapper {
   display: grid;
   //grid-row-gap: 10px;
-  padding: 1em;
+  padding: 16px 40px;
   //height: 96px;
   transition: $transition;
-  &:hover {
-    background-color: $dull-yellow-color;
-  }
 
   .card_header {
     display: grid;
@@ -245,10 +242,9 @@ export default {
     .title_and_equip {
       display: grid;
       align-items: center;
-      grid-template-columns: 2fr 1.4fr 0.1fr;
+      grid-template-columns: 2.7fr 1.4fr 0.1fr;
 
       .service_title {
-        font-size: 1.3em;
         display: inline-flex;
         grid-column-gap: 10px;
       }

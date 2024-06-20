@@ -9,7 +9,7 @@
       </v-icon>
     </div>
 
-    <v-tabs v-model="tab" color="#000000" grow @change="checkServicesTab">
+    <v-tabs v-model="tab" color="#000000" grow @change="checkServicesTab(tab)">
       <v-tab :key="0">
         <span class="tab_header">{{
           isLoggedIn ? 'Общая информация' : 'Авторизация'
@@ -270,10 +270,6 @@ export default {
     ],
     deleteBrandModal: false
   }),
-  async mounted() {
-    await this.$store.dispatch('CollaborationModule/getListServices')
-    await this.$store.dispatch('BrandsModule/getListBrands')
-  },
   computed: {
     ...mapState({
       isUpdating: (state) => state.UserSettings.isUpdating,
@@ -286,6 +282,10 @@ export default {
     isMobile() {
       return this.$device.isMobile
     },
+  },
+  async mounted() {
+    await this.$store.dispatch('CollaborationModule/getListServices')
+    await this.$store.dispatch('BrandsModule/getListBrands')
   },
   methods: {
     openModal() {

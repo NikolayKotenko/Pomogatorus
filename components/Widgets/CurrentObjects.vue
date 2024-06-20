@@ -1,10 +1,19 @@
 <template>
   <div class="current_object" :class="{'isNoWidgetStyle' : isNoWidget}">
+    <div class="current_object_title">
+      Текущий объект
+    </div>
+
+    <v-divider style="border-color: #DDDDDD;"/>
+
     <TooltipStyled
       :title="$store.getters.stateAuth ?
         'Выбрать объект или создать новый' : 'Для выбора объекта - авторизуйтесь'"
     >
-      <div @click="callAuthModal">
+      <div
+        class="select_object_style"
+        @click="callAuthModal"
+      >
         <SelectObjectStyled
           :custom-style="true"
           :data="$store.state.Objects.currentObject"
@@ -22,87 +31,57 @@
       </div>
     </TooltipStyled>
 
-    <div>
-      <v-badge
-        :content="$store.getters['NomenclatureModule/getCountFavoriteNomenclatures']"
-        :value="$store.getters['NomenclatureModule/getCountFavoriteNomenclatures']"
-        color="#95D7AE"
-        overlap
-      >
-        <IconTooltip
-          :color-icon="'B3B3B3'"
-          :size-icon="'32'"
-          :icon-text="'mdi-heart-outline'"
-          :text-tooltip="'Избранного оборудования на объекте'"
-        />
-      </v-badge>
-    </div>
-
     <TooltipStyled :title="$store.getters['Objects/getFirstPhotoObject']['filename'] || 'Фото объекта'">
       <!--      <v-img class="current_object__image"> -->
       <!--        <v-icon class="current_object__image__icon" x-large> -->
       <!--          mdi-map-marker-outline -->
       <!--        </v-icon> -->
       <!--      </v-img> -->
-      <div class="current_object__image">
+      <div>
         <v-img
           v-if="$store.getters['Objects/getFirstPhotoObject']['full_path']"
           :src="$store.state.BASE_URL + $store.getters['Objects/getFirstPhotoObject']['full_path']"
-          height="100%"
+          max-height="200"
+          class="object_image"
         />
-        <div v-else>
-          <v-img class="current_object__image">
-            <v-icon class="current_object__image__icon" x-large>
-              mdi-map-marker-outline
-            </v-icon>
-          </v-img>
-        </div>
+        <img
+          v-else
+          class="no_object_image"
+          :src="require(`~/assets/svg/icons/no_img_icon.svg`)"
+        >
       </div>
     </TooltipStyled>
 
     <!-- Циклом параметры по булеву "транслировать в сниппет" -->
-    <section
-      v-for="(obj, key) in $store.state.list_broadcast_snippet"
-      :key="key"
-      class="current_object__wrapper_info"
+    <div
+      class="options_wrapper"
     >
-      <span class="current_object__wrapper_info__text">{{ obj.name }}:</span>
-      <span class="current_object__wrapper_info__value">{{ $store.state.Objects.currentObject[obj.code] }}</span>
-    </section>
-
-    <section class="current_object__wrapper_info">
-      <span class="current_object__wrapper_info__text">Параметры объекта:</span>
-      <span class="current_object__wrapper_info__value">13 из 22</span>
-    </section>
-    <section class="current_object__wrapper_info">
-      <span class="current_object__wrapper_info__text">ТЗ объекта: {{ $store.state.Objects.currentObject.name
-      }}</span>
-      <span class="current_object__wrapper_info__value">7 из 130</span>
-      <div class="wrapper_button">
-        <TooltipStyled :title="'Перейти к объекту'">
-          <ButtonStyled
-            :href="$store.getters['Objects/stateObjectSelected'] ? '/objects/'+$store.state.Objects.currentObject.id : ''"
-            :is-disabled="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : true"
-            :is-loading="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : false"
-            :local-text="'Открыть'"
-            local-class="style_button"
-          />
-        </TooltipStyled>
-        <TooltipStyled :title="'Сгенерировать PDF Технического Задания'">
-          <ButtonStyled
-            :custom-slot="true"
-            :is-disabled="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : true"
-            :is-loading="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : false"
-            local-class="style_button"
-            @click-button="state_tech_task_block = !state_tech_task_block"
-          >
-            <span>{{ state_tech_task_block ? 'Скрыть&nbsp; ТЗ' : 'Создать ТЗ' }}</span>
-            <v-icon>{{ state_tech_task_block ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-          </ButtonStyled>
-        </TooltipStyled>
+      <div
+        v-for="(obj, key) in $store.state.list_broadcast_snippet"
+        :key="key"
+        class="options_list"
+      >
+        <span class="options_text">{{ obj.name }}:</span>
+        <div class="dots_border"/>
+        <span class="options_value">{{ $store.state.Objects.currentObject[obj.code] }}</span>
       </div>
-      <TagsTechBlock v-if="state_tech_task_block"/>
-    </section>
+    </div>
+
+    <v-divider style="border-color: #DDDDDD;"/>
+
+    <div class="buttons_wrapper">
+      <TooltipStyled :title="'Перейти к объекту'">
+        <ButtonStyled
+          :href="$store.getters['Objects/stateObjectSelected'] ? '/objects/'+$store.state.Objects.currentObject.id : ''"
+          :is-disabled="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : true"
+          :is-loading="$store.getters.stateAuth ? $store.state.Objects.isLoadingObjects : false"
+          :local-text="'Открыть'"
+          local-class="style_object_button"
+        />
+      </TooltipStyled>
+    </div>
+
+    <!--    <TagsTechBlock v-if="state_tech_task_block"/> -->
   </div>
 </template>
 
@@ -195,86 +174,73 @@ export default {
 
 
 .current_object {
+  padding: 20px 0;
   height: auto;
   max-height: 768px;
-  width: 250px;
+  width: 415px;
   min-width: 250px;
-  border-radius: 10px;
+  border-radius: 30px;
   //max-height: 500px;
   display: flex;
   flex-direction: column;
   align-self: baseline;
-  grid-row-gap: 1em;
+  grid-row-gap: 20px;
 
   transition: $transition !important;
   background: white;
   overflow-y: overlay;
-
-
-
-
-  &__label {
+  .current_object_title {
     font-size: 1.25em;
-
-    &__container {
-      display: flex;
-      justify-content: space-between;
-    }
-
-    hr {
-      margin-top: 10px;
-      border-color: black;
-    }
+    font-weight: 600;
+    display: flex;
+    justify-content: space-around;
   }
-
-  &__image {
+  .select_object_style {
+    padding: 0 20px;
+  }
+  .object_image {
+    margin: 0 20px;
+    border-radius: 15px;
+    max-height: 200px;
+  }
+  .no_object_image {
+    margin: 0 20px;
+    border-radius: 15px;
+    border: 1px solid #AAAAAA;
+    max-height: 200px;
+    max-width: 375px;
     width: 100%;
-    height: 150px;
-    background: rgba(196, 196, 196, 0.5);
-    border-radius: 5px;
-
-    &__icon {
+    background-color: #DDDDDD;
+    .no_photo_icon {
       position: absolute;
       margin: auto;
       width: 100%;
       height: 100%;
     }
   }
-
-  &__wrapper_info {
-    &__text {
-      font-style: normal;
-      //font-weight: 300;
-      font-size: 16px;
-      line-height: 16px;
-      //color: #37392E;
-    }
-
-    &__value {
-    }
-
-    &__info {
-      display: grid;
-    }
-
-    &__icon_wrapper {
-      text-align: center;
-    }
-
-  }
-
-  .wrapper_button {
-    margin: 1em 0;
+  .options_wrapper {
+    padding: 20px 40px 0 40px;
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-column-gap: 1em;
-    font-size: 14px;
-
-    .style_button {
-      min-width: unset !important;
+    grid-row-gap: 10px !important;
+    .options_list {
+      display: flex;
       width: 100%;
+      font-size: 1em;
+      color: #8A8784;
+      margin-top: auto;
+      text-wrap: nowrap;
+      .dots_border {
+        border-bottom: 1px dotted #111111;
+        width: 100%;
+        margin-bottom: 5px;
+      }
     }
   }
+  .buttons_wrapper {
+    padding: 0 20px;
+    max-width: 375px;
+  }
+
 }
 </style>
 

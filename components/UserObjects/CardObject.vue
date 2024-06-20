@@ -8,7 +8,7 @@
         class="img"
         height="100%"
       />
-      <span v-else class="empty_placeholder">Фото объекта</span>
+      <span v-else class="empty_placeholder"/>
     </div>
     <div class="obj_info">
       <div class="header">
@@ -16,68 +16,49 @@
           <span class="name">{{ object_data.name }}</span>
           <span class="address">{{ object_data.address }}</span>
         </div>
-        <div class="share_and_activity">
-          <CopyLinkButton :id-entry="object_data.id"/>
-          <TooltipStyled :title="'Совместная работа'">
-            <v-menu :close-on-content-click="false" left offset-y>
-              <template #activator="{ on, attrs }">
-                <div style="display: inline-flex; grid-column-gap: 5px" v-bind="attrs" v-on="on">
-                  <v-icon
-                    class="share"
-                    color="#000000"
-                    size="26"
-                    v-bind="attrs"
-                    v-on="on"
-                  >
-                    mdi-account-group-outline
-                  </v-icon>
-                </div>
-              </template>
-              <Collaboration/>
-            </v-menu>
-          </TooltipStyled>
-
-          <TooltipStyled :title="stateCurrentObject ? 'Ваш текущий объект' : 'Выбрать текущим'">
-            <div class="activity">
-              <VSimpleCheckbox
-                :value="stateCurrentObject"
-                color="#000000"
-                @click="setObject"
-              />
-            </div>
-          </TooltipStyled>
-        </div>
       </div>
-      <div>
-        <TooltipStyled :title="'Заполнено параметров: '">
-          <VProgressLinear
-            background-opacity="0.3"
-            class="progress_bar"
-            color="#95D7AE"
-            rounded
-            value="15"
-          />
-        </TooltipStyled>
+      <div
+        v-for="(prop, index) in slicedObjProperties"
+        :key="index"
+        class="prop_wrapper"
+      >
+        <div
+          v-if="prop._code_column !== 'osnovnoe-foto-obekta'"
+          class="obj_properties"
+        >
+          <div class="prop_name">
+            {{ prop._name_column + ': ' }}
+          </div>
+          <div class="dots_border"/>
+          <div class="prop_value">
+            {{ prop.value }}
+          </div>
+        </div>
       </div>
       <div class="footer">
-        <div class="more_info">
-          <section
-            v-for="(obj, key) in $store.state.list_broadcast_snippet"
-            :key="key"
-            class="current_object__wrapper_info"
-          >
-            <span class="current_object__wrapper_info__text">{{ obj.name }}:</span>
-            <span class="current_object__wrapper_info__value">{{ object_data[obj.code] }}</span>
-          </section>
+        <div class="fullness_obj">
+          <div class="fullness_percent">
+            {{ valueFullnessObj + '%' }}
+          </div>
+          <v-progress-linear
+            background-opacity="0.3"
+            class="progress_bar"
+            color="#FF6347"
+            height="14"
+            :value="valueFullnessObj"
+          />
+        </div>
+        <div v-if="stateCurrentObject" class="selected_obj_btn">
+          Выбран глав. объектом
+        </div>
+        <div v-else class="no_selected_obj_btn" @click="setObject">
+          Сделать глав. объектом
         </div>
         <div
-          class="button"
+          class="open_obj_btn"
           @click="openDetailCard"
         >
-          <ButtonStyled
-            :local-text="'Открыть объект'"
-            local-class="style_button"
-          />
+          Открыть
         </div>
       </div>
     </div>
@@ -97,7 +78,8 @@ export default {
   // eslint-disable-next-line vue/prop-name-casing
   props: ['object_data'],
   data: () => ({
-    showDetailObj: false
+    showDetailObj: false,
+    valueFullnessObj: 15,
   }),
   computed: {
     stateCurrentObject() {
@@ -119,6 +101,11 @@ export default {
       } else {
         return 0;
       }
+    },
+    slicedObjProperties() {
+      return this.object_data?.m_to_m_objects_properties
+        ?.filter((prop) => prop._code_column !== 'osnovnoe-foto-obekta')
+        .slice(0, 3)
     }
   },
   watch: {},
@@ -146,140 +133,180 @@ export default {
 @import 'assets/styles/style';
 
 .card_obj {
+  font-family: 'Inter', sans-serif;
   display: flex;
+  grid-column-gap: 20px;
+  max-width: 890px;
+  width: 100%;
   justify-content: space-between;
   align-items: center;
   padding: 20px;
   //margin: 0 10px 0 10px;
-  border-radius: 5px;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 30px;
+  background-color: #FFFFFF;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 20px;
   transition: $transition !important;
-
   &:hover {
-    box-shadow: 0px 5px 20px 7px rgba(34, 60, 80, 0.2) !important;
-    background-color: #FFF4CB;
+    box-shadow: $shadowBox !important;
   }
 
   .img {
-    width: 250px;
-    height: 160px;
-    min-width: 250px;
-    min-height: 160px;
-    margin-right: 20px;
-    border-radius: 5px;
+    width: 300px;
+    height: 200px;
+    min-width: 300px;
+    min-height: 200px;
+    border-radius: 15px;
+    border: 2px solid #DDDDDD;
 
     .empty_placeholder {
-      background-color: #D9D9D9;
-      min-width: 250px;
-      min-height: 160px;
-
-      border-radius: 5px;
+      background-color: #DDDDDD;
+      min-width: 300px;
+      min-height: 200px;
+      background-image: url("assets/svg/icons/no_img_icon.svg");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 50%;
+      border-radius: 15px;
       display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #FFFFFF;
-      font-size: 1.3em;
     }
   }
 
   .obj_info {
     width: 100%;
     display: grid;
-    grid-row-gap: 1em;
-    //background-color: #FFFFFF !important;
-  }
+    height: 100%;
+    min-height: 200px;
+    align-content: space-between;
+    .header {
+      display: flex;
+      justify-content: space-between;
+      .name_and_address {
+        display: grid;
+      }
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-
-  }
-
-  .name_and_address {
-    display: grid;
-  }
-
-  .name {
-    font-size: 1.5em;
-    font-weight: 400;
-  }
-
-  .address {
-    font-size: 1.2em;
-    font-weight: 300;
-  }
-
-  .share_and_activity {
-    display: flex;
-    align-items: flex-start;
-  }
-
-  .share {
-    &:hover {
-      color: #000000 !important;
+      .name {
+        font-size: 1.25em;
+        font-weight: 600;
+      }
+      .address {
+        font-weight: 500;
+        color: #777777;
+      }
     }
-  }
+    .obj_properties {
+      display: flex;
+      text-wrap: nowrap;
+      color: #8A8784;
+      font-size: .875em;
+      .prop_name {
 
-  .activity {
-    margin-left: 24px;
-  }
-
-  .progress_bar {
-    width: auto;
-    height: 16px !important;
-  }
-
-  .footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-  }
-
-  .more_info {
-    display: grid;
-  }
-}
-
-@media only screen and (max-width: 767px) {
-  .card_obj {
-    flex-direction: column;
-    row-gap: 1rem;
-
+      }
+      .dots_border {
+        border-bottom: 1px dotted #111111;
+        width: 100%;
+        margin-bottom: 5px;
+      }
+      .prop_value {
+        color: #000000;
+      }
+    }
     .footer {
-      flex-direction: column;
-      row-gap: 1rem;
-
-      .more_info {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      .fullness_obj {
+        max-width: 144px;
         width: 100%;
+        .fullness_percent {
+          display: flex;
+          justify-content: center;
+        }
+        .progress_bar {
+          border-radius: 30px;
+        }
       }
-
-      .button {
-        width: 100%;
+      .selected_obj_btn {
+        padding: 0 20px;
+        background-color: #FF6347;
+        color: #FFFFFF;
+        border-radius: 15px;
+        text-wrap: nowrap;
+        font-weight: 600;
         display: flex;
-        justify-content: center;
+        align-items: center;
+        height: 40px;
+        cursor: pointer;
+      }
+      .no_selected_obj_btn {
+        padding: 0 20px;
+        background-color: #d9d9d9;
+        border-radius: 15px;
+        text-wrap: nowrap;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        height: 40px;
+        cursor: pointer;
+      }
+      .open_obj_btn {
+        padding: 0 20px;
+        background-color: #d9d9d9;
+        border-radius: 15px;
+        text-wrap: nowrap;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        height: 40px;
+        cursor: pointer;
       }
     }
   }
-  .img {
-    margin-right: 0 !important;
-  }
-  .header {
-    display: grid !important;
-    justify-content: center !important;
-  }
-  .name_and_address {
-    justify-content: center;
 
-    .name {
-      font-size: 1.2em;
-    }
 
-    .address {
-      font-size: 1em;
-    }
-  }
-  .share_and_activity {
-    justify-content: center;
-  }
 }
+
+//@media only screen and (max-width: 767px) {
+//  .card_obj {
+//    flex-direction: column;
+//    row-gap: 1rem;
+//
+//    .footer {
+//      flex-direction: column;
+//      row-gap: 1rem;
+//
+//      .more_info {
+//        width: 100%;
+//      }
+//
+//      .button {
+//        width: 100%;
+//        display: flex;
+//        justify-content: center;
+//      }
+//    }
+//  }
+//  .img {
+//    margin-right: 0 !important;
+//  }
+//  .header {
+//    display: grid !important;
+//    justify-content: center !important;
+//  }
+//  .name_and_address {
+//    justify-content: center;
+//
+//    .name {
+//      font-size: 1.2em;
+//    }
+//
+//    .address {
+//      font-size: 1em;
+//    }
+//  }
+//  .share_and_activity {
+//    justify-content: center;
+//  }
+//}
 </style>

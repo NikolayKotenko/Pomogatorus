@@ -1,5 +1,5 @@
 <template>
-  <v-card class="add_services" elevation="3">
+  <v-card class="add_services" elevation="0">
     <v-combobox
       :clearable="false"
       :hide-details="true"
@@ -10,7 +10,6 @@
       :value="selectedService"
       class="search_service"
       hide-selected
-      outlined
       return-object
       solo
       @change="setService"
@@ -30,8 +29,8 @@
     </v-combobox>
 
     <IconTooltip
-      :color-icon="'#95D7AE'"
-      :icon-text="'mdi-plus-circle-outline'"
+      :color-icon="'#ED7100'"
+      :icon-text="'mdi-plus'"
       :is-disabled="! selectedService"
       :is-top-tooltip="true"
       :size-icon="'34'"
@@ -82,9 +81,8 @@ export default {
 
 <style lang="scss" scoped>
 .add_services {
-  margin: 5px 2px;
-  padding: 10px;
-  height: 70px;
+  margin: 20px;
+  height: 60px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -107,8 +105,13 @@ export default {
 <style lang="scss">
 .add_services {
   .search_service {
+    .v-input__slot {
+      background-color: #EEEEEE !important;
+      border-radius: 8px !important;
+      box-shadow: none !important;
+    }
     .v-label {
-      font-size: 1.2em;
+      font-size: 1em;
     }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <v-container class="products">
+  <v-container class="products_page_wrapper">
     <!--    <div class="search_container"> -->
     <!--      <SearchStyled -->
     <!--        :is-class="'styleSearch'" -->
@@ -36,7 +36,7 @@
 
     <NomenclatureFilters class="products-filters"/>
 
-    <UniversalFilter/>
+    <!--    <UniversalFilter/> -->
     <ProductCard
       v-for="(item) in $store.state.NomenclatureModule.listNomenclature"
       :key="item.id"
@@ -52,19 +52,25 @@
     >
       {{ $store.getters.statePaginationHasMorePage ? 'Показать еще' : 'Показаны все элементы' }}
     </v-btn>
+    <!--    <WrapperStickyCurrentObject class="current_object_sticky"/> -->
   </v-container>
 </template>
 <script>
-import ProductCard from '../../components/Common/ProductCard.vue'
+import ProductCard from '../../components/Products/ProductCard.vue';
 import UniversalFilter from '../../components/Common/UniversalFilter.vue'
+import Right from '../../components/CascadModels/Right.vue'
+import WrapperStickyCurrentObject from '../../components/Widgets/WrapperStickyCurrentObject.vue'
+import ProductModal from '../../components/Products/ProductModal.vue'
 import NomenclatureFilters from '../../components/Nomenclature/NomenclatureFilters'
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'index.vue',
-  components: { NomenclatureFilters, UniversalFilter, ProductCard },
+  components: { ProductModal, WrapperStickyCurrentObject, Right, UniversalFilter, ProductCard, NomenclatureFilters },
   async mounted() {
-    await this.getNextPageData()
+    await this.getNextPageData();
+    await this.$store.dispatch('NomenclatureModule/getListNomenclature');
+    await this.$store.dispatch('NomenclatureModule/getListFavoriteNomenclatureByUserAndObjectId')
   },
   methods: {
     async getNextPageData() {
@@ -75,7 +81,18 @@ export default {
 }
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
+.products_page_wrapper {
+  display: grid;
+  row-gap:10px;
+  justify-content: center;
+  position: relative;
+  .current_object_sticky {
+    position: absolute;
+    right: - 150px;
+  }
+
+}
 .search_container {
   display: flex;
   grid-column-gap: 1em;

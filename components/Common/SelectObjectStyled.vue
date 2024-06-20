@@ -20,6 +20,7 @@
     :placeholder="computedPlaceholder"
     :search-input.sync="blockSearch"
     :solo="isSolo"
+    filled
     dense
     hide-details
     return-object
@@ -252,12 +253,17 @@ export default {
 
 .selector-custom {
   .v-select__selections {
-    overflow: hidden;
 
     input {
       position: absolute !important;
       pointer-events: none !important;
       opacity: 1;
+    }
+  }
+  .v-input__control {
+    .v-input__slot {
+      font-size: 1.25em;
+      box-shadow: none !important;
     }
   }
 }

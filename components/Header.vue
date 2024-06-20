@@ -96,23 +96,62 @@
                   </div>
                   <v-divider style="border-color: black;"/>
                   <div class="actions_list">
-                    <div
-                      class="action_elem"
-                      @click="$store.commit('set_modal_auth', true)"
-                    >
-                      <img
-                        :src="require(`~/assets/svg/icons/account_icon.svg`)"
-                        alt="help"
-                      >
-                      Личный кабинет
-                    </div>
+                    <!--                    <v-menu -->
+                    <!--                      :close-on-content-click="false" -->
+                    <!--                      offset-y -->
+                    <!--                      nudge-top="156" -->
+                    <!--                      nudge-right="44" -->
+                    <!--                    > -->
+                    <!--                      <template #activator="{ on, attrs }"> -->
+                    <!--                        <div -->
+                    <!--                          v-bind="attrs" -->
+                    <!--                          class="action_elem" -->
+                    <!--                          v-on="on" -->
+                    <!--                          @click="openAccountMenu" -->
+                    <!--                        > -->
+                    <!--                          <img -->
+                    <!--                            :src="require(`~/assets/svg/icons/account_icon.svg`)" -->
+                    <!--                            alt="help" -->
+                    <!--                          > -->
+                    <!--                          Личный кабинет -->
+                    <!--                        </div> -->
+                    <!--                      </template> -->
+                    <!--                      <UserPersonalAccount v-show="$store.state.UserSettings.stateVisibleMenu"/> -->
+                    <!--                    </v-menu> -->
                     <div class="action_elem">
-                      <img
-                        :src="require(`~/assets/svg/icons/ph_building-office.svg`)"
-                        alt="help"
+                      <router-link
+                        to="/profile"
+                        style="color: unset; text-decoration: unset; display: flex; align-items: center; grid-column-gap: 10px"
                       >
-                      Ваш текущий объект
+                        <img
+                          :src="require(`~/assets/svg/icons/account_icon.svg`)"
+                          alt="help"
+                        >
+                        Личный кабинет
+                      </router-link>
                     </div>
+
+                    <!-- Ваш текущий объект -->
+                    <DropDownMenuStyled
+                      :is-left="true"
+                      :is-offset-y="true"
+                      :close-on-click-outside="true"
+                      :nudge-top="186"
+                      :nudge-right="44"
+                    >
+                      <template #icon>
+                        <div class="action_elem">
+                          <img
+                            :src="require(`~/assets/svg/icons/ph_building-office.svg`)"
+                            alt="help"
+                          >
+                          Ваш текущий объект
+                        </div>
+                      </template>
+                      <template #content>
+                        <CurrentObjects/>
+                      </template>
+                    </DropDownMenuStyled>
 
                     <!-- Ваши специалисты -->
                     <DropDownMenuStyled
@@ -182,7 +221,7 @@
               :local-text="'Войти'"
               :max-width="'80'"
               :max-height="'30'"
-              @click-button="$store.commit('set_modal_auth', true)"
+              @click-button="$store.dispatch('openAuthModal')"
             />
           </div>
         </div>
@@ -258,6 +297,7 @@
 
     <!-- Глобальные модалки -->
     <TaskModal/>
+    <AuthModal/>
     <CreateObjectModal ref="createObjectModal"/>
   </v-app-bar>
 </template>
@@ -271,6 +311,10 @@ import DropDownMenuStyled from './Common/DropDownMenuStyled.vue';
 import TaskModal from './Collaboration/TaskModal.vue';
 import ButtonStyled from './Common/ButtonStyled.vue'
 import FavoritesBrands from './Brands/FavoritesBrands.vue'
+import UserPersonalAccount from './User/UserPersonalAccount.vue'
+import AuthModal from './frontLayouts/AuthModal'
+import CardObject from './UserObjects/CardObject.vue'
+import CurrentObjects from './Widgets/CurrentObjects.vue'
 import { getNameStateModalByUrlHash } from '~/helpers/urlHelper';
 import CreateObjectModal from '~/components/Modals/CreateObjectModal';
 
@@ -278,6 +322,9 @@ export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Header',
   components: {
+    CurrentObjects,
+    CardObject,
+    AuthModal,
     FavoritesBrands,
     ButtonStyled,
     CreateObjectModal,
@@ -287,6 +334,7 @@ export default {
     IconTooltip,
     DropDownMenuStyled,
     TaskModal,
+    UserPersonalAccount
   },
   props: {},
   data() {
@@ -378,9 +426,20 @@ export default {
 
   },
   methods: {
+    openAccountMenu() {
+
+      this.$store.commit('UserSettings/setStateVisibleMenu', true)
+      console.log('openMenu', this.$store.state.UserSettings.stateVisibleMenu)
+    },
+
     openModal() {
       this.$store.dispatch('TaskModule/openModal')
     },
+
+    // openAuthModal() {
+    //   this.$store.dispatch('openAuthModal')
+    // },
+
 
     logout() {
       this.$store.dispatch('logout')
