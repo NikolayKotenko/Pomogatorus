@@ -11,7 +11,7 @@
     display: flex;
     background: white;
     margin-top: 4px;
-    border-radius: 5px;
+    border-radius: 15px;
 
     .dz-message {
       //height: 100%;
@@ -47,19 +47,19 @@
     .v-select__slot {
       min-height: 56px;
 
-      .v-label--active {
-        transform: translateY(-35px) scale(1.2) !important;
-        color: black !important;
-      }
-
-      label {
-        top: 18px;
-        background: white;
-        padding: 0 10px;
-        font-family: 'Roboto', sans-serif;
-        font-style: normal;
-        font-weight: 400;
-      }
+      //.v-label--active {
+      //  transform: translateY(-35px) !important;
+      //  color: black !important;
+      //}
+      //
+      //label {
+      //  top: 18px;
+      //  background: white;
+      //  padding: 0 10px;
+      //  font-family: 'Roboto', sans-serif;
+      //  font-style: normal;
+      //  font-weight: 400;
+      //}
 
       input {
         min-height: 56px !important;
@@ -149,9 +149,9 @@
       background-repeat: no-repeat;
       margin: 10px 10px 0 10px;
 
-      .v-label--active {
-        transform: translateY(-45px) scale(1.2) translateX(-8px) !important;
-      }
+      //.v-label--active {
+      //  transform: translateY(-45px) translateX(-8px) !important;
+      //}
 
       input {
         display: none;
@@ -203,7 +203,7 @@
 
   .v-input {
     background: white;
-    border-radius: 5px;
+    border-radius: 15px;
   }
 
   .v-input__slot {
@@ -217,39 +217,37 @@
   }
 
   .v-textarea textarea {
-    min-height: 56px;
-    padding-top: 20px;
-    padding-left: 10px;
+    margin-top: 6px;
   }
 
   .v-text-field > .v-input__control > .v-input__slot > .v-text-field__slot {
-    min-height: 56px;
+    min-height: 40px;
 
-    .v-label--active {
-      transform: translateY(-35px) scale(1.2) !important;
-      color: black !important;
-    }
-
-    label {
-      top: 18px;
-      background: white;
-      padding: 4px 10px;
-      font-family: 'Roboto', sans-serif;
-      font-style: normal;
-      font-weight: 400;
-    }
+    //.v-label--active {
+    //  transform: translateY(-35px) !important;
+    //  color: black !important;
+    //}
+    //
+    //label {
+    //  top: 18px;
+    //  background: white;
+    //  padding: 4px 10px;
+    //  font-family: 'Roboto', sans-serif;
+    //  font-style: normal;
+    //  font-weight: 400;
+    //}
 
     input {
-      min-height: 56px !important;
-      padding-left: 1rem;
+      min-height: 40px !important;
+      //padding: 12px;
     }
   }
 
   .v-select__selections {
-    padding-left: 1rem;
+    //padding: 12px;
 
     input {
-      min-height: 56px;
+      min-height: 40px;
     }
   }
 
@@ -258,19 +256,19 @@
   }
 
   .v-select__slot {
-    label {
-      top: 16px !important;
-      background: white;
-      padding: 4px 10px;
-      font-family: 'Roboto', sans-serif;
-      font-style: normal;
-      font-weight: 400;
-    }
-
-    .v-label--active {
-      transform: translateY(-35px) scale(1.2) !important;
-      color: black !important;
-    }
+    //label {
+    //  top: 16px !important;
+    //  background: white;
+    //  padding: 4px 10px;
+    //  font-family: 'Roboto', sans-serif;
+    //  font-style: normal;
+    //  font-weight: 400;
+    //}
+    //
+    //.v-label--active {
+    //  transform: translateY(-35px) !important;
+    //  color: black !important;
+    //}
   }
 }
 

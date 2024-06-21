@@ -22,6 +22,7 @@
           :readonly="isReadonly"
           :solo="isSolo"
           dense
+          outlined
           hide-details
           type="number"
           @click="onClick"
@@ -54,7 +55,6 @@
           :type="typeData"
           auto-grow
           dense
-          row-height="25"
           @click="onClick"
           @focus="focusStart"
           @focusout="focusEnd"
@@ -82,6 +82,7 @@
             :placeholder="placeholder"
             :prepend-inner-icon="prependIconInner"
             :solo="isSolo"
+            outlined
             dense
             hide-details
             item-value="id"
@@ -384,7 +385,7 @@ export default {
     },
     isOutlined: {
       type: Boolean,
-      default: false
+      default: true
     },
     indexArray: {
       type: Number
@@ -620,3 +621,8 @@ export default {
 }
 </script>
 
+<style lang="scss" scoped>
+
+
+
+</style>

@@ -34,13 +34,16 @@
             </template>
 
             <template v-else>
-              <div v-for='(tabItem, index) in tabData' :key='index'
-                   :class='{"active-tab-item": tabItem.active || isNotEmpty(tabItem.code)}'
-                   class='tab-content'>
-                <div class='tab-content__count'>
-                  <span v-if='item.code !== "all"'>{{ calcCount(indexTab, index) }}</span>
-                  <span v-else>{{ calcCountNormal(index) }}</span>
-                </div>
+              <div
+                v-for='(tabItem, index) in tabData'
+                :key='index'
+                :class='{"active-tab-item": tabItem.active || isNotEmpty(tabItem.code)}'
+                class='tab-content'
+              >
+<!--                <div class='tab-content__count'>-->
+<!--                  <span v-if='item.code !== "all"'>{{ calcCount(indexTab, index) }}</span>-->
+<!--                  <span v-else>{{ calcCountNormal(index) }}</span>-->
+<!--                </div>-->
                 <CustomField
                   :code-property='tabItem.code'
                   :data='getObjectProperty(tabItem.code)'

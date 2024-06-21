@@ -144,6 +144,23 @@ export default {
   box-shadow: none !important;
 
 }
+.v-btn.red_style_button {
+  padding: 0 20px !important;
+  background-color: #FF6347 !important;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 15px;
+  text-wrap: nowrap;
+  font-weight: 600 !important;
+  display: flex;
+  align-items: center;
+  width: auto !important;
+  height: 40px;
+  cursor: pointer;
+  font-size: 1em !important;
+  box-shadow: none !important;
+
+}
 
 .v-btn.style_wide_button {
   background-color: $background-element-color !important;

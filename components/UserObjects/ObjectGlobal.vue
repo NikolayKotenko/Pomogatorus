@@ -68,7 +68,7 @@
     </div>
 
     <div class="tabs_wrapper">
-      <v-tabs>
+      <v-tabs color="#FF6347" hide-slider>
         <v-tab :key="0">
           Параметры объекта
         </v-tab>
@@ -78,192 +78,235 @@
         <v-tab :key="2">
           Люди на объекте
         </v-tab>
-        <v-tab-item :key="0"></v-tab-item>
+        <v-tab-item :key="0">
+          <v-expansion-panels ref="tabContent" accordion flat>
+            <v-expansion-panel
+              v-for="(panel, index) in tabs"
+              :key="index"
+              @update-prop="setField"
+              @update-file="setFileField"
+              @change-tab="changeTab"
+              @remove-file="removeFile"
+              @focus-out-field="animationSaveBtn"
+              @change="changeTab(panel.code)"
+            >
+              <v-expansion-panel-header>
+                {{ panel.name }}
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <template v-if="isLoadingData || !objectData || !Object.keys(objectData).length">
+                  <v-progress-circular
+                    :size="30"
+                    color="#FF6347"
+                    indeterminate
+                    style="margin: 20px auto 40px auto"
+                  ></v-progress-circular>
+                </template>
+
+                <template v-else>
+                  <div
+                    v-for="(tabItem, index) in tabData"
+                    :key="index"
+                    class="obj_prop_style"
+                  >
+                    <CustomField
+                      :code-property="tabItem.code"
+                      :data="getObjectProperty(tabItem.code)"
+                      :deleted-file="deletedFile"
+                      :id-object="objectData.id"
+                      :id-property="tabItem.id"
+                      :items="getItems(tabItem)"
+                      :label="tabItem.name"
+                      :type="getInputType(tabItem)"
+                      @update-field="changeAnswer($event, tabItem.code)"
+                      @uploaded-file="changeFileData($event, tabItem.code)"
+                      @remove-file="removeFile($event, tabItem.code)"
+                      @focus-in="focusIn(tabItem)"
+                      @focus-out="focusOut(tabItem)"
+                      @mousedown.native.stop
+                    />
+                  </div>
+                </template>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
+        </v-tab-item>
         <v-tab-item :key="1"></v-tab-item>
         <v-tab-item :key="2"></v-tab-item>
       </v-tabs>
     </div>
 
-        <v-tabs color="#000000">
-          <v-tab :key="0">
-            Параметры объекта
-          </v-tab>
-          <v-tab
-            :key="1"
-            @click="$store.dispatch('NomenclatureModule/getListFavoriteNomenclatureByUserAndObjectId')"
-          >
-            Избранное оборудование
-            <v-badge
-              :content="$store.state.NomenclatureModule.listFavoriteNomenclature.length"
-              :value="$store.state.NomenclatureModule.listFavoriteNomenclature.length"
-              color="#95D7AE"
-            />
-          </v-tab>
-          <v-tab :key="2">
-            Купленное оборудование
-          </v-tab>
-          <v-tab :key="3">
-            Установленное оборудование
-          </v-tab>
+<!--        <v-tabs color="#000000">-->
+<!--          <v-tab :key="0">-->
+<!--            Параметры объекта-->
+<!--          </v-tab>-->
+<!--          <v-tab-->
+<!--            :key="1"-->
+<!--            @click="$store.dispatch('NomenclatureModule/getListFavoriteNomenclatureByUserAndObjectId')"-->
+<!--          >-->
+<!--            Избранное оборудование-->
+<!--            <v-badge-->
+<!--              :content="$store.state.NomenclatureModule.listFavoriteNomenclature.length"-->
+<!--              :value="$store.state.NomenclatureModule.listFavoriteNomenclature.length"-->
+<!--              color="#95D7AE"-->
+<!--            />-->
+<!--          </v-tab>-->
+<!--          <v-tab :key="2">-->
+<!--            Купленное оборудование-->
+<!--          </v-tab>-->
+<!--          <v-tab :key="3">-->
+<!--            Установленное оборудование-->
+<!--          </v-tab>-->
 
-          <!-- Параметры объекта -->
-          <v-tab-item :key="0">
-            <v-card-text
-              ref="scrollParent"
-              :class="{'object-wrapper-main--mobile': isMobile, 'object-wrapper-main--mobile--move': isMoving}"
-              class="object-wrapper-main"
-              style="height: 1200px;"
-            >
-              <div ref="docContent" class="object-wrapper-documents">
-                <div class="object-wrapper-documents__img-container">
-                  <span>Фото объекта</span>
-                  <div
-                    :class="{'dropzone-empty': ! $store.getters.getMainPhotoObject(object) }"
-                    class="list-files-styled-wrapper img-activator"
-                  >
-                    <img
-                      v-if="$store.getters.getMainPhotoObject(object)"
-                      :src="$store.state.BASE_URL + $store.getters.getMainPhotoObject(object).full_path"
-                      :title="$store.getters.getMainPhotoObject(object).title_image"
-                      class="img-hover"
-                      height="100%"
-                      style="object-fit: cover"
-                      width="100%"
-                    >
-                    <span v-else class="empty-placeholder">Здесь будут фото вашего объекта</span>
-                  </div>
-                </div>
+<!--          &lt;!&ndash; Параметры объекта &ndash;&gt;-->
+<!--          <v-tab-item :key="0">-->
+<!--            <v-card-text-->
+<!--              ref="scrollParent"-->
+<!--              :class="{'object-wrapper-main&#45;&#45;mobile': isMobile, 'object-wrapper-main&#45;&#45;mobile&#45;&#45;move': isMoving}"-->
+<!--              class="object-wrapper-main"-->
+<!--              style="height: 1200px;"-->
+<!--            >-->
 
-                <div class="object-wrapper-documents__docs">
-                  <span>Прикрепленные документы</span>
-                  <ListFilesStyled
-                    v-if="objectData.id"
-                    :data="object"
-                    :id-object="objectData.id"
-                    @remove-from-global="removeFromGlobal"
-                  />
-                </div>
-              </div>
+<!--              <div class="object-wrapper-tabs">-->
+<!--                <TabsCustom-->
+<!--                  ref="tabContent"-->
+<!--                  :data-object="object"-->
+<!--                  :deleted-file="deletedFile"-->
+<!--                  @update-prop="setField"-->
+<!--                  @update-file="setFileField"-->
+<!--                  @change-tab="changeTab"-->
+<!--                  @remove-file="removeFile"-->
+<!--                  @focus-out-field="animationSaveBtn"-->
+<!--                />-->
 
-              <div class="object-wrapper-tabs">
-                <TabsCustom
-                  ref="tabContent"
-                  :data-object="object"
-                  :deleted-file="deletedFile"
-                  @update-prop="setField"
-                  @update-file="setFileField"
-                  @change-tab="changeTab"
-                  @remove-file="removeFile"
-                  @focus-out-field="animationSaveBtn"
-                />
+<!--                <div :class="{'show-more': showMore}" class="more-arrow">-->
+<!--                  <img alt="more" src="@/assets/svg/chevron-more.svg" @click="scrollBot">-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </v-card-text>-->
+<!--          </v-tab-item>-->
 
-                <div :class="{'show-more': showMore}" class="more-arrow">
-                  <img alt="more" src="@/assets/svg/chevron-more.svg" @click="scrollBot">
-                </div>
-              </div>
-            </v-card-text>
-          </v-tab-item>
+<!--          &lt;!&ndash; Оборудование на объекте &ndash;&gt;-->
+<!--          <v-tab-item :key="1">-->
+<!--            <v-container class="object_products">-->
+<!--              <div-->
+<!--                v-for="(item, index) in $store.state.NomenclatureModule.listFavoriteNomenclature"-->
+<!--                :key="index"-->
+<!--              >-->
+<!--                <span>{{ item.name }}</span>-->
+<!--              </div>-->
+<!--            </v-container>-->
+<!--          </v-tab-item>-->
+<!--          <v-tab-item :key="2">-->
+<!--            <v-container class="object_products"/>-->
+<!--          </v-tab-item>-->
+<!--          <v-tab-item :key="3">-->
+<!--            <v-container class="object_products"/>-->
+<!--          </v-tab-item>-->
+<!--        </v-tabs>-->
 
-          <!-- Оборудование на объекте -->
-          <v-tab-item :key="1">
-            <v-container class="object_products">
-              <div
-                v-for="(item, index) in $store.state.NomenclatureModule.listFavoriteNomenclature"
-                :key="index"
-              >
-                <span>{{ item.name }}</span>
-              </div>
-            </v-container>
-          </v-tab-item>
-          <v-tab-item :key="2">
-            <v-container class="object_products"/>
-          </v-tab-item>
-          <v-tab-item :key="3">
-            <v-container class="object_products"/>
-          </v-tab-item>
-        </v-tabs>
-
-    <div class="object-wrapper-footer">
-      <template v-if="isMobile">
-        <div class="object-wrapper-footer__left">
-          <ButtonStyled
-            :custom-slot="true"
-            :is-animation="animationBtn"
-            :is-loading="isLoadingObjects"
-            :is-mobile="true"
-            local-class="style_button"
-            @click-button="closeModal"
-          >
-            <v-icon>
-              mdi-content-save-outline
-            </v-icon>
-          </ButtonStyled>
-
-          <ButtonStyled
-            :custom-slot="true"
-            :is-mobile="true"
-            @click-button="stateTagsTechBlock = true;"
-          >
-            <v-icon>mdi-tray-arrow-down</v-icon>
-          </ButtonStyled>
-        </div>
-
+    <div class="footer">
+      <v-divider style="border-color: #DDDDDD;"/>
+      <div class="object_footer_buttons">
         <ButtonStyled
           :custom-slot="true"
-          :is-mobile="true"
-          local-class="style_close"
-          local-text="Отмена"
-          @click-button="closeModal"
+          local-class="red_style_button"
         >
-          <v-icon>
-            mdi-window-close
-          </v-icon>
+          <span>
+            Скачать PDF
+          </span>
         </ButtonStyled>
-
-        <v-dialog
-          v-model="stateTagsTechBlock"
-          width="1080"
-        >
-          <v-card>
-            <v-card-title class="d-flex justify-end">
-              <v-icon @click="stateTagsTechBlock = false;">
-                mdi-close
-              </v-icon>
-            </v-card-title>
-            <v-card-text>
-              <TagsTechBlock/>
-            </v-card-text>
-          </v-card>
-        </v-dialog>
-      </template>
-
-      <template v-else>
-        <div class="object-wrapper-footer__left">
-          <ButtonStyled
-            :is-animation="animationBtn"
-            :is-loading="isLoadingObjects"
-            local-class="style_button"
-            local-text="Сохранить изменения"
-            @click-button="onSave"
-          />
-
-          <ButtonStyled
-            :custom-slot="true"
-            @click-button="closeModal"
-          >
-            <span>
-              Скачать PDF
-            </span>
-          </ButtonStyled>
-        </div>
-
         <ButtonStyled
-          local-class="style_close"
-          local-text="Закрыть"
-          @click-button="closeModal"
+          :is-animation="animationBtn"
+          :is-loading="isLoadingObjects"
+          local-class="red_style_button"
+          local-text="Сохранить"
+          @click-button="onSave"
         />
-      </template>
+      </div>
     </div>
+
+<!--    <div class="object-wrapper-footer">-->
+<!--      <template v-if="isMobile">-->
+<!--        <div class="object-wrapper-footer__left">-->
+<!--          <ButtonStyled-->
+<!--            :custom-slot="true"-->
+<!--            :is-animation="animationBtn"-->
+<!--            :is-loading="isLoadingObjects"-->
+<!--            :is-mobile="true"-->
+<!--            local-class="style_button"-->
+<!--            @click-button="closeModal"-->
+<!--          >-->
+<!--            <v-icon>-->
+<!--              mdi-content-save-outline-->
+<!--            </v-icon>-->
+<!--          </ButtonStyled>-->
+
+<!--          <ButtonStyled-->
+<!--            :custom-slot="true"-->
+<!--            :is-mobile="true"-->
+<!--            @click-button="stateTagsTechBlock = true;"-->
+<!--          >-->
+<!--            <v-icon>mdi-tray-arrow-down</v-icon>-->
+<!--          </ButtonStyled>-->
+<!--        </div>-->
+
+<!--        <ButtonStyled-->
+<!--          :custom-slot="true"-->
+<!--          :is-mobile="true"-->
+<!--          local-class="style_close"-->
+<!--          local-text="Отмена"-->
+<!--          @click-button="closeModal"-->
+<!--        >-->
+<!--          <v-icon>-->
+<!--            mdi-window-close-->
+<!--          </v-icon>-->
+<!--        </ButtonStyled>-->
+
+<!--        <v-dialog-->
+<!--          v-model="stateTagsTechBlock"-->
+<!--          width="1080"-->
+<!--        >-->
+<!--          <v-card>-->
+<!--            <v-card-title class="d-flex justify-end">-->
+<!--              <v-icon @click="stateTagsTechBlock = false;">-->
+<!--                mdi-close-->
+<!--              </v-icon>-->
+<!--            </v-card-title>-->
+<!--            <v-card-text>-->
+<!--              <TagsTechBlock/>-->
+<!--            </v-card-text>-->
+<!--          </v-card>-->
+<!--        </v-dialog>-->
+<!--      </template>-->
+
+<!--      <template v-else>-->
+<!--        <div class="object-wrapper-footer__left">-->
+<!--          <ButtonStyled-->
+<!--            :is-animation="animationBtn"-->
+<!--            :is-loading="isLoadingObjects"-->
+<!--            local-class="style_button"-->
+<!--            local-text="Сохранить изменения"-->
+<!--            @click-button="onSave"-->
+<!--          />-->
+
+<!--          <ButtonStyled-->
+<!--            :custom-slot="true"-->
+<!--            @click-button="closeModal"-->
+<!--          >-->
+<!--            <span>-->
+<!--              Скачать PDF-->
+<!--            </span>-->
+<!--          </ButtonStyled>-->
+<!--        </div>-->
+
+<!--        <ButtonStyled-->
+<!--          local-class="style_close"-->
+<!--          local-text="Закрыть"-->
+<!--          @click-button="closeModal"-->
+<!--        />-->
+<!--      </template>-->
+<!--    </div>-->
   </v-card>
 </template>
 
@@ -280,10 +323,12 @@ import ListFilesStyled from '~/components/Common/ListFilesStyled';
 import Collaboration from '~/components/Modals/Collaboration';
 import InputStyled from '~/components/Common/InputStyled';
 import TagsTechBlock from '~/components/Widgets/TagsTechBlock';
+import CustomField from '../Common/CustomField.vue';
 
 export default {
   name: 'ObjectGlobal',
   components: {
+    CustomField,
     TagsTechBlock,
     InputStyled,
     CopyLinkButton,
@@ -335,6 +380,8 @@ export default {
   mounted() {
     this.getObjectFromProp();
 
+    this.getTabData()
+
     // eslint-disable-next-line nuxt/no-env-in-hooks
     if (process.client && this.$refs.scrollParent) {
       const tabContent = this.$refs.scrollParent;
@@ -348,6 +395,8 @@ export default {
   computed: {
     ...mapState('Objects', ['isLoadingObjects', 'listObjects']),
     ...mapGetters(['getUserId']),
+    ...mapState('Tabs', ['tabs', 'isLoading', 'tabData', 'isLoadingData']),
+
 
     notEmptyObject() {
       return !!Object.keys(this.object).length;
@@ -368,8 +417,9 @@ export default {
     },
   },
   methods: {
+    ...mapActions('Tabs', ['getTabs', 'getTabInfo', 'getInputTypes']),
     ...mapActions('Objects', ['saveObjData', 'getListObjectsByUserId']),
-    ...mapMutations('Tabs', ['setLoadingData']),
+    ...mapMutations('Tabs', ['setLoadingData', 'setTabData']),
 
     scrollBot() {
       this.$refs.scrollParent.scrollTo({
@@ -403,8 +453,16 @@ export default {
         }
       }, 400);
     },
-    changeTab() {
-      this.scrollWindow();
+    async getTabData() {
+      await this.getTabs()
+      await this.getInputTypes()
+      if (this.tabs && this.tabs.length) {
+        await this.changeTab('all')
+      }
+    },
+    changeTab(code) {
+      this.getTabInfo(code)
+      this.$emit('change-tab')
     },
     async onSave() {
       this.$toast.success('Данные сохранены', { duration: 5000 });
@@ -487,16 +545,52 @@ export default {
       this.updateProperties.address = data.address;
       this.updateProperties.lat = data.coords[0];
       this.updateProperties.long = data.coords[1];
+    },
+    getObjectProperty(key) {
+      return this.objectData[key] ? this.objectData[key] : null
+    },
+    getItems(input) {
+      return input?.d_dictionaries?.d_dictionary_attributes && input?.d_dictionaries?.d_dictionary_attributes.length ? input?.d_dictionaries?.d_dictionary_attributes : []
+    },
+    getInputType(input) {
+      return input?.d_property_objects?.code ? input.d_property_objects.code : 'stroka'
+    },
+    changeAnswer(value, code) {
+      this.$emit('update-prop', { key: code, value })
+
+      if (code === 'tip-obekta') {
+        this.getTabs()
+      }
+    },
+    changeFileData(value, code) {
+      this.$emit('update-file', { key: code, value: value.data, index: value.index })
+      // КОСТЫЛЬ, чтобы реактивность во vue заработала
+      this.setTabData(this.tabData)
+    },
+    focusIn(item) {
+      item.active = true
+    },
+    focusOut(item) {
+      item.active = false
+      this.$emit('focus-out-field')
     }
   },
+
   destroyed() {
     // eslint-disable-next-line nuxt/no-env-in-hooks
     if (process.client) {
       window.removeEventListener('scroll', this.scrollWindow);
     }
-  }
+  },
+
 };
 </script>
+
+<style lang="scss">
+.v-expansion-panel-header__icon {
+  margin-left: 10px !important;
+}
+</style>
 
 <style lang="scss" scoped>
 @import 'assets/styles/style';
@@ -504,9 +598,8 @@ export default {
 .object_wrapper {
   font-family: 'Inter', sans-serif;
   display: flex;
-  min-height: 1000px !important;
-  max-height: 1000px !important;
-  overflow: auto;
+  min-height: 880px !important;
+  max-height: 880px !important;
   .object_title_container {
     padding: 20px 40px;
     display: flex;
@@ -540,7 +633,7 @@ export default {
   }
   .images_wrapper {
     display: flex;
-    padding: 0 40px;
+    padding: 0 40px 20px;
     grid-column-gap: 40px;
     .main_photo {
       .img {
@@ -570,7 +663,46 @@ export default {
     }
 
   }
+  .tabs_wrapper {
+    padding: 20px 40px;
+    overflow: auto;
+    .v-tab {
+      color: #777777;
+      max-height: 25px;
+      margin: 0 20px 0 0!important;
+      padding: 0 !important;
+      border-bottom: 3px solid #FFFFff;
+    }
+    .v-tab:before {
+      color: #000000;
+    }
+    .v-tab--active {
+      color: #000000;
+      border-bottom: 3px solid #FF6347;
+    }
+
+    .obj_prop_style {
+      margin-bottom: 10px;
+
+    }
+    .v-expansion-panel-header {
+      padding: 0 !important;
+    }
+  }
+  .footer {
+    margin-top: auto;
+    .object_footer_buttons {
+      display: flex;
+      grid-column-gap: 20px;
+      justify-content: flex-end;
+      padding: 20px 40px;
+
+    }
+  }
+
 }
+
+
 
 .object-wrapper {
   display: flex;
