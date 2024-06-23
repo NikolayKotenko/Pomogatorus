@@ -131,79 +131,56 @@
             </v-expansion-panel>
           </v-expansion-panels>
         </v-tab-item>
-        <v-tab-item :key="1"></v-tab-item>
+        <v-tab-item :key="1">
+          <v-expansion-panels
+            accordion
+            flat
+          >
+            <v-expansion-panel>
+              <v-expansion-panel-header>
+                Добавленно в объект
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <div class="favorites_products_list">
+                  <div
+                    v-for="(product, index) in $store.state.NomenclatureModule.listFavoriteNomenclature"
+                    :key="index"
+                    class="favorite_product_card"
+                  >
+                    <v-img
+                      v-if="product.nomenclature._family.photos.length"
+                      :src="product.nomenclature._family.photos[0].url"
+                      class="img"
+                      height="100%"
+                    />
+                    <div v-else class="empty_placeholder"/>
+                    <div class="product_name_container">
+                      {{ product.nomenclature.name }}
+                    </div>
+                    <img :src="require(`~/assets/svg/icons/delete_icon.svg`)" alt="Удалить">
+                  </div>
+                </div>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+            <v-expansion-panel>
+              <v-expansion-panel-header>
+                Купленное оборудование
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+            <v-expansion-panel>
+              <v-expansion-panel-header>
+                Установленное оборудование
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
+        </v-tab-item>
         <v-tab-item :key="2"></v-tab-item>
       </v-tabs>
     </div>
-
-<!--        <v-tabs color="#000000">-->
-<!--          <v-tab :key="0">-->
-<!--            Параметры объекта-->
-<!--          </v-tab>-->
-<!--          <v-tab-->
-<!--            :key="1"-->
-<!--            @click="$store.dispatch('NomenclatureModule/getListFavoriteNomenclatureByUserAndObjectId')"-->
-<!--          >-->
-<!--            Избранное оборудование-->
-<!--            <v-badge-->
-<!--              :content="$store.state.NomenclatureModule.listFavoriteNomenclature.length"-->
-<!--              :value="$store.state.NomenclatureModule.listFavoriteNomenclature.length"-->
-<!--              color="#95D7AE"-->
-<!--            />-->
-<!--          </v-tab>-->
-<!--          <v-tab :key="2">-->
-<!--            Купленное оборудование-->
-<!--          </v-tab>-->
-<!--          <v-tab :key="3">-->
-<!--            Установленное оборудование-->
-<!--          </v-tab>-->
-
-<!--          &lt;!&ndash; Параметры объекта &ndash;&gt;-->
-<!--          <v-tab-item :key="0">-->
-<!--            <v-card-text-->
-<!--              ref="scrollParent"-->
-<!--              :class="{'object-wrapper-main&#45;&#45;mobile': isMobile, 'object-wrapper-main&#45;&#45;mobile&#45;&#45;move': isMoving}"-->
-<!--              class="object-wrapper-main"-->
-<!--              style="height: 1200px;"-->
-<!--            >-->
-
-<!--              <div class="object-wrapper-tabs">-->
-<!--                <TabsCustom-->
-<!--                  ref="tabContent"-->
-<!--                  :data-object="object"-->
-<!--                  :deleted-file="deletedFile"-->
-<!--                  @update-prop="setField"-->
-<!--                  @update-file="setFileField"-->
-<!--                  @change-tab="changeTab"-->
-<!--                  @remove-file="removeFile"-->
-<!--                  @focus-out-field="animationSaveBtn"-->
-<!--                />-->
-
-<!--                <div :class="{'show-more': showMore}" class="more-arrow">-->
-<!--                  <img alt="more" src="@/assets/svg/chevron-more.svg" @click="scrollBot">-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </v-card-text>-->
-<!--          </v-tab-item>-->
-
-<!--          &lt;!&ndash; Оборудование на объекте &ndash;&gt;-->
-<!--          <v-tab-item :key="1">-->
-<!--            <v-container class="object_products">-->
-<!--              <div-->
-<!--                v-for="(item, index) in $store.state.NomenclatureModule.listFavoriteNomenclature"-->
-<!--                :key="index"-->
-<!--              >-->
-<!--                <span>{{ item.name }}</span>-->
-<!--              </div>-->
-<!--            </v-container>-->
-<!--          </v-tab-item>-->
-<!--          <v-tab-item :key="2">-->
-<!--            <v-container class="object_products"/>-->
-<!--          </v-tab-item>-->
-<!--          <v-tab-item :key="3">-->
-<!--            <v-container class="object_products"/>-->
-<!--          </v-tab-item>-->
-<!--        </v-tabs>-->
 
     <div class="footer">
       <v-divider style="border-color: #DDDDDD;"/>
@@ -225,120 +202,28 @@
         />
       </div>
     </div>
-
-<!--    <div class="object-wrapper-footer">-->
-<!--      <template v-if="isMobile">-->
-<!--        <div class="object-wrapper-footer__left">-->
-<!--          <ButtonStyled-->
-<!--            :custom-slot="true"-->
-<!--            :is-animation="animationBtn"-->
-<!--            :is-loading="isLoadingObjects"-->
-<!--            :is-mobile="true"-->
-<!--            local-class="style_button"-->
-<!--            @click-button="closeModal"-->
-<!--          >-->
-<!--            <v-icon>-->
-<!--              mdi-content-save-outline-->
-<!--            </v-icon>-->
-<!--          </ButtonStyled>-->
-
-<!--          <ButtonStyled-->
-<!--            :custom-slot="true"-->
-<!--            :is-mobile="true"-->
-<!--            @click-button="stateTagsTechBlock = true;"-->
-<!--          >-->
-<!--            <v-icon>mdi-tray-arrow-down</v-icon>-->
-<!--          </ButtonStyled>-->
-<!--        </div>-->
-
-<!--        <ButtonStyled-->
-<!--          :custom-slot="true"-->
-<!--          :is-mobile="true"-->
-<!--          local-class="style_close"-->
-<!--          local-text="Отмена"-->
-<!--          @click-button="closeModal"-->
-<!--        >-->
-<!--          <v-icon>-->
-<!--            mdi-window-close-->
-<!--          </v-icon>-->
-<!--        </ButtonStyled>-->
-
-<!--        <v-dialog-->
-<!--          v-model="stateTagsTechBlock"-->
-<!--          width="1080"-->
-<!--        >-->
-<!--          <v-card>-->
-<!--            <v-card-title class="d-flex justify-end">-->
-<!--              <v-icon @click="stateTagsTechBlock = false;">-->
-<!--                mdi-close-->
-<!--              </v-icon>-->
-<!--            </v-card-title>-->
-<!--            <v-card-text>-->
-<!--              <TagsTechBlock/>-->
-<!--            </v-card-text>-->
-<!--          </v-card>-->
-<!--        </v-dialog>-->
-<!--      </template>-->
-
-<!--      <template v-else>-->
-<!--        <div class="object-wrapper-footer__left">-->
-<!--          <ButtonStyled-->
-<!--            :is-animation="animationBtn"-->
-<!--            :is-loading="isLoadingObjects"-->
-<!--            local-class="style_button"-->
-<!--            local-text="Сохранить изменения"-->
-<!--            @click-button="onSave"-->
-<!--          />-->
-
-<!--          <ButtonStyled-->
-<!--            :custom-slot="true"-->
-<!--            @click-button="closeModal"-->
-<!--          >-->
-<!--            <span>-->
-<!--              Скачать PDF-->
-<!--            </span>-->
-<!--          </ButtonStyled>-->
-<!--        </div>-->
-
-<!--        <ButtonStyled-->
-<!--          local-class="style_close"-->
-<!--          local-text="Закрыть"-->
-<!--          @click-button="closeModal"-->
-<!--        />-->
-<!--      </template>-->
-<!--    </div>-->
   </v-card>
 </template>
 
 <script>
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex';
 import Vue from 'vue';
-import TabsCustom from '../Common/TabsCustom';
 import SelectObjectStyled from '../Common/SelectObjectStyled';
 import SelectGeo from '../Common/SelectGeo';
 import ButtonStyled from '../Common/ButtonStyled';
 import TooltipStyled from '../Common/TooltipStyled.vue';
-import CopyLinkButton from '../Common/CopyLinkButton.vue';
-import ListFilesStyled from '~/components/Common/ListFilesStyled';
-import Collaboration from '~/components/Modals/Collaboration';
 import InputStyled from '~/components/Common/InputStyled';
-import TagsTechBlock from '~/components/Widgets/TagsTechBlock';
-import CustomField from '../Common/CustomField.vue';
+import CustomField from '~/Common/CustomField.vue';
 
 export default {
   name: 'ObjectGlobal',
   components: {
     CustomField,
-    TagsTechBlock,
     InputStyled,
-    CopyLinkButton,
     TooltipStyled,
-    Collaboration,
-    ListFilesStyled,
     ButtonStyled,
     SelectGeo,
     SelectObjectStyled,
-    TabsCustom
   },
   props: {
     objectData: {
@@ -377,21 +262,6 @@ export default {
       }
     }
   },
-  mounted() {
-    this.getObjectFromProp();
-
-    this.getTabData()
-
-    // eslint-disable-next-line nuxt/no-env-in-hooks
-    if (process.client && this.$refs.scrollParent) {
-      const tabContent = this.$refs.scrollParent;
-      tabContent.addEventListener('scroll', this.scrollWindow);
-      if (this.isMobile) {
-        tabContent.addEventListener('scroll', this.scrollHeader, false);
-      }
-      this.scrollWindow();
-    }
-  },
   computed: {
     ...mapState('Objects', ['isLoadingObjects', 'listObjects']),
     ...mapGetters(['getUserId']),
@@ -416,6 +286,24 @@ export default {
       return this.objectData['osnovnoe-foto-obekta'].length;
     },
   },
+  async mounted() {
+    await this.$store.dispatch('NomenclatureModule/getListFavoriteNomenclatureByUserAndObjectId')
+
+    this.getObjectFromProp();
+
+    await this.getTabData()
+
+    // eslint-disable-next-line nuxt/no-env-in-hooks
+    if (process.client && this.$refs.scrollParent) {
+      const tabContent = this.$refs.scrollParent;
+      tabContent.addEventListener('scroll', this.scrollWindow);
+      if (this.isMobile) {
+        tabContent.addEventListener('scroll', this.scrollHeader, false);
+      }
+      this.scrollWindow();
+    }
+  },
+
   methods: {
     ...mapActions('Tabs', ['getTabs', 'getTabInfo', 'getInputTypes']),
     ...mapActions('Objects', ['saveObjData', 'getListObjectsByUserId']),
@@ -465,13 +353,16 @@ export default {
       this.$emit('change-tab')
     },
     async onSave() {
-      this.$toast.success('Данные сохранены', { duration: 5000 });
+
       await this.saveObjData({ id: this.object.id, keys: this.updateProperties });
       // Для обновления списка который прокидываем в SelectObjectStyled
       await this.getListObjectsByUserId();
       // Для переключения режима редактирования выбора того же селекта
       this.stateSelectEditNameObject = true;
+
       this.closeModal();
+
+      this.$toast.success('Данные сохранены', { duration: 5000 });
     },
     closeModal() {
       this.$emit('close-modal');
@@ -493,9 +384,20 @@ export default {
       }
       this.stateSelectEditNameObject = !this.stateSelectEditNameObject;
     },
-    setField(data) {
+    setField(data, code) {
       this.object[data.key] = data.value;
       this.updateProperties[data.key] = data.value;
+
+      if (code === 'tip-obekta') {
+        this.getTabs()
+      }
+    },
+    changeAnswer(value, code) {
+      this.setField({ key: code, value } )
+
+      if (code === 'tip-obekta') {
+        this.getTabs()
+      }
     },
     setFileField(data) {
       if (!this.object[data.key]) {
@@ -504,6 +406,11 @@ export default {
         this.object[data.key].push(data.value);
       }
       this.updateProperties[data.key] = data.value;
+    },
+    changeFileData(value, code) {
+      this.setFileField({ key: code, value: value.data, index: value.index })
+      // КОСТЫЛЬ, чтобы реактивность во vue заработала
+      this.setTabData(this.tabData)
     },
     removeFile(data) {
       const index = this.object[data.key].findIndex(file => file.id === data.value);
@@ -555,18 +462,7 @@ export default {
     getInputType(input) {
       return input?.d_property_objects?.code ? input.d_property_objects.code : 'stroka'
     },
-    changeAnswer(value, code) {
-      this.$emit('update-prop', { key: code, value })
 
-      if (code === 'tip-obekta') {
-        this.getTabs()
-      }
-    },
-    changeFileData(value, code) {
-      this.$emit('update-file', { key: code, value: value.data, index: value.index })
-      // КОСТЫЛЬ, чтобы реактивность во vue заработала
-      this.setTabData(this.tabData)
-    },
     focusIn(item) {
       item.active = true
     },
@@ -598,8 +494,8 @@ export default {
 .object_wrapper {
   font-family: 'Inter', sans-serif;
   display: flex;
-  min-height: 880px !important;
-  max-height: 880px !important;
+  min-height: 800px !important;
+  max-height: 800px !important;
   .object_title_container {
     padding: 20px 40px;
     display: flex;
@@ -689,6 +585,45 @@ export default {
       padding: 0 !important;
     }
   }
+
+  .favorites_products_list {
+    display: grid;
+    grid-row-gap: 20px;
+    .favorite_product_card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      grid-column-gap: 10px;
+      .img {
+        width: 60px;
+        height: 60px;
+        min-width: 60px;
+        min-height: 60px;
+        border-radius: 8px;
+        border: 2px solid #DDDDDD;
+      }
+      .empty_placeholder {
+        background-color: #DDDDDD;
+        min-width: 60px;
+        min-height: 60px;
+        background-image: url("assets/svg/icons/no_img_icon.svg");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 50%;
+        border-radius: 8px;
+        display: flex;
+      }
+      .product_name_container {
+        border-radius: 15px;
+        border: 2px solid var(--gray_1, #DDD);
+        width: 100%;
+        height: 40px;
+        align-content: center;
+        padding: 0 20px;
+      }
+    }
+  }
+
   .footer {
     margin-top: auto;
     .object_footer_buttons {

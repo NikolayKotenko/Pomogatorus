@@ -145,11 +145,10 @@
 
 import ButtonStyled from '../Common/ButtonStyled.vue'
 import ViewerStyled from '../Common/ViewerStyled.vue'
-import AddToFavoriteNomenclatures from '../Common/AddToFavoriteNomenclatures.vue'
 
 export default {
   name: 'ProductModal',
-  components: { AddToFavoriteNomenclatures, ViewerStyled, ButtonStyled },
+  components: { ViewerStyled, ButtonStyled },
   props: {
     currentProduct: {
       type: Object,

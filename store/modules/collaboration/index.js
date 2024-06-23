@@ -198,7 +198,7 @@ export default {
       this.$toast.success('Специалист удалён из избранного')
 
       await dispatch('getListFavoriteUsers')
-    }
+    },
    },
   getters: {
     getFilteredListByRoleExperts(state) {

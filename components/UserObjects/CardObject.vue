@@ -66,16 +66,10 @@
 </template>
 
 <script>
-import ButtonStyled from '../Common/ButtonStyled.vue';
-import Collaboration from '../Modals/Collaboration.vue';
-import TooltipStyled from '../Common/TooltipStyled.vue';
-import CopyLinkButton from '../Common/CopyLinkButton.vue';
-
-
 export default {
   name: 'CardObject',
-  components: { CopyLinkButton, TooltipStyled, Collaboration, ButtonStyled },
-  // eslint-disable-next-line vue/prop-name-casing
+  components: {  },
+  // eslint-disable-next-line vue/prop-name-casing,vue/require-prop-types
   props: ['object_data'],
   data: () => ({
     showDetailObj: false,

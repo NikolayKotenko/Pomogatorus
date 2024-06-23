@@ -47,7 +47,7 @@
       </div>
     </div>
 
-    <VDialog
+    <v-dialog
       v-if="showDetail"
       v-model="showDetail"
       :fullscreen="isMobile"
@@ -61,7 +61,13 @@
         :object-data="detailData"
         @close-modal="closeDetailObj"
       />
-    </VDialog>
+    </v-dialog>
+    <v-overlay :value="! listObjectExcludedCurrent.length" opacity="1">
+      <v-progress-circular
+        indeterminate
+        size="64"
+      />
+    </v-overlay>
   </v-container>
 </template>
 
