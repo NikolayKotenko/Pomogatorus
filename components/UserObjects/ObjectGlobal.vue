@@ -17,7 +17,7 @@
         />
         <InputStyled
           v-else
-          :data="object.name"
+          :data="modalCurrentObject.name"
           :is-outlined="true"
           :placeholder="'Введите наименование объекта'"
           style="margin-left: 10px;"
@@ -49,7 +49,7 @@
         Адрес:
       </div>
       <div class="address">
-        <SelectGeo v-if="notEmptyObject" :data="object" :outer-coords="getCoords" @set-new-address="setAddressMap"/>
+        <SelectGeo v-if="notEmptyObject" :data="modalCurrentObject" :outer-coords="getCoords" @set-new-address="setAddressMap"/>
       </div>
     </div>
 
@@ -58,7 +58,7 @@
         <v-img
           v-if="stateFilledImageObject"
           :class="{'empty_placeholder': ! stateFilledImageObject }"
-          :src="$store.getters.getImageMainPhotoObjects(objectData['osnovnoe-foto-obekta'][0])"
+          :src="$store.getters.getImageMainPhotoObjects(modalCurrentObject['osnovnoe-foto-obekta'][0])"
           class="img"
           height="100%"
         />
@@ -94,7 +94,7 @@
                 {{ panel.name }}
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <template v-if="isLoadingData || !objectData || !Object.keys(objectData).length">
+                <template v-if="isLoadingData || !modalCurrentObject || !Object.keys(modalCurrentObject).length">
                   <v-progress-circular
                     :size="30"
                     color="#FF6347"
@@ -113,7 +113,7 @@
                       :code-property="tabItem.code"
                       :data="getObjectProperty(tabItem.code)"
                       :deleted-file="deletedFile"
-                      :id-object="objectData.id"
+                      :id-object="modalCurrentObject.id"
                       :id-property="tabItem.id"
                       :items="getItems(tabItem)"
                       :label="tabItem.name"
@@ -193,14 +193,21 @@
     <div class="footer">
       <v-divider style="border-color: #DDDDDD;"/>
       <div class="object_footer_buttons">
-        <ButtonStyled
-          :custom-slot="true"
-          local-class="red_style_button"
-        >
-          <span>
-            Скачать PDF
-          </span>
-        </ButtonStyled>
+        <DropDownMenuStyled :is-left="true" :is-offset-y="true" :is-top="true" :nudge-top="0" :nudge-right="10">
+          <template #icon>
+            <ButtonStyled
+              :custom-slot="true"
+              local-class="red_style_button"
+            >
+              <span>
+                Сгенерировать PDF
+              </span>
+            </ButtonStyled>
+          </template>
+          <template #content>
+            <TagsTechBlock/>
+          </template>
+        </DropDownMenuStyled>
         <ButtonStyled
           :is-animation="animationBtn"
           :is-loading="isLoadingObjects"
@@ -221,13 +228,15 @@ import SelectGeo from '../Common/SelectGeo';
 import ButtonStyled from '../Common/ButtonStyled';
 import TooltipStyled from '../Common/TooltipStyled.vue';
 import CustomField from '../Common/CustomField.vue';
-import IconTooltip from '../Common/IconTooltip.vue'
+import TagsTechBlock from '../Widgets/TagsTechBlock.vue'
+import DropDownMenuStyled from '../Common/DropDownMenuStyled.vue'
 import InputStyled from '~/components/Common/InputStyled';
 
 export default {
   name: 'ObjectGlobal',
   components: {
-    IconTooltip,
+    DropDownMenuStyled,
+    TagsTechBlock,
     CustomField,
     InputStyled,
     TooltipStyled,
@@ -259,6 +268,7 @@ export default {
   watch: {
     'objectData': {
       handler(v) {
+        console.log('ASDAS', v)
         if (!v) return false;
 
         this.object = v;
@@ -270,19 +280,18 @@ export default {
           this.getListObjectsByUserId();
         }
       }
-    }
+    },
   },
   computed: {
-    ...mapState('Objects', ['isLoadingObjects', 'listObjects']),
+    ...mapState('Objects', ['isLoadingObjects', 'listObjects', 'modalCurrentObject']),
     ...mapGetters(['getUserId']),
     ...mapState('Tabs', ['tabs', 'isLoading', 'tabData', 'isLoadingData']),
 
-
     notEmptyObject() {
-      return !!Object.keys(this.object).length;
+      return !!Object.keys(this.modalCurrentObject).length;
     },
     getCoords() {
-      return this.object?.long && this.object?.lat ? [this.object.lat, this.object.long] : [55.753215, 37.622504];
+      return this.object?.long && this.object?.lat ? [this.modalCurrentObject.lat, this.modalCurrentObject.long] : [55.753215, 37.622504];
     },
     showMore() {
       return ((this.parentHeight + this.scrollHeight + this.minHeightInput) <= this.maxScroll);
@@ -291,12 +300,16 @@ export default {
       return this.$device.isMobile;
     },
     stateFilledImageObject() {
-      if (!this.objectData.hasOwnProperty('osnovnoe-foto-obekta')) return false;
+      if (!this.modalCurrentObject.hasOwnProperty('osnovnoe-foto-obekta')) return false;
 
-      return this.objectData['osnovnoe-foto-obekta'].length;
+      return this.modalCurrentObject['osnovnoe-foto-obekta'].length;
     },
   },
   async mounted() {
+    if (Object.keys(this.objectData).length) {
+      this.set_modal_current_object(this.objectData);
+    }
+
     await this.$store.dispatch('NomenclatureModule/getListFavoriteNomenclatureByUserAndObjectId')
 
     this.getObjectFromProp();
@@ -318,6 +331,7 @@ export default {
     ...mapActions('Tabs', ['getTabs', 'getTabInfo', 'getInputTypes']),
     ...mapActions('Objects', ['saveObjData', 'getListObjectsByUserId']),
     ...mapMutations('Tabs', ['setLoadingData', 'setTabData']),
+    ...mapMutations('Objects', ['set_modal_current_object']),
 
     scrollBot() {
       this.$refs.scrollParent.scrollTo({
@@ -364,7 +378,7 @@ export default {
     },
     async onSave() {
 
-      await this.saveObjData({ id: this.object.id, keys: this.updateProperties });
+      await this.saveObjData({ id: this.modalCurrentObject.id, keys: this.updateProperties });
       // Для обновления списка который прокидываем в SelectObjectStyled
       await this.getListObjectsByUserId();
       // Для переключения режима редактирования выбора того же селекта
@@ -385,7 +399,7 @@ export default {
       }, 2000);
     },
     setNameField(name) {
-      this.object.name = name;
+      this.modalCurrentObject.name = name;
       this.updateProperties.name = name;
     },
     setStateSelectedEditName() {
@@ -395,7 +409,7 @@ export default {
       this.stateSelectEditNameObject = !this.stateSelectEditNameObject;
     },
     setField(data, code) {
-      this.object[data.key] = data.value;
+      this.modalCurrentObject[data.key] = data.value;
       this.updateProperties[data.key] = data.value;
 
       if (code === 'tip-obekta') {
@@ -410,7 +424,7 @@ export default {
       }
     },
     setFileField(data) {
-      if (!this.object[data.key]) {
+      if (!this.modalCurrentObject[data.key]) {
         Vue.set(this.object, data.key, [data.value]);
       } else {
         this.object[data.key].push(data.value);
@@ -423,10 +437,10 @@ export default {
       this.setTabData(this.tabData)
     },
     removeFile(data) {
-      const index = this.object[data.key].findIndex(file => file.id === data.value);
+      const index = this.modalCurrentObject[data.key].findIndex(file => file.id === data.value);
 
       if (index !== -1) {
-        this.object[data.key].splice(index, 1);
+        this.modalCurrentObject[data.key].splice(index, 1);
       }
     },
     removeFromGlobal(data) {
@@ -441,30 +455,26 @@ export default {
       if (!value) return false;
 
       this.setLoadingData(true);
-      this.object = value;
-
-      // Не нужно выставлять текущий объект
-      // this.$store.dispatch('Objects/setCurrentObject', value);
+      this.set_modal_current_object(value)
 
       // TODO: Отрефакторить, но завтра сдаваться
       this.$nextTick(() => {
         this.setLoadingData(false);
       });
-
       // Событие изменение селекта прокидываем выше
       this.$emit('change-select-object', value);
     },
     setAddressMap(data) {
-      this.object.address = data.address;
-      this.object.lat = data.coords[0];
-      this.object.long = data.coords[1];
+      this.modalCurrentObject.address = data.address;
+      this.modalCurrentObject.lat = data.coords[0];
+      this.modalCurrentObject.long = data.coords[1];
 
       this.updateProperties.address = data.address;
       this.updateProperties.lat = data.coords[0];
       this.updateProperties.long = data.coords[1];
     },
     getObjectProperty(key) {
-      return this.objectData[key] ? this.objectData[key] : null
+      return this.modalCurrentObject[key] ? this.modalCurrentObject[key] : null
     },
     getItems(input) {
       return input?.d_dictionaries?.d_dictionary_attributes && input?.d_dictionaries?.d_dictionary_attributes.length ? input?.d_dictionaries?.d_dictionary_attributes : []
@@ -523,6 +533,7 @@ export default {
     }
     .select_object {
       display: flex;
+      min-width: 300px;
       align-items: center;
       font-size: 1.25em !important;
       font-weight: 600;
@@ -553,6 +564,7 @@ export default {
         height: 200px;
         min-width: 300px;
         min-height: 200px;
+        max-height: 200px;
         border-radius: 15px;
         border: 2px solid #DDDDDD;
       }

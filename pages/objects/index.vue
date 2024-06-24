@@ -9,6 +9,12 @@
     >
       авторизоваться
     </div>
+    <v-overlay :value="loadingPage" opacity="1">
+      <v-progress-circular
+        indeterminate
+        size="64"
+      />
+    </v-overlay>
   </div>
   <ListObjects v-else/>
 </template>
@@ -20,6 +26,17 @@ export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Index',
   components: { ListObjects },
+  data() {
+    return {
+     loadingPage: false
+    }
+  },
+  created() {
+    this.loadingPage = true;
+    setTimeout(() => {
+      this.loadingPage = false;
+    }, 2000);
+  },
   mounted() {
     if (!this.$store.getters.stateAuth) {
       this.$store.state.stateAuthModal = true

@@ -29,14 +29,15 @@ export default {
       state.tabs = result
     },
     setLoadingData(state, payload) {
+      console.log('43321', payload)
       state.isLoadingData = payload
     },
     setTabData(state, payload) {
-      let result = []
+      const result = []
 
       if (payload && payload.length) {
         payload.forEach((item) => {
-          let tabData = Object.assign(item, { active: false })
+          const tabData = Object.assign(item, { active: false })
           result.push(tabData)
         })
       }
@@ -76,7 +77,7 @@ export default {
         queryData = { codes_tags: payload }
       }
 
-      let query = constructFilterQuery(queryData, true)
+      const query = constructFilterQuery(queryData, true)
 
       const { data } = await Request.get(this.state.BASE_URL + `/dictionary/object-properties${query}&sort[sort]=asc`)
       commit('setTabData', data)
@@ -87,7 +88,7 @@ export default {
       commit('setLoadingData', false)
     },
     async getInputTypes({ commit }) {
-      const { data } = await Request.get(this.state.BASE_URL + `/dictionary/property-object`)
+      const { data } = await Request.get(this.state.BASE_URL + '/dictionary/property-object')
       commit('setInputTypes', data)
     },
     async removeFile({ commit }, payload) {

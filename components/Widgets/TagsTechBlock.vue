@@ -97,6 +97,11 @@ export default {
 
 .current_object__wrapper_info__hide_block {
   display: grid;
+  background-color: #FFFFFF;
+  padding: 10px;
+  border-radius: 15px;
+  margin: 10px;
+  box-shadow: 0px 4px 7px 0px rgba(0, 0, 0, 0.25);
   //grid-row-gap: 5px;
 
   &__checkbox {

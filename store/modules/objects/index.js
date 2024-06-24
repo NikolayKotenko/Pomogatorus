@@ -11,6 +11,9 @@ export default {
     // stateGlobalObjectModal: false
   },
   mutations: {
+    set_modal_current_object(state, payload){
+      state.modalCurrentObject = payload
+    },
     setLoadingObjects(state, payload) {
       state.isLoadingObjects = payload
     },
