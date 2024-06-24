@@ -64,7 +64,7 @@
         />
         <span v-else class="empty_placeholder"/>
       </div>
-      <div class="object_documents_wrapper"></div>
+      <div class="object_documents_wrapper"/>
     </div>
 
     <div class="tabs_wrapper">
@@ -100,7 +100,7 @@
                     color="#FF6347"
                     indeterminate
                     style="margin: 20px auto 40px auto"
-                  ></v-progress-circular>
+                  />
                 </template>
 
                 <template v-else>
@@ -157,7 +157,17 @@
                     <div class="product_name_container">
                       {{ product.nomenclature.name }}
                     </div>
-                    <img :src="require(`~/assets/svg/icons/delete_icon.svg`)" alt="Удалить">
+                    <TooltipStyled
+                      :is-top="true"
+                      :title="'Удалить из добавленного'"
+                    >
+                      <img
+                        :src="require(`~/assets/svg/icons/delete_icon.svg`)"
+                        alt="Удалить"
+                        style="cursor: pointer;"
+                        @click="deleteProduct(product.id_nomenclature)"
+                      >
+                    </TooltipStyled>
                   </div>
                 </div>
               </v-expansion-panel-content>
@@ -166,19 +176,17 @@
               <v-expansion-panel-header>
                 Купленное оборудование
               </v-expansion-panel-header>
-              <v-expansion-panel-content>
-              </v-expansion-panel-content>
+              <v-expansion-panel-content/>
             </v-expansion-panel>
             <v-expansion-panel>
               <v-expansion-panel-header>
                 Установленное оборудование
               </v-expansion-panel-header>
-              <v-expansion-panel-content>
-              </v-expansion-panel-content>
+              <v-expansion-panel-content/>
             </v-expansion-panel>
           </v-expansion-panels>
         </v-tab-item>
-        <v-tab-item :key="2"></v-tab-item>
+        <v-tab-item :key="2"/>
       </v-tabs>
     </div>
 
@@ -212,12 +220,14 @@ import SelectObjectStyled from '../Common/SelectObjectStyled';
 import SelectGeo from '../Common/SelectGeo';
 import ButtonStyled from '../Common/ButtonStyled';
 import TooltipStyled from '../Common/TooltipStyled.vue';
+import CustomField from '../Common/CustomField.vue';
+import IconTooltip from '../Common/IconTooltip.vue'
 import InputStyled from '~/components/Common/InputStyled';
-import CustomField from '~/Common/CustomField.vue';
 
 export default {
   name: 'ObjectGlobal',
   components: {
+    IconTooltip,
     CustomField,
     InputStyled,
     TooltipStyled,
@@ -434,7 +444,7 @@ export default {
       this.object = value;
 
       // Не нужно выставлять текущий объект
-      // await this.$store.dispatch("Objects/setCurrentObject", value);
+      this.$store.dispatch('Objects/setCurrentObject', value);
 
       // TODO: Отрефакторить, но завтра сдаваться
       this.$nextTick(() => {
@@ -469,6 +479,12 @@ export default {
     focusOut(item) {
       item.active = false
       this.$emit('focus-out-field')
+    },
+
+    async deleteProduct(productId) {
+      await this.$store.dispatch('NomenclatureModule/deleteOneFavoriteNomenclature', productId)
+
+      this.$toast.success('Оборудование удаленно')
     }
   },
 
@@ -618,7 +634,8 @@ export default {
         border: 2px solid var(--gray_1, #DDD);
         width: 100%;
         height: 40px;
-        align-content: center;
+        display: flex;
+        align-items: center;
         padding: 0 20px;
       }
     }

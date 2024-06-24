@@ -277,9 +277,9 @@ export default {
   }
 }
 
-.scrolling-item {
-  animation: my-animation 10s linear infinite;
-}
+//.scrolling-item {
+//  animation: my-animation 10s linear infinite;
+//}
 
 .selected-item {
   white-space: nowrap;
