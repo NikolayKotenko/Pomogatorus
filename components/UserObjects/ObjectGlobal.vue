@@ -444,7 +444,7 @@ export default {
       this.object = value;
 
       // Не нужно выставлять текущий объект
-      this.$store.dispatch('Objects/setCurrentObject', value);
+      // this.$store.dispatch('Objects/setCurrentObject', value);
 
       // TODO: Отрефакторить, но завтра сдаваться
       this.$nextTick(() => {
