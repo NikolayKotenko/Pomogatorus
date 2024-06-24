@@ -1,10 +1,18 @@
+@mixin chips-container {
+  display: flex;
+  row-gap: 6px;
+  column-gap: 6px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+
 .products {
   position: relative;
 }
 
 .products-filters {
   position: absolute;
-  left: -450px;
+  left: 150px;
 }
 
 .nomenclature-filter-wrapper {
@@ -64,3 +72,22 @@
     column-gap: 6px;
   }
 }
+
+.filter-autocomplete {
+  &__selected {
+    @include chips-container;
+
+    &__icon {
+      margin-right: 2px;
+    }
+  }
+}
+
+.filter-checkbox {
+  @include chips-container;
+
+  &__icon {
+    margin-right: 2px;
+  }
+}
+

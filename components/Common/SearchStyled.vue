@@ -1,5 +1,6 @@
 <template>
   <VCombobox
+    ref="select"
     v-model="currentData"
     :chips="isChips"
     :class="isCustomClass"
@@ -14,8 +15,9 @@
     :item-value="isItemValue"
     :items="isItems"
     :loading="isLoading"
-    :menu-props="(computedSearchInputState && compareSearchStringAndExistEntry) ? {} : {value: false}"
+    :menu-props="(alwaysShow || (computedSearchInputState && compareSearchStringAndExistEntry)) ? {} : {value: false}"
     :outlined="isOutlined"
+    :persistent-placeholder="isPersistentPlaceholder"
     :placeholder="isPlaceholder"
     :return-object="isReturnObject"
     :rounded="isRounded"
@@ -38,33 +40,43 @@
         {{ iconPrepend }}
       </v-icon>
     </template>
-    <template
-      v-if="isGlobalSearch"
-      #item="data"
-    >
-      <v-list-item-content
-        class="search_item"
-        @click="watchDataRedirect(data.item)"
+
+    <template #item="data">
+      <template
+        v-if="isGlobalSearch"
       >
-        <span
-          v-html="getTitleString(data.item.text)"
-        />
-        <span
-          style="font-size: 0.8em; color: #B6B6B6;"
+        <v-list-item-content
+          class="search_item"
+          @click="watchDataRedirect(data.item)"
         >
-          - {{ data.item.category }}
-        </span>
-      </v-list-item-content>
-    </template>
-    <template
-      v-if="isCustomTemplateSelections"
-      #item="data"
-    >
-      <v-list-item-content class="search_item">
-        <span v-html="getTitleString(data.item.city)"/>
-        <br>
-        <span style="font-size: 0.8em; color: #B6B6B6;">{{ data.item.address }}</span>
-      </v-list-item-content>
+          <span
+            v-html="getTitleString(data.item.text)"
+          />
+          <span
+            style="font-size: 0.8em; color: #B6B6B6;"
+          >
+            - {{ data.item.category }}
+          </span>
+        </v-list-item-content>
+      </template>
+
+      <template
+        v-if="isCustomTemplateSelections"
+      >
+        <v-list-item-content class="search_item">
+          <span v-html="getTitleString(data.item.city)"/>
+          <br>
+          <span style="font-size: 0.8em; color: #B6B6B6;">{{ data.item.address }}</span>
+        </v-list-item-content>
+      </template>
+
+      <template v-else>
+        <v-list-item-content
+          class="search_item"
+        >
+          <span>{{ data.item[isItemText] }}</span>
+        </v-list-item-content>
+      </template>
     </template>
   </VCombobox>
 </template>
@@ -172,11 +184,21 @@ export default {
     clearAfterSelect: {
       type: Boolean,
       default: false
+    },
+    isPersistentPlaceholder: {
+      type: Boolean,
+      default: false
+    },
+    // Флаг отвечает чтобы появился выпадающий список, раньше были специальные условия для отображения
+    alwaysShow: {
+      type: Boolean,
+      default: false
     }
   },
   data: () => ({
     localSearchInputSync: '',
-    localSelected: null
+    localSelected: null,
+    resetChange: false
   }),
   computed: {
     currentData: {
@@ -187,9 +209,21 @@ export default {
         return this.localSelected
       },
       set(value) {
+        if (this.resetChange) {
+          return
+        }
         // Если не нужно отображать в инпуте выбранный результат
         if (this.clearAfterSelect) {
           this.$emit('select-item', value)
+
+          this.$nextTick(() => {
+            this.resetChange = true
+            this.$refs.select.reset()
+
+            setTimeout(() => {
+              this.resetChange = false
+            }, 500)
+          })
         } else {
           this.localSelected = value
         }

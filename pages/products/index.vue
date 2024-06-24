@@ -56,7 +56,7 @@
   </v-container>
 </template>
 <script>
-import ProductCard from '../../components/Products/ProductCard.vue';
+import ProductCard from '../../components/Products/ProductCard.vue'
 import UniversalFilter from '../../components/Common/UniversalFilter.vue'
 import Right from '../../components/CascadModels/Right.vue'
 import WrapperStickyCurrentObject from '../../components/Widgets/WrapperStickyCurrentObject.vue'
@@ -66,10 +66,11 @@ import NomenclatureFilters from '../../components/Nomenclature/NomenclatureFilte
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'index.vue',
+  // eslint-disable-next-line vue/no-unused-components
   components: { ProductModal, WrapperStickyCurrentObject, Right, UniversalFilter, ProductCard, NomenclatureFilters },
   async mounted() {
-    await this.getNextPageData();
-    await this.$store.dispatch('NomenclatureModule/getListNomenclature');
+    await this.getNextPageData()
+    await this.$store.dispatch('NomenclatureModule/getListNomenclature')
     await this.$store.dispatch('NomenclatureModule/getListFavoriteNomenclatureByUserAndObjectId')
   },
   methods: {
@@ -81,18 +82,20 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 .products_page_wrapper {
   display: grid;
-  row-gap:10px;
+  row-gap: 10px;
   justify-content: center;
   position: relative;
+
   .current_object_sticky {
     position: absolute;
     right: - 150px;
   }
 
 }
+
 .search_container {
   display: flex;
   grid-column-gap: 1em;
