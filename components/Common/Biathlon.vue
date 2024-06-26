@@ -27,7 +27,7 @@
                   >
                     <template>
                       <v-radio-group :value="getAnswer(item)" readonly success>
-                        <v-radio :ripple="false" :value="getAnswer(item)" readonly @click="scrollToQuestion(item)" />
+                        <v-radio :ripple="false" :value="getAnswer(item)" readonly @click="scrollToQuestion(item)"/>
                       </v-radio-group>
                     </template>
                   </TooltipStyled>
@@ -37,11 +37,11 @@
           </div>
           <div class="likes_and_share">
             <div class="likes_buttons">
-              <ViewsAndLikes :article="article" :view-action="viewAction" />
+              <ViewsAndLikes :article="article" :view-action="viewAction"/>
             </div>
             <div class="share_buttons">
-              <CopyLinkButton />
-              <SocialShare />
+              <CopyLinkButton/>
+              <SocialShare/>
             </div>
           </div>
         </template>
@@ -49,7 +49,7 @@
         <!-- Desktop -->
         <template v-else>
           <div class="likes_buttons">
-            <ViewsAndLikes :article="article" :view-action="viewAction" />
+            <ViewsAndLikes :article="article" :view-action="viewAction"/>
           </div>
           <div class="biathlon">
             <v-sheet class="biathlon_sheet">
@@ -70,13 +70,13 @@
                     is-top
                   >
                     <template>
-                      <v-radio-group  :value="getAnswer(item)" readonly success>
-                        <v-radio  
-                          class="biathlon_radio_style" 
-                          :ripple="false" 
-                          :value="getAnswer(item)" 
-                          readonly 
-                          @click="scrollToQuestion(item)" 
+                      <v-radio-group :value="getAnswer(item)" readonly success>
+                        <v-radio
+                          class="biathlon_radio_style"
+                          :ripple="false"
+                          :value="getAnswer(item)"
+                          readonly
+                          @click="scrollToQuestion(item)"
                         />
                       </v-radio-group>
                     </template>
@@ -86,8 +86,8 @@
             </v-sheet>
           </div>
           <div class="share_buttons">
-            <CopyLinkButton />
-            <SocialShare />
+            <CopyLinkButton/>
+            <SocialShare/>
           </div>
         </template>
       </v-footer>
@@ -96,13 +96,13 @@
 </template>
 
 <script>
-import SocialShare from "../Article/SocialShare.vue";
-import ViewsAndLikes from "./ViewsAndLikes.vue";
-import CopyLinkButton from "./CopyLinkButton.vue";
-import TooltipStyled from "./TooltipStyled";
+import SocialShare from '../Article/SocialShare.vue';
+import ViewsAndLikes from './ViewsAndLikes.vue';
+import CopyLinkButton from './CopyLinkButton.vue';
+import TooltipStyled from './TooltipStyled';
 
 export default {
-  name: "Biathlon",
+  name: 'Biathlon',
   components: { TooltipStyled, CopyLinkButton, SocialShare, ViewsAndLikes },
   props: {
     questions: {
@@ -178,35 +178,32 @@ export default {
         const checkScrollEnd = (entries, observer) => {
           entries.forEach(entry => {
             if (entry.target === elem && entry.intersectionRatio >= 0.90) {
-              setTimeout(() => {
-                this.isScrolling = false;
-                observer.disconnect();
-              }, 1500);
+
             }
           });
         };
 
         const observer = new IntersectionObserver(checkScrollEnd, {
           root: null,
-          rootMargin: "0px",
+          rootMargin: '0px',
           threshold: 0.90
         });
 
         observer.observe(elem);
 
         const top = window.scrollY + elem.getBoundingClientRect().top - heightNav;
-        window.scrollTo({ top, left: 0, behavior: "smooth" });
+        window.scrollTo({ top, left: 0, behavior: 'smooth' });
       }
     },
     getQuestionTitle(item) {
       if (this.isCollection) {
-        return `Вы не заполнили вопрос номер ${item.name ? item.name : ""}, ${item.name}`;
+        return `Вы не заполнили вопрос номер ${item.name ? item.name : ''}, ${item.name}`;
       }
       if (item?.instance?.question_data?.name) {
-        return `Вы не заполнили вопрос номер ${item?.instance?.index_questions ? item?.instance?.index_questions : ""}, ${item.instance.question_data.name}`;
+        return `Вы не заполнили вопрос номер ${item?.instance?.index_questions ? item?.instance?.index_questions : ''}, ${item.instance.question_data.name}`;
       }
 
-      return "";
+      return '';
 
     }
   }

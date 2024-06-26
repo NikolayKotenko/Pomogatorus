@@ -4,10 +4,21 @@
     <div class="profile_container">
       <div class="left_column_wrapper">
         <div class="user_avatar">
+          <DropzoneInput
+            :id-user="$store.getters.getUserId"
+            :data="$store.getters.getUserPhotos"
+            @uploaded-file="changeFileData"
+            @remove-file="removeFile"
+          />
+
+          <!--          <ButtonUploadFiles -->
+          <!--            :is-avatar="true" -->
+          <!--            :current-user-id="$store.getters.getUserId" -->
+          <!--            :existed-file="$store.getters.getUserPhotoUrl" -->
+          <!--            @uploaded-file="changeFileData" -->
+          <!--          /> -->
           <v-avatar size="100">
-            <v-img
-              src="https://www.wrestlezone.com/wp-content/uploads/sites/8/2023/12/kurt-angle-meme-machine.jpg?resize=1024,576"
-            />
+            <v-img :src="userData.photos.slice(-1)[0]"/>
           </v-avatar>
           <div class="user_info">
             <div class="name">
@@ -489,6 +500,8 @@
 
 <script>
 import { mapState } from 'vuex'
+import Dropzone from 'nuxt-dropzone'
+import 'nuxt-dropzone/dropzone.css'
 import UserFields from '../../components/User/UserFields.vue'
 import ButtonStyled from '../../components/Common/ButtonStyled.vue'
 import MapServiceArea from '../../components/Widgets/MapServiceArea.vue'
@@ -499,10 +512,12 @@ import IconTooltip from '../../components/Common/IconTooltip.vue'
 import ServiceCard from '../../components/Collaboration/ServiceCard.vue'
 import InputStyled from '../../components/Common/InputStyled.vue';
 import SubHeader from '../../components/SubHeader.vue';
+import ButtonUploadFiles from '../../components/Common/ButtonUploadFiles.vue'
+import DropzoneInput from '../../components/Common/DropzoneInput.vue'
 import { MtoMUsersServices } from '~/helpers/constructors';
 
 export default {
-  components: { SubHeader, InputStyled, ServiceCard, IconTooltip, UniversalAddInput, BrandCard, DropDownMenuStyled, MapServiceArea, ButtonStyled, UserFields },
+  components: { DropzoneInput, ButtonUploadFiles, SubHeader, InputStyled, ServiceCard, IconTooltip, UniversalAddInput, BrandCard, DropDownMenuStyled, MapServiceArea, ButtonStyled, UserFields, Dropzone },
   data () {
     return {
       data: {},
@@ -555,8 +570,8 @@ export default {
         await this.$store.dispatch('BrandsModule/getListBrands')
         await this.$store.dispatch('UserSettings/getUserServices', this.$store.getters.getUserId)
         await this.$store.dispatch('CollaborationModule/getListServices')
-      }
-    }
+      },
+    },
   },
   async mounted() {
     await this.$store.dispatch('BrandsModule/getListFavoritesBrands')
@@ -714,6 +729,17 @@ export default {
         this.$toast.success('Услуга обновлена')
       }, 2000)
     },
+    async changeFileData(value, code) {
+      await this.$store.dispatch('getCurrentUserData')
+    },
+    removeFile(id) {
+      const index = this.files.findIndex(elem => elem.data.id === id)
+      if (index !== -1) {
+        this.files.splice(index, 1)
+        this.uploadedFiles = [...this.files]
+      }
+    },
+
   },
 }
 

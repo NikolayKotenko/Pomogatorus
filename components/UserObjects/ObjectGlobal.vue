@@ -424,6 +424,7 @@ export default {
       }
     },
     setFileField(data) {
+      console.log('1234', data.key, data.value)
       if (!this.modalCurrentObject[data.key]) {
         Vue.set(this.object, data.key, [data.value]);
       } else {
@@ -432,6 +433,7 @@ export default {
       this.updateProperties[data.key] = data.value;
     },
     changeFileData(value, code) {
+      console.log('431321')
       this.setFileField({ key: code, value: value.data, index: value.index })
       // КОСТЫЛЬ, чтобы реактивность во vue заработала
       this.setTabData(this.tabData)

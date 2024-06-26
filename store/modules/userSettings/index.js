@@ -272,5 +272,6 @@ export default {
     getRangeSlider(state) {
       return state.rangeArea[state.selectedRange]
     },
+
   },
 }

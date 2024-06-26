@@ -112,7 +112,7 @@ export default {
       )
       commit('set_user_data', _cloneNative(response.data))
       commit('set_default_user_data', _cloneNative(response.data))
-    }
+    },
   },
   getters: {
     userIsAgent(state) {
@@ -149,7 +149,10 @@ export default {
       } else {
         return '';
       }
-
+    },
+    getUserPhotos(state) {
+      return state.userData?.photos
     }
+
   },
 }

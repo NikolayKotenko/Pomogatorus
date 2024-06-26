@@ -234,13 +234,17 @@ export default {
     },
     idObject: {
       type: [Number, String],
-      required: true
+      default: null,
     },
     idAnswer: {
       type: [Number, String],
       default: 0
     },
     idProperty: {
+      type: [Number, String],
+      default: null
+    },
+    idUser: {
       type: [Number, String],
       default: null
     },
@@ -284,7 +288,7 @@ export default {
           return 1
         }
       })
-    }
+    },
   },
   methods: {
     ...mapActions(['addFile']),
@@ -316,14 +320,18 @@ export default {
       }
     },
     sendingData(file, xhr, formData) {
+
       formData.append('uuid', file.upload.uuid)
       if (!this.questionType) {
-        formData.append('id_object', parseInt(this.idObject))
+        formData.append('id_object', parseInt(this.$store.getters['Objects/getIdCurrentObject']))
       } else {
         formData.append('id_answer', parseInt(this.idAnswer))
       }
       if (this.idProperty) {
         formData.append('id_object_property', parseInt(this.idProperty))
+      }
+      if (this.idUser) {
+        formData.append('id_user', parseInt(this.idUser))
       }
 
       if (this.codeProperty === 'osnovnoe-foto-obekta') {
@@ -381,7 +389,8 @@ export default {
 
           if (this.questionType) {
             query.id_answer = parseInt(this.idAnswer) ?? null
-          } else {
+          }
+          if (this.idObject) {
             query.id_object = parseInt(this.idObject)
             query.id_object_property = this.idProperty ? parseInt(this.idProperty) : null
           }
