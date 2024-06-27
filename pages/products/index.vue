@@ -88,6 +88,8 @@ export default {
   row-gap: 10px;
   justify-content: center;
   position: relative;
+  // TODO: MOBILE VERSION
+  max-width: 850px;
 
   .current_object_sticky {
     position: absolute;

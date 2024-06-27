@@ -1,6 +1,7 @@
 <template>
   <v-text-field
     v-if="isNumber"
+    ref="input"
     v-model.number="currentData"
     :append-icon="appendIcon"
     :autofocus="isAutofocus"
@@ -30,6 +31,7 @@
 
   <v-text-field
     v-else
+    ref="input"
     v-model="currentData"
     :append-icon="appendIcon"
     :autofocus="isAutofocus"
@@ -133,18 +135,28 @@ export default {
       type: String,
       default: ''
     },
+    isSingleLine: {
+      type: Boolean,
+      default: false
+    },
+    /* ONLY NUMBERS */
     isNumber: {
       type: Boolean,
       default: false
     },
-    isSingleLine: {
-      type: Boolean,
-      default: false
+    max: {
+      type: [String, Number],
+      default: ''
+    },
+    min: {
+      type: [String, Number],
+      default: ''
     }
   },
   data: () => ({
     internalData: '',
-    isFocused: false
+    isFocused: false,
+    resetChange: false
   }),
   computed: {
     computedPlaceholder() {
@@ -152,6 +164,9 @@ export default {
         return ''
       }
       return this.placeholder
+    },
+    isNumberWithCondition() {
+      return this.isNumber && this.fullSincProp && (this.max || this.min)
     },
     currentData: {
       get() {
@@ -165,10 +180,36 @@ export default {
         return this.data
       },
       set(value) {
-        if (!this.data) {
-          this.internalData = value
+        if (this.resetChange) {
+          return
         }
-        this.$emit('update-input', value)
+
+        let calcValue = value
+
+        // Если это инпут с цифрами и есть max и min
+        if (this.isNumberWithCondition) {
+          if (this.max !== '' && calcValue > this.max) {
+            calcValue = parseInt(this.max)
+          }
+
+          if (this.min !== '' && calcValue < this.min) {
+            calcValue = ''
+          }
+
+          this.$nextTick(() => {
+            this.resetChange = true
+            this.$refs.input.internalValue = calcValue
+
+            setTimeout(() => {
+              this.resetChange = false
+            }, 100)
+          })
+        }
+
+        if (!this.data) {
+          this.internalData = calcValue
+        }
+        this.$emit('update-input', calcValue)
       }
     }
   },

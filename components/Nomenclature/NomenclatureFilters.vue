@@ -9,8 +9,14 @@
     </div>
 
     <div v-else class="nomenclature-filter-wrapper__items">
-      <div class="nomenclature-filter-wrapper__items__sort">
-        <v-icon>mdi-sort-variant</v-icon>
+      <div class="nomenclature-filter-wrapper__items__sort" @click="setFilterStatus">
+        <v-icon v-if="filterPriceStatus.key === 'asc' ">
+          mdi-sort-variant
+        </v-icon>
+
+        <v-icon v-else style="transform: rotate(180deg)">
+          mdi-sort-variant
+        </v-icon>
 
         <h5>{{ filterPriceStatus.value }}</h5>
       </div>
@@ -29,7 +35,8 @@
           <div class="filter-slider">
             <div class="filter-slider__inputs">
               <InputStyled
-                :data="filterData[filter.key][0]"
+                :data="getRangeData(filter.key, 'min')"
+                class="c-input"
                 full-sinc-prop
                 is-number
                 is-solo
@@ -39,7 +46,8 @@
               />
 
               <InputStyled
-                :data="filterData[filter.key][1]"
+                :data="getRangeData(filter.key, 'max')"
+                class="c-input"
                 full-sinc-prop
                 is-number
                 is-solo
@@ -70,6 +78,7 @@
               :is-loading="!!filterLoaderState[filter.key]"
               :is-placeholder="'Найти'"
               always-show
+              class="c-input"
               clear-after-select
               is-persistent-placeholder
               @update-search-input="getElemList(filter.api, filter.key)"
@@ -105,13 +114,13 @@
               :key="'checkbox-' + cIndex"
               :class="{'c-chip-active': isActive(chip.key, filter.key)}"
               class="c-chip c-chip-inactive"
+              @click="toggleCheckbox(chip.key, filter.key)"
             >
               <v-icon
                 v-if="isActive(chip.key, filter.key)"
                 class="filter-checkbox__selected__icon"
                 color="#8A8784"
                 size="14"
-                @click="toggleCheckbox(chip.key, filter.key)"
               >
                 mdi-close-thick
               </v-icon>
@@ -121,7 +130,6 @@
                 class="filter-checkbox__selected__icon"
                 color="#8A8784"
                 size="14"
-                @click="toggleCheckbox(chip.key, filter.key)"
               >
                 mdi-plus-thick
               </v-icon>
@@ -130,21 +138,77 @@
             </v-chip>
           </div>
         </template>
+
+        <!--    INPUT RANGE    -->
+        <template v-if="filter.type === 'range'">
+          <div class="filter-range">
+            <InputStyled
+              :data="getRangeData(filter.key, 'min')"
+              :is-label="getMinPlaceholder(filter)"
+              :max="filter.max"
+              :min="filter.min"
+              :placeholder="getMinPlaceholder(filter)"
+              class="c-input"
+              full-sinc-prop
+              is-number
+              is-outlined
+              is-solo
+              single-line
+              style="width: 133px"
+              @update-input="setRangeValue($event, filter.key, 'min')"
+            />
+
+            <InputStyled
+              :data="getRangeData(filter.key, 'max')"
+              :is-label="getMaxPlaceholder(filter)"
+              :max="filter.max"
+              :min="filter.min"
+              :placeholder="getMaxPlaceholder(filter)"
+              class="c-input"
+              full-sinc-prop
+              is-number
+              is-outlined
+              is-solo
+              single-line
+              style="width: 133px"
+              @update-input="setRangeValue($event, filter.key, 'max')"
+            />
+          </div>
+        </template>
       </div>
     </div>
 
-    <div class="nomenclature-filter-wrapper__actions"/>
+    <div class="nomenclature-filter-wrapper__actions">
+      <ButtonStyled
+        local-class="new-style-btn btn-save"
+        local-text="Применить"
+        min-height="40"
+        min-width="182"
+        unset-width
+        @click-button="acceptFilters"
+      />
+
+      <ButtonStyled
+        local-class="new-style-btn btn-cancel"
+        local-text="Сбросить"
+        min-height="40"
+        min-width="182"
+        unset-width
+        @click-button="resetFilters"
+      />
+    </div>
   </div>
 </template>
 
 <script>
 import Vue from 'vue'
+import ButtonStyled from '../Common/ButtonStyled'
 import InputStyled from '@/components/Common/InputStyled'
 import SearchStyled from '@/components/Common/SearchStyled'
 
 export default {
   name: 'NomenclatureFilters',
-  components: { SearchStyled, InputStyled },
+  components: { ButtonStyled, SearchStyled, InputStyled },
   data: () => ({
     isLoadingFilters: true,
 
@@ -186,24 +250,87 @@ export default {
         key: 'typeKotla',
         items: [
           {
-            name: 'Газовый',
+            name: 'газовый',
             key: 'steam'
           },
           {
-            name: 'Жидкотоплевный',
+            name: 'жидкотоплевный',
             key: 'liquid'
           },
           {
-            name: 'Электрический',
+            name: 'электрический',
             key: 'electric'
           },
           {
-            name: 'Комбинированный',
+            name: 'комбинированный',
             key: 'combi'
           },
           {
-            name: 'Твердотоплевный',
+            name: 'твердотоплевный',
             key: 'hard'
+          }
+        ]
+      },
+      {
+        type: 'range',
+        name: 'Макс. тепловая мощность',
+        key: 'maxThermalPower',
+        min: 1,
+        max: 250,
+        point: 'кВт'
+      },
+      {
+        type: 'checkbox',
+        name: 'Количество контуров',
+        key: 'countConters',
+        items: [
+          {
+            name: 'одноконтурный',
+            key: 'one'
+          },
+          {
+            name: 'двухконтурный',
+            key: 'two'
+          }
+        ]
+      },
+      {
+        type: 'checkbox',
+        name: 'Размещение',
+        key: 'countConters',
+        items: [
+          {
+            name: 'настенный',
+            key: 'wall'
+          },
+          {
+            name: 'напольный',
+            key: 'floor'
+          },
+          {
+            name: 'парапетный',
+            key: 'parapet'
+          }
+        ]
+      },
+      {
+        type: 'autocomplete',
+        name: 'Топливо',
+        api: 'test-api',
+        key: 'fuel'
+      },
+      {
+        type: 'checkbox',
+        name: 'Тип камеры сгорания',
+        key: 'typeFuel',
+        items: [
+          {
+            name: 'закрытый',
+            key: 'closed'
+          },
+          {
+            name: 'открытый',
+            key: 'open'
           }
         ]
       }
@@ -235,6 +362,24 @@ export default {
           name: 'Русское название',
           key: 'item6'
         }
+      ],
+      fuel: [
+        {
+          name: 'Уголь',
+          key: 'item1'
+        },
+        {
+          name: 'Газ',
+          key: 'item2'
+        },
+        {
+          name: 'Бензин',
+          key: 'item3'
+        },
+        {
+          name: 'Керосин',
+          key: 'item4'
+        }
       ]
     },
     // Selectors loader
@@ -247,6 +392,10 @@ export default {
     this.isLoadingFilters = false
   },
   methods: {
+    setFilterStatus() {
+      this.filterPriceStatus = this.filterPriceStatus.key === 'asc' ? this.filterPriceValues[1] : this.filterPriceValues[0]
+    },
+
     // TODO: Request to all filters
     getFilters() {
     },
@@ -258,6 +407,9 @@ export default {
         }
         return !this.filterData[key].map((value) => value.name).includes(elem.name)
       }) ?? []
+    },
+    getSliderData(key) {
+      return this.filterData[key] ?? []
     },
 
     getElemList(api, key) {
@@ -286,8 +438,6 @@ export default {
         return false
       }
 
-      console.log(this.filterData[key].includes(value))
-
       return this.filterData[key].includes(value)
     },
     toggleCheckbox(value, key) {
@@ -310,11 +460,41 @@ export default {
       } else {
         this.filterData[key].push(value)
       }
+    },
+
+    getMinPlaceholder(filter) {
+      return `от ${filter.min} ${filter.point}`
+    },
+    getMaxPlaceholder(filter) {
+      return `до ${filter.max} ${filter.point}`
+    },
+    getRangeData(key, condition) {
+      if (condition === 'min') {
+        return this.filterData[key]?.[0] ?? ''
+      } else {
+        return this.filterData[key]?.[1] ?? ''
+      }
+    },
+    setRangeValue(value, key, condition) {
+      if (!Array.isArray(this.filterData[key])) {
+        Vue.set(this.filterData, key, [])
+      }
+
+      if (condition === 'min') {
+        Vue.set(this.filterData[key], 0, value)
+      } else {
+        Vue.set(this.filterData[key], 1, value)
+      }
+    },
+
+    acceptFilters() {
+      // eslint-disable-next-line vue/custom-event-name-casing
+      this.$emit('acceptFilters', this.filterData)
+    },
+    resetFilters() {
+      this.filterData = null
+      this.filterData = {}
     }
   }
 }
 </script>
-
-<style scoped>
-
-</style>
