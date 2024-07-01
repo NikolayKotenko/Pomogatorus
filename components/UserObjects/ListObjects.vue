@@ -39,7 +39,7 @@
           Мои объекты
         </div>
         <CardObject
-          v-for="(item, index) in listObjectExcludedCurrent"
+          v-for="(item, index) in listObjects"
           :key="index"
           :object_data="item"
           @open-detail="openDetail"

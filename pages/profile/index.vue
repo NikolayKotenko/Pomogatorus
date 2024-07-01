@@ -3,23 +3,25 @@
     <SubHeader/>
     <div class="profile_container">
       <div class="left_column_wrapper">
-        <div class="user_avatar">
-          <DropzoneInput
-            :id-user="$store.getters.getUserId"
-            :data="$store.getters.getUserPhotos"
-            @uploaded-file="changeFileData"
-            @remove-file="removeFile"
-          />
-
-          <!--          <ButtonUploadFiles -->
-          <!--            :is-avatar="true" -->
-          <!--            :current-user-id="$store.getters.getUserId" -->
-          <!--            :existed-file="$store.getters.getUserPhotoUrl" -->
-          <!--            @uploaded-file="changeFileData" -->
-          <!--          /> -->
-          <v-avatar size="100">
-            <v-img :src="userData.photos.slice(-1)[0]"/>
-          </v-avatar>
+        <div class="user_avatar_and_name">
+          <div v-if="$store.getters.getUserId" class="user_avatar">
+            <DropzoneInput
+              :id-user="$store.getters.getUserId"
+              :data="$store.getters.getUserPhotos"
+              :object-template="false"
+              :is-avatar="true"
+              class="dropzone_style"
+              @uploaded-file="changeFileData"
+              @remove-file="removeFile"
+            />
+            <v-avatar class="avatar_style" size="100">
+              <v-img
+                v-if="$store.getters.getUserAvatar"
+                :src="$store.getters.getUserAvatar"
+              />
+              <div v-else class="empty_avatar"/>
+            </v-avatar>
+          </div>
           <div class="user_info">
             <div class="name">
               {{ userData.user_fio }}
@@ -562,6 +564,7 @@ export default {
     isLoggedIn() {
       return this.userData && Object.keys(this.userData).length
     },
+
   },
   watch: {
     '$store.getters.getUserId': {
@@ -753,14 +756,54 @@ export default {
   font-family: 'Inter', sans-serif;
   display: flex;
   grid-column-gap: 20px;
+  max-width: 1140px;
+  margin-left: 0;
+  margin-right: 0;
   .left_column_wrapper {
     max-width: 415px;
     width: 100%;
-    .user_avatar {
+    .user_avatar_and_name {
       display: flex;
-      align-items: center;
       grid-column-gap: 20px;
       margin-bottom: 30px;
+      align-items: center;
+      .user_avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        grid-column-gap: 20px;
+        position: relative;
+        height: 100px;
+        width: 100px;
+        .dropzone_style {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: absolute;
+          border-radius: 50px;
+          width: 100%;
+          height: 100%;
+          z-index: 9;
+          background-color: #d9d9d9;
+          opacity: 0;
+          transition: $transition;
+          cursor: pointer;
+          &:hover {
+            opacity: 0.5;
+          }
+        }
+        .avatar_style {
+          position: absolute;
+          z-index: 8;
+          .empty_avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50px;
+            background-color: #7D7D7D;
+          }
+        }
+
+      }
       .user_info {
         .name {
           font-size: 1.25em;

@@ -4,7 +4,7 @@
       <v-img
         v-if="stateFilledImageObject"
         :class="{'empty_placeholder': ! stateFilledImageObject }"
-        :src="$store.getters.getImageMainPhotoObjects(object_data['osnovnoe-foto-obekta'][0])"
+        :src="$store.getters.getImageMainPhotoObjects(object_data['osnovnoe-foto-obekta'].slice(-1)[0])"
         class="img"
         height="100%"
       />
@@ -66,9 +66,11 @@
 </template>
 
 <script>
+import DropzoneInput from '../Common/DropzoneInput.vue'
+
 export default {
   name: 'CardObject',
-  components: {  },
+  components: { DropzoneInput },
   // eslint-disable-next-line vue/prop-name-casing,vue/require-prop-types
   props: ['object_data'],
   data: () => ({
@@ -118,7 +120,7 @@ export default {
     async closeDetail() {
       this.showDetailObj = false;
       await this.$store.dispatch('loginByToken');
-    }
+    },
   }
 };
 </script>

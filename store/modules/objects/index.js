@@ -8,6 +8,7 @@ export default {
     listObjects: [],
     currentObject: {},
     modalCurrentObject: {},
+    objectData: {}
     // stateGlobalObjectModal: false
   },
   mutations: {
@@ -29,6 +30,9 @@ export default {
 
       state.currentObject = value
     },
+    set_object_data(state, payload) {
+      state.objectData = payload
+    }
     // set_state_global_object_modal(state, payload) {
     //   state.stateGlobalObjectModal = payload
     // }
@@ -126,6 +130,14 @@ export default {
       commit('set_currentObject', object)
       return response
     },
+    // async getCurrentObjectData({ commit, state }, objectId) {
+    //   const response = await Request.get(
+    //     this.state.BASE_URL +
+    //     `entity/objects/${objectId}`
+    //   )
+    //
+    //   commit('set_object_data', response.data)
+    // }
   },
   getters: {
     stateObjectSelected(state) {
@@ -153,5 +165,8 @@ export default {
       })
       return firstImage ? firstImage[0] : {}
     },
+    getObjectPhoto(state) {
+      return state.modalCurrentObject.osnovnoe-foto-obekta?.url
+    }
   },
 }

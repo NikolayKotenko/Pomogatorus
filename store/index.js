@@ -173,6 +173,17 @@ const createStore = () => {
           },
         }
       },
+      optionsAvatarDropzone(state) {
+        return {
+          url: state.BASE_URL + '/entity/files',
+          destroyDropzone: false,
+          duplicateCheck: true,
+          previewsContainer: false,
+          headers: {
+            Authorization: 'Bearer ' + Request.getAccessTokenInCookies(),
+          },
+        }
+      },
       statePaginationHasMorePage(state) {
         return state.currentPaginationData.hasMorePages
       },

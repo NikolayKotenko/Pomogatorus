@@ -152,6 +152,13 @@ export default {
     },
     getUserPhotos(state) {
       return state.userData?.photos
+    },
+    getUserAvatar(state) {
+      if (state.userData.photos) {
+        return state.userData.photos.slice(-1)[0]?.url
+      } else {
+        return ''
+      }
     }
 
   },

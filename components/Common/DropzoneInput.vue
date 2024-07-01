@@ -133,12 +133,17 @@
         </template>
       </v-autocomplete>
     </template>
+    <template v-if="isAvatar">
+      <div
+        @click="forceDropzone"
+      />
+    </template>
     <dropzone
       id="dropzone"
       ref="dropzone"
       :destroy-dropzone="true"
       :include-styling="false"
-      :options="$store.getters.optionsDropzone"
+      :options="objectTemplate ? $store.getters.optionsDropzone : $store.getters.optionsAvatarDropzone"
       :use-custom-slot="true"
       @vdropzone-success="successData"
       @vdropzone-sending="sendingData"
@@ -146,23 +151,36 @@
       <template v-if="objectTemplate">
         <div ref="dropzoneTemplate" class="dropzone-custom-content">
           <div :class="{'animated': dragging}" class="dropzone-label">
-            <v-icon :color="dragging ? 'blue' : '#B3B3B3'" large>
-              mdi-cloud-upload
+            <v-icon :color="dragging ? 'blue' : '#FFFFFF'" size="50">
+              mdi-camera-outline
             </v-icon>
             <span :style="dragging ? 'color: #2196F3 ' : ''">{{ computedLabel }}</span>
           </div>
         </div>
       </template>
       <template v-else>
-        <div ref="dropzoneTemplate" class="dropzone-custom-content-question">
-          <div :class="{'animated': dragging}" class="dropzone-label">
-            <v-icon :color="dragging ? 'blue' : '#B3B3B3'" large>
-              mdi-cloud-upload
+        <div
+          ref="dropzoneTemplate"
+          class="dropzone-custom-content-question"
+        >
+          <div
+            :class="{'animated': dragging}"
+            class="dropzone-label"
+            style="display: grid;
+            justify-content: center;
+            align-content: center;"
+          >
+            <v-icon :color="dragging ? 'blue' : '#FFFFFF'" size="50">
+              mdi-camera-outline
             </v-icon>
-            <span :style="dragging ? 'color: #2196F3 ' : ''">{{ computedLabel }}</span>
+            <span
+              v-if="! isAvatar"
+              :style="dragging ? 'color: #FFFFFF ' : 'color: #FFFFFF'"
+            >{{ computedLabel }}</span>
           </div>
         </div>
       </template>
+      <template v-if="isAvatar"/>
     </dropzone>
   </div>
 </template>
@@ -253,6 +271,10 @@ export default {
       default: true
     },
     questionType: {
+      type: Boolean,
+      default: false
+    },
+    isAvatar: {
       type: Boolean,
       default: false
     }

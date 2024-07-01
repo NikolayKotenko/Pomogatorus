@@ -55,10 +55,28 @@
 
     <div class="images_wrapper">
       <div class="main_photo">
+        <div class="user_avatar">
+          <!--                    <DropzoneInput -->
+          <!--                      :id-user="object.id" -->
+          <!--                      :data="$store.getters['Objects/getFirstPhotoObject']" -->
+          <!--                      :object-template="false" -->
+          <!--                      :is-avatar="true" -->
+          <!--                      class="dropzone_style" -->
+          <!--                      @uploaded-file="changePhotoData" -->
+          <!--                      @remove-file="removeObjectPhoto" -->
+          <!--                    /> -->
+          <!--                    <v-avatar class="avatar_style" size="100"> -->
+          <!--                      <v-img -->
+          <!--                        v-if="$store.getters['Objects/getFirstPhotoObject']" -->
+          <!--                        :src="$store.getters['Objects/getFirstPhotoObject']" -->
+          <!--                      /> -->
+          <!--                      <div v-else class="empty_avatar"/> -->
+          <!--                    </v-avatar> -->
+        </div>
         <v-img
           v-if="stateFilledImageObject"
           :class="{'empty_placeholder': ! stateFilledImageObject }"
-          :src="$store.getters.getImageMainPhotoObjects(modalCurrentObject['osnovnoe-foto-obekta'][0])"
+          :src="$store.getters.getImageMainPhotoObjects(modalCurrentObject['osnovnoe-foto-obekta'].slice(-1)[0])"
           class="img"
           height="100%"
         />
@@ -230,11 +248,13 @@ import TooltipStyled from '../Common/TooltipStyled.vue';
 import CustomField from '../Common/CustomField.vue';
 import TagsTechBlock from '../Widgets/TagsTechBlock.vue'
 import DropDownMenuStyled from '../Common/DropDownMenuStyled.vue'
+import DropzoneInput from '../Common/DropzoneInput.vue'
 import InputStyled from '~/components/Common/InputStyled';
 
 export default {
   name: 'ObjectGlobal',
   components: {
+    DropzoneInput,
     DropDownMenuStyled,
     TagsTechBlock,
     CustomField,
@@ -445,6 +465,16 @@ export default {
         this.modalCurrentObject[data.key].splice(index, 1);
       }
     },
+    // changePhotoData(value, code) {
+    //   this.set_modal_current_object(this.object)
+    // },
+    // removeObjectPhoto(id) {
+    //   const index = this.files.findIndex(elem => elem.data.id === id)
+    //   if (index !== -1) {
+    //     this.files.splice(index, 1)
+    //     this.uploadedFiles = [...this.files]
+    //   }
+    // },
     removeFromGlobal(data) {
       this.removeFile(data);
 

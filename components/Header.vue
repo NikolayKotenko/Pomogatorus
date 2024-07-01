@@ -82,8 +82,10 @@
                   <div class="top_info">
                     <v-avatar size="60">
                       <v-img
-                        src="https://www.wrestlezone.com/wp-content/uploads/sites/8/2023/12/kurt-angle-meme-machine.jpg?resize=1024,576"
+                        v-if="$store.getters.getUserAvatar"
+                        :src="$store.getters.getUserAvatar"
                       />
+                      <div v-else class="empty_avatar"/>
                     </v-avatar>
                     <div class="user_info">
                       <div class="user_fio">
@@ -789,6 +791,12 @@ export default {
     .top_info {
       display: flex;
       grid-column-gap: 20px;
+      .empty_avatar {
+        width: 100%;
+        height: 100%;
+        border-radius: 50px;
+        background-color: #7D7D7D;
+      }
       .user_info {
         margin-bottom: 30px;
         .user_fio {
