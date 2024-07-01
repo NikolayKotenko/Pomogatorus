@@ -22,6 +22,7 @@ $c-vuetify-border-color: #D9D9D9;
 /* INPUTS */
 .c-input {
   border-radius: $c-vuetify-border-radius !important;
+  //border: 1px solid $c-vuetify-border-color;
 
   fieldset {
     color: $c-vuetify-border-color !important;
@@ -29,5 +30,15 @@ $c-vuetify-border-color: #D9D9D9;
 
   .v-input__slot {
     box-shadow: unset !important;
+  }
+}
+
+/* CHECKBOX */
+.c-checkbox {
+  .v-label {
+    color: #000000 !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    line-height: 16.41px !important;
   }
 }

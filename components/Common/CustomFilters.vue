@@ -1,15 +1,15 @@
 <template>
-  <div class="nomenclature-filter-wrapper">
+  <div ref="filter-wrapper" class="nomenclature-filter-wrapper">
     <h4 class="nomenclature-filter-wrapper__title">
       Фильтры
     </h4>
 
-    <div v-if="isLoadingFilters">
-      <!--   TODO: Shimmers   -->
+    <div v-if="isLoadingFilters || !filtersList.length">
+      <ShimmerFilter class="nomenclature-filter-wrapper__items"/>
     </div>
 
     <div v-else class="nomenclature-filter-wrapper__items">
-      <div class="nomenclature-filter-wrapper__items__sort" @click="setFilterStatus">
+      <div ref="filter-sort" class="nomenclature-filter-wrapper__items__sort" @click="setFilterStatus">
         <v-icon v-if="filterPriceStatus.key === 'asc' ">
           mdi-sort-variant
         </v-icon>
@@ -24,6 +24,7 @@
       <div
         v-for="(filter, fIndex) in filtersList"
         :key="'filter-' + fIndex"
+        :ref="'filter-' + filter.key"
         class="nomenclature-filter-wrapper__items__elem"
       >
         <h5 class="nomenclature-filter-wrapper__items__elem__title">
@@ -36,24 +37,26 @@
             <div class="filter-slider__inputs">
               <InputStyled
                 :data="getRangeData(filter.key, 'min')"
+                :placeholder="getMinPlaceholder(filter)"
                 class="c-input"
                 full-sinc-prop
                 is-number
-                is-solo
+                is-outlined
                 single-line
                 style="width: 133px"
-                @update-input="$set(filterData[filter.key], 0, $event)"
+                @update-input="updateSliderData($event, filter.key, 0)"
               />
 
               <InputStyled
                 :data="getRangeData(filter.key, 'max')"
+                :placeholder="getMaxPlaceholder(filter)"
                 class="c-input"
                 full-sinc-prop
                 is-number
-                is-solo
+                is-outlined
                 single-line
                 style="width: 133px"
-                @update-input="$set(filterData[filter.key], 1, $event)"
+                @update-input="updateSliderData($event, filter.key, 1)"
               />
             </div>
 
@@ -63,6 +66,7 @@
               :min="filter.min"
               class="align-center"
               hide-details
+              @change="updateSliderLine(filter.key)"
             />
           </div>
         </template>
@@ -178,6 +182,10 @@
       </div>
     </div>
 
+    <div ref="filter-arrow" :class="{'filter-active-arrow': isActiveArrow}" class="nomenclature-filter-wrapper__arrow">
+      <span>Применить</span>
+    </div>
+
     <div class="nomenclature-filter-wrapper__actions">
       <ButtonStyled
         local-class="new-style-btn btn-save"
@@ -200,17 +208,32 @@
   </div>
 </template>
 
+
 <script>
 import Vue from 'vue'
-import ButtonStyled from '../Common/ButtonStyled'
+import ButtonStyled from '@/components/Common/ButtonStyled'
+import ShimmerFilter from '@/components/Shimmers/ShimmerFilter'
 import InputStyled from '@/components/Common/InputStyled'
 import SearchStyled from '@/components/Common/SearchStyled'
 
 export default {
-  name: 'NomenclatureFilters',
-  components: { ButtonStyled, SearchStyled, InputStyled },
+  name: 'CustomFilters',
+  components: { ShimmerFilter, ButtonStyled, SearchStyled, InputStyled },
+  props: {
+    filtersList: {
+      type: Array,
+      required: true
+    },
+    isLoadingFilters: {
+      type: Boolean,
+      default: true
+    }
+  },
   data: () => ({
-    isLoadingFilters: true,
+    /* ARROW */
+    isActiveArrow: false,
+    arrowKey: '',
+    debounceTimeout: null,
 
     filterPriceStatus: {
       key: 'asc',
@@ -229,112 +252,6 @@ export default {
 
     // Selected filters by user
     filterData: {},
-    // All filters from DB
-    filtersList: [
-      {
-        type: 'slider',
-        name: 'Цена',
-        key: 'price',
-        min: 0,
-        max: 100
-      },
-      {
-        type: 'autocomplete',
-        name: 'Бренд',
-        api: 'test-api',
-        key: 'brand'
-      },
-      {
-        type: 'checkbox',
-        name: 'Тип отопительного котла',
-        key: 'typeKotla',
-        items: [
-          {
-            name: 'газовый',
-            key: 'steam'
-          },
-          {
-            name: 'жидкотоплевный',
-            key: 'liquid'
-          },
-          {
-            name: 'электрический',
-            key: 'electric'
-          },
-          {
-            name: 'комбинированный',
-            key: 'combi'
-          },
-          {
-            name: 'твердотоплевный',
-            key: 'hard'
-          }
-        ]
-      },
-      {
-        type: 'range',
-        name: 'Макс. тепловая мощность',
-        key: 'maxThermalPower',
-        min: 1,
-        max: 250,
-        point: 'кВт'
-      },
-      {
-        type: 'checkbox',
-        name: 'Количество контуров',
-        key: 'countConters',
-        items: [
-          {
-            name: 'одноконтурный',
-            key: 'one'
-          },
-          {
-            name: 'двухконтурный',
-            key: 'two'
-          }
-        ]
-      },
-      {
-        type: 'checkbox',
-        name: 'Размещение',
-        key: 'countConters',
-        items: [
-          {
-            name: 'настенный',
-            key: 'wall'
-          },
-          {
-            name: 'напольный',
-            key: 'floor'
-          },
-          {
-            name: 'парапетный',
-            key: 'parapet'
-          }
-        ]
-      },
-      {
-        type: 'autocomplete',
-        name: 'Топливо',
-        api: 'test-api',
-        key: 'fuel'
-      },
-      {
-        type: 'checkbox',
-        name: 'Тип камеры сгорания',
-        key: 'typeFuel',
-        items: [
-          {
-            name: 'закрытый',
-            key: 'closed'
-          },
-          {
-            name: 'открытый',
-            key: 'open'
-          }
-        ]
-      }
-    ],
     // Selectors items from request
     filterSearchedItems: {
       brand: [
@@ -385,19 +302,76 @@ export default {
     // Selectors loader
     filterLoaderState: {}
   }),
+  watch: {
+    'filterList': {
+      handler(v) {
+        this.setSliderDefault()
+      },
+      deep: true
+    }
+  },
   mounted() {
-    //  TODO: Когда будет api
-    //  this.getFilters()
-    Vue.set(this.filterData, 'price', [this.filtersList[0].min, this.filtersList[0].max])
-    this.isLoadingFilters = false
+    this.setSliderDefault()
   },
   methods: {
-    setFilterStatus() {
-      this.filterPriceStatus = this.filterPriceStatus.key === 'asc' ? this.filterPriceValues[1] : this.filterPriceValues[0]
+    getArrowPosition(key, simpleElem) {
+      const searchedElement = simpleElem ? this.$refs[`filter-${key}`] : this.$refs[`filter-${key}`][0]
+
+      if (!searchedElement || !this.$refs['filter-arrow']) {
+        return null
+      }
+
+      const elem = searchedElement
+      return (elem.offsetTop + elem.offsetHeight / 2) - this.$refs['filter-arrow'].offsetHeight / 2
+    },
+    setArrowPosition(position) {
+      if (!this.$refs['filter-arrow'] || !position) {
+        return
+      }
+      this.$refs['filter-arrow'].style.top = position + 'px'
+    },
+    toggleArrow() {
+      this.isActiveArrow = !this.isActiveArrow
+    },
+    presetArrowPosition(key, position) {
+      this.$nextTick(() => {
+        if (this.arrowKey !== key) {
+          this.arrowKey = key
+          this.setArrowPosition(position)
+        }
+
+        this.$nextTick(() => {
+          if (!this.isActiveArrow) {
+            this.toggleArrow()
+          }
+        })
+      })
+    },
+    arrowLogic(key, simpleElem) {
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
+      this.debounceTimeout = setTimeout(() => {
+        const position = this.getArrowPosition(key, simpleElem)
+
+        if (!position) {
+          return
+        }
+
+        if (this.isActiveArrow && this.arrowKey !== key) {
+          this.toggleArrow()
+
+          setTimeout(() => {
+            this.presetArrowPosition(key, position)
+          }, 700)
+        } else {
+          this.presetArrowPosition(key, position)
+        }
+      }, 600)
     },
 
-    // TODO: Request to all filters
-    getFilters() {
+    setFilterStatus() {
+      this.filterPriceStatus = this.filterPriceStatus.key === 'asc' ? this.filterPriceValues[1] : this.filterPriceValues[0]
+
+      this.arrowLogic('sort', true)
     },
 
     getItems(key) {
@@ -408,8 +382,32 @@ export default {
         return !this.filterData[key].map((value) => value.name).includes(elem.name)
       }) ?? []
     },
+
+    setSliderDefault() {
+      this.$nextTick(() => {
+        const sliders = this.filtersList.filter((elem) => elem.type === 'slider')
+        if (sliders.length) {
+          sliders.forEach((elem) => {
+            Vue.set(this.filterData, elem.key, [elem.min, elem.max])
+          })
+        }
+      })
+    },
     getSliderData(key) {
       return this.filterData[key] ?? []
+    },
+    updateSliderData(value, key, index) {
+      if (Array.isArray(this.filterData[key])) {
+        Vue.set(this.filterData[key], index, value)
+      } else {
+        Vue.set(this.filterData, key, [])
+        Vue.set(this.filterData[key], index, value)
+      }
+
+      this.arrowLogic(key)
+    },
+    updateSliderLine(key) {
+      this.arrowLogic(key)
     },
 
     getElemList(api, key) {
@@ -428,9 +426,13 @@ export default {
       } else {
         Vue.set(this.filterData, key, [value])
       }
+
+      this.arrowLogic(key)
     },
     removeSelectedElem(index, key) {
       this.filterData[key].splice(index, 1)
+
+      this.arrowLogic(key)
     },
 
     isActive(value, key) {
@@ -444,6 +446,8 @@ export default {
       if (!value || !key) {
         return
       }
+
+      this.arrowLogic(key)
 
       if (!Array.isArray(this.filterData[key])) {
         Vue.set(this.filterData, key, [value])
@@ -463,10 +467,10 @@ export default {
     },
 
     getMinPlaceholder(filter) {
-      return `от ${filter.min} ${filter.point}`
+      return `от ${filter.min} ${filter?.point ?? ''}`
     },
     getMaxPlaceholder(filter) {
-      return `до ${filter.max} ${filter.point}`
+      return `до ${filter.max} ${filter?.point ?? ''}`
     },
     getRangeData(key, condition) {
       if (condition === 'min') {
@@ -485,15 +489,25 @@ export default {
       } else {
         Vue.set(this.filterData[key], 1, value)
       }
+
+      this.arrowLogic(key)
     },
 
     acceptFilters() {
+      if (this.isActiveArrow) {
+        this.toggleArrow()
+      }
       // eslint-disable-next-line vue/custom-event-name-casing
       this.$emit('acceptFilters', this.filterData)
     },
     resetFilters() {
+      if (this.isActiveArrow) {
+        this.toggleArrow()
+      }
+
       this.filterData = null
       this.filterData = {}
+      this.setSliderDefault()
     }
   }
 }

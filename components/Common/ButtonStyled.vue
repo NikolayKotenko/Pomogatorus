@@ -212,6 +212,7 @@ export default {
 
 .new-style-btn {
   border-radius: 30px;
+  box-shadow: unset;
 }
 
 .btn-save {
