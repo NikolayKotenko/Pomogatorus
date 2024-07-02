@@ -1,10 +1,10 @@
 <template>
   <div class="card_obj">
-    <div class="img">
+    <div v-if="object_data.id" class="img">
       <v-img
-        v-if="stateFilledImageObject"
+        v-if="object_data.main_photo_compile.url"
         :class="{'empty_placeholder': ! stateFilledImageObject }"
-        :src="$store.getters.getImageMainPhotoObjects(object_data['osnovnoe-foto-obekta'].slice(-1)[0])"
+        :src="object_data.main_photo_compile.url"
         class="img"
         height="100%"
       />

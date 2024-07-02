@@ -277,6 +277,10 @@ export default {
     isAvatar: {
       type: Boolean,
       default: false
+    },
+    isFilesObject: {
+      type: Boolean,
+      default: false
     }
   },
   data: () => ({
@@ -359,6 +363,11 @@ export default {
       if (this.codeProperty === 'osnovnoe-foto-obekta') {
         formData.append('main_photo_object', true)
       }
+
+      if (this.idObject) {
+        formData.append('main_photo_object', true)
+      }
+
 
       setTimeout(() => {
         this.dragging = false

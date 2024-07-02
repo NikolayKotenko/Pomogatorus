@@ -61,163 +61,163 @@
         />
       </template>
 
-      <template v-else-if="type === 'fail'">
-        <div
-          :class="{'dropzone-column': isDropzoneNotEmpty}"
-          class="dropzone-files"
-          @dragenter="onDragEnter"
-          @dragleave="onDragLeave"
-          @dragover="checkDrop"
-          @drop.prevent="onDrop"
-        >
-          <v-autocomplete
-            v-model="sortedDropzone"
-            :append-icon="appendIcon"
-            :autofocus="isAutofocus"
-            :disabled="isDropzoneNotEmpty"
-            :flat="isFlat"
-            :items="dzData"
-            :label="label"
-            :loading="isLoading"
-            :placeholder="placeholder"
-            :prepend-inner-icon="prependIconInner"
-            :solo="isSolo"
-            outlined
-            dense
-            hide-details
-            item-value="id"
-            multiple
-            readonly
-            @click="forceDropzone"
-            @focus="focusStart"
-            @focusout="focusEnd"
-          >
-            <template #selection="data">
-              <div class="uploaded-image" v-bind="data.attrs">
-                <div v-if="data.item.type === 'text/plain'" class="img-activator">
-                  <a :href="$store.state.BASE_URL + data.item.full_path" class="img-container" target="_blank">
-                    <img
-                      :src="require(`~/assets/images/txt_doc_type.png`)"
-                      class="img-hover"
-                      style="object-fit: contain;"
-                    >
-                  </a>
-                </div>
-                <div v-else-if="data.item.type === 'application/pdf'" class="img-activator">
-                  <a :href="$store.state.BASE_URL + data.item.full_path" class="img-container" target="_blank">
-                    <img :src="require(`~/assets/svg/pdf_icon.svg`)" class="img-hover" style="object-fit: contain;">
-                  </a>
-                </div>
+<!--      <template v-else-if="type === 'fail'">-->
+<!--        <div-->
+<!--          :class="{'dropzone-column': isDropzoneNotEmpty}"-->
+<!--          class="dropzone-files"-->
+<!--          @dragenter="onDragEnter"-->
+<!--          @dragleave="onDragLeave"-->
+<!--          @dragover="checkDrop"-->
+<!--          @drop.prevent="onDrop"-->
+<!--        >-->
+<!--          <v-autocomplete-->
+<!--            v-model="sortedDropzone"-->
+<!--            :append-icon="appendIcon"-->
+<!--            :autofocus="isAutofocus"-->
+<!--            :disabled="isDropzoneNotEmpty"-->
+<!--            :flat="isFlat"-->
+<!--            :items="dzData"-->
+<!--            :label="label"-->
+<!--            :loading="isLoading"-->
+<!--            :placeholder="placeholder"-->
+<!--            :prepend-inner-icon="prependIconInner"-->
+<!--            :solo="isSolo"-->
+<!--            outlined-->
+<!--            dense-->
+<!--            hide-details-->
+<!--            item-value="id"-->
+<!--            multiple-->
+<!--            readonly-->
+<!--            @click="forceDropzone"-->
+<!--            @focus="focusStart"-->
+<!--            @focusout="focusEnd"-->
+<!--          >-->
+<!--            <template #selection="data">-->
+<!--              <div class="uploaded-image" v-bind="data.attrs">-->
+<!--                <div v-if="data.item.type === 'text/plain'" class="img-activator">-->
+<!--                  <a :href="$store.state.BASE_URL + data.item.full_path" class="img-container" target="_blank">-->
+<!--                    <img-->
+<!--                      :src="require(`~/assets/images/txt_doc_type.png`)"-->
+<!--                      class="img-hover"-->
+<!--                      style="object-fit: contain;"-->
+<!--                    >-->
+<!--                  </a>-->
+<!--                </div>-->
+<!--                <div v-else-if="data.item.type === 'application/pdf'" class="img-activator">-->
+<!--                  <a :href="$store.state.BASE_URL + data.item.full_path" class="img-container" target="_blank">-->
+<!--                    <img :src="require(`~/assets/svg/pdf_icon.svg`)" class="img-hover" style="object-fit: contain;">-->
+<!--                  </a>-->
+<!--                </div>-->
 
-                <!-- КОСТЫЛЬ, чтобы передать массив изображений для нашей либы просмотрщика фоток -->
-                <template v-else>
-                  <ViewerStyled
-                    v-if="data.index === 0"
-                    :images="onlyImages"
-                    :options="viewOptions"
-                  >
-                    <div class="uploaded-image__image-container">
-                      <div
-                        v-for="(image, index) in onlyImages"
-                        :key="index"
-                        class="uploaded-image__image-container__block img-activator"
-                      >
-                        <img
-                          :alt="image.alt_image"
-                          :src="$store.state.BASE_URL + image.full_path"
-                          class="list-files-img img-hover"
-                        >
+<!--                &lt;!&ndash; КОСТЫЛЬ, чтобы передать массив изображений для нашей либы просмотрщика фоток &ndash;&gt;-->
+<!--                <template v-else>-->
+<!--                  <ViewerStyled-->
+<!--                    v-if="data.index === 0"-->
+<!--                    :images="onlyImages"-->
+<!--                    :options="viewOptions"-->
+<!--                  >-->
+<!--                    <div class="uploaded-image__image-container">-->
+<!--                      <div-->
+<!--                        v-for="(image, index) in onlyImages"-->
+<!--                        :key="index"-->
+<!--                        class="uploaded-image__image-container__block img-activator"-->
+<!--                      >-->
+<!--                        <img-->
+<!--                          :alt="image.alt_image"-->
+<!--                          :src="$store.state.BASE_URL + image.full_path"-->
+<!--                          class="list-files-img img-hover"-->
+<!--                        >-->
 
-                        <div class="uploaded-image__image-container__block__name">
-                          {{ image.filename }}
-                        </div>
+<!--                        <div class="uploaded-image__image-container__block__name">-->
+<!--                          {{ image.filename }}-->
+<!--                        </div>-->
 
-                        <v-tooltip top>
-                          <template #activator="{ on, attrs }">
-                            <div class="uploaded-image__image-container__block__remove" v-bind="attrs" v-on="on">
-                              <v-icon color="#000000" @click="onRemoveFile(image.id)">
-                                mdi-trash-can
-                              </v-icon>
-                            </div>
-                          </template>
-                          <span>Удалить файл</span>
-                        </v-tooltip>
+<!--                        <v-tooltip top>-->
+<!--                          <template #activator="{ on, attrs }">-->
+<!--                            <div class="uploaded-image__image-container__block__remove" v-bind="attrs" v-on="on">-->
+<!--                              <v-icon color="#000000" @click="onRemoveFile(image.id)">-->
+<!--                                mdi-trash-can-->
+<!--                              </v-icon>-->
+<!--                            </div>-->
+<!--                          </template>-->
+<!--                          <span>Удалить файл</span>-->
+<!--                        </v-tooltip>-->
 
-                        <v-overlay
-                          :absolute="true"
-                          :value="getLoadingImg(image.id)"
-                          :z-index="2"
-                        >
-                          <v-progress-circular
-                            v-if="getLoadingImg(image.id)"
-                            :indeterminate="true"
-                            :size="30"
-                            color="#95D7AE"
-                            style="margin: auto"
-                            width="4"
-                          />
-                        </v-overlay>
-                      </div>
-                    </div>
-                  </ViewerStyled>
-                </template>
+<!--                        <v-overlay-->
+<!--                          :absolute="true"-->
+<!--                          :value="getLoadingImg(image.id)"-->
+<!--                          :z-index="2"-->
+<!--                        >-->
+<!--                          <v-progress-circular-->
+<!--                            v-if="getLoadingImg(image.id)"-->
+<!--                            :indeterminate="true"-->
+<!--                            :size="30"-->
+<!--                            color="#95D7AE"-->
+<!--                            style="margin: auto"-->
+<!--                            width="4"-->
+<!--                          />-->
+<!--                        </v-overlay>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                  </ViewerStyled>-->
+<!--                </template>-->
 
-                <template v-if="data.item.type === 'text/plain' || data.item.type === 'application/pdf'">
-                  <div class="uploaded-image__name">
-                    {{ data.item.filename }}
-                  </div>
+<!--                <template v-if="data.item.type === 'text/plain' || data.item.type === 'application/pdf'">-->
+<!--                  <div class="uploaded-image__name">-->
+<!--                    {{ data.item.filename }}-->
+<!--                  </div>-->
 
-                  <v-tooltip top>
-                    <template #activator="{ on, attrs }">
-                      <div class="uploaded-image__remove" v-bind="attrs" v-on="on">
-                        <v-icon color="#000000" @click="onRemoveFile(data.item.id)">
-                          mdi-trash-can
-                        </v-icon>
-                      </div>
-                    </template>
-                    <span>Удалить файл</span>
-                  </v-tooltip>
+<!--                  <v-tooltip top>-->
+<!--                    <template #activator="{ on, attrs }">-->
+<!--                      <div class="uploaded-image__remove" v-bind="attrs" v-on="on">-->
+<!--                        <v-icon color="#000000" @click="onRemoveFile(data.item.id)">-->
+<!--                          mdi-trash-can-->
+<!--                        </v-icon>-->
+<!--                      </div>-->
+<!--                    </template>-->
+<!--                    <span>Удалить файл</span>-->
+<!--                  </v-tooltip>-->
 
-                  <v-overlay
-                    :absolute="true"
-                    :value="getLoadingImg(data.item.id)"
-                    :z-index="2"
-                  >
-                    <v-progress-circular
-                      v-if="getLoadingImg(data.item.id)"
-                      :indeterminate="true"
-                      :size="30"
-                      color="#95D7AE"
-                      style="margin: auto"
-                      width="4"
-                    />
-                  </v-overlay>
-                </template>
-              </div>
-            </template>
-          </v-autocomplete>
-          <dropzone
-            id="dropzone"
-            ref="dropzone"
-            :destroy-dropzone="true"
-            :include-styling="false"
-            :options="$store.getters.optionsDropzone"
-            :use-custom-slot="true"
-            @vdropzone-success="successData"
-            @vdropzone-sending="sendingData"
-          >
-            <div ref="dropzoneTemplate" class="dropzone-custom-content">
-              <!--              <div v-if='isDropzoneNotEmpty' class='separator'></div> -->
-              <div :class="{'animated': dragging}" class="dropzone-label">
-                <v-icon :color="dragging ? 'blue' : '#B3B3B3'" large>
-                  mdi-cloud-upload
-                </v-icon>
-                <span :style="dragging ? 'color: #2196F3 ' : ''">{{ computedLabel }}</span>
-              </div>
-            </div>
-          </dropzone>
-        </div>
-      </template>
+<!--                  <v-overlay-->
+<!--                    :absolute="true"-->
+<!--                    :value="getLoadingImg(data.item.id)"-->
+<!--                    :z-index="2"-->
+<!--                  >-->
+<!--                    <v-progress-circular-->
+<!--                      v-if="getLoadingImg(data.item.id)"-->
+<!--                      :indeterminate="true"-->
+<!--                      :size="30"-->
+<!--                      color="#95D7AE"-->
+<!--                      style="margin: auto"-->
+<!--                      width="4"-->
+<!--                    />-->
+<!--                  </v-overlay>-->
+<!--                </template>-->
+<!--              </div>-->
+<!--            </template>-->
+<!--          </v-autocomplete>-->
+<!--          <dropzone-->
+<!--            id="dropzone"-->
+<!--            ref="dropzone"-->
+<!--            :destroy-dropzone="true"-->
+<!--            :include-styling="false"-->
+<!--            :options="$store.getters.optionsDropzone"-->
+<!--            :use-custom-slot="true"-->
+<!--            @vdropzone-success="successData"-->
+<!--            @vdropzone-sending="sendingData"-->
+<!--          >-->
+<!--            <div ref="dropzoneTemplate" class="dropzone-custom-content">-->
+<!--              &lt;!&ndash;              <div v-if='isDropzoneNotEmpty' class='separator'></div> &ndash;&gt;-->
+<!--              <div :class="{'animated': dragging}" class="dropzone-label">-->
+<!--                <v-icon :color="dragging ? 'blue' : '#B3B3B3'" large>-->
+<!--                  mdi-cloud-upload-->
+<!--                </v-icon>-->
+<!--                <span :style="dragging ? 'color: #2196F3 ' : ''">{{ computedLabel }}</span>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </dropzone>-->
+<!--        </div>-->
+<!--      </template>-->
 
       <template v-else-if="type === 'vybor-iz-spravocnika'">
         <v-select

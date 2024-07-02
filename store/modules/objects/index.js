@@ -165,8 +165,16 @@ export default {
       })
       return firstImage ? firstImage[0] : {}
     },
-    getObjectPhoto(state) {
-      return state.modalCurrentObject.osnovnoe-foto-obekta?.url
+    getPhotosObject(state) {
+      return state.modalCurrentObject['osnovnoe-foto-obekta']
+    },
+    getLastObjectPhoto(state) {
+      return state.modalCurrentObject?.main_photo_compile?.url
+    },
+    getObjectFiles(state) {
+      return state.modalCurrentObject.e_client_files
+        .filter((file) => file.main_photo_object === false)
+        .map((file) => file.filename)
     }
   },
 }

@@ -55,34 +55,46 @@
 
     <div class="images_wrapper">
       <div class="main_photo">
-        <div class="user_avatar">
-          <!--                    <DropzoneInput -->
-          <!--                      :id-user="object.id" -->
-          <!--                      :data="$store.getters['Objects/getFirstPhotoObject']" -->
-          <!--                      :object-template="false" -->
-          <!--                      :is-avatar="true" -->
-          <!--                      class="dropzone_style" -->
-          <!--                      @uploaded-file="changePhotoData" -->
-          <!--                      @remove-file="removeObjectPhoto" -->
-          <!--                    /> -->
-          <!--                    <v-avatar class="avatar_style" size="100"> -->
-          <!--                      <v-img -->
-          <!--                        v-if="$store.getters['Objects/getFirstPhotoObject']" -->
-          <!--                        :src="$store.getters['Objects/getFirstPhotoObject']" -->
-          <!--                      /> -->
-          <!--                      <div v-else class="empty_avatar"/> -->
-          <!--                    </v-avatar> -->
-        </div>
+        <DropzoneInput
+          :id-object="object.id"
+          :data="$store.getters['Objects/getPhotosObject']"
+          :object-template="false"
+          :is-avatar="true"
+          class="dropzone_style"
+          @uploaded-file="changePhotoData"
+          @remove-file="removeObjectPhoto"
+        />
         <v-img
-          v-if="stateFilledImageObject"
-          :class="{'empty_placeholder': ! stateFilledImageObject }"
-          :src="$store.getters.getImageMainPhotoObjects(modalCurrentObject['osnovnoe-foto-obekta'].slice(-1)[0])"
+          v-if="$store.getters['Objects/getLastObjectPhoto']"
+          :src="$store.getters['Objects/getLastObjectPhoto']"
           class="img"
           height="100%"
         />
         <span v-else class="empty_placeholder"/>
       </div>
-      <div class="object_documents_wrapper"/>
+
+      <div v-if="modalCurrentObject.id" class="object_documents_wrapper">
+        <DropzoneInput
+          :data="$store.getters['Objects/getObjectFiles']"
+          :object-template="false"
+          :is-avatar="true"
+          class="dropzone_style"
+          @uploaded-file="changePhotoData"
+          @remove-file="removeObjectPhoto"
+        />
+        <div
+          v-if="$store.getters['Objects/getObjectFiles']"
+          class="files_wrapper"
+        >
+          <div
+            v-for="(name, index) in $store.getters['Objects/getObjectFiles']"
+            :key="index"
+          >
+            {{ name }}
+          </div>
+        </div>
+        <span v-else class="empty_placeholder"/>
+      </div>
     </div>
 
     <div class="tabs_wrapper">
@@ -527,6 +539,13 @@ export default {
       await this.$store.dispatch('NomenclatureModule/deleteOneFavoriteNomenclature', productId)
 
       this.$toast.success('Оборудование удаленно')
+    },
+    async changePhotoData(value, code) {
+      await this.$store.getters['Objects/getObjectFiles']
+      await this.$store.getters['Objects/getLastObjectPhoto']
+    },
+    removeObjectPhoto() {
+
     }
   },
 
@@ -591,6 +610,26 @@ export default {
     padding: 0 40px 20px;
     grid-column-gap: 40px;
     .main_photo {
+      position: relative;
+      min-height: 200px;
+      min-width: 300px;
+      .dropzone_style {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #d9d9d9;
+        opacity: 0;
+        transition: $transition;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+        border-radius: 15px;
+        z-index: 9;
+        &:hover {
+          opacity: 0.8;
+        }
+      }
       .img {
         width: 300px;
         height: 200px;
@@ -599,6 +638,8 @@ export default {
         max-height: 200px;
         border-radius: 15px;
         border: 2px solid #DDDDDD;
+        position: absolute;
+        z-index: 5;
       }
       .empty_placeholder {
         background-color: #DDDDDD;
@@ -614,8 +655,46 @@ export default {
     }
     .object_documents_wrapper {
       background-color: #d9d9d9;
-      border-radius: 30px;
+      border-radius: 15px;
       width: 100%;
+      position: relative;
+      .dropzone_style {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #d9d9d9;
+        opacity: 0;
+        transition: $transition;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+        min-height: 200px;
+        border-radius: 15px;
+        z-index: 9;
+        &:hover {
+          opacity: 0.8;
+        }
+      }
+      .files_wrapper {
+        width: 100%;
+        height: 100%;
+        padding: 20px;
+        border-radius: 15px;
+        position: absolute;
+        z-index: 5;
+      }
+      .empty_placeholder {
+        background-color: #DDDDDD;
+        width: 100%;
+        height: 100%;
+        background-image: url("assets/svg/icons/no_img_icon.svg");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 50%;
+        border-radius: 15px;
+        display: flex;
+      }
     }
 
   }
