@@ -32,11 +32,15 @@
         </h5>
 
         <!--    SLIDER    -->
-        <template v-if="filter.type === 'slider'">
+        <template
+          v-if="filter.type === 'slider'"
+        >
           <div class="filter-slider">
             <div class="filter-slider__inputs">
               <InputStyled
                 :data="getRangeData(filter.key, 'min')"
+                :max="filter.max"
+                :min="filter.min"
                 :placeholder="getMinPlaceholder(filter)"
                 class="c-input"
                 full-sinc-prop
@@ -49,6 +53,8 @@
 
               <InputStyled
                 :data="getRangeData(filter.key, 'max')"
+                :max="filter.max"
+                :min="filter.min"
                 :placeholder="getMaxPlaceholder(filter)"
                 class="c-input"
                 full-sinc-prop
@@ -61,12 +67,12 @@
             </div>
 
             <v-range-slider
-              v-model="filterData[filter.key]"
               :max="filter.max"
               :min="filter.min"
+              :value="getFilterData(filter.key)"
               class="align-center"
               hide-details
-              @change="updateSliderLine(filter.key)"
+              @change="updateSliderLine($event, filter.key)"
             />
           </div>
         </template>
@@ -210,7 +216,6 @@
 
 
 <script>
-import Vue from 'vue'
 import ButtonStyled from '@/components/Common/ButtonStyled'
 import ShimmerFilter from '@/components/Shimmers/ShimmerFilter'
 import InputStyled from '@/components/Common/InputStyled'
@@ -227,6 +232,11 @@ export default {
     isLoadingFilters: {
       type: Boolean,
       default: true
+    },
+    // Selected filters by user
+    filterData: {
+      type: Object,
+      required: true
     }
   },
   data: () => ({
@@ -250,8 +260,6 @@ export default {
       }
     ],
 
-    // Selected filters by user
-    filterData: {},
     // Selectors items from request
     filterSearchedItems: {
       brand: [
@@ -314,6 +322,7 @@ export default {
     this.setSliderDefault()
   },
   methods: {
+    /* ARROW */
     getArrowPosition(key, simpleElem) {
       const searchedElement = simpleElem ? this.$refs[`filter-${key}`] : this.$refs[`filter-${key}`][0]
 
@@ -332,6 +341,11 @@ export default {
     },
     toggleArrow() {
       this.isActiveArrow = !this.isActiveArrow
+    },
+    hideArrow() {
+      if (this.isActiveArrow) {
+        this.toggleArrow()
+      }
     },
     presetArrowPosition(key, position) {
       this.$nextTick(() => {
@@ -388,7 +402,8 @@ export default {
         const sliders = this.filtersList.filter((elem) => elem.type === 'slider')
         if (sliders.length) {
           sliders.forEach((elem) => {
-            Vue.set(this.filterData, elem.key, [elem.min, elem.max])
+            // eslint-disable-next-line vue/custom-event-name-casing
+            this.$emit('setFilterData', { key: elem.key, value: [elem.min, elem.max] })
           })
         }
       })
@@ -398,16 +413,21 @@ export default {
     },
     updateSliderData(value, key, index) {
       if (Array.isArray(this.filterData[key])) {
-        Vue.set(this.filterData[key], index, value)
+        // eslint-disable-next-line vue/custom-event-name-casing
+        this.$emit('setFilterData', { key, value, index })
       } else {
-        Vue.set(this.filterData, key, [])
-        Vue.set(this.filterData[key], index, value)
+        // eslint-disable-next-line vue/custom-event-name-casing
+        this.$emit('setFilterData', { key, value: [] })
+        // eslint-disable-next-line vue/custom-event-name-casing
+        this.$emit('setFilterData', { key, value, index })
       }
 
       this.arrowLogic(key)
     },
-    updateSliderLine(key) {
+    updateSliderLine(value, key) {
       this.arrowLogic(key)
+      // eslint-disable-next-line vue/custom-event-name-casing
+      this.$emit('setSliderData', { key, value })
     },
 
     getElemList(api, key) {
@@ -422,15 +442,18 @@ export default {
       }
 
       if (Array.isArray(this.filterData[key])) {
-        this.filterData[key].push(value)
+        // eslint-disable-next-line vue/custom-event-name-casing
+        this.$emit('pushElem', { key, value })
       } else {
-        Vue.set(this.filterData, key, [value])
+        // eslint-disable-next-line vue/custom-event-name-casing
+        this.$emit('setFilterData', { key, value: [value] })
       }
 
       this.arrowLogic(key)
     },
     removeSelectedElem(index, key) {
-      this.filterData[key].splice(index, 1)
+      // eslint-disable-next-line vue/custom-event-name-casing
+      this.$emit('removeElem', { key, index })
 
       this.arrowLogic(key)
     },
@@ -450,7 +473,8 @@ export default {
       this.arrowLogic(key)
 
       if (!Array.isArray(this.filterData[key])) {
-        Vue.set(this.filterData, key, [value])
+        // eslint-disable-next-line vue/custom-event-name-casing
+        this.$emit('setFilterData', { key, value: [value] })
         return
       }
 
@@ -458,11 +482,13 @@ export default {
         const index = this.filterData[key].findIndex(elem => elem === value)
 
         if (index !== -1) {
-          this.filterData[key].splice(index, 1)
+          // eslint-disable-next-line vue/custom-event-name-casing
+          this.$emit('removeElem', { key, index })
         }
 
       } else {
-        this.filterData[key].push(value)
+        // eslint-disable-next-line vue/custom-event-name-casing
+        this.$emit('pushElem', { key, value })
       }
     },
 
@@ -481,33 +507,36 @@ export default {
     },
     setRangeValue(value, key, condition) {
       if (!Array.isArray(this.filterData[key])) {
-        Vue.set(this.filterData, key, [])
+        // eslint-disable-next-line vue/custom-event-name-casing
+        this.$emit('setFilterData', { key, value: [] })
       }
 
       if (condition === 'min') {
-        Vue.set(this.filterData[key], 0, value)
+        // eslint-disable-next-line vue/custom-event-name-casing
+        this.$emit('setFilterData', { key, value, index: 0 })
       } else {
-        Vue.set(this.filterData[key], 1, value)
+        // eslint-disable-next-line vue/custom-event-name-casing
+        this.$emit('setFilterData', { key, value, index: 1 })
       }
 
       this.arrowLogic(key)
     },
 
     acceptFilters() {
-      if (this.isActiveArrow) {
-        this.toggleArrow()
-      }
+      this.hideArrow()
+
       // eslint-disable-next-line vue/custom-event-name-casing
       this.$emit('acceptFilters', this.filterData)
     },
     resetFilters() {
-      if (this.isActiveArrow) {
-        this.toggleArrow()
-      }
+      this.hideArrow()
 
-      this.filterData = null
-      this.filterData = {}
-      this.setSliderDefault()
+      // eslint-disable-next-line vue/custom-event-name-casing
+      this.$emit('resetFilters')
+    },
+
+    getFilterData(key) {
+      return this.filterData[key] ?? null
     }
   }
 }

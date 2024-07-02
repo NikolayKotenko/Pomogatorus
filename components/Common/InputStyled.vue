@@ -202,7 +202,7 @@ export default {
 
             setTimeout(() => {
               this.resetChange = false
-            }, 100)
+            }, 40)
           })
         }
 
