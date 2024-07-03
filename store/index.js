@@ -20,8 +20,8 @@ const createStore = () => {
     state: {
       BASE_URL:
         process.env.NODE_ENV === 'development'
-          ? 'https://api-test.agregatorus.com'
-          : 'https://api.agregatorus.com',
+          ? process.env.VUE_APP_BACKEND_SERVER_DEV
+          : process.env.VUE_APP_BACKEND_SERVER_PROD,
       show_header: false,
       breadcrumbs: [],
       defaultBreadcrumbs: [
@@ -139,7 +139,7 @@ const createStore = () => {
             title: 'Люди',
             path: '/people',
             icon: 'mdi-account-group-outline',
-            visible: true
+            visible: true,
           },
           {
             title: 'Агенты',
@@ -306,7 +306,7 @@ const createStore = () => {
       NomenclatureModule,
       NotificationModule,
       BrandsModule,
-      TaskModule
+      TaskModule,
     },
   })
 }
