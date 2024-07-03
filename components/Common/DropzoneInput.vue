@@ -349,7 +349,7 @@ export default {
 
       formData.append('uuid', file.upload.uuid)
       if (!this.questionType) {
-        formData.append('id_object', parseInt(this.$store.getters['Objects/getIdCurrentObject']))
+        formData.append('id_object', parseInt(this.$store.state.Objects.modalCurrentObject.id))
       } else {
         formData.append('id_answer', parseInt(this.idAnswer))
       }

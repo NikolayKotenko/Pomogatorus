@@ -2,17 +2,22 @@
   <v-container>
     <div class="article-template">
       <template v-if="article">
+        <SubHeader/>
         <div ref="nav" class="article-template__header">
-          <h1 class="article-template__header__title mainTitleFont">
-            <div>{{ article.name }}</div>
-          </h1>
-          <ArticleInfo :article_data="article" @set-view="setView"/>
+          <div class="title">
+            <v-divider class="divider" vertical/>
+            <h1 class="article-template__header__title">
+              <div>{{ article.name }}</div>
+            </h1>
+          </div>
+          <ArticleInfo :article-data="article" @set-view="setView"/>
           <div v-if="!renderArticle" class="article-template__content mainContentFont" v-html="refactored_content"/>
         </div>
       </template>
 
       <div v-if="$store.state.ArticleModule.refactoring_content || !article" class="hidden-mask"/>
     </div>
+
 
     <!--  DEPRECATED  -->
     <!--    <ProductsWidget/> -->
@@ -65,6 +70,7 @@ import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import ArticleSmallCard from '../../components/Article/ArticleSmallCard.vue'
 import Biathlon from '../../components/Common/Biathlon.vue'
+import SubHeader from '../../components/SubHeader.vue'
 import ViewerStyled from '~/components/Common/ViewerStyled'
 import ImageLayout from '~/components/frontLayouts/ImageLayout'
 import Question from '~/components/frontLayouts/Question'
@@ -77,7 +83,7 @@ import Request from '~/services/request'
 const VuetifyClass = require('vuetify');
 
 export default {
-  components: { Biathlon, ArticleSmallCard, ArticleInfo, HashTagStyled, ViewerStyled },
+  components: { SubHeader, Biathlon, ArticleSmallCard, ArticleInfo, HashTagStyled, ViewerStyled },
   async asyncData({ store, params }) {
     try {
       const articleRequest = await Request.get(`${store.state.BASE_URL}/entity/articles/${params.id}`, '', true);
@@ -571,6 +577,9 @@ export default {
 .article-template {
   display: flex;
   flex-direction: column;
+  max-width: 850px;
+  margin-right: auto;
+  margin-left: auto;
 
   &__subHeader {
     transition: $transition;
@@ -597,15 +606,30 @@ export default {
   }
 
   &__header {
-    &__title {
-      margin: 10px 0 10px 0;
-      padding-bottom: 6px;
+    .title {
+      display: flex;
+      height: auto;
+      .divider {
+        border-color: #000000 !important;
+        border-width: 3px;
+        margin-right: 20px;
+      }
+      &__title {
+        margin: 10px 0 10px 0;
+        padding-bottom: 6px;
+        font-size: 2em;
+        font-weight: 700;
+      }
     }
+
   }
 
   &__content {
     word-break: normal;
     max-width: 1140px;
+    background-color: #FFFFFF;
+    border-radius: 15px;
+    padding: 20px;
 
     h2 {
       font-family: 'Roboto', sans-serif !important;

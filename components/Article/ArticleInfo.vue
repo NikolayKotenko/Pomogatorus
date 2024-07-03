@@ -2,11 +2,11 @@
   <div class="article_info_wrapper mainContentFont">
     <div class="article_info_wrapper__info">
       <div class="article_info_wrapper__info__left">
-        <div class="article_info_wrapper__info__left__block">
-          <span class="article_info_wrapper__info__left__block__value date">
-            {{ article_data.created_at }}
-          </span>
-        </div>
+        <!--        <div class="article_info_wrapper__info__left__block"> -->
+        <!--          <span class="article_info_wrapper__info__left__block__value date"> -->
+        <!--            {{ article_data.created_at }} -->
+        <!--          </span> -->
+        <!--        </div> -->
         <!--        <div class='article_info_wrapper__info__left__block'> -->
         <!--          <div class='article_info_wrapper__info__left__block__title'> -->
         <!--            <v-icon class='article_info_wrapper__info__left__block__title__icon' size='22'> -->
@@ -16,19 +16,20 @@
         <!--          </div> -->
         <!--          <span class='article_info_wrapper__info__left__block__value category'> Подбор </span> -->
         <!--        </div> -->
-        <div v-if="tagsLength" class="article_info_wrapper__info__left__block">
-          <div class="article_info_wrapper__info__left__block__title">
-            <v-icon class="article_info_wrapper__info__left__block__title__icon" size="22">
-              mdi-tag-multiple-outline
-            </v-icon>
-            <span> Теги: </span>
-          </div>
-          <div class="article_info_wrapper__info__left__block__value tags">
-            <a v-for="(tag, index) in article_data._all_public_tags" :key="index" :href="'/podborki/' + tag.code">
-              {{ tag.name.trim() + (index === article_data._all_public_tags.length - 1 ? "" : ",") }}
-            </a>
-          </div>
-        </div>
+        <!--        <div v-if="tagsLength" class="article_info_wrapper__info__left__block"> -->
+        <!--          <div class="article_info_wrapper__info__left__block__title"> -->
+        <!--            <v-icon class="article_info_wrapper__info__left__block__title__icon" size="22"> -->
+        <!--              mdi-tag-multiple-outline -->
+        <!--            </v-icon> -->
+        <!--            <span> Теги: </span> -->
+        <!--          </div> -->
+        <!--          <div class="article_info_wrapper__info__left__block__value tags"> -->
+        <!--            <a v-for="(tag, index) in article_data._all_public_tags" :key="index" :href="'/podborki/' + tag.code"> -->
+        <!--              {{ tag.name.trim() + (index === article_data._all_public_tags.length - 1 ? "" : ",") }} -->
+        <!--            </a> -->
+        <!--            </a> -->
+        <!--          </div> -->
+        <!--        </div> -->
       </div>
       <div class="article_info_wrapper__info__right">
         <v-btn-toggle v-model="articleView" color="deep-purple accent-3" dense @change="setView">
@@ -59,17 +60,20 @@
       </div>
     </div>
     <v-img
-      :src="$store.getters.getImageByEClientFilesObj(article_data.e_client_files)"
+      :src="$store.getters.getImageByEClientFilesObj(articleData.e_client_files)"
       class="article_img"
-      contain
-      max-width="1140"
+      cover
     />
-    <div v-if="article_data.preview" class="article_info_wrapper__anons">
+
+    <div class="sticky_panel">
+      <ViewsAndLikes :article="articleData" :view-action="viewAction"/>
+    </div>
+
+    <div v-if="articleData.preview" class="article_info_wrapper__anons">
       <span>
-        {{ article_data.preview }}
+        {{ articleData.purpose_of_article }}
       </span>
     </div>
-    <hr class="article_info_wrapper__divider">
   </div>
 </template>
 
@@ -77,18 +81,28 @@
 <script>
 
 import TooltipStyled from '../Common/TooltipStyled.vue';
+import ViewsAndLikes from '../Common/ViewsAndLikes.vue'
 
 export default {
   name: 'ArticleInfo',
-  components: { TooltipStyled },
-  props: ['article_data'],
+  components: { ViewsAndLikes, TooltipStyled },
+  props: {
+    articleData: {
+      type: Object,
+      default: () => {}
+    },
+    viewAction: {
+      type: Boolean,
+      default: false
+    },
+  },
   data: () => ({
     articleView: 'normal'
   }),
   computed: {
     tagsLength() {
-      if (!this.article_data._all_public_tags) return false;
-      return !!this.article_data._all_public_tags.length;
+      if (!this.articleData._all_public_tags) return false;
+      return !!this.articleData._all_public_tags.length;
     }
   },
   methods: {
@@ -120,8 +134,8 @@ export default {
 
 .article_info_wrapper {
   color: black;
-  max-width: 1140px;
-
+  display: grid;
+  grid-row-gap: 20px;
   &__info {
     display: flex;
     justify-content: space-between;
@@ -153,20 +167,27 @@ export default {
     }
   }
   .article_img {
-    margin-top: 20px;
-    border-radius: 5px;
-  }
-  &__anons {
-    border-radius: 5px;
-    background-color: #E3E3E3;
-    padding: 20px;
-    margin: 15px 0 15px 0;
-    max-width: 1140px;
+    border-radius: 30px;
   }
 
-  &__divider {
-    max-width: 270px;
-    margin: 2em auto 2em auto;
+  .sticky_panel {
+    background-color: #FFFFFF;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-radius: 30px;
+    position: sticky;
+    top: 80px;
+    z-index: 1;
+    bottom: 0;
+  }
+
+  &__anons {
+    border-radius: 15px;
+    background-color: #FFFFFF;
+    padding: 20px;
+    margin-bottom: 20px;
   }
 }
 

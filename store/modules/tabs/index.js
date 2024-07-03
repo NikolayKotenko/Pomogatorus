@@ -29,7 +29,6 @@ export default {
       state.tabs = result
     },
     setLoadingData(state, payload) {
-      console.log('43321', payload)
       state.isLoadingData = payload
     },
     setTabData(state, payload) {

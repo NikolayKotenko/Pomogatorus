@@ -7,7 +7,7 @@
       <!--        v-if="$store.state.stateVerticalMenu" -->
       <!--        class="fixed_left_menu" -->
       <!--      /> -->
-      <Nuxt :class="{ custom_grid_system : ! isListObjects}"/>
+      <Nuxt :class="{ custom_grid_system : ! isListObjects || ! isArticlePage }"/>
 
       <!--   WIDGETS   -->
       <!--      <WrapperStickyCurrentObject v-if="!listExcludedRightColumn && $device.isDesktop"/> -->
@@ -144,7 +144,12 @@ export default {
       if (this.$route.path === '/objects') {
         return true
       }
-    }
+    },
+    isArticlePage() {
+      if (this.$route.path === '/articles') {
+        return true
+      }
+    },
   },
   watch: {
     '$store.getters.getUserId': {

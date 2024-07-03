@@ -8,7 +8,8 @@ export default {
     listObjects: [],
     currentObject: {},
     modalCurrentObject: {},
-    objectData: {}
+    objectData: {},
+    listObjectFiles: {}
     // stateGlobalObjectModal: false
   },
   mutations: {
@@ -32,6 +33,9 @@ export default {
     },
     set_object_data(state, payload) {
       state.objectData = payload
+    },
+    set_list_object_files(state, payload) {
+      state.listObjectFiles = payload
     }
     // set_state_global_object_modal(state, payload) {
     //   state.stateGlobalObjectModal = payload
@@ -138,6 +142,15 @@ export default {
     //
     //   commit('set_object_data', response.data)
     // }
+    async getObjectById({ state, commit }, idObject){
+      const response = await Request.get(
+        this.state.BASE_URL +
+          `/entity/objects/${idObject}`
+      )
+
+      commit('set_modal_current_object', response.data)
+    },
+
   },
   getters: {
     stateObjectSelected(state) {
@@ -175,6 +188,7 @@ export default {
       return state.modalCurrentObject.e_client_files
         .filter((file) => file.main_photo_object === false)
         .map((file) => file.filename)
-    }
+    },
+
   },
 }

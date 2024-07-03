@@ -56,7 +56,7 @@
     <div class="images_wrapper">
       <div class="main_photo">
         <DropzoneInput
-          :id-object="object.id"
+          :id-object="modalCurrentObject.id"
           :data="$store.getters['Objects/getPhotosObject']"
           :object-template="false"
           :is-avatar="true"
@@ -313,6 +313,11 @@ export default {
         }
       }
     },
+    '$store.state.Objects.listObject': {
+      async handler(v) {
+        await this.set_modal_current_object();
+      }
+    }
   },
   computed: {
     ...mapState('Objects', ['isLoadingObjects', 'listObjects', 'modalCurrentObject']),
@@ -357,6 +362,11 @@ export default {
       }
       this.scrollWindow();
     }
+    await this.$store.getters['Objects/getObjectFiles']
+
+    await this.$store.getters['Objects/getLastObjectPhoto']
+
+    await this.$store.dispatch('Objects/setListObjectFiles')
   },
 
   methods: {
@@ -456,7 +466,6 @@ export default {
       }
     },
     setFileField(data) {
-      console.log('1234', data.key, data.value)
       if (!this.modalCurrentObject[data.key]) {
         Vue.set(this.object, data.key, [data.value]);
       } else {
@@ -465,7 +474,6 @@ export default {
       this.updateProperties[data.key] = data.value;
     },
     changeFileData(value, code) {
-      console.log('431321')
       this.setFileField({ key: code, value: value.data, index: value.index })
       // КОСТЫЛЬ, чтобы реактивность во vue заработала
       this.setTabData(this.tabData)
@@ -541,8 +549,9 @@ export default {
       this.$toast.success('Оборудование удаленно')
     },
     async changePhotoData(value, code) {
-      await this.$store.getters['Objects/getObjectFiles']
-      await this.$store.getters['Objects/getLastObjectPhoto']
+      await this.$store.dispatch('Objects/getListObjectsByUserId')
+      await this.$store.dispatch('Objects/setListObjectFiles')
+      await this.$store.dispatch('Objects/getObjectById', this.modalCurrentObject.id)
     },
     removeObjectPhoto() {
 
@@ -683,6 +692,7 @@ export default {
         border-radius: 15px;
         position: absolute;
         z-index: 5;
+        overflow: auto;
       }
       .empty_placeholder {
         background-color: #DDDDDD;
