@@ -533,7 +533,7 @@ export default {
         const VKID = window.VKIDSDK;
         VKID.Config.set({
           app: 51842098, // Идентификатор приложения.
-          redirectUrl: 'https://3c96-85-116-118-190.ngrok-free.app/auth/vkontakte', // Адрес для перехода после авторизации.
+          redirectUrl: this.$store.state.BASE_URL + '/auth/vkontakte', // Адрес для перехода после авторизации.
           state: 'dj29fnsadjsd82...', // Произвольная строка состояния приложения.
         });
 
