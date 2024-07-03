@@ -102,14 +102,14 @@
             @submit.prevent="localCreateUser(`component_wrapper-${index_component}`)"
           >
             <div class="pesonal_info">
-              <v-checkbox 
+              <v-checkbox
                 v-model="checkbox"
                 color="#95D7AE"
-        
+
               >
                 <template v-slot:label>
                   <div class="info_text">
-                    Я даю согласние на 
+                    Я даю согласние на
                     <v-tooltip bottom>
                       <template v-slot:activator="{ on }">
                         <a
@@ -128,7 +128,7 @@
                 </template>
               </v-checkbox>
             </div>
-            
+
             <div class="quiz_container">
               <div class="quiz_title">
                 Чем планируете заниматься?
@@ -146,13 +146,13 @@
                 hide-details
               />
             </div>
-            
+
             <div class="autorize_wrapper">
               <v-btn
                   class="autorize_btn"
                   :disabled="! checkbox"
                 >
-        
+
                   <div class="autorize_text">
                     {{ authorizationSocials[0].text }}
                   </div>
@@ -165,9 +165,9 @@
                   @callback="yourCallbackFunction"
                 />
               </client-only>
-              
+
               <!-- <script src="https://yastatic.net/s3/passport-sdk/autofill/v1/sdk-suggest-with-polyfills-latest.js"></script>
-              
+
               <script>
                 window.onload = function() {
                   window.YaAuthSuggest.init(
@@ -193,12 +193,12 @@
                 }
 
               </script> -->
-                                    
+
               <v-btn
                 :disabled="! checkbox"
                 class="autorize_btn"
               >
-                
+
                 <div class="autorize_text">
                   {{ authorizationSocials[2].text }}
                 </div>
@@ -208,15 +208,12 @@
                 class="autorize_btn"
                 @click="registrationByMail = true"
               >
-              
-                <div class="autorize_text">
-                  {{ authorizationSocials[3].text }}
-                </div>
+
+
               </v-btn>
             </div>
 
-
-            <div 
+            <div
               v-if="registrationByMail"
               class="forms_input"
             >
@@ -261,7 +258,7 @@
                 local-class="style_button"
                 type="submit"
               />
-              
+
             </div>
           </v-form>
         </v-tab-item>
@@ -276,6 +273,8 @@
         <span v-html="alert.message"/>
       </v-alert>
     </v-container>
+    <div id="vkid1" ref="vkid">
+    </div>
   </v-container>
   <v-container v-else class="custom_grid_system">
     <v-alert dismissible type="success">
@@ -284,7 +283,8 @@
   </v-container>
 </template>
 
-<script src="https://vk.com/js/api/openapi.js?169" type="text/javascript"></script>
+<script src="https://vk.com/js/api/openapi.js?169" type="text/javascript">
+</script>
 
 
 
@@ -303,7 +303,7 @@ if (process.client) {
 }
 
 
-export default {  
+export default {
   name: 'LoginAuth',
   components: { ButtonStyled, vueTelegramLogin },
   data() {
@@ -376,11 +376,33 @@ export default {
         },
       ],
       checkbox: false,
-      registrationByMail: false
+      registrationByMail: false,
+      vkid: null,
+      sdkLoaded: false
     };
   },
+  created() {
+    //ебаная магия1
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://unpkg.com/@vkid/sdk@1.1.0/dist-sdk/umd/index.js';
+      script.onload = () => {
+        this.initializeVKID();
+        this.sdkLoaded = true; // Set SDK loaded state
+        resolve(); // Resolve the promise to continue mounting
+      };
+      script.onerror = (event) => {
+        console.error('Ошибка при загрузке VKID SDK', event);
+        reject(new Error('Failed to load VKID SDK'));
+      };
+      document.body.appendChild(script);
+    });
+},
   mounted() {
     this.getData();
+    // Убедимся, что DOM полностью обновлен и контейнер доступен
+    this.checkContainer();
+   // 0 ms чтобы убедиться, что DOM обновлен
     if (this.$store.state.changedCookie) {
       this.hasCookie();
     }
@@ -497,7 +519,42 @@ export default {
       elem.remove();
       this.$store.dispatch('deleteComponent', this.index_component);
     },
-  
+    vkontakte(container) {
+      // Создание экземпляра кнопки.
+      const oneTap = new this.vkid.OneTap();
+      if (container) {
+        // Отрисовка кнопки в контейнере с именем приложения APP_NAME, светлой темой и на русском языке.
+        oneTap.render({ container: container, scheme: this.vkid.Scheme.LIGHT, lang: this.vkid.Languages.RUS });
+      }
+    },
+    initializeVKID() {
+      // Инициализация VKID SDK
+      if (window.VKIDSDK) {
+        const VKID = window.VKIDSDK;
+        VKID.Config.set({
+          app: 51842098, // Идентификатор приложения.
+          redirectUrl: this.$store.state.BASE_URL + '/auth/vkontakte', // Адрес для перехода после авторизации.
+          state: 'dj29fnsadjsd82...', // Произвольная строка состояния приложения.
+        });
+
+        this.vkid = VKID;
+      } else {
+        this.error = 'VKID SDK is not available';
+      }
+    },
+    // ебаная магия2
+    checkContainer() {
+      const container = this.$refs.vkid;
+      if (container && this.sdkLoaded) {
+        this.vkontakte(container);
+      } else {
+        this.error = 'Контейнер не найден';
+        // Попробуем еще раз через небольшую задержку
+        setTimeout(() => {
+          this.checkContainer();
+        }, 100); // 100 ms задержка
+      }
+    },
   }
 };
 </script>
