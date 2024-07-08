@@ -56,8 +56,8 @@
       :questions="computedQuestions"
       :view-action="localViewAction"
     />
-    <v-overlay :value="$store.state.ArticleModule.refactoring_content" z-index="10">
-      <v-progress-circular :size="50" color="primary" indeterminate style="margin-top: 20px"/>
+    <v-overlay :value="$store.state.ArticleModule.refactoring_content" z-index="10" opacity="1">
+      <v-progress-circular :size="50" color="#FFFFFF" indeterminate style="margin-top: 20px"/>
     </v-overlay>
 
     <!-- TODO: DEPRECATED, Теперь у нас есть боковой виджет объекта -->

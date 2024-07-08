@@ -17,6 +17,7 @@ export default {
     answersFromServer: [],
     isAnswered: false,
     isLoadingAnswers: false,
+    stateShareArticleModal: false
   },
   mutations: {
     /* ANSWERS */
@@ -89,8 +90,17 @@ export default {
         state.indexImage = payload
       }
     },
+    set_state_share_article_modal(state, payload) {
+      state.stateShareArticleModal = payload
+    }
   },
   actions: {
+    openShareArticleModal({ commit }) {
+      commit('set_state_share_article_modal', true)
+    },
+    closeShareArticleModal({ commit }) {
+      commit('set_state_share_article_modal', false)
+    },
     async req_list_articles({ commit }) {
       try {
         const query = 'filter[activity]=true'

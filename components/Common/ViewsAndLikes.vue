@@ -1,6 +1,6 @@
 <template>
   <div :class="{ views_and_likes_wrapper: !isBigArticle, is_big_article_style: isBigArticle}">
-    <template v-if="! isBigArticle">
+    <template v-if="isBigArticle">
       <TooltipStyled :is-top="true" :title="'Кол-во просмотров'">
         <div
           class="wrapper"
@@ -27,7 +27,7 @@
       </div>
     </TooltipStyled>
 
-    <v-divider vertical style="border-width: 1px; border-color: #DFDFDF !important;"/>
+    <v-divider v-if="isBigArticle" vertical style="border-width: 1px; border-color: #DFDFDF !important;"/>
 
     <TooltipStyled :is-top="true" :title="'Не понравилось'">
       <div
@@ -185,14 +185,17 @@ export default {
 <style lang="scss" scoped>
 @import 'assets/styles/style';
 .views_and_likes_wrapper {
-  display: grid;
+  display: flex;
   align-items: center;
-  grid-template-columns: repeat(3, 1fr);
-  grid-column-gap: 1em;
+  grid-column-gap: 20px;
   .wrapper {
     display: flex;
     grid-column-gap: 5px;
     align-items: center;
+    background-color: #DDDDDD;
+    border-radius: 15px;
+    padding: 10px 20px;
+    cursor: pointer;
   }
 }
 .is_big_article_style {
@@ -229,7 +232,7 @@ body .icons {
   }
 
   &:active, &.active {
-    color: $orange-color !important;
+    color: #FF6347 !important;
   }
 }
 

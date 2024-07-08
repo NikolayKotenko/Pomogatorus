@@ -7,7 +7,7 @@
     <template v-if="Object.keys(question_data).length">
       <div class="question_wrapper__content">
         <div class="question_wrapper__title">
-          <h3>{{ index_questions }}. {{ question_data.name }}</h3>
+          <h3>{{ question_data.name }}</h3>
           <div v-if="question_data.title" class="helper_wrapper">
             <v-tooltip bottom>
               <template #activator="{ on, attrs }">
@@ -853,8 +853,8 @@ export default {
 .question_wrapper {
   position: relative;
   padding: 20px;
-  border-radius: 5px;
-  background-color: #FFFFFF;
+  border-radius: 15px;
+  background-color: #F2F2F2;
   transition: $transition;
   height: auto;
 
@@ -862,10 +862,6 @@ export default {
     font-size: 1.1em;
   }
 
-  &:hover {
-    background-color: #FFF4CB;
-    box-shadow: 0px 5px 20px 7px rgba(34, 60, 80, 0.2) !important;
-  }
 
   &__title {
     display: flex;
@@ -886,6 +882,7 @@ export default {
     display: flex;
     align-items: flex-start;
     column-gap: 15px;
+
 
     &__question {
       flex: 1;
