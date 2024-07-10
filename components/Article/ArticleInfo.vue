@@ -25,7 +25,7 @@
           </div>
           <div class="article_info_wrapper__info__left__block__value tags">
             <a v-for="(tag, index) in article_data._all_public_tags" :key="index" :href="'/podborki/' + tag.code">
-              {{ tag.name.trim() + (index === article_data._all_public_tags.length - 1 ? "" : ",") }}
+              {{ tag.name.trim() + (index === article_data._all_public_tags.length - 1 ? '' : ',') }}
             </a>
           </div>
         </div>
@@ -76,7 +76,7 @@
 
 <script>
 
-import TooltipStyled from '../Common/TooltipStyled.vue';
+import TooltipStyled from '../Common/TooltipStyled.vue'
 
 export default {
   name: 'ArticleInfo',
@@ -87,19 +87,19 @@ export default {
   }),
   computed: {
     tagsLength() {
-      if (!this.article_data._all_public_tags) return false;
-      return !!this.article_data._all_public_tags.length;
+      if (!this.article_data._all_public_tags) return false
+      return !!this.article_data._all_public_tags.length
     }
   },
   methods: {
     setView() {
-      this.$emit('set-view', this.articleView);
+      this.$emit('set-view', this.articleView)
     }
   }
-};
+}
 </script>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 @media only screen and (max-width: 600px) {
   .article_info_wrapper__info {
     flex-direction: column !important;
@@ -120,7 +120,7 @@ export default {
 
 .article_info_wrapper {
   color: black;
-  max-width: 1140px;
+  max-width: 850px;
 
   &__info {
     display: flex;
@@ -152,16 +152,18 @@ export default {
     &__right {
     }
   }
+
   .article_img {
     margin-top: 20px;
     border-radius: 5px;
   }
+
   &__anons {
     border-radius: 5px;
     background-color: #E3E3E3;
     padding: 20px;
     margin: 15px 0 15px 0;
-    max-width: 1140px;
+    max-width: 850px;
   }
 
   &__divider {

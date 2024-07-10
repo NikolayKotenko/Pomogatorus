@@ -7,6 +7,7 @@
       :color="colorIcon"
       :disabled="isDisabled"
       :size="sizeIcon"
+      class="hover_style"
       @click="$emit('click-icon')"
     >
       {{ iconText }}
@@ -50,4 +51,14 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.hover_style {
+  transition: all 0.4s ease-in-out;
+  &:hover {
+    color: #000000 !important;
+
+  }
+}
+</style>
 

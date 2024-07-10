@@ -49,7 +49,7 @@
 <script>
 import VueSlickCarousel from 'vue-slick-carousel'
 import NomenclatureCard from '../Nomenclature/NomenclatureCard'
-
+import constructFilterQuery from '~/utils/constructFilterQuery'
 import Request from '@/services/request'
 
 import 'vue-slick-carousel/dist/vue-slick-carousel.css'
@@ -148,13 +148,36 @@ export default {
         })
       }
     },
-    getNomenclatureInfo() {
-      this.nomenclatureList.forEach(async (elem) => {
-        const result = await Request.get(
-          `${this.$store.state.BASE_URL}/entity/nomenclature/${elem.id}`
-        )
+    async getNomenclatureInfo() {
+      const values = []
 
-        elem.data = result?.data ?? null
+      this.nomenclatureList.map(elem => elem.id).filter((value, index, array) => array.indexOf(value) === index).forEach((elem) => {
+        values.push({ ids_nomenclatures: elem })
+      })
+
+      const query = constructFilterQuery(values, true)
+
+      const result = await Request.get(
+        `${this.$store.state.BASE_URL}/entity/nomenclature${query}`
+      )
+
+      if (!result.data) {
+        this.nomenclatureList.forEach((elem) => {
+          elem.data = null
+          elem.isLoading = false
+        })
+      }
+
+      this.nomenclatureList.forEach((elem) => {
+        const value = result.data.find((response) => response.id === elem.id)
+
+        if (!value) {
+          elem.data = null
+          elem.isLoading = false
+          return
+        }
+
+        elem.data = value
         elem.isLoading = false
       })
     },

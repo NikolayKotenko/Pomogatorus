@@ -1,5 +1,6 @@
 <template>
   <VCombobox
+    ref="select"
     v-model="currentData"
     :chips="isChips"
     :class="isCustomClass"
@@ -14,8 +15,9 @@
     :item-value="isItemValue"
     :items="isItems"
     :loading="isLoading"
-    :menu-props="(computedSearchInputState && compareSearchStringAndExistEntry) ? {} : {value: false}"
+    :menu-props="(alwaysShow || (computedSearchInputState && compareSearchStringAndExistEntry)) ? {} : {value: false}"
     :outlined="isOutlined"
+    :persistent-placeholder="isPersistentPlaceholder"
     :placeholder="isPlaceholder"
     :return-object="isReturnObject"
     :rounded="isRounded"
@@ -38,79 +40,50 @@
         {{ iconPrepend }}
       </v-icon>
     </template>
-    <template
-      v-if="isGlobalSearch"
-      #item="data"
-    >
-      <v-list-item-content
-        class="search_item"
-        @click="watchDataRedirect(data.item)"
+
+    <template #item="data">
+      <template
+        v-if="isGlobalSearch"
       >
-        <span
-          v-html="getTitleString(data.item.text)"
-        />
-        <span
-          style="font-size: 0.8em; color: #B6B6B6;"
+        <v-list-item-content
+          class="search_item"
+          @click="watchDataRedirect(data.item)"
         >
-          - {{ data.item.category }}
-        </span>
-      </v-list-item-content>
-    </template>
-    <template
-      v-if="isCustomTemplateSelections"
-      #item="data"
-    >
-      <v-list-item-content class="search_item">
-        <span v-html="getTitleString(data.item.city)"/>
-        <br>
-        <span style="font-size: 0.8em; color: #B6B6B6;">{{ data.item.address }}</span>
-      </v-list-item-content>
-    </template>
+          <span
+            v-html="getTitleString(data.item.text)"
+          />
+          <span
+            style="font-size: 0.8em; color: #B6B6B6;"
+          >
+            - {{ data.item.category }}
+          </span>
+        </v-list-item-content>
+      </template>
 
-    <!--
- <template v-if="isCustomTemplateSelections" #item="data">
-      <v-list-item-content @click="watchDataRedirect(data.item)">
-        <span>Cтатьи</span>
-        <v-list-item-title v-if="data.category === 'Cтатьи'">
-          <span v-html="getTitleString(data.item.text)"/>
-        </v-list-item-title>
-        <span>Подборки</span>
-        <v-list-item-title v-if="data.item.category === 'Тэги'">
-          <span v-html="getTitleString(data.item.text)"/>
-        </v-list-item-title>
-        <span>Оборудование</span>
-        <v-list-item-title v-if="data.item.category === 'Оборудование'">
-          <span v-html="getTitleString(data.item.text)"/>
-        </v-list-item-title>
-
-        <v-list-item-title v-else>
-          <span v-html="getTitleString(data.item.text)"/>
-        </v-list-item-title>
-      </v-list-item-content>
-    </template>
--->
-    <!--
- <template v-if="isCustomSearchSelections" #item="data">
-      <div
-        class="search_user_invite"
-        @click="stopInput($event)"
+      <template
+        v-if="isCustomTemplateSelections"
       >
-        <CardInviteUser
-          :user-object="data.item"
-        />
-      </div>
+        <v-list-item-content class="search_item">
+          <span v-html="getTitleString(data.item.city)"/>
+          <br>
+          <span style="font-size: 0.8em; color: #B6B6B6;">{{ data.item.address }}</span>
+        </v-list-item-content>
+      </template>
+
+      <template v-else>
+        <v-list-item-content
+          class="search_item"
+        >
+          <span>{{ data.item[isItemText] }}</span>
+        </v-list-item-content>
+      </template>
     </template>
--->
   </VCombobox>
 </template>
 
 <script>
-import CardInviteUser from './CardInviteUser.vue';
-import HashTagStyled from '~/components/Common/HashTagStyled';
-
 export default {
   name: 'SearchStyled',
-  components: { CardInviteUser, HashTagStyled },
   props: {
     isCustomClass: {
       type: Boolean,
@@ -207,75 +180,106 @@ export default {
     iconPrepend: {
       type: String,
       default: ''
+    },
+    clearAfterSelect: {
+      type: Boolean,
+      default: false
+    },
+    isPersistentPlaceholder: {
+      type: Boolean,
+      default: false
+    },
+    // Флаг отвечает чтобы появился выпадающий список, раньше были специальные условия для отображения
+    alwaysShow: {
+      type: Boolean,
+      default: false
     }
   },
   data: () => ({
     localSearchInputSync: '',
-    localSelected: null
+    localSelected: null,
+    resetChange: false
   }),
   computed: {
     currentData: {
       get() {
         if (this.internalData) {
-          return this.internalData;
+          return this.internalData
         }
-        return this.localSelected;
+        return this.localSelected
       },
       set(value) {
-        this.localSelected = value;
+        if (this.resetChange) {
+          return
+        }
+        // Если не нужно отображать в инпуте выбранный результат
+        if (this.clearAfterSelect) {
+          this.$emit('select-item', value)
+
+          this.$nextTick(() => {
+            this.resetChange = true
+            this.$refs.select.reset()
+
+            setTimeout(() => {
+              this.resetChange = false
+            }, 500)
+          })
+        } else {
+          this.localSelected = value
+        }
       }
     },
     computedSearchInputState() {
-      if (!this.localSearchInputSync) return false;
+      if (!this.localSearchInputSync) return false
 
-      return (this.localSearchInputSync.length > 2);
+      return (this.localSearchInputSync.length > 2)
     },
     compareSearchStringAndExistEntry() {
-      if (!this.localSelected) return true;
+      if (!this.localSelected) return true
 
-      return this.localSelected[this.isItemText] !== this.localSearchInputSync;
+      return this.localSelected[this.isItemText] !== this.localSearchInputSync
     }
   },
   watch: {
     internalData: function(newVal, oldVal) {
-      if (!newVal) return false;
+      if (!newVal) return false
 
-      this.$emit('update-search-input', newVal);
+      this.$emit('update-search-input', newVal)
     }
   },
   methods: {
     watchDataRedirect(data) {
-      this.$emit('redirect', data);
+      this.$emit('redirect', data)
     },
     getTitleString(text) {
-      const { start, middle, end } = this.getMaskedCharacters(text);
-      return `${start}${this.genHighlight(middle)}${end}`;
+      const { start, middle, end } = this.getMaskedCharacters(text)
+      return `${start}${this.genHighlight(middle)}${end}`
     },
 
     // Вспомогательные функции
     getMaskedCharacters(text) {
-      const searchInput = (this.localSearchInputSync || '').toString().toLocaleLowerCase();
-      const index = text.toLocaleLowerCase().indexOf(searchInput);
+      const searchInput = (this.localSearchInputSync || '').toString().toLocaleLowerCase()
+      const index = text.toLocaleLowerCase().indexOf(searchInput)
 
-      if (index < 0) return { start: text, middle: '', end: '' };
+      if (index < 0) return { start: text, middle: '', end: '' }
 
-      const start = text.slice(0, index);
-      const middle = text.slice(index, index + searchInput.length);
-      const end = text.slice(index + searchInput.length);
-      return { start, middle, end };
+      const start = text.slice(0, index)
+      const middle = text.slice(index, index + searchInput.length)
+      const end = text.slice(index + searchInput.length)
+      return { start, middle, end }
     },
     genHighlight(text) {
-      return `<span class="v-list-item__mask">${text}</span>`;
+      return `<span class='v-list-item__mask'>${text}</span>`
     },
     stopInput(e) {
-      e.stopPropagation();
-      e.preventDefault();
+      e.stopPropagation()
+      e.preventDefault()
     }
   }
-};
+}
 </script>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 .v-text-field--rounded {
   border-radius: 25px !important;
 }
@@ -291,7 +295,7 @@ export default {
 }
 </style>
 
-<style lang="scss">
+<style lang='scss'>
 @import 'assets/styles/style';
 
 // TODO: Эти стили изменяют вообще все инпуты в приложении, надо выносить под какой-то класс
@@ -303,7 +307,6 @@ export default {
 .v-ripple__container {
   display: none !important;
 }
-
 
 
 .selectIcon {

@@ -1,104 +1,74 @@
 <template>
-  <div class="modal_wrapper">
-    <template>
-      <v-card
-        v-show="$store.getters.stateAuth"
-        class="static_search_breadcrumbs"
-        elevation="5"
-        outlined
-        shaped
-      >
-        <div class="wrapper_chips">
-          <!-- Быстрые чипсы -->
-          <ChipsStyled
-            :data="selectedQueryChips"
-            :is-filter="true"
-            :is-multiple="true"
-            :list-chips="computedListChips"
-            class="chips_list_object"
-            @update-chips="setQueryChips"
-          />
+  <v-container class="modal_wrapper">
+    <SubHeader/>
+    <div class="list_objects_header">
+      Список доступных объектов
+    </div>
 
-          <TooltipStyled
-            :is-top="true"
-            :title="'Контекст работы'"
-          >
-            <v-icon
-              color="#5D80B5"
-            >
-              mdi-help-circle-outline
-            </v-icon>
-          </TooltipStyled>
-        </div>
-        <!-- Поиск -->
-        <SearchStyled
-          :class="'styleSearch'"
-          :internal-data="querySearchData.value"
-          :is-clearable="true"
-          :is-custom-template-selections="true"
-          :is-disabled="isLoadingObjects"
-          :is-hide-selected="false"
-          :is-item-text="'text'"
-          :is-item-value="'text'"
-          :is-loading="isLoadingObjects"
-          :is-placeholder="'Поиск по имени, адресу, заметкам'"
-          :is-return-object="true"
-          style="max-height: 61px"
-          @update-search-input="setQuerySearchData"
-        />
-      </v-card>
-      <div
-        v-if="$store.getters['Objects/stateFilledListObjects'] && !$store.state.Objects.isLoadingObjects"
-        class="card_object flex-grow-1 flex-shrink-1"
-      >
-        <div class="card_object_container">
-          <CardObject
-            v-for="(object, index) in listObjects"
-            :key="index"
-            :object_data="object"
-            @open-detail="openDetail"
-          />
-        </div>
+    <ChipsStyled
+      :data="selectedQueryChips"
+      :is-multiple="true"
+      :list-chips="computedListChips"
+      class="chips_list_object"
+      @update-chips="setQueryChips"
+    />
+
+    <div v-if="$store.getters.stateAuth" class="new_object_wrapper custom_grid_system">
+      <!--        <v-divider class="new_obj_divider"></v-divider> -->
+      <CreateNewObject/>
+    </div>
+
+    <div class="current_obj_wrapper">
+      <div class="wrapper_title">
+        Выбран текущим объектом
       </div>
-      <v-sheet
-        v-for="n in 3"
-        v-if="!$store.getters.stateAuth || $store.state.Objects.isLoadingObjects"
-        :key="n"
-        class="pa-3"
-        @click="$store.dispatch('callModalAuth')"
-      >
-        <TooltipStyled :title="'Авторизуйтесь чтобы увидеть свои объекты'">
-          <v-skeleton-loader
-            class="mx-auto"
-            type="card"
-          />
-        </TooltipStyled>
-      </v-sheet>
-      <div v-if="$store.getters.stateAuth" class="new_object_wrapper custom_grid_system">
-        <!--        <v-divider class="new_obj_divider"></v-divider> -->
-        <CreateNewObject/>
-      </div>
-      <VDialog
-        v-if="showDetail"
-        v-model="showDetail"
-        :fullscreen="isMobile"
-        :hide-overlay="isMobile"
-        :width="isMobile ? 1080 : null"
-        content-class="dialogStyled"
-        persistent
-        scrollable
-      >
-        <ObjectGlobal
-          :object-data="detailData"
-          @close-modal="closeDetailObj"
+      <div class="card_current_object_container">
+        <CardObject
+          :object_data="currentObject"
+          @open-detail="openDetail"
         />
-      </VDialog>
-    </template>
-  </div>
+      </div>
+    </div>
+
+    <div
+      v-if="$store.getters['Objects/stateFilledListObjects'] && !$store.state.Objects.isLoadingObjects"
+      class="list_cards_objects"
+    >
+      <div class="cards_objects_container">
+        <div class="wrapper_title">
+          Мои объекты
+        </div>
+        <CardObject
+          v-for="(item, index) in listObjectExcludedCurrent"
+          :key="index"
+          :object_data="item"
+          @open-detail="openDetail"
+        />
+      </div>
+    </div>
+
+    <VDialog
+      v-if="showDetail"
+      v-model="showDetail"
+      :fullscreen="isMobile"
+      :hide-overlay="isMobile"
+      width="1140"
+      content-class="dialogStyled"
+      persistent
+      scrollable
+    >
+      <ObjectGlobal
+        :object-data="detailData"
+        @close-modal="closeDetailObj"
+      />
+    </VDialog>
+  </v-container>
 </template>
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
+import SubHeader from '../SubHeader.vue'
+import currentObjects from '../Widgets/CurrentObjects.vue'
 import ObjectGlobal from './ObjectGlobal';
 import CardObject from './CardObject.vue';
 import TooltipStyled from '@/components/Common/TooltipStyled';
@@ -108,7 +78,7 @@ import CreateNewObject from '~/components/UserObjects/CreateNewObject';
 
 export default {
   name: 'ListObjects',
-  components: { CreateNewObject, ChipsStyled, TooltipStyled, CardObject, ObjectGlobal, SearchStyled },
+  components: { SubHeader, CreateNewObject, ChipsStyled, TooltipStyled, CardObject, ObjectGlobal, SearchStyled },
   data: () => ({
     object: {},
     showDetail: false,
@@ -121,7 +91,7 @@ export default {
         value: 'home_owner=true'
       },
       {
-        text: 'Где я работаю',
+        text: 'Объекты по приглашению',
         value: 'home_worker=true'
       }
     ],
@@ -158,7 +128,10 @@ export default {
     // }
   },
   computed: {
-    ...mapState('Objects', ['listObjects', 'isLoadingObjects']),
+    currentObjects() {
+      return currentObjects
+    },
+    ...mapState('Objects', ['listObjects', 'isLoadingObjects', 'currentObject']),
     ...mapState(['userData']),
     ...mapGetters(['getUserId']),
 
@@ -175,6 +148,9 @@ export default {
     },
     computedListChips() {
       return this.listQueryFilters;
+    },
+    listObjectExcludedCurrent() {
+      return this.listObjects.filter((obj) => obj.id !== this.currentObject.id)
     }
   },
   methods: {
@@ -257,8 +233,48 @@ export default {
 <style lang="scss">
 @import 'assets/styles/style';
 
+.v-tab {
+  color: #777777;
+  font-weight: 600;
+  max-height: 25px;
+  margin: 0 20px 0 0!important;
+  padding: 0 !important;
+  border-bottom: 3px solid #DFDFDF;
+}
+.v-tab:before {
+  color: #000000;
+}
+.v-tab--active {
+  color: #000000;
+  border-bottom: 3px solid #FF6347;
+}
+
+.modal_wrapper {
+  max-width: 890px !important;
+  margin-left: auto;
+  margin-right: auto;
+  .list_objects_header {
+    padding: 0 20px;
+    font-size: 1.5em;
+    font-weight: 700;
+  }
+  .chips_list_object {
+    margin: 20px;
+  }
+  .current_obj_wrapper {
+
+  }
+}
+
+.wrapper_title {
+  padding: 20px;
+  font-size: 1.25em;
+  font-weight: 600;
+}
+
+
 .static_search_breadcrumbs {
-  position: sticky;
+  //position: sticky;
   display: block;
   top: 1px;
   background: white;
@@ -276,13 +292,7 @@ export default {
   }
 }
 
-.chips_list_object {
-  margin-top: 0 !important;
 
-  .styleChip {
-    font-size: 1.1em;
-  }
-}
 
 .modal_wrapper {
   padding: 0 !important;
@@ -295,16 +305,6 @@ export default {
   top: 0;
   padding: 20px;
   z-index: 404;
-}
-
-.card_object {
-  display: flex;
-  flex-direction: column;
-  row-gap: 0 !important;
-
-  &_container {
-    padding: 20px 0 25% 0;
-  }
 }
 
 .card_object_new {
@@ -366,14 +366,12 @@ export default {
 }
 
 .new_object_wrapper {
-  position: fixed;
-  width: 100%;
+  position: sticky;
+  top: 80px;
+  z-index: 1;
   max-width: inherit;
   bottom: 0;
   padding-bottom: 20px;
-  margin-top: auto;
-  background: white;
-  box-shadow: none;
   @media only screen and (max-width: 415px) {
     padding-right: 20px;
   }
@@ -392,6 +390,7 @@ export default {
 
   .modal_wrapper {
     justify-self: center;
+
   }
 
 }

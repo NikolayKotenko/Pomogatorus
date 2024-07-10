@@ -2,11 +2,14 @@
   <v-btn
     :class="computedClass"
     :disabled="isDisabled"
+    :elevation="elevation"
     :href="href"
     :loading="isLoading"
-    :nuxt="isNuxtLink"
-    :max-width="maxWidth"
     :max-height="maxHeight"
+    :max-width="maxWidth"
+    :min-height="minHeight"
+    :min-width="minWidth"
+    :nuxt="isNuxtLink"
     @click="$emit('click-button')"
   >
     <template v-if="customSlot">
@@ -67,12 +70,24 @@ export default {
       default: false
     },
     maxWidth: {
-      type: String,
+      type: [String, Number],
+      default: ''
+    },
+    minWidth: {
+      type: [String, Number],
+      default: ''
+    },
+    minHeight: {
+      type: [String, Number],
       default: ''
     },
     maxHeight: {
-      type: String,
+      type: [String, Number],
       default: ''
+    },
+    elevation: {
+      type: Number,
+      default: null
     }
   },
   computed: {
@@ -108,7 +123,7 @@ export default {
 .desktop_style {
   height: 3.2em !important;
   width: 14.2em;
-  max-height: 45px;
+  max-height: 40px;
   max-width: 200px;
 }
 
@@ -117,22 +132,98 @@ export default {
   color: $black-text-color;
   border: 1px solid #000000;
   transition: $transition;
+
   &:hover {
     background: #000000 !important;
     color: #FFFFFF;
   }
 }
 
+.v-btn.new_style_button {
+  padding: 0 20px !important;
+  background-color: #d9d9d9 !important;
+  border: none;
+  border-radius: 15px;
+  text-wrap: nowrap;
+  font-weight: 600 !important;
+  display: flex;
+  align-items: center;
+  width: auto !important;
+  height: 40px;
+  cursor: pointer;
+  font-size: 1em !important;
+  box-shadow: none !important;
+
+}
+
+.v-btn.style_wide_button {
+  background-color: $background-element-color !important;
+  color: $black-text-color;
+  border: 1px solid #000000;
+  max-width: 560px !important;
+  width: 560px !important;
+  transition: $transition;
+
+  &:hover {
+    background: #000000 !important;
+    color: #FFFFFF;
+  }
+}
+
+.v-btn.style_save_button {
+  background-color: #FF6347 !important;
+  color: #FFFFFF;
+  border: 1px solid #FF6347;
+  transition: $transition;
+
+  &:hover {
+    background: #FFFFFF !important;
+    border: 1px solid #000000;
+    color: #000000;
+  }
+}
+
+.v-btn.style_object_button {
+  background-color: $background-element-color !important;
+  color: $black-text-color;
+  border: 1px solid #000000;
+  max-width: 375px !important;
+  width: 375px !important;
+  transition: $transition;
+
+  &:hover {
+    background: #000000 !important;
+    color: #FFFFFF;
+  }
+}
 
 .style_close {
   background: $background-element-color !important;
   color: $black-text-color;
   border: 1px solid $orange-color;
   transition: $transition;
+
   &:hover {
     background: $orange-color !important;
     color: #000000;
 
   }
 }
+
+.new-style-btn {
+  border-radius: 30px;
+  box-shadow: unset;
+}
+
+.btn-save {
+  background: #FF6347 !important;
+  border: 1px solid #FF6347;
+  color: white !important;
+}
+
+.btn-cancel {
+  border: 1px solid #111111;
+  background: transparent;
+}
+
 </style>

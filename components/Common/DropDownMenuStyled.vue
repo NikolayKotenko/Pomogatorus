@@ -3,6 +3,7 @@
     :close-on-click="closeOnClickOutside"
     :close-on-content-click="closeOnContentClick"
     :open-on-hover="openOnHover"
+    :open-on-click="openOnClick"
     :close-delay="closeDelay"
     :left="isLeft"
     :nudge-bottom="nudgeBottom"
@@ -13,6 +14,8 @@
     :top="isTop"
     :content-class="'content_menu_style'"
     :absolute="isAbsolute"
+    :value="isValue"
+    :disabled="isDisabled"
     bottom
   >
     <template #activator="{ on, attrs }">
@@ -87,11 +90,22 @@ export default {
       type: Boolean,
       default: false
     },
+    openOnClick: {
+      type: Boolean,
+      default: true
+    },
     closeDelay: {
       type: String,
       default: ''
     },
-
+    isValue: {
+      type: Boolean,
+      default: false
+    },
+    isDisabled: {
+      type: Boolean,
+      default: false
+    }
 
   }
 };

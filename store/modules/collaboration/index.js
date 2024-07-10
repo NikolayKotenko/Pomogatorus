@@ -217,7 +217,10 @@ export default {
     },
     getCountFavoriteUsers(state) {
       return state.listFavoriteUsers.length
-    }
+    },
+    getCountAllUsers(state) {
+      return state.listAllUsers.length
+    },
 
 
 
