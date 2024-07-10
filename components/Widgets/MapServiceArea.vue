@@ -1,9 +1,5 @@
 <template>
-  <v-card class="map_service_area">
-    <h3 class="mb-4">
-      Территория обслуживания
-    </h3>
-
+  <v-card class="map_service_area" elevation="0">
     <SearchStyled
       :icon-prepend="'mdi-magnify'"
       :is-clearable="true"
@@ -13,9 +9,8 @@
       :is-item-value="'id'"
       :is-items="$store.state.UserSettings.listCities"
       :is-loading="$store.state.UserSettings.loading"
-      :is-outlined="true"
+      :is-outlined="false"
       :is-placeholder="'Регион, город, населенный пункт'"
-      :is-rounded="true"
       class="invite_input"
       @update-search-input="localGetListCities"
       @change-search="$store.dispatch('UserSettings/setSelectedCity', $event)"
@@ -32,18 +27,18 @@
       @click-chip="$store.dispatch('UserSettings/localSetChips', $event)"
     />
 
-    <h4 class="mt-5">
+    <span style="font-size: 0.87em;">
       Расширение радиуса поиска, км
-    </h4>
+    </span>
     <v-slider
       v-model="$store.state.UserSettings.selectedRange"
       :disabled="!$store.getters['UserSettings/getStateSelectedCities']"
       :max="5"
       :tick-labels="$store.state.UserSettings.rangeArea"
-      color="#95D7AE"
-      thumb-color="#95D7AE"
-      track-color="#95D7AE"
-      track-fill-color="#95D7AE"
+      color="#ED7100"
+      thumb-color="#ED7100"
+      track-color="#ED7100"
+      track-fill-color="#ED7100"
     />
   </v-card>
 </template>
@@ -81,8 +76,9 @@ export default {
 
 <style lang="scss" scoped>
 .map_service_area {
-  margin: 10px 1px;
-  padding: 10px 15px;
+  width: 100%;
+  padding: 20px;
+  border-radius: 30px;
 
   .chips_list {
     font-size: 0.8em;

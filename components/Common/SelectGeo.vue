@@ -4,7 +4,8 @@
       :data="data.address"
       :is-readonly="true"
       :placeholder="'Выберите адрес'"
-      :prepend-icon-inner="'mdi-map-marker-outline'"
+      :is-solo="true"
+      :is-flat="true"
       @on-click="openModal"
     />
 

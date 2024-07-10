@@ -10,6 +10,14 @@
         max-width="60"
         contain
       />
+      <template v-if="! isUserAccount">
+        <div v-if="! stateCurrentBrand" class="add_to_favorites" @click="$store.dispatch('BrandsModule/addBrandsToFavoritesBrands', brandObject.id)">
+          Добавить в избранное
+        </div>
+        <div v-if="stateCurrentBrand" class="delete_to_favorites" @click="$store.dispatch('BrandsModule/deleteBrandsByFavoritesBrands', brandObject.id)">
+          Убрать из избранного
+        </div>
+      </template>
     </div>
 
     <v-divider style="margin: 10px 0 10px 0;"/>
@@ -18,74 +26,68 @@
 
     <v-divider style="margin: 10px 0 10px 0;"/>
 
-    <DropDownMenuStyled
-      :is-left="true"
-      :is-offset-y="true"
-    >
-      <template #icon>
-        <span style="text-decoration: underline; color: #5d80b5;">
-          Специалисты, занимающиеся брендом {{ brandObject.name }}
-        </span>
-      </template>
-      <template #content>
-        <div class="card_users_wrapper">
-          <div
-            v-for="(item, index) in localListUsersByBrand"
-            :key="index"
-            class="user_wrapper"
-          >
-            <div class="user_info">
-              <DropDownMenuStyled :is-left="true" :is-offset-y="true">
-                <template #icon>
-                  <v-avatar size="50">
-                    <v-img
-                      src="https://www.wrestlezone.com/wp-content/uploads/sites/8/2023/12/kurt-angle-meme-machine.jpg?resize=1024,576"
-                    />
-                  </v-avatar>
-                </template>
-                <template #content>
-                  <MiniUserCard :user-object="item"/>
-                </template>
-              </DropDownMenuStyled>
-              <div class="user_fio_and_rating">
-                {{ item.user_fio }}
-                <v-rating
-                  :value="4"
-                  background-color="#B3B3B3"
-                  color="#95D7AE"
-                  empty-icon="mdi-star-outline"
-                  full-icon="mdi-star"
-                  half-icon="mdi-star-half-full"
-                  hover
-                  length="5"
-                  readonly
-                  size="16"
+    <v-expansion-panels>
+      <v-expansion-panel>
+        <v-expansion-panel-header>
+          Специалисты занимающиеся Монтажем {{ brandObject.name }}
+        </v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <div class="user_cards_wrapper">
+            <div
+              v-for="(item, index) in localListUsersByBrand"
+              :key="index"
+              class="user_card"
+            >
+              <v-avatar size="50">
+                <v-img
+                  src="https://www.wrestlezone.com/wp-content/uploads/sites/8/2023/12/kurt-angle-meme-machine.jpg?resize=1024,576"
                 />
+              </v-avatar>
+              <div class="user_fio">
+                {{ item.user_fio }}
+                <div class="rating">
+                  <v-rating
+                    :value="4"
+                    background-color="#B3B3B3"
+                    color="#95D7AE"
+                    empty-icon="mdi-star-outline"
+                    full-icon="mdi-star"
+                    half-icon="mdi-star-half-full"
+                    hover
+                    length="5"
+                    readonly
+                    size="16"
+                  />
+                  <span>12 отзывов</span>
+                </div>
+              </div>
+              <div class="user_actions">
+                <DropDownMenuStyled
+                  :close-on-content-click="true"
+                  :is-top="true"
+                  style="z-index: 999 !important;"
+                >
+                  <template #icon>
+                    <IconTooltip
+                      :icon-text="'mdi-dots-horizontal'"
+                      :text-tooltip="'Действия с пользователем'"
+                      :size-icon="'24'"
+                      :color-icon="'#B3B3B3'"
+                      style="z-index: 998 !important;"
+                    />
+                  </template>
+                  <template #content>
+                    <UserActionsButton
+                      :user-object="item"
+                    />
+                  </template>
+                </DropDownMenuStyled>
               </div>
             </div>
-
-            <DropDownMenuStyled
-              :close-on-content-click="true"
-              :is-top="true"
-            >
-              <template #icon>
-                <IconTooltip
-                  :icon-text="'mdi-dots-horizontal-circle-outline'"
-                  :text-tooltip="'Действия с пользователем'"
-                  :size-icon="'24'"
-                  :color-icon="'#B3B3B3'"
-                />
-              </template>
-              <template #content>
-                <UserActionsButton
-                  :user-object="item"
-                />
-              </template>
-            </DropDownMenuStyled>
           </div>
-        </div>
-      </template>
-    </DropDownMenuStyled>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
   </div>
 </template>
 
@@ -103,6 +105,10 @@ export default {
       type: Object,
       require: true,
       default: () => ({})
+    },
+    isUserAccount: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -110,9 +116,15 @@ export default {
       localListUsersByBrand: []
     }
   },
+  computed: {
+    stateCurrentBrand() {
+      return this.$store.state.BrandsModule.listFavoritesBrands.some((elem) => elem.id_brand === this.brandObject.id)
+    },
+  },
   async mounted() {
     await this.$store.dispatch('CollaborationModule/getListAllUsers')
     await this.getListUsersByBrandLocal()
+    await this.$store.dispatch('BrandsModule/getListFavoritesBrands')
   },
   methods: {
     getBrandPhoto(elem) {
@@ -130,6 +142,13 @@ export default {
 
 <style lang="scss" scoped>
 @import 'assets/styles/style';
+
+.v-expansion-panel-content {
+  background: #DDDDDD !important;
+  max-height: 210px;
+  overflow: auto;
+  box-shadow: inset 0 -4px 7px 0 rgba(0, 0, 0, 0.25);
+}
 
 .action_menu {
   padding: 10px;
@@ -152,8 +171,28 @@ export default {
   padding: 20px;
   background-color: #FFFFFF;
   max-width: 500px;
+  max-height: 600px;
+  border-radius: 30px;
+  box-shadow: $shadowBox;
+  margin: 4px 4px 10px 4px;
   .top_wrapper{
     display: flex;
+    align-items: center;
+    .add_to_favorites {
+      margin-left: auto;
+      cursor: pointer;
+      border-radius: 15px;
+      background-color: #DDDDDD;
+      padding: 10px;
+    }
+    .delete_to_favorites {
+      margin-left: auto;
+      cursor: pointer;
+      border-radius: 15px;
+      background-color: #FF6347;
+      color: #FFFFFF;
+      padding: 10px;
+    }
     .brand_name {
       font-weight: 400;
       font-size: 2.2em;
@@ -171,22 +210,30 @@ export default {
 
   }
 }
-
-.card_users_wrapper {
-  padding: 10px;
-  background-color: $background-element-color;
+.user_cards_wrapper {
+  margin: 20px 0;
   display: grid;
   grid-row-gap: 10px;
-  .user_wrapper {
+  .user_card {
     display: flex;
+    background: #FFFFFF;
+    border-radius: 30px;
+    padding: 6px 20px 6px 6px;
+    align-content: center;
     justify-content: space-between;
-    .user_info {
-      display: flex;
-      grid-column-gap: 20px;
-      .user_fio_and_rating {
-        display: grid;
-        grid-row-gap: 5px;
+    grid-column-gap: 10px;
+    .user_fio {
+      margin-right: auto;
+      .rating {
+        display: flex;
+        grid-column-gap: 10px;
+        color: #8A8784;
+        font-size: 0.9em;
       }
+    }
+    .user_actions {
+      display: grid;
+      align-content: center;
     }
   }
 }

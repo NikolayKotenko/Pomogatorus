@@ -1,6 +1,7 @@
 <template>
   <v-text-field
     v-if="isNumber"
+    ref="input"
     v-model.number="currentData"
     :append-icon="appendIcon"
     :autofocus="isAutofocus"
@@ -17,6 +18,7 @@
     :readonly="isReadonly"
     :rounded="isRounded"
     :rules="isRules"
+    :single-line="isSingleLine"
     :solo="isSolo"
     class="styleTextField"
     dense
@@ -29,6 +31,7 @@
 
   <v-text-field
     v-else
+    ref="input"
     v-model="currentData"
     :append-icon="appendIcon"
     :autofocus="isAutofocus"
@@ -45,6 +48,7 @@
     :readonly="isReadonly"
     :rounded="isRounded"
     :rules="isRules"
+    :single-line="isSingleLine"
     :solo="isSolo"
     class="styleTextField"
     dense
@@ -80,7 +84,7 @@ export default {
       default: false
     },
     data: {
-      type: String,
+      type: [String, Number],
       default: ''
     },
     isDisabled: {
@@ -131,53 +135,96 @@ export default {
       type: String,
       default: ''
     },
+    isSingleLine: {
+      type: Boolean,
+      default: false
+    },
+    /* ONLY NUMBERS */
     isNumber: {
       type: Boolean,
       default: false
+    },
+    max: {
+      type: [String, Number],
+      default: ''
+    },
+    min: {
+      type: [String, Number],
+      default: ''
     }
   },
   data: () => ({
     internalData: '',
-    isFocused: false
+    isFocused: false,
+    resetChange: false
   }),
   computed: {
     computedPlaceholder() {
       if (this.isFocused) {
-        return '';
+        return ''
       }
-      return this.placeholder;
+      return this.placeholder
+    },
+    isNumberWithCondition() {
+      return this.isNumber && this.fullSincProp && (this.max || this.min)
     },
     currentData: {
       get() {
         if (!this.fullSincProp) {
           if (this.data) {
-            return this.data;
+            return this.data
           }
-          return this.internalData;
+          return this.internalData
         }
 
-        return this.data;
+        return this.data
       },
       set(value) {
-        if (!this.data) {
-          this.internalData = value;
+        if (this.resetChange) {
+          return
         }
-        this.$emit('update-input', value);
+
+        let calcValue = value
+
+        // Если это инпут с цифрами и есть max и min
+        if (this.isNumberWithCondition) {
+          if (this.max !== '' && calcValue > this.max) {
+            calcValue = parseInt(this.max)
+          }
+
+          if (this.min !== '' && calcValue < this.min) {
+            calcValue = ''
+          }
+
+          this.$nextTick(() => {
+            this.resetChange = true
+            this.$refs.input.internalValue = calcValue
+
+            setTimeout(() => {
+              this.resetChange = false
+            }, 40)
+          })
+        }
+
+        if (!this.data) {
+          this.internalData = calcValue
+        }
+        this.$emit('update-input', calcValue)
       }
     }
   },
   methods: {
     onClick() {
-      this.$emit('on-click');
+      this.$emit('on-click')
     },
     onChange(value) {
-      this.$emit('on-change', value);
+      this.$emit('on-change', value)
     }
   }
-};
+}
 </script>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 @import 'assets/styles/style';
 
 .v-text-field--rounded {
@@ -189,7 +236,7 @@ export default {
 
 
   &.primary--text {
-    color: $green-color !important;
+    color: #ED7100 !important;
   }
 }
 

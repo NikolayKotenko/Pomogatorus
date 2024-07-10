@@ -49,84 +49,153 @@
 
     <!--  DESKTOP  -->
     <template v-else>
-      <v-row>
-        <v-col>
-          <InputStyled
-            :class="'styleTextField'"
-            :data="form.first_name"
-            :is-label="'Имя'"
-            :is-outlined="true"
-            @update-input="setFirstNameData"
-          />
-        </v-col>
-        <v-col>
+      <div class="general_info_wrapper">
+        <div class="fio_info_wrapper">
           <InputStyled
             :class="'styleTextField'"
             :data="form.middle_name"
+            :placeholder="'Фамилия'"
             :is-label="'Фамилия'"
             :is-outlined="true"
             @update-input="setMiddleNameData"
           />
-        </v-col>
-        <v-col>
+          <InputStyled
+            :class="'styleTextField'"
+            :data="form.first_name"
+            :placeholder="'Имя'"
+            :is-label="'Имя'"
+            :is-outlined="true"
+            @update-input="setFirstNameData"
+          />
           <InputStyled
             :class="'styleTextField'"
             :data="form.last_name"
+            :placeholder="'Отчество'"
             :is-label="'Отчество'"
             :is-outlined="true"
             @update-input="setLastNameData"
           />
-        </v-col>
-      </v-row>
-
-      <v-row>
-        <v-col>
-          <InputStyled
-            :class="'styleTextField'"
-            :data="form.email"
-            :is-label="'Email'"
-            :is-outlined="true"
-            :rules="emailRules"
-            color="#95D7AE"
-            @update-input="setEmailData"
-          />
-        </v-col>
-        <v-col>
-          <!--          TODO: Разобраться с маской телефона. После использовать компонент "InputStyled" -->
-          <VTextField
-            v-model="form.telephone"
-            v-mask="mask"
-            color="#95D7AE"
-            dense
-            label="Телефон"
+          <v-select
+            :items="types"
             outlined
-            @change="setData"
+            label="Вид деятельности"
+            hide-details
+            dense
+            multiple
           />
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col/>
-      </v-row>
+        </div>
+
+        <!--        <div class="section_wrapper"> -->
+        <!--          <div class="section_header"> -->
+        <!--            Контакты -->
+        <!--          </div> -->
+        <!--          <div class="section_content"> -->
+        <!--            <v-text-field -->
+        <!--              v-model="form.telephone" -->
+        <!--              v-mask="mask" -->
+        <!--              style="max-width: 150px" -->
+        <!--              color="#ED7100" -->
+        <!--              dense -->
+        <!--              placeholder="Телефон" -->
+        <!--              @change="setData" -->
+        <!--            /> -->
+        <!--            <InputStyled -->
+        <!--              :class="'styleTextField'" -->
+        <!--              :data="form.email" -->
+        <!--              :placeholder="'Email'" -->
+        <!--              :rules="emailRules" -->
+        <!--              color="#95D7AE" -->
+        <!--              @update-input="setEmailData" -->
+        <!--            /> -->
+        <!--          </div> -->
+        <!--        </div> -->
+        <!--        <div class="section_wrapper"> -->
+        <!--          <div class="section_header"> -->
+        <!--            Территория обслуживания -->
+        <!--          </div> -->
+        <!--          <div class="section_content"> -->
+        <!--            <MapServiceArea/> -->
+        <!--          </div> -->
+        <!--        </div> -->
+      </div>
+      <!--      <v-row> -->
+      <!--        <v-col> -->
+      <!--          <InputStyled -->
+      <!--            :class="'styleTextField'" -->
+      <!--            :data="form.first_name" -->
+      <!--            :is-label="'Имя'" -->
+      <!--            :is-outlined="true" -->
+      <!--            @update-input="setFirstNameData" -->
+      <!--          /> -->
+      <!--        </v-col> -->
+      <!--        <v-col> -->
+      <!--          <InputStyled -->
+      <!--            :class="'styleTextField'" -->
+      <!--            :data="form.middle_name" -->
+      <!--            :is-label="'Фамилия'" -->
+      <!--            :is-outlined="true" -->
+      <!--            @update-input="setMiddleNameData" -->
+      <!--          /> -->
+      <!--        </v-col> -->
+      <!--        <v-col> -->
+      <!--          <InputStyled -->
+      <!--            :class="'styleTextField'" -->
+      <!--            :data="form.last_name" -->
+      <!--            :is-label="'Отчество'" -->
+      <!--            :is-outlined="true" -->
+      <!--            @update-input="setLastNameData" -->
+      <!--          /> -->
+      <!--        </v-col> -->
+      <!--      </v-row> -->
+
+      <!--      <v-row> -->
+      <!--        <v-col> -->
+      <!--          <InputStyled -->
+      <!--            :class="'styleTextField'" -->
+      <!--            :data="form.email" -->
+      <!--            :is-label="'Email'" -->
+      <!--            :is-outlined="true" -->
+      <!--            :rules="emailRules" -->
+      <!--            color="#95D7AE" -->
+      <!--            @update-input="setEmailData" -->
+      <!--          /> -->
+      <!--        </v-col> -->
+      <!--        <v-col> -->
+      <!--          &lt;!&ndash;          TODO: Разобраться с маской телефона. После использовать компонент "InputStyled" &ndash;&gt; -->
+      <!--          <VTextField -->
+      <!--            v-model="form.telephone" -->
+      <!--            v-mask="mask" -->
+      <!--            color="#95D7AE" -->
+      <!--            dense -->
+      <!--            label="Телефон" -->
+      <!--            outlined -->
+      <!--            @change="setData" -->
+      <!--          /> -->
+      <!--        </v-col> -->
+      <!--      </v-row> -->
+      <!--      <v-row> -->
+      <!--        <v-col/> -->
+      <!--      </v-row> -->
     </template>
 
-    <div class="roles_wrapper">
-      <span class="roles_wrapper_title">Кто вы?</span>
-      <v-checkbox
-        v-for="(type, index) in types"
-        :key="index"
-        v-model.number="form[type.key]"
-        :append-icon="type.icon"
-        :false-value="0"
-        :label="type.text"
-        :true-value="1"
-        class="roles_style"
-        color="#95D7AE"
-        dense
-        hide-details
-        @change="setData"
-      />
-    </div>
-    <MapServiceArea/>
+    <!--    <div class="roles_wrapper"> -->
+    <!--      <span class="roles_wrapper_title">Кто вы?</span> -->
+    <!--      <v-checkbox -->
+    <!--        v-for="(type, index) in types" -->
+    <!--        :key="index" -->
+    <!--        v-model.number="form[type.key]" -->
+    <!--        :append-icon="type.icon" -->
+    <!--        :false-value="0" -->
+    <!--        :label="type.text" -->
+    <!--        :true-value="1" -->
+    <!--        class="roles_style" -->
+    <!--        color="#95D7AE" -->
+    <!--        dense -->
+    <!--        hide-details -->
+    <!--        @change="setData" -->
+    <!--      /> -->
+    <!--    </div> -->
+    <!--    <MapServiceArea/> -->
   </v-form>
 </template>
 
@@ -154,17 +223,17 @@ export default {
     mask: '+7 (###) ###-##-##',
     types: [
       {
-        text: 'Собственник дома',
+        text: 'Собственник',
         key: 'home_owner',
         icon: 'mdi-home-account'
       },
       {
-        text: 'Профессионально занимаюсь монтажом инженерных систем',
+        text: 'Специалист',
         key: 'installation_engineering_systems',
         icon: 'mdi-account-hard-hat'
       },
       {
-        text: 'Занимаюсь продажей инженерного оборудования',
+        text: 'Занимаюсь продажей оборудования',
         key: 'selling_engineering_equipment',
         icon: 'mdi-cog-transfer'
       },
@@ -255,7 +324,43 @@ export default {
     margin-bottom: 1em;
   }
 }
+
+.general_info_wrapper {
+  display: inline-block;
+  font-family: 'Inter', sans-serif;
+  width: 100%;
+  overflow: auto;
+  padding: 40px 20px;
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
+  .fio_info_wrapper {
+    display: grid;
+    grid-row-gap: 20px;
+    border-radius: 15px;
+
+
+  }
+  .section_wrapper {
+    display: grid;
+    grid-row-gap: 20px;
+    padding: 16px 20px;
+    margin: 0 20px 10px;
+    background-color: #FFFFFF;
+    border-radius: 15px;
+    .section_header {
+      font-weight: 600;
+      font-size: 0.87em;
+    }
+    .section_content {
+      display: flex;
+      grid-column-gap: 10px;
+      width: 100%;
+    }
+  }
+}
+
 </style>
+
 <style lang="scss">
 @import 'assets/styles/style';
 

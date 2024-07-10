@@ -2,12 +2,12 @@
   <v-app class="app">
     <Header class="header_wrapper"/>
     <BurgerMenu v-if="!$device.isDesktop"/>
-    <v-main id="main_content" class="main">
+    <v-main id="main_content" :class="{ main: ! isMain}">
       <!--      <VerticalMenu -->
       <!--        v-if="$store.state.stateVerticalMenu" -->
       <!--        class="fixed_left_menu" -->
       <!--      /> -->
-      <Nuxt class="custom_grid_system main__left_column"/>
+      <Nuxt :class="{ custom_grid_system, main__left_column: ! isListObjects}"/>
 
       <!--   WIDGETS   -->
       <!--      <WrapperStickyCurrentObject v-if="!listExcludedRightColumn && $device.isDesktop"/> -->
@@ -32,6 +32,7 @@ import Right from '../components/CascadModels/Right';
 import BurgerMenu from '../components/BurgerMenu';
 import VerticalMenu from '../components/VerticalMenu.vue';
 import WrapperStickyCurrentObject from '../components/Widgets/WrapperStickyCurrentObject.vue';
+import main from '../pages/main/index.vue'
 import Request from '@/services/request';
 import Logging from '@/services/logging';
 
@@ -110,6 +111,9 @@ export default {
     ];
   },
   computed: {
+    main() {
+      return main
+    },
     ...mapState({
       listModal: state => state.listModal
     }),
@@ -130,6 +134,16 @@ export default {
       return arrPathExcluded.some((path) => {
         return this.$route.path.match(path);
       });
+    },
+    isMain() {
+      if (this.$route.path === '/main') {
+        return true
+      }
+    },
+    isListObjects() {
+      if (this.$route.path === '/objects') {
+        return true
+      }
     }
   },
   watch: {

@@ -8,6 +8,7 @@ export default {
     listObjects: [],
     currentObject: {},
     modalCurrentObject: {},
+    // stateGlobalObjectModal: false
   },
   mutations: {
     setLoadingObjects(state, payload) {
@@ -25,8 +26,17 @@ export default {
 
       state.currentObject = value
     },
+    // set_state_global_object_modal(state, payload) {
+    //   state.stateGlobalObjectModal = payload
+    // }
   },
   actions: {
+    // openGlobalObjectModal({ commit }) {
+    //   commit('set_state_global_object_modal', true)
+    // },
+    // closeGlobalObjectModal({ commit }) {
+    //   commit('set_state_global_object_modal', false)
+    // },
     onloadSetCurrentUserObject({ commit, state }) {
       let currentObj = null
 

@@ -56,6 +56,7 @@ export default {
     selectedRange: 0,
     rangeArea: ['0', '100', '200', '300', '500', '1000'],
     selectedCity: [],
+    stateVisibleMenu: false
   },
   mutations: {
     setIsUpdating(state, payload) {
@@ -81,6 +82,9 @@ export default {
     },
     setLoading(state, payload) {
       state.loading = payload
+    },
+    setStateVisibleMenu(state, payload) {
+      state.stateVisibleMenu = payload
     },
   },
   actions: {
