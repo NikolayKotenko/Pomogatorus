@@ -11,6 +11,22 @@
             </h1>
           </div>
           <ArticleInfo :article-data="article" @set-view="setView"/>
+
+          <div class="pdf_prompt_wrapper">
+            <div class="prompt_info">
+              <div class="prompt_title">
+                Затрудняеетесть с заполнением своего объекта?
+              </div>
+              <div class="prompt_text">
+                Отвечайте на вопросы содержащиеся внутри статей.
+                Ваши ответы будут использованы для создания персонализированного
+                PDF-файла, который будет соответствовать Вашим индивидуальным
+                потребностям.
+              </div>
+            </div>
+            <img :src="require(`~/assets/svg/icons/arrow_down.svg`)">
+          </div>
+
           <div v-if="!renderArticle" class="article-template__content mainContentFont" v-html="refactored_content"/>
         </div>
       </template>
@@ -50,12 +66,39 @@
       </template>
     </template>
 
-    <Biathlon
-      v-if="! $store.state.ArticleModule.refactoring_content"
-      :article="article"
-      :questions="computedQuestions"
-      :view-action="localViewAction"
-    />
+    <div class="sticky_panel">
+      <ViewsAndLikes :article="article"/>
+      <div class="bookmarks_and_share">
+        <TooltipStyled :is-top="true" :title="'Добавить в закладки'">
+          <div
+            class="btn_wrapper"
+          >
+            <v-icon color="#000000">
+              mdi-bookmark-outline
+            </v-icon>
+            <span>В закладки</span>
+          </div>
+        </TooltipStyled>
+
+        <div
+          class="btn_wrapper"
+          @click="openModal"
+        >
+          <v-icon color="#000000">
+            mdi-export-variant
+          </v-icon>
+          <span>Поделиться</span>
+        </div>
+      </div>
+    </div>
+
+    <SocialShare/>
+    <!--    <Biathlon -->
+    <!--      v-if="! $store.state.ArticleModule.refactoring_content" -->
+    <!--      :article="article" -->
+    <!--      :questions="computedQuestions" -->
+    <!--      :view-action="localViewAction" -->
+    <!--    /> -->
     <v-overlay :value="$store.state.ArticleModule.refactoring_content" z-index="10" opacity="1">
       <v-progress-circular :size="50" color="#FFFFFF" indeterminate style="margin-top: 20px"/>
     </v-overlay>
@@ -71,6 +114,9 @@ import { mapGetters } from 'vuex'
 import ArticleSmallCard from '../../components/Article/ArticleSmallCard.vue'
 import Biathlon from '../../components/Common/Biathlon.vue'
 import SubHeader from '../../components/SubHeader.vue'
+import ViewsAndLikes from '../../components/Common/ViewsAndLikes.vue'
+import TooltipStyled from '../../components/Common/TooltipStyled.vue'
+import SocialShare from '../../components/Article/SocialShare.vue'
 import ViewerStyled from '~/components/Common/ViewerStyled'
 import ImageLayout from '~/components/frontLayouts/ImageLayout'
 import Question from '~/components/frontLayouts/Question'
@@ -83,7 +129,10 @@ import Request from '~/services/request'
 const VuetifyClass = require('vuetify');
 
 export default {
-  components: { SubHeader, Biathlon, ArticleSmallCard, ArticleInfo, HashTagStyled, ViewerStyled },
+  components: {
+    SocialShare,
+    TooltipStyled,
+    ViewsAndLikes, SubHeader, Biathlon, ArticleSmallCard, ArticleInfo, HashTagStyled, ViewerStyled },
   async asyncData({ store, params }) {
     try {
       const articleRequest = await Request.get(`${store.state.BASE_URL}/entity/articles/${params.id}`, '', true);
@@ -319,6 +368,10 @@ export default {
     }
   },
   methods: {
+    openModal() {
+      this.$store.dispatch('openShareArticleModal')
+    },
+
     /* ANSWERS */
     getAnswers() {
       if (this.getUserId && this.getIdCurrentObject) {
@@ -580,6 +633,7 @@ export default {
   max-width: 850px;
   margin-right: auto;
   margin-left: auto;
+  font-family: 'Inter', sans-serif;
 
   &__subHeader {
     transition: $transition;
@@ -606,6 +660,8 @@ export default {
   }
 
   &__header {
+    display: grid;
+    grid-row-gap: 20px;
     .title {
       display: flex;
       height: auto;
@@ -627,14 +683,59 @@ export default {
   &__content {
     word-break: normal;
     max-width: 1140px;
-    background-color: #FFFFFF;
-    border-radius: 15px;
+    background-color: $white-color;
+    border-radius: $b-r16;
     padding: 20px;
 
     h2 {
       font-family: 'Roboto', sans-serif !important;
       color: rgb(32, 33, 36) !important;
       font-size: 1.25rem !important;
+    }
+  }
+}
+
+.pdf_prompt_wrapper {
+  display: flex;
+  padding: 20px 40px 20px 20px;
+  background-color: $grey4;
+  border-radius: $b-r30;
+  color: $white-color;
+  .prompt_info {
+    display: grid;
+    grid-row-gap: 4px;
+    .prompt_title {
+      @extend .white-small-header-page
+    }
+    .prompt_text {}
+  }
+}
+
+.sticky_panel {
+  background-color: #FFFFFF;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 30px;
+  box-shadow: $doubleShadow;
+  position: sticky;
+  bottom: 20px;
+  z-index: 1;
+  .bookmarks_and_share {
+    display: flex;
+    grid-column-gap: 20px;
+    .btn_wrapper {
+      display: flex;
+      grid-column-gap: 5px;
+      align-items: center;
+      background-color: #DDDDDD;
+      border-radius: 15px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: 600;
     }
   }
 }

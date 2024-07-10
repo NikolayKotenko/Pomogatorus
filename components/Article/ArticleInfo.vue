@@ -65,32 +65,6 @@
       cover
     />
 
-    <div class="sticky_panel">
-      <ViewsAndLikes :article="articleData" :view-action="viewAction"/>
-      <div class="bookmarks_and_share">
-        <TooltipStyled :is-top="true" :title="'Добавить в закладки'">
-          <div
-            class="btn_wrapper"
-          >
-            <v-icon color="#000000">
-              mdi-bookmark-outline
-            </v-icon>
-            <span>В закладки</span>
-          </div>
-        </TooltipStyled>
-
-        <div
-          class="btn_wrapper"
-          @click="openModal"
-        >
-          <v-icon color="#000000">
-            mdi-export-variant
-          </v-icon>
-          <span>Поделиться</span>
-        </div>
-      </div>
-    </div>
-
     <div v-if="articleData.preview" class="article_info_wrapper__anons">
       <span>
         {{ articleData.purpose_of_article }}
@@ -104,11 +78,12 @@
 
 import TooltipStyled from '../Common/TooltipStyled.vue';
 import ViewsAndLikes from '../Common/ViewsAndLikes.vue'
+import ButtonStyled from '../Common/ButtonStyled.vue'
 import SocialShare from './SocialShare.vue'
 
 export default {
   name: 'ArticleInfo',
-  components: { SocialShare, ViewsAndLikes, TooltipStyled },
+  components: { ButtonStyled, SocialShare, ViewsAndLikes, TooltipStyled },
   props: {
     articleData: {
       type: Object,
@@ -133,9 +108,7 @@ export default {
     setView() {
       this.$emit('set-view', this.articleView);
     },
-    openModal() {
-      this.$store.dispatch('openShareArticleModal')
-    },
+
   }
 };
 </script>
@@ -199,32 +172,6 @@ export default {
     max-height: 430px;
   }
 
-  .sticky_panel {
-    background-color: #FFFFFF;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    border-radius: 30px;
-    position: sticky;
-    top: 80px;
-    z-index: 1;
-    bottom: 0;
-    .bookmarks_and_share {
-      display: flex;
-      grid-column-gap: 20px;
-      .btn_wrapper {
-        display: flex;
-        grid-column-gap: 5px;
-        align-items: center;
-        background-color: #DDDDDD;
-        border-radius: 15px;
-        padding: 10px 20px;
-        cursor: pointer;
-        font-weight: 600;
-      }
-    }
-  }
 
   &__anons {
     border-radius: 15px;

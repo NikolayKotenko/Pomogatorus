@@ -48,18 +48,25 @@
             :value="valueFullnessObj"
           />
         </div>
-        <div v-if="stateCurrentObject" class="selected_obj_btn">
-          Выбран глав. объектом
-        </div>
-        <div v-else class="no_selected_obj_btn" @click="setObject">
-          Сделать глав. объектом
-        </div>
-        <div
-          class="open_obj_btn"
-          @click="openDetailCard"
-        >
-          Открыть
-        </div>
+        <ButtonStyled
+          v-if="stateCurrentObject"
+          class="change_info_btn"
+          :local-text="'Выбран глав. объектом'"
+          local-class="red_wide_style_btn"
+        />
+        <ButtonStyled
+          v-else
+          class="change_info_btn"
+          :local-text="'Сделать глав. объектом'"
+          local-class="wide_style_btn"
+          @click-button="setObject"
+        />
+        <ButtonStyled
+          class="change_info_btn"
+          :local-text="'Открыть'"
+          local-class="wide_style_btn"
+          @click-button="openDetailCard"
+        />
       </div>
     </div>
   </div>
@@ -67,10 +74,11 @@
 
 <script>
 import DropzoneInput from '../Common/DropzoneInput.vue'
+import ButtonStyled from '../Common/ButtonStyled.vue'
 
 export default {
   name: 'CardObject',
-  components: { DropzoneInput },
+  components: { ButtonStyled, DropzoneInput },
   // eslint-disable-next-line vue/prop-name-casing,vue/require-prop-types
   props: ['object_data'],
   data: () => ({

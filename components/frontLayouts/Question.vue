@@ -853,8 +853,9 @@ export default {
 .question_wrapper {
   position: relative;
   padding: 20px;
-  border-radius: 15px;
-  background-color: #F2F2F2;
+  border-radius: $b-r16;
+  border: 1px solid ($grey1);
+  background-color: rgba(221, 221, 221, 0.20);
   transition: $transition;
   height: auto;
 

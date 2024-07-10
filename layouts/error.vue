@@ -13,7 +13,7 @@
             :href="'/'"
             :is-nuxt-link="true"
             :local-text="'На главную'"
-            local-class="style_button"
+            local-class="black_regular_style_btn"
           />
         </div>
         <div class="error_img">

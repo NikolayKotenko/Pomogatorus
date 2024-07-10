@@ -18,7 +18,7 @@
       :is-disabled="!newObjName"
       :is-loading="isLoadingObjects"
       :local-text="'Создать'"
-      local-class="new_style_button"
+      local-class="wide_style_btn"
       @click-button="onCreateNewObject"
     />
   </div>

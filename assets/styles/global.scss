@@ -152,11 +152,171 @@ $grey-text-color: #B3B3B3;
 $blue-icon-color: #5d80b5;
 
 
+/***************************************  NEW STYLEGUIDE *****************************************/
+
+/***************************************  COLORS *************************************************/
+
+$white-color: #FFFFFF;
+
+$grey1: #DDDDDD;
+
+$grey2: #AAAAAA;
+
+$grey3: #777777;
+
+$grey4: #444444;
+
+$black-color: #111111;
+
+$red: #FF6347;
+
+
+/***************************************  BORDER RADIUS ******************************************/
+
+$b-r30: 30px;
+
+$b-r16: 16px;
+
+$b-r8: 8px;
+
+
+/*************************************** SHADOWBOX **********************************************/
+
+$shadowBox: 0px 4px 14px 0px rgba(0, 0, 0, 0.25);
+
+$doubleShadow: 0px 4px 16px 0px rgba(0, 0, 0, 0.25), 0px -4px 16px 0px rgba(0, 0, 0, 0.25);
+
+
+/*************************************** HEADERS & TEXT ******************************************/
+
+.main-page-header {
+  color: $black-color;
+  font-size: 2em;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+
+.header-page {
+  color: $black-color;
+  font-size: 1.5em;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+
+.small-header-page {
+  color: $black-color;
+  font-size: 1.25em;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+
+.white-small-header-page {
+  color: $white-color;
+  font-size: 1.25em;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+
+.regular-text {
+  color: $black-color;
+  font-size: 1em;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.grey-regular-text {
+  color: $grey3;
+  font-size: 1em;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.text14 {
+  color: $black-color;
+  font-size: .875em;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.grey-text14 {
+  color: $grey3;
+  font-size: .875em;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.text12 {
+  color: $black-color;
+  font-size: .75em;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.grey-text12 {
+  color: $grey3;
+  font-size: .75em;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.regular-btn-text {
+  color: $black-color !important;
+  font-size: 1em;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.white-regular-btn-text {
+  color: $white-color !important;
+  font-size: 1em;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.grey-regular-btn-text {
+  color: $grey3 !important;
+  font-size: 1em;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.wide-btn-text {
+  color: $black-color !important;
+  font-size: 1em;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.white-wide-btn-text {
+  color: $white-color !important;
+  font-size: 1em;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.grey-wide-btn-text {
+  color: $grey3 !important;
+  font-size: 1em;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
 /***************************************  TRANSITION *****************************************/
 
-//Все Transition
 $transition: all 0.4s ease-in-out;
-
-/***************************************  SHADOWS *****************************************/
-
-$shadowBox: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);

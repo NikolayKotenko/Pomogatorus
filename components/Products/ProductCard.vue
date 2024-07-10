@@ -64,14 +64,14 @@
         </div>
         <ButtonStyled
           v-if="! stateCurrentNomenclature"
-          :local-text=" 'Добавить в объект'"
-          class="add_to_object_style"
+          :local-text="'Добавить в объект'"
+          class="wide_style_btn"
           @click-button="addToObject"
         />
         <ButtonStyled
           v-if="stateCurrentNomenclature"
           :local-text="'Уже в объекте'"
-          class="active_add_btn"
+          class="red_wide_style_btn"
           @click-button="deleteFromObject"
         />
 

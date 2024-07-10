@@ -219,10 +219,8 @@
             </DropDownMenuStyled>
             <ButtonStyled
               v-else
-              :local-class="'invite_button style_button'"
+              local-class="regular_style_btn"
               :local-text="'Войти'"
-              :max-width="'80'"
-              :max-height="'30'"
               @click-button="$store.dispatch('openAuthModal')"
             />
           </div>

@@ -77,7 +77,7 @@ export default {
     },
     elevation: {
       type: Number,
-      default: null
+      default: 0
     }
   },
   computed: {
@@ -94,6 +94,147 @@ export default {
 <style lang='scss' scoped>
 @import 'assets/styles/style';
 
+// Обычные кнопки
+
+.v-btn.regular_style_btn {
+  @extend .regular-btn-text;
+  border-radius: $b-r30;
+  min-height: 40px;
+  background-color: $grey1 !important;
+  padding: 10px 20px !important;
+  transition: $transition;
+  &:hover {
+    @extend  .white-regular-btn-text;
+    background-color: $red !important;
+  }
+}
+
+.v-btn.red_regular_style_btn {
+  @extend  .white-regular-btn-text;
+  border-radius: $b-r30;
+  min-height: 40px;
+  background-color: $red !important;
+  padding: 10px 20px !important;
+  transition: $transition;
+  &:hover {
+    @extend  .regular-btn-text;
+    background-color: $white-color !important;
+  }
+}
+
+.v-btn.bordered_regular_style_btn {
+  @extend  .regular-btn-text;
+  border-radius: $b-r30;
+  min-height: 40px;
+  border: 1px solid ($black-color);
+  background-color: $white-color !important;
+  padding: 10px 20px !important;
+  transition: $transition;
+  &:hover {
+    @extend  .white-regular-btn-text;
+    background-color: $black-color !important;
+  }
+}
+
+.v-btn.black_regular_style_btn {
+  @extend  .white-regular-btn-text;
+  border-radius: $b-r30;
+  min-height: 40px;
+  border: 1px solid ($black-color);
+  background-color: $black-color !important;
+  padding: 10px 20px !important;
+  transition: $transition;
+  &:hover {
+    @extend  .regular-btn-text;
+    background-color: $white-color !important;
+  }
+}
+
+.v-btn.grey_regular_style_btn {
+  @extend  .regular-btn-text;
+  border-radius: $b-r30;
+  min-height: 40px;
+  border: 1px solid ($grey1);
+  background-color: $white-color !important;
+  padding: 10px 20px !important;
+  transition: $transition;
+  &:hover {
+    @extend  .grey-regular-btn-text;
+    background-color: $grey1 !important;
+  }
+}
+
+
+// Широкие кнопки
+
+.v-btn.wide_style_btn {
+  @extend  .wide-btn-text;
+  border-radius: $b-r16;
+  min-height: 40px;
+  background-color: $grey1 !important;
+  padding: 10px 20px !important;
+  transition: $transition;
+  &:hover {
+    @extend  .white-wide-btn-text;
+    background-color: $red !important;
+  }
+}
+
+.v-btn.red_wide_style_btn {
+  @extend  .white-wide-btn-text;
+  border-radius: $b-r16;
+  min-height: 40px;
+  background-color: $red !important;
+  padding: 10px 20px !important;
+  transition: $transition;
+  &:hover {
+    @extend  .wide-btn-text;
+    background-color: $grey1 !important;
+  }
+}
+
+.v-btn.bordered_wide_style_btn {
+  @extend  .wide-btn-text;
+  border-radius: $b-r16;
+  min-height: 40px;
+  border: 2px solid ($black-color);
+  background-color: $white-color !important;
+  padding: 10px 20px !important;
+  transition: $transition;
+  &:hover {
+    @extend  .white-wide-btn-text;
+    background-color: $black-color !important;
+  }
+}
+
+.v-btn.black_wide_style_btn {
+  @extend  .white-wide-btn-text;
+  border-radius: $b-r16;
+  min-height: 40px;
+  border: 2px solid ($black-color);
+  background-color: $black-color !important;
+  padding: 10px 20px !important;
+  transition: $transition;
+  &:hover {
+    @extend  .wide-btn-text;
+    background-color: $white-color !important;
+  }
+}
+
+.v-btn.grey_wide_style_btn {
+  @extend  .wide-btn-text;
+  border-radius: $b-r16;
+  min-height: 40px;
+  border: 2px solid ($grey1);
+  background-color: $white-color !important;
+  padding: 10px 20px !important;
+  transition: $transition;
+  &:hover {
+    @extend  .grey-wide-btn-text;
+    background-color: $grey1 !important;
+  }
+}
+
 .btnStyled {
   font-weight: 400;
   text-transform: none !important;
@@ -101,7 +242,6 @@ export default {
   //font-style: normal !important;
   font-size: 1em;
   border-radius: 25px;
-  border: 2px solid #000000;
   transition: $transition;
 
   &:hover {
@@ -110,12 +250,12 @@ export default {
 
 }
 
-.desktop_style {
-  height: 3.2em !important;
-  width: 14.2em;
-  max-height: 40px;
-  max-width: 200px;
-}
+//.desktop_style {
+//  height: 3.2em !important;
+//  width: 14.2em;
+//  max-height: 40px;
+//  max-width: 200px;
+//}
 
 .v-btn.style_button {
   background-color: $background-element-color !important;

@@ -72,9 +72,8 @@
               v-if="isLoggedIn && isChangeGeneralInfo === true "
               :is-loading="isUpdating"
               :local-text="'Сохранить'"
-              :elevation="0"
               class="save_btn"
-              local-class="style_save_button"
+              local-class="red_regular_style_btn"
               @click-button="saveUser"
             />
 
@@ -124,9 +123,12 @@
               </div>
               <v-divider style="border-color: #DDDDDD;"/>
               <div class="info_footer_wrapper">
-                <div class="change_info_btn" @click="isChangeGeneralInfo = true">
-                  <span class="btn_text">изменить</span>
-                </div>
+                <ButtonStyled
+                  class="change_info_btn"
+                  :local-text="'изменить'"
+                  local-class="regular_style_btn"
+                  @click-button="isChangeGeneralInfo = true"
+                />
               </div>
             </div>
           </v-tab-item>
@@ -153,9 +155,8 @@
                 v-if="isLoggedIn && isChangeCitiesInfo === true "
                 :is-loading="isUpdating"
                 :local-text="'Сохранить'"
-                :elevation="0"
                 class="save_btn"
-                local-class="style_save_button"
+                local-class="red_regular_style_btn"
                 @click-button="saveCitiesInfo"
               />
 
@@ -186,9 +187,12 @@
                 </div>
                 <v-divider style="border-color: #DDDDDD;"/>
                 <div class="info_footer_wrapper">
-                  <div class="change_info_btn" @click="changeCitiesInfo">
-                    <span class="btn_text">изменить</span>
-                  </div>
+                  <ButtonStyled
+                    class="change_info_btn"
+                    :local-text="'изменить'"
+                    local-class="regular_style_btn"
+                    @click-button="changeCitiesInfo"
+                  />
                 </div>
               </div>
             </div>
@@ -226,9 +230,8 @@
                 v-if="isLoggedIn && isChangeBrandInfo === true "
                 :is-loading="isUpdating"
                 :local-text="'Сохранить'"
-                :elevation="0"
                 class="save_btn"
-                local-class="style_save_button"
+                local-class="red_regular_style_btn"
                 @click-button="saveBrandInfo"
               />
 
@@ -274,9 +277,12 @@
                 </div>
                 <v-divider style="border-color: #DDDDDD;"/>
                 <div class="info_footer_wrapper">
-                  <div class="change_info_btn" @click="changeBrandsInfo">
-                    <span class="btn_text">изменить</span>
-                  </div>
+                  <ButtonStyled
+                    class="change_info_btn"
+                    :local-text="'изменить'"
+                    local-class="regular_style_btn"
+                    @click-button="changeBrandsInfo"
+                  />
                 </div>
               </div>
             </div>
@@ -318,9 +324,8 @@
                 v-if="isLoggedIn && isChangeServicesInfo === true "
                 :is-loading="isUpdating"
                 :local-text="'Сохранить'"
-                :elevation="0"
                 class="save_btn"
-                local-class="style_save_button"
+                local-class="red_regular_style_btn"
                 @click-button="saveServicesInfo"
               />
 
@@ -350,9 +355,12 @@
                 </div>
                 <v-divider style="border-color: #DDDDDD;"/>
                 <div class="info_footer_wrapper">
-                  <div class="change_info_btn" @click="changeServicesInfo">
-                    <span class="btn_text">изменить</span>
-                  </div>
+                  <ButtonStyled
+                    class="change_info_btn"
+                    :local-text="'изменить'"
+                    local-class="regular_style_btn"
+                    @click-button="changeServicesInfo"
+                  />
                 </div>
               </div>
             </div>
@@ -396,9 +404,8 @@
                 v-if="isLoggedIn && isChangeTelephone === true "
                 :is-loading="isUpdating"
                 :local-text="'Сохранить'"
-                :elevation="0"
                 class="save_btn"
-                local-class="style_save_button"
+                local-class="red_regular_style_btn"
                 @click-button="saveTelephoneInfo"
               />
 
@@ -420,9 +427,12 @@
                 </div>
                 <v-divider style="border-color: #DDDDDD;"/>
                 <div class="info_footer_wrapper">
-                  <div class="change_info_btn" @click="changeTelephoneInfo">
-                    <span class="btn_text">изменить</span>
-                  </div>
+                  <ButtonStyled
+                    class="change_info_btn"
+                    :local-text="'изменить'"
+                    local-class="regular_style_btn"
+                    @click-button="changeTelephoneInfo"
+                  />
                 </div>
               </div>
             </div>
@@ -463,9 +473,8 @@
                 v-if="isLoggedIn && isChangeMail === true "
                 :is-loading="isUpdating"
                 :local-text="'Сохранить'"
-                :elevation="0"
                 class="save_btn"
-                local-class="style_save_button"
+                local-class="red_regular_style_btn"
                 @click-button="saveMailInfo"
               />
 
@@ -487,9 +496,12 @@
                 </div>
                 <v-divider style="border-color: #DDDDDD;"/>
                 <div class="info_footer_wrapper">
-                  <div class="change_info_btn" @click="changeMailInfo">
-                    <span class="btn_text">изменить</span>
-                  </div>
+                  <ButtonStyled
+                    class="change_info_btn"
+                    :local-text="'изменить'"
+                    local-class="regular_style_btn"
+                    @click-button="changeMailInfo"
+                  />
                 </div>
               </div>
             </div>
@@ -936,16 +948,7 @@ export default {
         display: flex;
         justify-content: flex-end;
         .change_info_btn {
-          display: flex;
-          justify-content: center;
-          margin: 20px 20px 20px auto;
-          max-width: 170px;
-          background-color: #d9d9d9;
-          border-radius: 30px;
-          cursor: pointer;
-          .btn_text {
-            padding: 10px 40px;
-          }
+          margin: 20px;
         }
       }
     }
