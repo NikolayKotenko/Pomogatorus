@@ -35,20 +35,26 @@
     <!--    </div> -->
 
     <div class="products-filters">
-      <CustomFilters
-        ref="filters"
-        :filter-data="filterData"
-        :filters-list="filtersList"
-        :is-loading-filters="isLoadingFilters"
-        @acceptFilters="acceptFilters"
-        @pushElem="pushElem"
-        @removeElem="removeElem"
-        @resetFilters="resetFilters"
-        @setFilterData="setFilterData"
-        @setSliderData="setSliderData"
-      />
+      <div
+        ref="sticky-widget"
+        :class="{'sticky-widget': isStickyWidget, 'absolute-widget': !isStickyWidget}"
+        class="products-filters-sticky"
+      >
+        <CustomFilters
+          ref="filters"
+          :filter-data="filterData"
+          :filters-list="filtersList"
+          :is-loading-filters="isLoadingFilters"
+          @acceptFilters="acceptFilters"
+          @pushElem="pushElem"
+          @removeElem="removeElem"
+          @resetFilters="resetFilters"
+          @setFilterData="setFilterData"
+          @setSliderData="setSliderData"
+        />
 
-      <CustomSelectedParams :is-loading-params="isLoadingParams" :params-data="paramsList"/>
+        <CustomSelectedParams :is-loading-params="isLoadingParams" :params-data="paramsList"/>
+      </div>
     </div>
 
     <div class="products_page_wrapper__main">
@@ -144,6 +150,10 @@ export default {
   },
   data: () => ({
     /* FILTERS */
+    prevScrollPos: null,
+    isStickyWidget: false,
+    pinPosition: false,
+    stopScroll: false,
     searchEquipment: '',
     filterData: {},
     /* TODO: Убрать моковые данные когда будет бэкенд */
@@ -399,6 +409,18 @@ export default {
     //  this.getParams()
     this.isLoadingFilters = false
     this.isLoadingParams = false
+
+    // eslint-disable-next-line nuxt/no-env-in-hooks
+    if (process.client) {
+      this.prevScrollpos = window.pageYOffset
+      window.addEventListener('scroll', this.scrollFilters)
+    }
+  },
+  destroyed() {
+    // eslint-disable-next-line nuxt/no-env-in-hooks
+    if (process.client) {
+      window.removeEventListener('scroll', this.scrollFilters)
+    }
   },
   methods: {
     async getNextPageData() {
@@ -407,6 +429,71 @@ export default {
     },
 
     /* FILTERS */
+    scrollFilters(e) {
+      const currentScrollPos = window.pageYOffset
+      if (this.prevScrollpos > currentScrollPos) {
+        this.scrollUp()
+      } else {
+        this.scrollBottom()
+      }
+      this.prevScrollpos = currentScrollPos
+    },
+    scrollUp() {
+      const top = this.$refs['sticky-widget'].getBoundingClientRect().top
+      const bottom = this.$refs['sticky-widget'].getBoundingClientRect().bottom
+      const scroll = window.scrollY
+      const height = window.innerHeight
+      // const result = scroll - height
+
+      // 250 примерное расстояние от топа страницы с хедером до контента с фильтрами
+      if (scroll <= 250 && this.isStickyWidget) {
+        console.log('SCROLL <= 250')
+
+        this.stopScroll = true
+        this.isStickyWidget = false
+        this.$refs['sticky-widget'].style.transform = 'translate3d(0px, 0px, 0px)'
+        return
+      }
+
+      if (top >= 0) {
+        if (this.isStickyWidget || this.stopScroll) {
+          return
+        }
+        // console.log('TOP >= 0')
+
+        this.pinPosition = true
+        this.isStickyWidget = true
+        // 70 - высота хедера, 10 - отступ фильтров от хедера
+        this.$refs['sticky-widget'].style.transform = `translate3d(0px, ${bottom - height + 70 + 10}px, 0px)`
+      } else {
+        if (this.pinPosition || !this.isStickyWidget) {
+          return
+        }
+        // console.log('TOP hidden')
+
+        this.pinPosition = true
+        this.isStickyWidget = false
+        this.$refs['sticky-widget'].style.transform = `translate3d(0px, ${scroll - bottom}px, 0px)`
+      }
+    },
+    scrollBottom() {
+      const windowsHeight = window.innerHeight
+      const scrollY = window.scrollY
+
+      const bottom = this.$refs['sticky-widget'].getBoundingClientRect().bottom
+
+      if (windowsHeight > bottom) {
+        // console.log('bottom is visible')
+        this.stopScroll = false
+        this.pinPosition = false
+        this.isStickyWidget = true
+        this.$refs['sticky-widget'].style.transform = 'translate3d(0px, 0px, 0px)'
+      } else if (this.isStickyWidget) {
+        // console.log('bottom is hidden')
+        this.$refs['sticky-widget'].style.transform = `translate3d(0px, ${scrollY - 193 - 60}px, 0px)`
+        this.isStickyWidget = false
+      }
+    },
     removeTag(tag) {
       if (tag.type === 'slider' || tag.type === 'range') {
         const findedFilterList = this.filtersList.find((elem) => elem.key === tag.key)
@@ -508,6 +595,9 @@ export default {
   position: relative;
   // TODO: MOBILE VERSION
   max-width: 850px;
+  // ЧТОБЫ ФИЛЬТРЫ ОТОБРАЗИЛИСЬ КОРРЕКТНО - 1650px
+  // TODO: Для теста скролла, убрать на 1650px
+  min-height: 3650px;
 
   .current_object_sticky {
     position: absolute;
@@ -587,6 +677,21 @@ export default {
 .search_container {
   display: flex;
   grid-column-gap: 1em;
+}
 
+.products-filters-sticky {
+}
+
+.sticky-widget {
+  position: fixed;
+  left: auto;
+  top: auto;
+  bottom: 10px;
+}
+
+.absolute-widget {
+  position: relative;
+  left: 0;
+  top: 0;
 }
 </style>
