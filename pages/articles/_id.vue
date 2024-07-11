@@ -1,7 +1,11 @@
 <template>
   <v-container class="article-wrapper">
     <div class="sticky-right">
-      <ArticleAnchors :data-articles="getArticleTitles" @scrollInto="scrollIntoArticle"/>
+      <ArticleAnchors
+        v-if="getArticleTitles.length"
+        :data-articles="getArticleTitles"
+        @scrollInto="scrollIntoArticle"
+      />
     </div>
 
     <div class="article-template">
