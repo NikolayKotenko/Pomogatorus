@@ -48,22 +48,86 @@
       >
     </ViewerStyled>
 
-    <template v-if="tagsArticles.length">
-      <template v-for="(tag, index) in tagsArticles">
-        <div v-if="tag.articles.length" :key="index + '_tags'" class="article_info_wrapper__more_article">
-          <h3>
-            Ещё статьи по тегу:
-            <HashTagStyled :text="tag.name"/>
-          </h3>
-          <div class="article_info_wrapper__more_article__wrapper">
-            <ArticleSmallCard
-              v-for="(obj, key) in tag.articles"
-              :key="key"
-              :article="obj"
-            />
+    <template v-if="tagsArticles.length && article">
+      <div class="tags_and_date_info">
+        <div class="tags">
+          <div class="tags_title">
+            Теги:
+          </div>
+          <a
+            v-for="(tag, index) in formattedTags"
+            :key="index"
+            :href="'/podborki/' + tag.code"
+            class="tags_text"
+          >
+            {{ tag.name }}
+          </a>
+        </div>
+        <div class="date_and_views">
+          <div class="date">
+            {{ article.updated_at }}
+          </div>
+          <div class="views">
+            <v-icon
+              color="#777777"
+              size="18"
+            >
+              mdi-eye-outline
+            </v-icon>
+            {{ article.views }}
           </div>
         </div>
-      </template>
+      </div>
+
+      <div v-if="tagsArticles[0].articles.length > 2" class="more_articles_wrapper">
+        <div class="wrapper_header">
+          <v-divider vertical style="border-width: 2px; border-color: #111111 !important;"/>
+          <span class="text">
+            Похожие статьи по тегам
+          </span>
+        </div>
+        <div class="small_articles_slider">
+          <v-slide-group
+          >
+            <v-slide-item
+              v-for="(article, index) in tagsArticles[0].articles"
+              :key="index"
+              class="slider_item_style"
+            >
+              <ArticleSmallCard
+                :article="article"
+              />
+            </v-slide-item>
+          </v-slide-group>
+        </div>
+      </div>
+      <div v-else class="another_slider_style">
+        <div class="wrapper_header">
+          <v-divider vertical style="border-width: 2px; border-color: #111111 !important;"/>
+          <span class="text">
+            Похожие статьи по тегам
+          </span>
+        </div>
+        <div class="small_articles_wrapper">
+          <ArticleSmallCard
+            v-for="(article, index) in tagsArticles[0].articles"
+            :key="index"
+            :article="article"
+          />
+        </div>
+      </div>
+
+<!--      <template v-for="(tag, index) in tagsArticles">-->
+<!--        <div v-if="tag.articles.length" :key="index + '_tags'" class="article_info_wrapper__more_article">-->
+<!--          <h3>-->
+<!--            Ещё статьи по тегу:-->
+<!--            <HashTagStyled :text="tag.name"/>-->
+<!--          </h3>-->
+<!--          <div class="article_info_wrapper__more_article__wrapper">-->
+
+<!--          </div>-->
+<!--        </div>-->
+<!--      </template>-->
     </template>
 
     <div class="sticky_panel">
@@ -93,6 +157,7 @@
     </div>
 
     <SocialShare/>
+
     <!--    <Biathlon -->
     <!--      v-if="! $store.state.ArticleModule.refactoring_content" -->
     <!--      :article="article" -->
@@ -209,6 +274,13 @@ export default {
   computed: {
     ...mapGetters(['getUserId']),
     ...mapGetters('Objects', ['getIdCurrentObject']),
+
+    formattedTags() {
+      return this.article._all_public_tags.map((tag, index) => ({
+        name: `${tag.name}${index === this.article._all_public_tags.length - 1 ? '' : ', '}`,
+        code: tag.code
+      }));
+    },
 
     totalImages() {
       return this.$store.state.ArticleModule.totalImages;
@@ -713,11 +785,12 @@ export default {
 
 .sticky_panel {
   background-color: #FFFFFF;
+  font-family: 'Inter', sans-serif;
   display: flex;
   justify-content: space-between;
   align-items: center;
   max-width: 850px;
-  margin: 0 auto;
+  margin: 40px auto 0;
   padding: 20px;
   border-radius: 30px;
   box-shadow: $doubleShadow;
@@ -792,4 +865,78 @@ export default {
 
   margin-right: 1em;
 }
+
+.tags_and_date_info {
+  display: flex;
+  font-family: 'Inter', sans-serif;
+  justify-content: space-between;
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 20px 20px;
+  .tags {
+    display: flex;
+    .tags_title {
+      margin-right:  4px;
+      @extend .grey-text14;
+    }
+    .tags_text {
+      margin-right: 4px;
+      @extend .grey-text14;
+    }
+  }
+  .date_and_views {
+    @extend .grey-text14;
+    display: flex;
+    grid-column-gap: 20px;
+  }
+}
+
+.more_articles_wrapper {
+  max-width: 970px;
+  margin: 0 auto;
+  .wrapper_header {
+    display: flex;
+    padding: 0 60px;
+    margin: 20px 0;
+    .text {
+      margin-left: 20px;
+      @extend .header-page;
+
+    }
+  }
+  .small_articles_slider {
+    display: flex;
+    .slider_item_style {
+      flex: 0 0 auto;
+      max-width: 50%;
+      margin: 10px;
+    }
+
+  }
+}
+.another_slider_style {
+  max-width: 850px;
+  margin: 0 auto;
+  .wrapper_header {
+    display: flex;
+    margin: 20px 0;
+    .text {
+      margin-left: 20px;
+      @extend .header-page;
+
+    }
+  }
+  .small_articles_wrapper {
+    display: flex;
+    grid-column-gap: 20px;
+    //.slider_item_style {
+    //  flex: 0 0 auto;
+    //  max-width: 50%;
+    //  margin-right: 20px;
+    //}
+
+  }
+}
+
+
 </style>

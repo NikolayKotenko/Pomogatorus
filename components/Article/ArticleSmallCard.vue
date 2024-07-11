@@ -1,31 +1,39 @@
 <template>
-  <v-card
-    :elevation="0"
-    :outlined="false"
+  <div
     class="article_small_card"
     @click="$store.dispatch('linkToArticle', article.id)"
   >
-    <div>
-      <h2 class="title">
-        {{ article.name }}
-      </h2>
-    </div>
-    <div class="img_wrapper">
+    <div class="img_container">
       <v-img
         :class="{'empty_img': ! $store.getters.getImageByEClientFilesObj(article.e_client_files) }"
         :src="$store.getters.getImageByEClientFilesObj(article.e_client_files)"
         class="img"
         cover
       />
-      <span v-if="! $store.getters.getImageByEClientFilesObj(article.e_client_files)">Фото статьи</span>
     </div>
-    <div class="icons_and_time_wrapper" @click="$event.stopPropagation()">
-      <ViewsAndLikes :article="article"/>
-      <h4 class="time">
-        {{ article.updated_at }}
-      </h4>
+
+    <div class="article_name">
+      {{ article.name }}
     </div>
-  </v-card>
+
+<!--    <div>-->
+<!--      <h2 class="title">-->
+<!--        {{ article.name }}-->
+<!--      </h2>-->
+<!--    </div>-->
+<!--    <div class="img_wrapper">-->
+<!--      <v-img-->
+<!--
+<!--      />-->
+<!--      <span v-if="! $store.getters.getImageByEClientFilesObj(article.e_client_files)">Фото статьи</span>-->
+<!--    </div>-->
+<!--    <div class="icons_and_time_wrapper" @click="$event.stopPropagation()">-->
+<!--      <ViewsAndLikes :article="article"/>-->
+<!--      <h4 class="time">-->
+<!--        {{ article.updated_at }}-->
+<!--      </h4>-->
+<!--    </div>-->
+  </div>
 </template>
 
 <script>
@@ -48,20 +56,58 @@ export default {
 @import 'assets/styles/style';
 .article_small_card {
   display: grid;
-  grid-row-gap: 10px;
-  padding: 10px;
-  border-radius: 5px !important;
-  transition: $transition;
-  opacity: 0.6;
-  max-width: 270px;
+  position: relative;
+  border-radius: $b-r30 !important;
+  width: 415px;
   max-height: 250px;
-
+  cursor: pointer;
+  transition: $transition;
   &:hover {
-
-    box-shadow: 0px 5px 20px 7px rgba(34, 60, 80, 0.2) !important;
-    opacity: 1;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
   }
+
+  .img_container {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    border-radius: $b-r30 !important;
+    .img {
+      height: auto;
+      display: block;
+      width: 100%;
+      border-radius: $b-r30 !important;
+
+    }
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      border-radius: $b-r30;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.5) 100%);
+      z-index: 1;
+      pointer-events: none;
+    }
+  }
+  .article_name {
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
+    @extend .white-small-header-page;
+    font-size: 1.5em !important;
+    z-index: 2;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: wrap !important;
+  }
+
 }
+
 
 .title {
   font-size: 1em !important;
@@ -85,10 +131,7 @@ export default {
   }
 }
 
-.img {
-  height: 100%;
-  border-radius: 5px;
-}
+
 
 .empty_img {
   background: #ADADAD;

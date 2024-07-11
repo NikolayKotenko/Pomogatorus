@@ -70,6 +70,8 @@
         {{ articleData.purpose_of_article }}
       </span>
     </div>
+
+    <WrapperStickyCurrentObject class="current_object_sticky"/>
   </div>
 </template>
 
@@ -80,10 +82,11 @@ import TooltipStyled from '../Common/TooltipStyled.vue';
 import ViewsAndLikes from '../Common/ViewsAndLikes.vue'
 import ButtonStyled from '../Common/ButtonStyled.vue'
 import SocialShare from './SocialShare.vue'
+import WrapperStickyCurrentObject from '../Widgets/WrapperStickyCurrentObject.vue';
 
 export default {
   name: 'ArticleInfo',
-  components: { ButtonStyled, SocialShare, ViewsAndLikes, TooltipStyled },
+  components: { WrapperStickyCurrentObject, ButtonStyled, SocialShare, ViewsAndLikes, TooltipStyled },
   props: {
     articleData: {
       type: Object,
@@ -133,6 +136,7 @@ export default {
 }
 
 .article_info_wrapper {
+  position: relative;
   color: black;
   display: grid;
   grid-row-gap: 20px;
@@ -177,7 +181,12 @@ export default {
     border-radius: 15px;
     background-color: #FFFFFF;
     padding: 20px;
-    margin-bottom: 20px;
+  }
+
+  .current_object_sticky {
+    position: absolute;
+    right: -310px;
+    top: 63px;
   }
 }
 
