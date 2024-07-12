@@ -1,8 +1,8 @@
 <template>
   <v-container class="article-wrapper">
     <div class="sticky-right">
+      <WrapperStickyCurrentObject class="current_object_sticky"/>
       <ArticleAnchors
-        v-if="getArticleTitles.length"
         :data-articles="getArticleTitles"
         @scrollInto="scrollIntoArticle"
       />
@@ -39,7 +39,7 @@
         </div>
       </template>
 
-      <div v-if="$store.state.ArticleModule.refactoring_content || !article" class="hidden-mask"/>
+      <!--      <div v-if="$store.state.ArticleModule.refactoring_content || !article" class="hidden-mask"/> -->
     </div>
 
 
@@ -95,8 +95,7 @@
           </span>
         </div>
         <div class="small_articles_slider">
-          <v-slide-group
-          >
+          <v-slide-group>
             <v-slide-item
               v-for="(article, index) in tagsArticles[0].articles"
               :key="index"
@@ -125,17 +124,17 @@
         </div>
       </div>
 
-<!--      <template v-for="(tag, index) in tagsArticles">-->
-<!--        <div v-if="tag.articles.length" :key="index + '_tags'" class="article_info_wrapper__more_article">-->
-<!--          <h3>-->
-<!--            Ещё статьи по тегу:-->
-<!--            <HashTagStyled :text="tag.name"/>-->
-<!--          </h3>-->
-<!--          <div class="article_info_wrapper__more_article__wrapper">-->
+      <!--      <template v-for="(tag, index) in tagsArticles"> -->
+      <!--        <div v-if="tag.articles.length" :key="index + '_tags'" class="article_info_wrapper__more_article"> -->
+      <!--          <h3> -->
+      <!--            Ещё статьи по тегу: -->
+      <!--            <HashTagStyled :text="tag.name"/> -->
+      <!--          </h3> -->
+      <!--          <div class="article_info_wrapper__more_article__wrapper"> -->
 
-<!--          </div>-->
-<!--        </div>-->
-<!--      </template>-->
+      <!--          </div> -->
+      <!--        </div> -->
+      <!--      </template> -->
     </template>
 
     <div class="sticky_panel">
@@ -172,9 +171,9 @@
     <!--      :questions="computedQuestions" -->
     <!--      :view-action="localViewAction" -->
     <!--    /> -->
-    <v-overlay :value="$store.state.ArticleModule.refactoring_content" z-index="10" opacity="1">
-      <v-progress-circular :size="50" color="#FFFFFF" indeterminate style="margin-top: 20px"/>
-    </v-overlay>
+    <!--    <v-overlay :value="$store.state.ArticleModule.refactoring_content" z-index="10" opacity="1"> -->
+    <!--      <v-progress-circular :size="50" color="#FFFFFF" indeterminate style="margin-top: 20px"/> -->
+    <!--    </v-overlay> -->
 
     <!-- TODO: DEPRECATED, Теперь у нас есть боковой виджет объекта -->
     <!--    <footer-summary></footer-summary> -->
@@ -191,6 +190,7 @@ import ViewsAndLikes from '../../components/Common/ViewsAndLikes.vue'
 import TooltipStyled from '../../components/Common/TooltipStyled.vue'
 import SocialShare from '../../components/Article/SocialShare.vue'
 import ArticleAnchors from '../../components/Widgets/ArticleAnchors'
+import WrapperStickyCurrentObject from '../../components/Widgets/WrapperStickyCurrentObject.vue'
 import ViewerStyled from '~/components/Common/ViewerStyled'
 import ImageLayout from '~/components/frontLayouts/ImageLayout'
 import Question from '~/components/frontLayouts/Question'
@@ -204,15 +204,14 @@ const VuetifyClass = require('vuetify')
 
 export default {
   components: {
+    WrapperStickyCurrentObject,
     ArticleAnchors,
     SocialShare,
     TooltipStyled,
     ViewsAndLikes,
     SubHeader,
-    Biathlon,
     ArticleSmallCard,
     ArticleInfo,
-    HashTagStyled,
     ViewerStyled
   },
   async asyncData({ store, params }) {
@@ -1033,5 +1032,10 @@ export default {
   min-height: 400px;
   top: 86px;
   right: 0;
+  .current_object_sticky {
+    position: absolute;
+    right: -310px;
+    top: 63px;
+  }
 }
 </style>
