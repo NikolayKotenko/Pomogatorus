@@ -906,7 +906,7 @@ export default {
   box-shadow: $doubleShadow;
   position: sticky;
   bottom: 20px;
-  z-index: 1;
+  z-index: 4;
   width: 100%;
 
   .bookmarks_and_share {
@@ -1071,7 +1071,7 @@ export default {
   background: transparent;
   width: 304px;
   min-height: 400px;
-  top: 70px;
+  top: 260px;
   right: -200px;
   z-index: 101;
 
