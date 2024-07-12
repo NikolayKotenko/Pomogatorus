@@ -24,7 +24,7 @@
           :item-text="'name'"
           :item-value="'id'"
           :items="$store.state.Objects.listObjects"
-          :placeholder="$store.getters.stateAuth ? 'Выберите объект' : 'Авторизуйтесь'"
+          :placeholder="$store.getters.stateAuth ? 'Выберите объект' : 'Сначала авторизуйтесь'"
           title="Выберите объект"
           @update-input="callback"
         />
@@ -150,7 +150,7 @@ export default {
     callAuthModal() {
       if (this.$store.getters.stateAuth) return false;
 
-      this.$store.commit('set_modal_auth', true);
+      this.$store.dispatch('openAuthModal');
     },
     async callback(data) {
       await this.$store.dispatch('Objects/setCurrentObject', data)

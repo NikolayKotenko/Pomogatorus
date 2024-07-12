@@ -121,7 +121,7 @@ export default {
     async setLikesDislikes(likeOrDislikeOrNull) {
       // Если не авторизован выкидываем модалку авторизации
       if (!this.$store.getters.stateAuth) {
-        this.$store.state.listModal[0].isOpen = true;
+        await this.$store.dispatch('openAuthModal');
         return false;
       }
 
