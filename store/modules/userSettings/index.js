@@ -56,7 +56,7 @@ export default {
     selectedRange: 0,
     rangeArea: ['0', '100', '200', '300', '500', '1000'],
     selectedCity: [],
-    stateVisibleMenu: false
+    stateVisibleMenu: false,
   },
   mutations: {
     setIsUpdating(state, payload) {
@@ -245,8 +245,8 @@ export default {
       if (!state.searchServiceByName) return state.selectedRawServicesBased
 
       return state.selectedRawServicesBased.filter((elem) => {
-        const haystack = elem.service_data.name.toLowerCase()
-        const needle = state.searchServiceByName.toLowerCase()
+        const haystack = elem?.service_data.name?.toLowerCase()
+        const needle = state?.searchServiceByName?.toLowerCase()
         return !!haystack.match(needle)
       })
     },
@@ -272,6 +272,5 @@ export default {
     getRangeSlider(state) {
       return state.rangeArea[state.selectedRange]
     },
-
   },
 }

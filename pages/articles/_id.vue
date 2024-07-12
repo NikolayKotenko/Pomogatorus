@@ -1,11 +1,17 @@
 <template>
   <v-container class="article-wrapper">
-    <div class="sticky-right">
-      <WrapperStickyCurrentObject class="current_object_sticky"/>
-      <ArticleAnchors
-        :data-articles="getArticleTitles"
-        @scrollInto="scrollIntoArticle"
-      />
+    <div v-if="!$store.state.ArticleModule.refactoring_content && article" class="position-right">
+      <div class="sticky-right-top">
+        <WrapperStickyCurrentObject
+          class="current_object_sticky"
+        />
+
+        <ArticleAnchors
+          v-if="getArticleTitles.length"
+          :data-articles="getArticleTitles"
+          @scrollInto="scrollIntoArticle"
+        />
+      </div>
     </div>
 
     <div class="article-template">
@@ -39,7 +45,7 @@
         </div>
       </template>
 
-      <!--      <div v-if="$store.state.ArticleModule.refactoring_content || !article" class="hidden-mask"/> -->
+      <div v-if="$store.state.ArticleModule.refactoring_content || !article" class="hidden-mask"/>
     </div>
 
 
@@ -89,7 +95,7 @@
 
       <div v-if="tagsArticles[0].articles.length > 2" class="more_articles_wrapper">
         <div class="wrapper_header">
-          <v-divider vertical style="border-width: 2px; border-color: #111111 !important;"/>
+          <v-divider style="border-width: 2px; border-color: #111111 !important;" vertical/>
           <span class="text">
             Похожие статьи по тегам
           </span>
@@ -110,7 +116,7 @@
       </div>
       <div v-else class="another_slider_style">
         <div class="wrapper_header">
-          <v-divider vertical style="border-width: 2px; border-color: #111111 !important;"/>
+          <v-divider style="border-width: 2px; border-color: #111111 !important;" vertical/>
           <span class="text">
             Похожие статьи по тегам
           </span>
@@ -166,14 +172,14 @@
     <SocialShare/>
 
     <!--    <Biathlon -->
-    <!--      v-if="! $store.state.ArticleModule.refactoring_content" -->
+    <!--      v-if="!$store.state.ArticleModule.refactoring_content" -->
     <!--      :article="article" -->
     <!--      :questions="computedQuestions" -->
     <!--      :view-action="localViewAction" -->
     <!--    /> -->
-    <!--    <v-overlay :value="$store.state.ArticleModule.refactoring_content" z-index="10" opacity="1"> -->
-    <!--      <v-progress-circular :size="50" color="#FFFFFF" indeterminate style="margin-top: 20px"/> -->
-    <!--    </v-overlay> -->
+    <v-overlay :value="$store.state.ArticleModule.refactoring_content" opacity="1" z-index="10">
+      <v-progress-circular :size="50" color="#FFFFFF" indeterminate style="margin-top: 20px"/>
+    </v-overlay>
 
     <!-- TODO: DEPRECATED, Теперь у нас есть боковой виджет объекта -->
     <!--    <footer-summary></footer-summary> -->
@@ -184,7 +190,6 @@
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import ArticleSmallCard from '../../components/Article/ArticleSmallCard.vue'
-import Biathlon from '../../components/Common/Biathlon.vue'
 import SubHeader from '../../components/SubHeader.vue'
 import ViewsAndLikes from '../../components/Common/ViewsAndLikes.vue'
 import TooltipStyled from '../../components/Common/TooltipStyled.vue'
@@ -197,7 +202,6 @@ import Question from '~/components/frontLayouts/Question'
 import NomenclatureArticle from '~/components/frontLayouts/NomenclatureArticle'
 import LoginAuth from '~/components/frontLayouts/LoginAuth'
 import ArticleInfo from '~/components/Article/ArticleInfo'
-import HashTagStyled from '~/components/Common/HashTagStyled'
 import Request from '~/services/request'
 
 const VuetifyClass = require('vuetify')
@@ -216,8 +220,11 @@ export default {
   },
   async asyncData({ store, params }) {
     try {
+      console.log('asyncData')
       const articleRequest = await Request.get(`${store.state.BASE_URL}/entity/articles/${params.id}`, '', true)
       const article = articleRequest.data
+      console.log('article', article)
+
       return { article }
     } catch (error) {
       console.warn(error)
@@ -324,10 +331,14 @@ export default {
       return result
     },
     formattedTags() {
+      if (!this.article) {
+        return []
+      }
+
       return this.article._all_public_tags.map((tag, index) => ({
         name: `${tag.name}${index === this.article._all_public_tags.length - 1 ? '' : ', '}`,
         code: tag.code
-      }));
+      }))
     },
 
     totalImages() {
@@ -442,15 +453,23 @@ export default {
     }
   },
   async mounted() {
+    console.log('MOUNTEDaaaaaaaa')
+
     this.$route.meta.title = this.article?.name
 
     // eslint-disable-next-line nuxt/no-env-in-hooks
     if (process.client) {
       window.addEventListener('scroll', this.scrollWindow)
     }
+
+    console.log('initializeContent')
     this.initializeContent().then(() => {
       setTimeout(() => {
+        console.log('changeIndexQuestion')
+
+
         this.changeIndexQuestion()
+        console.log('change_refactoring_content')
         this.$store.commit('change_refactoring_content', false)
         this.findQuestions()
 
@@ -813,14 +832,17 @@ export default {
   &__header {
     display: grid;
     grid-row-gap: 20px;
+
     .title {
       display: flex;
       height: auto;
+
       .divider {
         border-color: #000000 !important;
         border-width: 3px;
         margin-right: 20px;
       }
+
       &__title {
         margin: 10px 0 10px 0;
         padding-bottom: 6px;
@@ -857,13 +879,17 @@ export default {
   background-color: $grey4;
   border-radius: $b-r30;
   color: $white-color;
+
   .prompt_info {
     display: grid;
     grid-row-gap: 4px;
+
     .prompt_title {
       @extend .white-small-header-page
     }
-    .prompt_text {}
+
+    .prompt_text {
+    }
   }
 }
 
@@ -881,9 +907,12 @@ export default {
   position: sticky;
   bottom: 20px;
   z-index: 1;
+  width: 100%;
+
   .bookmarks_and_share {
     display: flex;
     grid-column-gap: 20px;
+
     .btn_wrapper {
       display: flex;
       grid-column-gap: 5px;
@@ -959,17 +988,21 @@ export default {
   max-width: 850px;
   margin: 0 auto;
   padding: 20px 20px;
+
   .tags {
     display: flex;
+
     .tags_title {
-      margin-right:  4px;
+      margin-right: 4px;
       @extend .grey-text14;
     }
+
     .tags_text {
       margin-right: 4px;
       @extend .grey-text14;
     }
   }
+
   .date_and_views {
     @extend .grey-text14;
     display: flex;
@@ -980,18 +1013,22 @@ export default {
 .more_articles_wrapper {
   max-width: 970px;
   margin: 0 auto;
+
   .wrapper_header {
     display: flex;
     padding: 0 60px;
     margin: 20px 0;
+
     .text {
       margin-left: 20px;
       @extend .header-page;
 
     }
   }
+
   .small_articles_slider {
     display: flex;
+
     .slider_item_style {
       flex: 0 0 auto;
       max-width: 50%;
@@ -1000,18 +1037,22 @@ export default {
 
   }
 }
+
 .another_slider_style {
   max-width: 850px;
   margin: 0 auto;
+
   .wrapper_header {
     display: flex;
     margin: 20px 0;
+
     .text {
       margin-left: 20px;
       @extend .header-page;
 
     }
   }
+
   .small_articles_wrapper {
     display: flex;
     grid-column-gap: 20px;
@@ -1024,18 +1065,29 @@ export default {
   }
 }
 
-.sticky-right {
+.position-right {
   height: 100%;
   position: absolute;
   background: transparent;
   width: 304px;
   min-height: 400px;
-  top: 86px;
-  right: 0;
-  .current_object_sticky {
-    position: absolute;
-    right: -310px;
-    top: 63px;
+  top: 70px;
+  right: -200px;
+  z-index: 101;
+
+  .sticky-right-top {
+    position: sticky;
+    top: 80px;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
   }
+
+  //.current_object_sticky {
+  //  position: absolute;
+  //  right: -310px;
+  //  top: 63px;
+  //}
 }
 </style>

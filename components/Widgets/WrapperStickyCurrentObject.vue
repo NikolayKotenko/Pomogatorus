@@ -89,15 +89,16 @@ export default {
 .wrapper_current_object {
   width: 290px;
   min-width: 290px;
-  position: sticky;
-  top: 15px;
-  height: 1px;
+  //position: sticky;
+  //top: 15px;
+  //height: 1px;
 
 
-  .label{
+  .label {
     font-size: 1.2em;
   }
 }
+
 //.wrapper_current_object {
 //  height: 1px;
 //  //width: 1px;

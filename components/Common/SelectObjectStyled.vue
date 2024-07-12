@@ -20,8 +20,8 @@
     :placeholder="computedPlaceholder"
     :search-input.sync="blockSearch"
     :solo="isSolo"
-    filled
     dense
+    filled
     hide-details
     return-object
     single-line
@@ -232,8 +232,8 @@ export default {
       if (!string) return string
       if (!this.blockSearch) return string
 
-      const haystackString = string.toLowerCase()
-      const needleString = this.blockSearch.toLowerCase()
+      const haystackString = string?.toLowerCase() ?? ''
+      const needleString = this.blockSearch?.toLowerCase()
       const resMatch = haystackString.match(needleString)
       if (!resMatch) return string
 
@@ -260,6 +260,7 @@ export default {
       opacity: 1;
     }
   }
+
   .v-input__control {
     .v-input__slot {
       font-size: 1.25em;

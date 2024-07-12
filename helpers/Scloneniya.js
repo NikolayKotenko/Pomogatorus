@@ -178,7 +178,7 @@ const RussianNameProcessor = {
 
   // выбираем из списка правил первое подходящее и применяем
   pick: function (word, sex, gcase, rules, matchWholeWord) {
-    wordLower = word.toLowerCase()
+    const wordLower = word?.toLowerCase() ?? ''
     for (let i = 0, n = rules.length; i < n; i++) {
       if (this.ruleMatch(wordLower, sex, rules[i], matchWholeWord)) {
         return this.applyMod(word, gcase, rules[i])

@@ -44,9 +44,6 @@ export default {
 
 <style lang='scss' scoped>
 .article-description-widget {
-  position: sticky;
-  top: 80px;
-  right: 0;
 
   &__links {
     display: flex;

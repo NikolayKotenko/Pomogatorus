@@ -17,7 +17,7 @@ export default {
     answersFromServer: [],
     isAnswered: false,
     isLoadingAnswers: false,
-    stateShareArticleModal: false
+    stateShareArticleModal: false,
   },
   mutations: {
     /* ANSWERS */
@@ -55,6 +55,7 @@ export default {
     },
 
     change_refactoring_content(state, value) {
+      console.log('change_refactoring_content', value)
       state.refactoring_content = value
     },
     change_list_articles(state, arr) {
@@ -92,7 +93,7 @@ export default {
     },
     set_state_share_article_modal(state, payload) {
       state.stateShareArticleModal = payload
-    }
+    },
   },
   actions: {
     openShareArticleModal({ commit }) {
