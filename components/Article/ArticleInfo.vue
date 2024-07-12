@@ -138,6 +138,8 @@ export default {
 .article_info_wrapper {
   position: relative;
   color: black;
+  max-width: 850px;
+
   display: grid;
   grid-row-gap: 20px;
   &__info {
@@ -170,17 +172,18 @@ export default {
     &__right {
     }
   }
+
   .article_img {
     border-radius: 30px;
     background-color: #FFFFFF;
     max-height: 430px;
   }
-
-
   &__anons {
     border-radius: 15px;
     background-color: #FFFFFF;
     padding: 20px;
+    margin: 15px 0 15px 0;
+    max-width: 850px;
   }
 
   .current_object_sticky {

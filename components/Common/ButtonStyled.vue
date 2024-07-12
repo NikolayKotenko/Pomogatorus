@@ -2,12 +2,14 @@
   <v-btn
     :class="computedClass"
     :disabled="isDisabled"
+    :elevation="elevation"
     :href="href"
     :loading="isLoading"
-    :nuxt="isNuxtLink"
-    :max-width="maxWidth"
     :max-height="maxHeight"
-    :elevation="elevation"
+    :max-width="maxWidth"
+    :min-height="minHeight"
+    :min-width="minWidth"
+    :nuxt="isNuxtLink"
     @click="$emit('click-button')"
   >
     <template v-if="customSlot">
@@ -68,11 +70,19 @@ export default {
       default: false
     },
     maxWidth: {
-      type: String,
+      type: [String, Number],
+      default: ''
+    },
+    minWidth: {
+      type: [String, Number],
+      default: ''
+    },
+    minHeight: {
+      type: [String, Number],
       default: ''
     },
     maxHeight: {
-      type: String,
+      type: [String, Number],
       default: ''
     },
     elevation: {
@@ -262,6 +272,7 @@ export default {
   color: $black-text-color;
   border: 1px solid #000000;
   transition: $transition;
+
   &:hover {
     background: #000000 !important;
     color: #FFFFFF;
@@ -309,6 +320,7 @@ export default {
   max-width: 560px !important;
   width: 560px !important;
   transition: $transition;
+
   &:hover {
     background: #000000 !important;
     color: #FFFFFF;
@@ -320,6 +332,7 @@ export default {
   color: #FFFFFF;
   border: 1px solid #FF6347;
   transition: $transition;
+
   &:hover {
     background: #FFFFFF !important;
     border: 1px solid #000000;
@@ -334,6 +347,7 @@ export default {
   max-width: 375px !important;
   width: 375px !important;
   transition: $transition;
+
   &:hover {
     background: #000000 !important;
     color: #FFFFFF;
@@ -345,11 +359,28 @@ export default {
   color: $black-text-color;
   border: 1px solid $orange-color;
   transition: $transition;
+
   &:hover {
     background: $orange-color !important;
     color: #000000;
 
   }
+}
+
+.new-style-btn {
+  border-radius: 30px;
+  box-shadow: unset;
+}
+
+.btn-save {
+  background: #FF6347 !important;
+  border: 1px solid #FF6347;
+  color: white !important;
+}
+
+.btn-cancel {
+  border: 1px solid #111111;
+  background: transparent;
 }
 
 </style>

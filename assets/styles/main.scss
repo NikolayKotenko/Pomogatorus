@@ -7,7 +7,7 @@
   color: #000000;
   font-weight: 700;
   font-size: 2em;
-  max-width: 1140px;
+  max-width: 850px;
 }
 
 .titleFont {
@@ -21,6 +21,14 @@
   font-family: 'Inter', sans-serif !important;
   font-size: 1em;
   color: #000000;
+  
+  h2 {
+    border-bottom: 1px solid #DDDDDD !important;
+  }
+
+  ul > li {
+    list-style-type: disc !important;
+  }
 }
 
 .activeElement {

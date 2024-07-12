@@ -1,4 +1,5 @@
 import Request from '@/services/request'
+
 export default {
   namespaced: true,
   state: {
@@ -9,11 +10,11 @@ export default {
   },
   mutations: {
     set_list_nomenclature(state, payload) {
-      if (payload.paginationData.onFirstPage) {
-      state.listNomenclature = []
-      state.listNomenclature = payload.data
+      if (payload?.paginationData?.onFirstPage) {
+        state.listNomenclature = []
+        state.listNomenclature = payload.data
       } else {
-        state.listNomenclature = payload.data;
+        state.listNomenclature = payload.data
       }
     },
     set_list_favorite_nomenclature(state, payload) {
@@ -34,7 +35,7 @@ export default {
           Request.ConstructQuery(query)
       )
       commit('set_list_nomenclature', response)
-      commit('set_current_pagination_data', response.paginationData, {
+      commit('set_current_pagination_data', response?.paginationData, {
         root: true,
       })
       return response
