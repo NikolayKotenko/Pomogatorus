@@ -1,5 +1,6 @@
 <template>
   <v-container class="podborki">
+    <SubHeader/>
     <SearchStyled
       :is-class="'styleSearch'"
       :is-clearable="true"
@@ -10,6 +11,7 @@
       :is-items="$store.state.PopularSelectionsModule.list_selections"
       :is-loading="$store.state.PopularSelectionsModule.loadingState"
       :is-placeholder="'Поиск тегов'"
+      class="search_container"
       @update-search-input="localGetListItems"
       @click-clear="$store.dispatch('PopularSelectionsModule/getListSelections');"
     />
@@ -17,6 +19,7 @@
     <v-card
       v-for="(item, key) in $store.state.PopularSelectionsModule.list_selections"
       :key="key"
+      elevation="0"
       :href="$route.path + '/' + item.code"
       class="podborki__wrapper_list"
     >
@@ -29,14 +32,13 @@
       <div
         v-else
         class="empty_placeholder"
-      >
-        <span>Фото подборки</span>
-      </div>
+      />
       <div class="main_info">
-        <HashTagStyled
-          class="info_title"
-          :text="item.name"
-        />
+        <div
+          class="title"
+        >
+          {{ item.name }}
+        </div>
         <div
           class="text_info"
           v-html="item.description"
@@ -65,17 +67,18 @@
 
 <script>
 import HashTagStyled from '../../components/Common/HashTagStyled.vue';
+import SubHeader from '../../components/SubHeader.vue'
 import SearchStyled from '@/components/Common/SearchStyled.vue';
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'index.vue',
-  components: { SearchStyled, HashTagStyled },
+  components: { SubHeader, SearchStyled, HashTagStyled },
   data: () => ({
     debounceTimeout: null
   }),
   head: {
-    title: 'Подборки',
+    title: 'Теги',
     meta: []
   },
   created() {
@@ -109,50 +112,63 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import 'assets/styles/style';
 
-.empty_placeholder{
-  background-color: #D9D9D9;
-  min-width: 254px;
-  min-height: 170px;
-  border-radius: 5px !important;
+.empty_placeholder {
+  background-color: #DDDDDD;
+  min-width: 300px;
+  min-height: 200px;
+  background-image: url("assets/svg/icons/no_img_icon.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 50%;
+  border-radius: $b-r16 !important;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #FFFFFF;
-  font-size: 1.3em;
 }
 
 .podborki {
   display: grid;
-  grid-row-gap: 2em;
+  grid-row-gap: 20px;
   align-content: baseline;
+  font-family: 'Inter', sans-serif;
+
+  .search_container {
+    max-width: 850px;
+    width: 100%;
+    margin: 0 auto;
+  }
 
   &__wrapper_list {
-    height: 210px;
+    max-width: 850px;
+    margin: 0 auto;
+    height: 240px;
     display: flex;
+    width: 100%;
     grid-column-gap: 20px;
     padding: 20px;
+    border-radius: $b-r30 !important;
+    transition: $transition;
     &:hover {
-      background-color: #FFF4CB;
-      box-shadow: 0px 5px 20px 7px rgba(34, 60, 80, 0.2) !important;
+      box-shadow: $shadowBox !important;
     }
 
     .podborki_img {
-      border-radius: 5px !important;
-      max-width: 254px;
-      max-height: 170px;
+      border-radius: $b-r16 !important;
+      max-width: 300px;
+      max-height: 200px;
     }
     .main_info {
       display: grid;
       grid-row-gap: 10px;
-      .info_title {
-        font-size: 1.5em;
-
+      width: 100%;
+      .title {
+        @extend .header-page;
       }
       .text_info {
         background-color: #D9D9D9;
         padding: 10px;
-        border-radius: 5px;
+        border-radius: $b-r8;
+        width: 100%;
 
       }
       .podborki_info {

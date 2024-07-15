@@ -357,7 +357,7 @@ export default {
           isAuthorized: null,
         },
         {
-          category: 'Подборки',
+          category: 'Теги',
           data: {},
           query: '',
           search: '',
@@ -502,7 +502,7 @@ export default {
       }
     },
     redirectData(data) {
-      if (data.category === 'Подборки') {
+      if (data.category === 'Теги') {
         window.location.href = data.href
       }
       if (data.category === 'Статьи') {

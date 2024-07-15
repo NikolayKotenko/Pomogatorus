@@ -199,7 +199,7 @@ $doubleShadow: 0px 4px 16px 0px rgba(0, 0, 0, 0.25), 0px -4px 16px 0px rgba(0, 0
 
 .header-page {
   color: $black-color;
-  font-size: 1.5em;
+  font-size: 1.5em !important;
   font-style: normal;
   font-weight: 700;
   line-height: normal;

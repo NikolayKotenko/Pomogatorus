@@ -220,10 +220,8 @@ export default {
   },
   async asyncData({ store, params }) {
     try {
-      console.log('asyncData')
       const articleRequest = await Request.get(`${store.state.BASE_URL}/entity/articles/${params.id}`, '', true)
       const article = articleRequest.data
-      console.log('article', article)
 
       return { article }
     } catch (error) {
@@ -453,8 +451,6 @@ export default {
     }
   },
   async mounted() {
-    console.log('MOUNTEDaaaaaaaa')
-
     this.$route.meta.title = this.article?.name
 
     // eslint-disable-next-line nuxt/no-env-in-hooks
@@ -462,11 +458,8 @@ export default {
       window.addEventListener('scroll', this.scrollWindow)
     }
 
-    console.log('initializeContent')
     this.initializeContent().then(() => {
       setTimeout(() => {
-        console.log('changeIndexQuestion')
-
 
         this.changeIndexQuestion()
         console.log('change_refactoring_content')
@@ -1013,6 +1006,11 @@ export default {
 .more_articles_wrapper {
   max-width: 970px;
   margin: 0 auto;
+  opacity: .5;
+  transition: $transition;
+  &:hover {
+    opacity: 1;
+  }
 
   .wrapper_header {
     display: flex;
@@ -1041,6 +1039,11 @@ export default {
 .another_slider_style {
   max-width: 850px;
   margin: 0 auto;
+  opacity: .5;
+  transition: $transition;
+  &:hover {
+    opacity: 1;
+  }
 
   .wrapper_header {
     display: flex;
@@ -1074,6 +1077,11 @@ export default {
   top: 260px;
   right: -200px;
   z-index: 101;
+  opacity: .5;
+  transition: $transition;
+  &:hover {
+    opacity: 1;
+  }
 
   .sticky-right-top {
     position: sticky;

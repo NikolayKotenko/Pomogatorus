@@ -5,12 +5,14 @@ const _store = createStore()
 
 export default class Answers {
   static async create(params) {
+    console.log('create', params, `${_store.state.BASE_URL}/entity/answers`)
     return await Request.post(`${_store.state.BASE_URL}/entity/answers`, params)
   }
 
   static async update(params, id) {
+    console.log('update', params, id, `${this.$store.state.BASE_URL}/entity/answers/${id}`)
     return await Request.put(
-      `${_store.state.BASE_URL}/entity/answers/${id}`,
+      `${this.$store.state.BASE_URL}/entity/answers/${id}`,
       params
     )
   }

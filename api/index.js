@@ -178,7 +178,7 @@ function getUrl(req, res) {
   const fullUrl = `${protocol}://${host}:${port}${url}`
   return fullUrl.includes('pomogatorus')
     ? process.env.VUE_APP_BACKEND_SERVER_PROD
-    : process.env.VUE_APP_BACKEND_SERVER_PROD
+    : process.env.VUE_APP_BACKEND_SERVER_DEV
 }
 
 function parseCookies(cookieHeader) {

@@ -20,8 +20,8 @@ const createStore = () => {
     state: {
       BASE_URL:
         process.env.NODE_ENV === 'development'
-          ? process.env.VUE_APP_BACKEND_SERVER_DEV
-          : process.env.VUE_APP_BACKEND_SERVER_PROD,
+          ? process.env.VUE_APP_BACKEND_SERVER_PROD
+          : process.env.VUE_APP_BACKEND_SERVER_DEV,
       show_header: false,
       breadcrumbs: [],
       defaultBreadcrumbs: [
@@ -112,7 +112,7 @@ const createStore = () => {
             visible: true,
           },
           {
-            title: 'Подборки',
+            title: 'Теги',
             path: '/podborki',
             icon: 'mdi-bullseye-arrow',
             visible: true,
@@ -259,7 +259,7 @@ const createStore = () => {
           if (elem.category === 'Номенклатура') {
             elem.href = '/nomenclature/' + elem.data.id
           }
-          if (elem.category === 'Подборки') {
+          if (elem.category === 'Теги') {
             elem.href = '/podborki/' + elem.data.code
           }
         })

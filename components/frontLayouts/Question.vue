@@ -582,6 +582,8 @@ export default {
       this.$store.commit('Objects/setListObjects', [data])
     },
     sendAnswer(dataEnv) {
+      console.log('sendAnswer', this.$store.state.BASE_URL, this.question_data.id_type_answer, this.question_data.id, this.$store.state.AuthModule.userData?.id, JSON.stringify(this.answer), JSON.stringify(this.data_env), this.detailed_response)
+
       this.status_name = 'sending'
       this.$nextTick(async () => {
         try {
