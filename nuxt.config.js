@@ -3,6 +3,9 @@ export default {
   publicRuntimeConfig: {
     myPublicVariable: process.env.VUE_APP_YA_KEY,
   },
+  env: {
+    apiEndpoint: process.env.VUE_APP_API_ENDPOINT,
+  },
   head: {
     // titleTemplate: '%s - pomogatorus-service',
     title: 'Помогаторус',

@@ -27,7 +27,7 @@ app.post('/auth/login', function (request, response) {
       .send({ message: 'Пустой request.body', codeResponse: 400 })
 
   axios
-    .post(getUrl(request, response) + '/auth/login', request.body)
+    .post(process.env.VUE_APP_API_ENDPOINT + '/auth/login', request.body)
     .then((res) => {
       // console.log(res.config);
 
@@ -75,7 +75,7 @@ app.post('/auth/refresh', function (request, response) {
     withCredentials: true,
   }
   axios
-    .post(getUrl(request, response) + '/auth/refresh', false, config)
+    .post(process.env.VUE_APP_API_ENDPOINT + '/auth/refresh', false, config)
     .then((res) => {
       // console.log('res.headers', res.headers)
 
@@ -122,7 +122,11 @@ app.post('/auth/validate-auth', function (request, response) {
   }
 
   axios
-    .post(getUrl(request, response) + '/auth/validate-auth', false, config)
+    .post(
+      process.env.VUE_APP_API_ENDPOINT + '/auth/validate-auth',
+      false,
+      config
+    )
     .then((res) => {
       // console.log('res', res)
       response.send(res.data)
@@ -147,7 +151,7 @@ app.post('/auth/logout', function (request, response) {
   }
 
   axios
-    .post(getUrl(request, response) + '/auth/logout', false, config)
+    .post(process.env.VUE_APP_API_ENDPOINT + '/auth/logout', false, config)
     .then((res) => {
       response.clearCookie('refreshToken')
       response.clearCookie('accessToken')
@@ -169,17 +173,6 @@ module.exports = {
 }
 
 app.listen(PORT, () => console.log('Сервер запущен...'))
-
-function getUrl(req, res) {
-  const protocol = req.protocol
-  const host = req.hostname
-  const url = req.originalUrl
-  const port = process.env.PORT || PORT
-  const fullUrl = `${protocol}://${host}:${port}${url}`
-  return fullUrl.includes('pomogatorus')
-    ? process.env.VUE_APP_BACKEND_SERVER_PROD
-    : process.env.VUE_APP_BACKEND_SERVER_PROD
-}
 
 function parseCookies(cookieHeader) {
   const list = {}

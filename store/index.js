@@ -18,10 +18,7 @@ import TaskModule from './modules/task'
 const createStore = () => {
   return new Vuex.Store({
     state: {
-      BASE_URL:
-        process.env.NODE_ENV === 'development'
-          ? process.env.VUE_APP_BACKEND_SERVER_DEV
-          : process.env.VUE_APP_BACKEND_SERVER_PROD,
+      BASE_URL: process.env.apiEndpoint,
       show_header: false,
       breadcrumbs: [],
       defaultBreadcrumbs: [
