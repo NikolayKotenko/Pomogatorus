@@ -188,12 +188,11 @@
 <script>
 import { mapActions } from 'vuex'
 import Dropzone from 'nuxt-dropzone'
+import 'nuxt-dropzone/dropzone.css'
 import ViewerStyled from './ViewerStyled'
 
 import generateUUID from '@/utils/generateUUID'
 import _clone from '@/helpers/deepClone'
-
-import 'nuxt-dropzone/dropzone.css'
 
 export default {
   name: 'DropzoneInput',

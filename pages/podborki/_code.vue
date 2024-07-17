@@ -1,51 +1,85 @@
 <template>
-  <v-container class="podborki_detail">
-    <span
-      v-if="mainTag.description"
-      class="description"
-      v-html="mainTag.description"
-    />
+  <v-container class="tags_detail">
+    <!--    <div class="position-right"> -->
+    <!--      <div class="sticky-right-top"> -->
+    <!--        <WrapperStickyCurrentObject -->
+    <!--          class="current_object_sticky" -->
+    <!--        /> -->
+    <!--      </div> -->
+    <!--    </div> -->
+
+    <SubHeader/>
     <div class="content_wrapper">
-      <div
-        class="left_column"
-      >
-        <span class="title">
-          Вопросы по тегу:
-          <HashTagStyled
-            :text="mainTag.name"
-          />
-        </span>
-        <Question
-          v-for="(question, index) in $store.state.PopularSelectionsModule.questions"
-          :key="index"
-          :props-data="question"
-          :props-index="index + 1"
-          class="question_card"
-          @answer="setAnswer"
-        />
+      <div class="tags_title">
+        Вопросы по тегу: {{ mainTag.name }}
       </div>
-      <v-divider
-        v-if="$store.state.PopularSelectionsModule.article.length"
-        vertical
+      <span
+        v-if="mainTag.description"
+        class="description"
+        v-html="mainTag.description"
       />
-      <div v-if="$store.state.PopularSelectionsModule.article.length" class="right_column">
-        <span class="title">
-          Ещё статьи по тегу
-        </span>
-        <ArticleSmallCard
-          v-for="(article, index) in $store.state.PopularSelectionsModule.article"
-          :key="index"
-          :article="article"
-          class="small_card"
-        />
+      <Question
+        v-for="(question, index) in $store.state.PopularSelectionsModule.questions"
+        :key="index"
+        :props-data="question"
+        :props-index="index + 1"
+        @answer="setAnswer"
+      />
+    </div>
+
+    <div
+      v-if="$store.state.PopularSelectionsModule.article.length"
+      class="more_articles_wrapper"
+    >
+      <span class="wrapper_header">
+        Ещё статьи по тегу: {{ mainTag.name }}
+      </span>
+      <div class="small_articles_slider">
+        <v-slide-group>
+          <v-slide-item
+            v-for="(article, index) in $store.state.PopularSelectionsModule.article"
+            :key="index"
+            class="slider_item_style"
+          >
+            <ArticleSmallCard
+              :article="article"
+            />
+          </v-slide-item>
+        </v-slide-group>
       </div>
     </div>
-    <Biathlon
-      v-if="! $store.state.ArticleModule.refactoring_content"
-      :questions="$store.state.PopularSelectionsModule.questions"
-      :view-action="localViewAction"
-      is-collection
-    />
+    <div class="sticky_panel">
+      <div class="bookmarks_and_share">
+        <TooltipStyled :is-top="true" :title="'Добавить в закладки'">
+          <div
+            class="btn_wrapper"
+          >
+            <v-icon color="#000000">
+              mdi-bookmark-outline
+            </v-icon>
+            <span>В закладки</span>
+          </div>
+        </TooltipStyled>
+
+        <div
+          class="btn_wrapper"
+          @click="openModal"
+        >
+          <v-icon color="#000000">
+            mdi-export-variant
+          </v-icon>
+          <span>Поделиться</span>
+        </div>
+      </div>
+    </div>
+
+    <SocialShare/>
+    <!--    <Biathlon -->
+    <!--      v-if="! $store.state.ArticleModule.refactoring_content" -->
+    <!--      :questions="$store.state.PopularSelectionsModule.questions" -->
+    <!--      :view-action="localViewAction" -->
+    <!--      is-collection -->
+    <!--    /> -->
     <v-overlay
       :value="$store.state.PopularSelectionsModule.loadingState && $store.state.ArticleModule.refactoring_content"
       absolute
@@ -68,12 +102,22 @@ import Request from '../../services/request'
 import ArticleSmallCard from '../../components/Article/ArticleSmallCard.vue'
 import Biathlon from '../../components/Common/Biathlon.vue'
 import article from '../../store/modules/article'
+import SubHeader from '../../components/SubHeader.vue'
+import WrapperStickyCurrentObject from '../../components/Widgets/WrapperStickyCurrentObject.vue'
+import ArticleAnchors from '../../components/Widgets/ArticleAnchors.vue'
+import TooltipStyled from '../../components/Common/TooltipStyled.vue'
+import ViewsAndLikes from '../../components/Common/ViewsAndLikes.vue'
+import SocialShare from '../../components/Article/SocialShare.vue'
 import podborki from './index.vue'
 import HashTagStyled from '~/components/Common/HashTagStyled'
 
 export default {
   name: '_code.vue',
   components: {
+    SocialShare,
+    ViewsAndLikes, TooltipStyled,
+    ArticleAnchors, WrapperStickyCurrentObject,
+    SubHeader,
     Biathlon,
     ArticleSmallCard,
     Question,
@@ -154,6 +198,10 @@ export default {
   },
 
   methods: {
+    openModal() {
+      this.$store.dispatch('openShareArticleModal')
+    },
+
     findQuestions() {
       if (!this.data_of_components.length) {
         return
@@ -174,42 +222,72 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-@import '@/assets/styles/lists';
+@import 'assets/styles/style';
 
 .title {
   font-size: 1.5em !important;
   font-weight: 700;
 }
 
-.podborki_detail {
-  display: grid;
+.tags_detail {
+  display: flex;
+  flex-direction: column;
+  max-width: 850px;
+  margin-right: auto;
+  margin-left: auto;
   row-gap: 20px;
-
-  .description {
-    background-color: #FFFFFF;
-    border-radius: 5px;
-    padding: 1em;
-  }
-
+  font-family: 'Inter', sans-serif;
+  align-items: center;
   .content_wrapper {
-    display: flex;
-    grid-column-gap: 20px;
-    @media screen and (max-width: 768px) {
-      grid-template-columns: 1fr;
-    }
+    display: grid;
+    grid-row-gap: 20px;
+    border-radius: $b-r16;
+    max-width: 850px !important;
+    background-color: $white-color;
+    padding: 20px;
 
-    .left_column {
-      display: grid;
-      grid-row-gap: 20px;
-      width: 100%;
+    .tags_title {
+      @extend .main-page-header;
     }
-
-    .right_column {
-      display: grid;
-      grid-row-gap: 20px;
+    .description {
+      background-color: $grey1;
+      border-radius: $b-r16;
+      padding: 20px;
     }
-
   }
+  .more_articles_wrapper {
+    max-width: 970px;
+    margin: 0 auto;
+    opacity: .5;
+    transition: $transition;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    .wrapper_header {
+      display: flex;
+      padding: 0 60px;
+      margin: 20px 0;
+      @extend .header-page;
+    }
+
+    .small_articles_slider {
+      display: flex;
+
+      .slider_item_style {
+        flex: 0 0 auto;
+        max-width: 50%;
+        margin: 10px;
+      }
+
+    }
+  }
+
+
+
+
+
 
   .overlay_style {
     transition: 0s !important;
@@ -219,6 +297,70 @@ export default {
   //  margin-right: auto !important;
   //  margin: unset;
   //}
+}
+
+.position-right {
+  height: 100%;
+  position: absolute;
+  background: transparent;
+  width: 304px;
+  min-height: 400px;
+  top: 260px;
+  right: -200px;
+  z-index: 101;
+  opacity: .5;
+  transition: $transition;
+  &:hover {
+    opacity: 1;
+  }
+
+  .sticky-right-top {
+    position: sticky;
+    top: 80px;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+  }
+
+  .current_object_sticky {
+    position: absolute;
+    right: -310px;
+    top: 63px;
+  }
+}
+
+.sticky_panel {
+  background-color: #FFFFFF;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  max-width: 850px;
+  margin: 40px auto 0;
+  padding: 20px;
+  border-radius: 30px;
+  box-shadow: $doubleShadow;
+  position: sticky;
+  bottom: 20px;
+  z-index: 4;
+  width: 100%;
+
+  .bookmarks_and_share {
+    display: flex;
+    grid-column-gap: 20px;
+
+    .btn_wrapper {
+      display: flex;
+      grid-column-gap: 5px;
+      align-items: center;
+      background-color: #DDDDDD;
+      border-radius: 15px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+  }
 }
 
 @media only screen and (max-width: 768px) {

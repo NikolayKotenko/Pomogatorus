@@ -366,7 +366,6 @@ export default {
 
     await this.$store.getters['Objects/getLastObjectPhoto']
 
-    await this.$store.dispatch('Objects/setListObjectFiles')
   },
 
   methods: {
@@ -550,7 +549,6 @@ export default {
     },
     async changePhotoData(value, code) {
       await this.$store.dispatch('Objects/getListObjectsByUserId')
-      await this.$store.dispatch('Objects/setListObjectFiles')
       await this.$store.dispatch('Objects/getObjectById', this.modalCurrentObject.id)
     },
     removeObjectPhoto() {
