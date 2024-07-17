@@ -18,10 +18,7 @@ import TaskModule from './modules/task'
 const createStore = () => {
   return new Vuex.Store({
     state: {
-      BASE_URL:
-        process.env.NODE_ENV === 'development'
-          ? process.env.VUE_APP_BACKEND_SERVER_PROD
-          : process.env.VUE_APP_BACKEND_SERVER_DEV,
+      BASE_URL: process.env.apiEndpoint,
       show_header: false,
       breadcrumbs: [],
       defaultBreadcrumbs: [
@@ -112,7 +109,7 @@ const createStore = () => {
             visible: true,
           },
           {
-            title: 'Теги',
+            title: 'Подборки',
             path: '/podborki',
             icon: 'mdi-bullseye-arrow',
             visible: true,
@@ -168,17 +165,6 @@ const createStore = () => {
           url: state.BASE_URL + '/entity/files',
           destroyDropzone: false,
           duplicateCheck: true,
-          headers: {
-            Authorization: 'Bearer ' + Request.getAccessTokenInCookies(),
-          },
-        }
-      },
-      optionsAvatarDropzone(state) {
-        return {
-          url: state.BASE_URL + '/entity/files',
-          destroyDropzone: false,
-          duplicateCheck: true,
-          previewsContainer: false,
           headers: {
             Authorization: 'Bearer ' + Request.getAccessTokenInCookies(),
           },
@@ -259,7 +245,7 @@ const createStore = () => {
           if (elem.category === 'Номенклатура') {
             elem.href = '/nomenclature/' + elem.data.id
           }
-          if (elem.category === 'Теги') {
+          if (elem.category === 'Подборки') {
             elem.href = '/podborki/' + elem.data.code
           }
         })

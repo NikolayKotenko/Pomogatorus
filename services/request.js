@@ -1,13 +1,7 @@
-import { isArray } from 'vue-slick-carousel/dist/vue-slick-carousel.common'
 import Logging from '@/services/logging'
-// import Vue from "vue";
 // import auth from "@/middleware/redirectArticles.js"
 // import cookies from 'cookie-universal-nuxt'
 
-/**
- * TODO я честно пытался подключить сюда store но не получилось
- * https://stackoverflow.com/questions/47571543/access-store-outside-of-component-vuejs
- */
 export default class Request {
   static async request(url, params, method, formData) {
     let options = {}
@@ -127,12 +121,11 @@ export default class Request {
   static ConstructFilterQuery(arrNameParam = []) {
     let result = ''
     for (const [key, value] of Object.entries(arrNameParam)) {
-      if (Array.isArray(value)){
+      if (Array.isArray(value)) {
         value.forEach((item) => {
           result += 'filter[' + key + '][]=' + item + '&'
         })
-      }
-      else{
+      } else {
         result += 'filter[' + key + ']=' + value + '&'
       }
     }
