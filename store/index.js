@@ -109,7 +109,7 @@ const createStore = () => {
             visible: true,
           },
           {
-            title: 'Подборки',
+            title: 'Теги',
             path: '/podborki',
             icon: 'mdi-bullseye-arrow',
             visible: true,
@@ -245,7 +245,7 @@ const createStore = () => {
           if (elem.category === 'Номенклатура') {
             elem.href = '/nomenclature/' + elem.data.id
           }
-          if (elem.category === 'Подборки') {
+          if (elem.category === 'Теги') {
             elem.href = '/podborki/' + elem.data.code
           }
         })

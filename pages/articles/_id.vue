@@ -978,7 +978,7 @@ export default {
   display: flex;
   font-family: 'Inter', sans-serif;
   justify-content: space-between;
-  max-width: 850px;
+  width: 850px;
   margin: 0 auto;
   padding: 20px 20px;
 
