@@ -18,13 +18,18 @@
         class="description"
         v-html="mainTag.description"
       />
-      <Question
-        v-for="(question, index) in $store.state.PopularSelectionsModule.questions"
-        :key="index"
-        :props-data="question"
-        :props-index="index + 1"
-        @answer="setAnswer"
-      />
+      <template v-if="! $store.state.ArticleModule.isLoadingAnswers">
+        <Question
+          v-for="(question, index) in $store.state.PopularSelectionsModule.questions"
+          :key="index"
+          :props-data="question"
+          :props-index="index + 1"
+          :outer-answer="getPropertyQuestion(question.id, 'value_answer')"
+          :detailed-response="getPropertyQuestion(question.id, 'detailed_response')"
+          :id-answer="getPropertyQuestion(question.id, 'id')"
+          @answer="setAnswer"
+        />
+      </template>
     </div>
 
     <div
@@ -74,12 +79,13 @@
     </div>
 
     <SocialShare/>
-    <!--    <Biathlon -->
-    <!--      v-if="! $store.state.ArticleModule.refactoring_content" -->
-    <!--      :questions="$store.state.PopularSelectionsModule.questions" -->
-    <!--      :view-action="localViewAction" -->
-    <!--      is-collection -->
-    <!--    /> -->
+
+<!--    <Biathlon-->
+<!--      v-if="! $store.state.ArticleModule.refactoring_content"-->
+<!--      :questions="$store.state.PopularSelectionsModule.questions"-->
+<!--      is-collection-->
+<!--    />-->
+
     <v-overlay
       :value="$store.state.PopularSelectionsModule.loadingState && $store.state.ArticleModule.refactoring_content"
       absolute
@@ -110,6 +116,8 @@ import ViewsAndLikes from '../../components/Common/ViewsAndLikes.vue'
 import SocialShare from '../../components/Article/SocialShare.vue'
 import podborki from './index.vue'
 import HashTagStyled from '~/components/Common/HashTagStyled'
+import { mapGetters } from 'vuex';
+import isJson from '../../utils/checkJSON';
 
 export default {
   name: '_code.vue',
@@ -140,7 +148,7 @@ export default {
     computedQuestions: [],
     coordYNav: null,
     heightNav: 70,
-    localViewAction: false
+    localViewAction: false,
   }),
   head() {
     return {
@@ -170,14 +178,29 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['getUserId']),
+    ...mapGetters('Objects', ['getIdCurrentObject']),
+
     podborki() {
       return podborki
     },
     article() {
       return article
+    },
+
+  },
+  watch: {
+    'getUserId': {
+      handler(v) {
+        this.getAnswers()
+      }
+    },
+    'getIdCurrentObject': {
+      handler(v) {
+        this.getAnswers()
+      }
     }
   },
-  watch: {},
   created() {
   },
   async mounted() {
@@ -195,6 +218,8 @@ export default {
     })
 
     this.findQuestions()
+
+    this.getAnswers()
   },
 
   methods: {
@@ -216,8 +241,70 @@ export default {
         answer: data.answer, id: data.id
       })
 
-    }
-  }
+    },
+    getAnswers() {
+      if (this.getUserId && this.getIdCurrentObject) {
+        const query = {
+          id_user: this.getUserId,
+          id_object: this.getIdCurrentObject
+          // id_article: this.$route.params.id
+        }
+        this.$store.dispatch('getAnswersFromServer', query)
+      }
+
+    },
+    getAnswerByQuestion(idQuestion) {
+      if (this.getUserId && this.getIdCurrentObject) {
+        const findedAnswer = this.$store.getters.getQuestionAnswer(idQuestion)
+
+        if (findedAnswer?.value_answer) {
+          return JSON.parse(findedAnswer?.value_answer) ?? null
+        }
+        return null
+
+      }
+      return null
+    },
+    // getPropertyQuestion(idQuestion, property) {
+    //   if (this.getUserId && this.getIdCurrentObject) {
+    //     const findedAnswer = this.$store.getters.getQuestionAnswer(idQuestion)
+    //
+    //     if (findedAnswer) {
+    //       if (isJson(findedAnswer[property]) === 'detailed_response') {
+    //         return JSON.parse(findedAnswer[property])
+    //       }
+    //       return findedAnswer[property]
+    //
+    //     }
+    //     if (findedAnswer[property] === 'id_answer') {
+    //       return findedAnswer.id
+    //     }
+    //     return null
+    //
+    //
+    //     if (findedAnswer[property] === 'answer') {
+    //       return JSON.parse(findedAnswer?.value_answer) ?? null
+    //     }
+    //     return null
+    //   }
+    //   return null
+    //
+    //
+    // },
+    getPropertyQuestion(idQuestion, property) {
+      if (this.getUserId && this.getIdCurrentObject) {
+        const findedAnswer = this.$store.getters.getQuestionAnswer(idQuestion)
+
+        if (findedAnswer) {
+          if (isJson(findedAnswer[property])) {
+            return JSON.parse(findedAnswer[property])
+          }
+          return findedAnswer[property]
+        }
+      }
+      return null
+    },
+  },
 }
 </script>
 

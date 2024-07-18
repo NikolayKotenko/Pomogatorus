@@ -41,6 +41,14 @@
 
       <!-- QUESTION -->
       <div class="question_wrapper__content__question">
+        <v-icon
+          v-if="answer"
+          color="#FF6347"
+          size="24"
+          class="check_answer_icon"
+        >
+          mdi-check-circle
+        </v-icon>
         <template v-if="question_data.id_type_answer == '1'">
           <InputStyled
             :data="answer"
@@ -334,7 +342,19 @@ export default {
     propsIndex: {
       type: Number,
       default: 0
-    }
+    },
+    outerAnswer: {
+      type: [String, Number, Array, Object],
+      default: null
+    },
+    detailedResponse: {
+      type: [String, Number],
+      default: null
+    },
+    idAnswer: {
+      type: Number,
+      default: null
+    },
   },
   data: () => ({
     question_data: {},
@@ -437,6 +457,10 @@ export default {
       this.index_questions = this.propsIndex
       this.index_component = Math.floor(Math.random() * 100)
       this.question_data = this.propsData
+      this.getValue_type_answer()
+      this.detailed_response = this.detailedResponse
+      this.id_answer = this.idAnswer
+      this.answer = this.outerAnswer
     } else {
       this.getData()
     }
@@ -888,10 +912,16 @@ export default {
 
 
     &__question {
+      position: relative;
       flex: 1;
       transition: $transition;
       padding-bottom: 10px;
       color: #000000 !important;
+      .check_answer_icon {
+        position: absolute;
+        top: -36px;
+        right: 0;
+      }
     }
 
     &__status {

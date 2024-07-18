@@ -1,98 +1,125 @@
 <template>
-  <div class="biathlon_wrapper">
-    <v-container class="biathlon_container">
-      <v-footer
-        class="biathlon_footer"
-        padless
-      >
-        <!-- Mobile -->
-        <template v-if="isMobile">
-          <div class="biathlon">
-            <v-sheet class="biathlon_sheet">
-              <v-slide-group
-                multiple
-                show-arrows
-              >
-                <v-slide-item
-                  v-for="(item, index) in getSortedQuestions"
-                  :key="index"
-                >
-                  <TooltipStyled
-                    :answer="getAnswer(item)"
-                    :nudge-top="-10"
-                    :off-hiding="isScrolling"
-                    :title="getQuestionTitle(item)"
-                    is-answer
-                    is-top
-                  >
-                    <template>
-                      <v-radio-group :value="getAnswer(item)" readonly success>
-                        <v-radio :ripple="false" :value="getAnswer(item)" readonly @click="scrollToQuestion(item)"/>
-                      </v-radio-group>
-                    </template>
-                  </TooltipStyled>
-                </v-slide-item>
-              </v-slide-group>
-            </v-sheet>
-          </div>
-          <div class="likes_and_share">
-            <div class="likes_buttons">
-              <ViewsAndLikes :article="article" :view-action="viewAction"/>
-            </div>
-            <div class="share_buttons">
-              <CopyLinkButton/>
-              <SocialShare/>
-            </div>
-          </div>
-        </template>
+<!--  <div class="biathlon_wrapper">-->
+<!--    <v-container class="biathlon_container">-->
+<!--      <v-footer-->
+<!--        class="biathlon_footer"-->
+<!--        padless-->
+<!--      >-->
+<!--        &lt;!&ndash; Mobile &ndash;&gt;-->
+<!--        <template v-if="isMobile">-->
+<!--          <div class="biathlon">-->
+<!--            <v-sheet class="biathlon_sheet">-->
+<!--              <v-slide-group-->
+<!--                multiple-->
+<!--                show-arrows-->
+<!--              >-->
+<!--                <v-slide-item-->
+<!--                  v-for="(item, index) in getSortedQuestions"-->
+<!--                  :key="index"-->
+<!--                >-->
+<!--                  <TooltipStyled-->
+<!--                    :answer="getAnswer(item)"-->
+<!--                    :nudge-top="-10"-->
+<!--                    :off-hiding="isScrolling"-->
+<!--                    :title="getQuestionTitle(item)"-->
+<!--                    is-answer-->
+<!--                    is-top-->
+<!--                  >-->
+<!--                    <template>-->
+<!--                      <v-radio-group :value="getAnswer(item)" readonly success>-->
+<!--                        <v-radio :ripple="false" :value="getAnswer(item)" readonly @click="scrollToQuestion(item)"/>-->
+<!--                      </v-radio-group>-->
+<!--                    </template>-->
+<!--                  </TooltipStyled>-->
+<!--                </v-slide-item>-->
+<!--              </v-slide-group>-->
+<!--            </v-sheet>-->
+<!--          </div>-->
+<!--          <div class="likes_and_share">-->
+<!--            <div class="likes_buttons">-->
+<!--              <ViewsAndLikes :article="article" :view-action="viewAction"/>-->
+<!--            </div>-->
+<!--            <div class="share_buttons">-->
+<!--              <CopyLinkButton/>-->
+<!--              <SocialShare/>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </template>-->
 
-        <!-- Desktop -->
-        <template v-else>
-          <div class="likes_buttons">
-            <ViewsAndLikes :article="article" :view-action="viewAction"/>
-          </div>
-          <div class="biathlon">
-            <v-sheet class="biathlon_sheet">
-              <v-slide-group
-                multiple
-                show-arrows
-              >
-                <v-slide-item
-                  v-for="(item, index) in getSortedQuestions"
-                  :key="index"
-                >
-                  <TooltipStyled
-                    :answer="getAnswer(item)"
-                    :nudge-top="-10"
-                    :off-hiding="isScrolling"
-                    :title="getQuestionTitle(item)"
-                    is-answer
-                    is-top
-                  >
-                    <template>
-                      <v-radio-group :value="getAnswer(item)" readonly success>
-                        <v-radio
-                          class="biathlon_radio_style"
-                          :ripple="false"
-                          :value="getAnswer(item)"
-                          readonly
-                          @click="scrollToQuestion(item)"
-                        />
-                      </v-radio-group>
-                    </template>
-                  </TooltipStyled>
-                </v-slide-item>
-              </v-slide-group>
-            </v-sheet>
-          </div>
-          <div class="share_buttons">
-            <CopyLinkButton/>
-            <SocialShare/>
-          </div>
-        </template>
-      </v-footer>
-    </v-container>
-  </div>
+<!--        &lt;!&ndash; Desktop &ndash;&gt;-->
+<!--        <template v-else>-->
+<!--          <div class="likes_buttons">-->
+<!--            <ViewsAndLikes :article="article" :view-action="viewAction"/>-->
+<!--          </div>-->
+<!--          <div class="biathlon">-->
+<!--            <v-sheet class="biathlon_sheet">-->
+<!--              <v-slide-group-->
+<!--                multiple-->
+<!--                show-arrows-->
+<!--              >-->
+<!--                <v-slide-item-->
+<!--                  v-for="(item, index) in getSortedQuestions"-->
+<!--                  :key="index"-->
+<!--                >-->
+<!--                  <TooltipStyled-->
+<!--                    :answer="getAnswer(item)"-->
+<!--                    :nudge-top="-10"-->
+<!--                    :off-hiding="isScrolling"-->
+<!--                    :title="getQuestionTitle(item)"-->
+<!--                    is-answer-->
+<!--                    is-top-->
+<!--                  >-->
+<!--                    <template>-->
+<!--                      <v-radio-group :value="getAnswer(item)" readonly success>-->
+<!--                        <v-radio-->
+<!--                          class="biathlon_radio_style"-->
+<!--                          :ripple="false"-->
+<!--                          :value="getAnswer(item)"-->
+<!--                          readonly-->
+<!--                          @click="scrollToQuestion(item)"-->
+<!--                        />-->
+<!--                      </v-radio-group>-->
+<!--                    </template>-->
+<!--                  </TooltipStyled>-->
+<!--                </v-slide-item>-->
+<!--              </v-slide-group>-->
+<!--            </v-sheet>-->
+<!--          </div>-->
+<!--          <div class="share_buttons">-->
+<!--            <CopyLinkButton/>-->
+<!--            <SocialShare/>-->
+<!--          </div>-->
+<!--        </template>-->
+<!--      </v-footer>-->
+<!--    </v-container>-->
+<!--  </div>-->
+
+  <v-container class="biathlon_wrapper">
+    <div class="header">
+      Вопросы
+    </div>
+    <v-divider style="border-color: #DDDDDD;"/>
+    <div
+      v-for="(question, index) in getSortedQuestions"
+      :key="index"
+      class="questions_wrapper"
+    >
+      <v-simple-checkbox
+        :value="getAnswer(question)"
+      ></v-simple-checkbox>
+      <div class="question_title">
+        {{ question.name }}
+      </div>
+      <v-divider
+        v-if="index !== questions.length - 1"
+        style="border-color: #DDDDDD;"
+      />
+    </div>
+  </v-container>
+
+
+
+
 </template>
 
 <script>
@@ -121,12 +148,26 @@ export default {
     isCollection: {
       type: Boolean,
       default: false
+    },
+    answer: {
+      type: [String, Number, Array, Object],
+      default: null
     }
   },
   data: () => ({
     isScrolling: false
   }),
   computed: {
+    filteredAnswers() {
+      // Получаем id из цикла в Biathlon
+      const idsInBiathlon = this.getSortedQuestions.map((item) => item.id)
+
+      // Фильтруем answersFromServer по совпадению id_questions
+      return this.$store.state.ArticleModule.answersFromServer.filter((answer) => {
+        return idsInBiathlon.includes(answer.id_question)
+      });
+    },
+
     getSortedQuestions() {
       if (this.isCollection) {
         return this.questions;
@@ -213,66 +254,90 @@ export default {
 <style lang="scss" scoped>
 @import 'assets/styles/style';
 
+//.biathlon_wrapper {
+//  position: fixed;
+//  z-index: 9;
+//  width: 100vw;
+//  left: 0;
+//  bottom: 0;
+//  background-color: $background-element-color;
+//  height: 80px;
+//  display: flex;
+//  justify-content: center;
+//  align-items: center;
+//  box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.25);
+//  @media only screen and (max-width: 800px) {
+//    height: 120px;
+//  }
+//
+//  .biathlon_container {
+//    display: flex;
+//    justify-content: center;
+//  }
+//
+//  .biathlon_footer {
+//    display: inline-flex;
+//    grid-column-gap: 50px;
+//    background-color: unset;
+//    justify-content: space-between;
+//    width: 1116px;
+//    @media only screen and (max-width: 767px) {
+//      display: grid;
+//      justify-content: center;
+//    }
+//  }
+//
+//  .likes_and_share {
+//    display: flex;
+//    justify-content: center;
+//    grid-column-gap: 50px;
+//    padding-bottom: 10px;
+//  }
+//
+//  .likes_buttons {
+//    display: flex;
+//  }
+//
+//  .share_buttons {
+//    display: flex;
+//    text-align: right;
+//  }
+//
+//  .biathlon {
+//    width: auto;
+//    display: flex;
+//    justify-content: center;
+//
+//    .biathlon_sheet {
+//      max-width: 400px;
+//
+//    }
+//  }
+//
+//}
+
 .biathlon_wrapper {
-  position: fixed;
-  z-index: 9;
-  width: 100vw;
-  left: 0;
-  bottom: 0;
-  background-color: $background-element-color;
-  height: 80px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.25);
-  @media only screen and (max-width: 800px) {
-    height: 120px;
-  }
-
-  .biathlon_container {
+  font-family: 'Inter', sans-serif;
+  background-color: $white-color;
+  border-radius: $b-r16;
+  max-width: 276px;
+  width: 100%;
+  padding: 0 !important;
+  .header {
+    @extend .header-page;
     display: flex;
     justify-content: center;
+    margin: 20px auto 10px;
   }
-
-  .biathlon_footer {
-    display: inline-flex;
-    grid-column-gap: 50px;
-    background-color: unset;
-    justify-content: space-between;
-    width: 1116px;
-    @media only screen and (max-width: 767px) {
-      display: grid;
-      justify-content: center;
-    }
-  }
-
-  .likes_and_share {
+  .questions_wrapper {
     display: flex;
+    align-items: center;
     justify-content: center;
-    grid-column-gap: 50px;
-    padding-bottom: 10px;
-  }
-
-  .likes_buttons {
-    display: flex;
-  }
-
-  .share_buttons {
-    display: flex;
-    text-align: right;
-  }
-
-  .biathlon {
-    width: auto;
-    display: flex;
-    justify-content: center;
-
-    .biathlon_sheet {
-      max-width: 400px;
+    margin: 10px auto;
+    .question_title {
 
     }
   }
-
 }
 
 </style>

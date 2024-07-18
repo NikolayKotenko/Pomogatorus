@@ -16,7 +16,7 @@ export default {
     indexImage: 0,
     answersFromServer: [],
     isAnswered: false,
-    isLoadingAnswers: false,
+    isLoadingAnswers: true,
     stateShareArticleModal: false,
   },
   mutations: {

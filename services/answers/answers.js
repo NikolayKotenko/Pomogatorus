@@ -10,9 +10,9 @@ export default class Answers {
   }
 
   static async update(params, id) {
-    console.log('update', params, id, `${this.$store.state.BASE_URL}/entity/answers/${id}`)
+    console.log('update', params, id, `${_store.state.BASE_URL}/entity/answers/${id}`)
     return await Request.put(
-      `${this.$store.state.BASE_URL}/entity/answers/${id}`,
+      `${_store.state.BASE_URL}/entity/answers/${id}`,
       params
     )
   }
