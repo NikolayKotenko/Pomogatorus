@@ -51,15 +51,14 @@
     </v-card>
     <v-overlay
       :value="$store.state.PopularSelectionsModule.loadingState"
-      absolute
-      class="overlay_style"
-      color="#F2F2F2"
-      opacity="100"
+      opacity="1"
+      z-index="10"
     >
       <v-progress-circular
-        color="#95D7AE"
+        :size="50"
+        color="#FFFFFF"
         indeterminate
-        size="64"
+        style="margin-top: 20px"
       />
     </v-overlay>
   </v-container>

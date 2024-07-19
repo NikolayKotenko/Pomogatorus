@@ -32,13 +32,14 @@
                 Затрудняеетесть с заполнением своего объекта?
               </div>
               <div class="prompt_text">
-                Отвечайте на вопросы содержащиеся внутри статей.
-                Ваши ответы будут использованы для создания персонализированного
-                PDF-файла, который будет соответствовать Вашим индивидуальным
-                потребностям.
+                Ответы будут использованы для создания технического
+                задания  по вашему объекту и генерации PDF-файла,
+                это будет полезно при общении с мастерами или
+                выборе котла на объект
               </div>
             </div>
-            <img :src="require(`~/assets/svg/icons/arrow_down.svg`)">
+            <img :src="require(`~/assets/svg/icons/big_red_question.svg`)" class="prompt_question_img">
+            <img :src="require(`~/assets/mascot/pomogaikin_question.svg`)" class="prompt_img">
           </div>
 
           <div v-if="!renderArticle" class="article-template__content mainContentFont" v-html="refactored_content"/>
@@ -177,7 +178,7 @@
     <!--      :questions="computedQuestions" -->
     <!--      :view-action="localViewAction" -->
     <!--    /> -->
-    <v-overlay :value="$store.state.ArticleModule.refactoring_content" opacity="1" z-index="10">
+    <v-overlay :value="$store.state.ArticleModule.refactoring_content" opacity="1" z-index="102">
       <v-progress-circular :size="50" color="#FFFFFF" indeterminate style="margin-top: 20px"/>
     </v-overlay>
 
@@ -872,6 +873,7 @@ export default {
   background-color: $grey4;
   border-radius: $b-r30;
   color: $white-color;
+  position: relative;
 
   .prompt_info {
     display: grid;
@@ -882,7 +884,18 @@ export default {
     }
 
     .prompt_text {
+      max-width: 685px;
     }
+  }
+  .prompt_question_img {
+    position: absolute;
+    top: 10px;
+    right: 110px;
+  }
+  .prompt_img {
+    position: absolute;
+    top: -20px;
+    right: 25px;
   }
 }
 

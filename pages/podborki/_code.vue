@@ -1,12 +1,12 @@
 <template>
   <v-container class="tags_detail">
-    <!--    <div class="position-right"> -->
-    <!--      <div class="sticky-right-top"> -->
-    <!--        <WrapperStickyCurrentObject -->
-    <!--          class="current_object_sticky" -->
-    <!--        /> -->
-    <!--      </div> -->
-    <!--    </div> -->
+    <div class="position-right">
+      <div class="sticky-right-top">
+        <WrapperStickyCurrentObject
+          class="current_object_sticky"
+        />
+      </div>
+    </div>
 
     <SubHeader/>
     <div class="content_wrapper">
@@ -29,6 +29,15 @@
           :id-answer="getPropertyQuestion(question.id, 'id')"
           @answer="setAnswer"
         />
+      </template>
+      <template v-else>
+        <div class="load_questions">
+          <v-progress-circular
+            color="#FF6347"
+            indeterminate
+            size="64"
+          />
+        </div>
       </template>
     </div>
 
@@ -80,29 +89,29 @@
 
     <SocialShare/>
 
-<!--    <Biathlon-->
-<!--      v-if="! $store.state.ArticleModule.refactoring_content"-->
-<!--      :questions="$store.state.PopularSelectionsModule.questions"-->
-<!--      is-collection-->
-<!--    />-->
+    <!--    <Biathlon -->
+    <!--      v-if="! $store.state.ArticleModule.refactoring_content" -->
+    <!--      :questions="$store.state.PopularSelectionsModule.questions" -->
+    <!--      is-collection -->
+    <!--    /> -->
 
     <v-overlay
       :value="$store.state.PopularSelectionsModule.loadingState && $store.state.ArticleModule.refactoring_content"
-      absolute
-      class="overlay_style"
-      color="#F2F2F2"
-      opacity="100"
+      opacity="1"
+      z-index="102"
     >
       <v-progress-circular
-        color="#95D7AE"
+        :size="50"
+        color="#FFFFFF"
         indeterminate
-        size="64"
+        style="margin-top: 20px"
       />
     </v-overlay>
   </v-container>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import Question from '../../components/frontLayouts/Question'
 import Request from '../../services/request'
 import ArticleSmallCard from '../../components/Article/ArticleSmallCard.vue'
@@ -114,10 +123,9 @@ import ArticleAnchors from '../../components/Widgets/ArticleAnchors.vue'
 import TooltipStyled from '../../components/Common/TooltipStyled.vue'
 import ViewsAndLikes from '../../components/Common/ViewsAndLikes.vue'
 import SocialShare from '../../components/Article/SocialShare.vue'
+import isJson from '../../utils/checkJSON';
 import podborki from './index.vue'
 import HashTagStyled from '~/components/Common/HashTagStyled'
-import { mapGetters } from 'vuex';
-import isJson from '../../utils/checkJSON';
 
 export default {
   name: '_code.vue',
@@ -325,6 +333,7 @@ export default {
   row-gap: 20px;
   font-family: 'Inter', sans-serif;
   align-items: center;
+  position: relative;
   .content_wrapper {
     display: grid;
     grid-row-gap: 20px;
@@ -333,6 +342,7 @@ export default {
     background-color: $white-color;
     padding: 20px;
 
+
     .tags_title {
       @extend .main-page-header;
     }
@@ -340,6 +350,15 @@ export default {
       background-color: $grey1;
       border-radius: $b-r16;
       padding: 20px;
+    }
+    .load_questions {
+      background-color: $grey1;
+      height: 100%;
+      min-height: 100px;
+      border-radius: $b-r16;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
   .more_articles_wrapper {
@@ -392,7 +411,7 @@ export default {
   background: transparent;
   width: 304px;
   min-height: 400px;
-  top: 260px;
+  top: 133px;;
   right: -200px;
   z-index: 101;
   opacity: .5;
@@ -410,11 +429,11 @@ export default {
     row-gap: 15px;
   }
 
-  .current_object_sticky {
-    position: absolute;
-    right: -310px;
-    top: 63px;
-  }
+  //.current_object_sticky {
+  //  position: absolute;
+  //  right: -310px;
+  //  top: 63px;
+  //}
 }
 
 .sticky_panel {
