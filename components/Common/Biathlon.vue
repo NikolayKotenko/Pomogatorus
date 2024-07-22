@@ -1,98 +1,98 @@
 <template>
-<!--  <div class="biathlon_wrapper">-->
-<!--    <v-container class="biathlon_container">-->
-<!--      <v-footer-->
-<!--        class="biathlon_footer"-->
-<!--        padless-->
-<!--      >-->
-<!--        &lt;!&ndash; Mobile &ndash;&gt;-->
-<!--        <template v-if="isMobile">-->
-<!--          <div class="biathlon">-->
-<!--            <v-sheet class="biathlon_sheet">-->
-<!--              <v-slide-group-->
-<!--                multiple-->
-<!--                show-arrows-->
-<!--              >-->
-<!--                <v-slide-item-->
-<!--                  v-for="(item, index) in getSortedQuestions"-->
-<!--                  :key="index"-->
-<!--                >-->
-<!--                  <TooltipStyled-->
-<!--                    :answer="getAnswer(item)"-->
-<!--                    :nudge-top="-10"-->
-<!--                    :off-hiding="isScrolling"-->
-<!--                    :title="getQuestionTitle(item)"-->
-<!--                    is-answer-->
-<!--                    is-top-->
-<!--                  >-->
-<!--                    <template>-->
-<!--                      <v-radio-group :value="getAnswer(item)" readonly success>-->
-<!--                        <v-radio :ripple="false" :value="getAnswer(item)" readonly @click="scrollToQuestion(item)"/>-->
-<!--                      </v-radio-group>-->
-<!--                    </template>-->
-<!--                  </TooltipStyled>-->
-<!--                </v-slide-item>-->
-<!--              </v-slide-group>-->
-<!--            </v-sheet>-->
-<!--          </div>-->
-<!--          <div class="likes_and_share">-->
-<!--            <div class="likes_buttons">-->
-<!--              <ViewsAndLikes :article="article" :view-action="viewAction"/>-->
-<!--            </div>-->
-<!--            <div class="share_buttons">-->
-<!--              <CopyLinkButton/>-->
-<!--              <SocialShare/>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </template>-->
+  <!--  <div class="biathlon_wrapper"> -->
+  <!--    <v-container class="biathlon_container"> -->
+  <!--      <v-footer -->
+  <!--        class="biathlon_footer" -->
+  <!--        padless -->
+  <!--      > -->
+  <!--        &lt;!&ndash; Mobile &ndash;&gt; -->
+  <!--        <template v-if="isMobile"> -->
+  <!--          <div class="biathlon"> -->
+  <!--            <v-sheet class="biathlon_sheet"> -->
+  <!--              <v-slide-group -->
+  <!--                multiple -->
+  <!--                show-arrows -->
+  <!--              > -->
+  <!--                <v-slide-item -->
+  <!--                  v-for="(item, index) in getSortedQuestions" -->
+  <!--                  :key="index" -->
+  <!--                > -->
+  <!--                  <TooltipStyled -->
+  <!--                    :answer="getAnswer(item)" -->
+  <!--                    :nudge-top="-10" -->
+  <!--                    :off-hiding="isScrolling" -->
+  <!--                    :title="getQuestionTitle(item)" -->
+  <!--                    is-answer -->
+  <!--                    is-top -->
+  <!--                  > -->
+  <!--                    <template> -->
+  <!--                      <v-radio-group :value="getAnswer(item)" readonly success> -->
+  <!--                        <v-radio :ripple="false" :value="getAnswer(item)" readonly @click="scrollToQuestion(item)"/> -->
+  <!--                      </v-radio-group> -->
+  <!--                    </template> -->
+  <!--                  </TooltipStyled> -->
+  <!--                </v-slide-item> -->
+  <!--              </v-slide-group> -->
+  <!--            </v-sheet> -->
+  <!--          </div> -->
+  <!--          <div class="likes_and_share"> -->
+  <!--            <div class="likes_buttons"> -->
+  <!--              <ViewsAndLikes :article="article" :view-action="viewAction"/> -->
+  <!--            </div> -->
+  <!--            <div class="share_buttons"> -->
+  <!--              <CopyLinkButton/> -->
+  <!--              <SocialShare/> -->
+  <!--            </div> -->
+  <!--          </div> -->
+  <!--        </template> -->
 
-<!--        &lt;!&ndash; Desktop &ndash;&gt;-->
-<!--        <template v-else>-->
-<!--          <div class="likes_buttons">-->
-<!--            <ViewsAndLikes :article="article" :view-action="viewAction"/>-->
-<!--          </div>-->
-<!--          <div class="biathlon">-->
-<!--            <v-sheet class="biathlon_sheet">-->
-<!--              <v-slide-group-->
-<!--                multiple-->
-<!--                show-arrows-->
-<!--              >-->
-<!--                <v-slide-item-->
-<!--                  v-for="(item, index) in getSortedQuestions"-->
-<!--                  :key="index"-->
-<!--                >-->
-<!--                  <TooltipStyled-->
-<!--                    :answer="getAnswer(item)"-->
-<!--                    :nudge-top="-10"-->
-<!--                    :off-hiding="isScrolling"-->
-<!--                    :title="getQuestionTitle(item)"-->
-<!--                    is-answer-->
-<!--                    is-top-->
-<!--                  >-->
-<!--                    <template>-->
-<!--                      <v-radio-group :value="getAnswer(item)" readonly success>-->
-<!--                        <v-radio-->
-<!--                          class="biathlon_radio_style"-->
-<!--                          :ripple="false"-->
-<!--                          :value="getAnswer(item)"-->
-<!--                          readonly-->
-<!--                          @click="scrollToQuestion(item)"-->
-<!--                        />-->
-<!--                      </v-radio-group>-->
-<!--                    </template>-->
-<!--                  </TooltipStyled>-->
-<!--                </v-slide-item>-->
-<!--              </v-slide-group>-->
-<!--            </v-sheet>-->
-<!--          </div>-->
-<!--          <div class="share_buttons">-->
-<!--            <CopyLinkButton/>-->
-<!--            <SocialShare/>-->
-<!--          </div>-->
-<!--        </template>-->
-<!--      </v-footer>-->
-<!--    </v-container>-->
-<!--  </div>-->
+  <!--        &lt;!&ndash; Desktop &ndash;&gt; -->
+  <!--        <template v-else> -->
+  <!--          <div class="likes_buttons"> -->
+  <!--            <ViewsAndLikes :article="article" :view-action="viewAction"/> -->
+  <!--          </div> -->
+  <!--          <div class="biathlon"> -->
+  <!--            <v-sheet class="biathlon_sheet"> -->
+  <!--              <v-slide-group -->
+  <!--                multiple -->
+  <!--                show-arrows -->
+  <!--              > -->
+  <!--                <v-slide-item -->
+  <!--                  v-for="(item, index) in getSortedQuestions" -->
+  <!--                  :key="index" -->
+  <!--                > -->
+  <!--                  <TooltipStyled -->
+  <!--                    :answer="getAnswer(item)" -->
+  <!--                    :nudge-top="-10" -->
+  <!--                    :off-hiding="isScrolling" -->
+  <!--                    :title="getQuestionTitle(item)" -->
+  <!--                    is-answer -->
+  <!--                    is-top -->
+  <!--                  > -->
+  <!--                    <template> -->
+  <!--                      <v-radio-group :value="getAnswer(item)" readonly success> -->
+  <!--                        <v-radio -->
+  <!--                          class="biathlon_radio_style" -->
+  <!--                          :ripple="false" -->
+  <!--                          :value="getAnswer(item)" -->
+  <!--                          readonly -->
+  <!--                          @click="scrollToQuestion(item)" -->
+  <!--                        /> -->
+  <!--                      </v-radio-group> -->
+  <!--                    </template> -->
+  <!--                  </TooltipStyled> -->
+  <!--                </v-slide-item> -->
+  <!--              </v-slide-group> -->
+  <!--            </v-sheet> -->
+  <!--          </div> -->
+  <!--          <div class="share_buttons"> -->
+  <!--            <CopyLinkButton/> -->
+  <!--            <SocialShare/> -->
+  <!--          </div> -->
+  <!--        </template> -->
+  <!--      </v-footer> -->
+  <!--    </v-container> -->
+  <!--  </div> -->
 
   <v-container class="biathlon_wrapper">
     <div class="header">
@@ -100,13 +100,13 @@
     </div>
     <v-divider style="border-color: #DDDDDD;"/>
     <div
-      v-for="(question, index) in getSortedQuestions"
+      v-for="(question, index) in questions"
       :key="index"
       class="questions_wrapper"
     >
       <v-simple-checkbox
-        :value="getAnswer(question)"
-      ></v-simple-checkbox>
+        :value="matchingParsedAnswers"
+      />
       <div class="question_title">
         {{ question.name }}
       </div>
@@ -116,10 +116,6 @@
       />
     </div>
   </v-container>
-
-
-
-
 </template>
 
 <script>
@@ -158,14 +154,9 @@ export default {
     isScrolling: false
   }),
   computed: {
-    filteredAnswers() {
-      // Получаем id из цикла в Biathlon
-      const idsInBiathlon = this.getSortedQuestions.map((item) => item.id)
 
-      // Фильтруем answersFromServer по совпадению id_questions
-      return this.$store.state.ArticleModule.answersFromServer.filter((answer) => {
-        return idsInBiathlon.includes(answer.id_question)
-      });
+    matchingParsedAnswers() {
+      return this.parsedValues();
     },
 
     getSortedQuestions() {
@@ -187,6 +178,28 @@ export default {
     }
   },
   methods: {
+    filteredAnswers() {
+      const idsInBiathlon = this.questions.map((item) => item.id)
+      console.log('idsInBia', this.questions.map((item) => item.id))
+
+      return this.$store.state.ArticleModule.answersFromServer.filter((answer) => {
+        return idsInBiathlon.includes(answer.id_question)
+      });
+    },
+
+    parsedValues() {
+      const filteredAnswers = this.filteredAnswers();
+
+      return filteredAnswers.map(answer => {
+        try {
+          return JSON.parse(answer.value_answer);
+        } catch (error) {
+          console.error(`Error parsing value_answer for id_question ${answer.id_question}:`, error);
+          return null; // или любое другое значение по умолчанию в случае ошибки
+        }
+      });
+    },
+
     getAnswer(item) {
       if (this.isCollection) {
         if (item?.answer) {

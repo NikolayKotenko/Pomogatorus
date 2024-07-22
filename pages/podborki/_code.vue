@@ -9,9 +9,48 @@
     </div>
 
     <SubHeader/>
+    <div
+      v-if="$store.state.PopularSelectionsModule.article.length"
+      class="more_articles_wrapper"
+    >
+      <span class="wrapper_header">
+        Статьи по тегу: {{ mainTag.name }}
+      </span>
+      <div class="small_articles_slider">
+        <v-slide-group>
+          <v-slide-item
+            v-for="(article, index) in $store.state.PopularSelectionsModule.article"
+            :key="index"
+            class="slider_item_style"
+          >
+            <ArticleSmallCard
+              :is-tags-page="true"
+              :article="article"
+            />
+          </v-slide-item>
+        </v-slide-group>
+      </div>
+    </div>
+
+    <div class="pdf_prompt_wrapper">
+      <div class="prompt_info">
+        <div class="prompt_title">
+          Затрудняеетесть с заполнением своего объекта?
+        </div>
+        <div class="prompt_text">
+          Ответы будут использованы для создания технического
+          задания  по вашему объекту и генерации PDF-файла,
+          это будет полезно при общении с мастерами или
+          выборе котла на объект
+        </div>
+      </div>
+      <img :src="require(`~/assets/svg/icons/big_red_question.svg`)" class="prompt_question_img">
+      <img :src="require(`~/assets/mascot/pomogaikin_question.svg`)" class="prompt_img">
+    </div>
+
     <div class="content_wrapper">
       <div class="tags_title">
-        Вопросы по тегу: {{ mainTag.name }}
+        Список всех вопросов для профессионалов по тегу: {{ mainTag.name }}
       </div>
       <span
         v-if="mainTag.description"
@@ -41,28 +80,23 @@
       </template>
     </div>
 
-    <div
-      v-if="$store.state.PopularSelectionsModule.article.length"
-      class="more_articles_wrapper"
-    >
-      <span class="wrapper_header">
-        Ещё статьи по тегу: {{ mainTag.name }}
-      </span>
-      <div class="small_articles_slider">
-        <v-slide-group>
-          <v-slide-item
-            v-for="(article, index) in $store.state.PopularSelectionsModule.article"
-            :key="index"
-            class="slider_item_style"
-          >
-            <ArticleSmallCard
-              :article="article"
-            />
-          </v-slide-item>
-        </v-slide-group>
-      </div>
-    </div>
+    <!--    <Biathlon -->
+    <!--      v-if="$store.state.PopularSelectionsModule.questions" -->
+    <!--      :questions="$store.state.PopularSelectionsModule.questions" -->
+    <!--    /> -->
+
     <div class="sticky_panel">
+      <div class="progress_bar">
+        <v-progress-circular
+          size="40"
+          width="10"
+          value="15"
+          color="#FF6347"
+        />
+        20 из {{ $store.state.PopularSelectionsModule.questions.length }} вопросов заполнено
+      </div>
+
+
       <div class="bookmarks_and_share">
         <TooltipStyled :is-top="true" :title="'Добавить в закладки'">
           <div
@@ -89,11 +123,11 @@
 
     <SocialShare/>
 
-    <!--    <Biathlon -->
-    <!--      v-if="! $store.state.ArticleModule.refactoring_content" -->
-    <!--      :questions="$store.state.PopularSelectionsModule.questions" -->
-    <!--      is-collection -->
-    <!--    /> -->
+    <Biathlon
+      v-if="! $store.state.ArticleModule.refactoring_content"
+      :questions="$store.state.PopularSelectionsModule.questions"
+      is-collection
+    />
 
     <v-overlay
       :value="$store.state.PopularSelectionsModule.loadingState && $store.state.ArticleModule.refactoring_content"
@@ -124,6 +158,7 @@ import TooltipStyled from '../../components/Common/TooltipStyled.vue'
 import ViewsAndLikes from '../../components/Common/ViewsAndLikes.vue'
 import SocialShare from '../../components/Article/SocialShare.vue'
 import isJson from '../../utils/checkJSON';
+import question from '../../components/frontLayouts/Question.vue'
 import podborki from './index.vue'
 import HashTagStyled from '~/components/Common/HashTagStyled'
 
@@ -186,6 +221,9 @@ export default {
     }
   },
   computed: {
+    question() {
+      return question
+    },
     ...mapGetters(['getUserId']),
     ...mapGetters('Objects', ['getIdCurrentObject']),
 
@@ -196,6 +234,13 @@ export default {
       return article
     },
 
+    filteredAnswers() {
+      const idsInBiathlon = this.questions.map((item) => item.id)
+
+      return this.$store.state.ArticleModule.answersFromServer.filter((answer) => {
+        return idsInBiathlon.includes(answer.id_question)
+      });
+    },
   },
   watch: {
     'getUserId': {
@@ -235,6 +280,9 @@ export default {
       this.$store.dispatch('openShareArticleModal')
     },
 
+
+    // Boolean(JSON.parse("null"))
+
     findQuestions() {
       if (!this.data_of_components.length) {
         return
@@ -245,10 +293,11 @@ export default {
 
     },
     setAnswer(data) {
+      console.log('setA', data)
       this.$store.commit('PopularSelectionsModule/setAnswer', {
         answer: data.answer, id: data.id
       })
-
+      this.getAnswers();
     },
     getAnswers() {
       if (this.getUserId && this.getIdCurrentObject) {
@@ -273,32 +322,6 @@ export default {
       }
       return null
     },
-    // getPropertyQuestion(idQuestion, property) {
-    //   if (this.getUserId && this.getIdCurrentObject) {
-    //     const findedAnswer = this.$store.getters.getQuestionAnswer(idQuestion)
-    //
-    //     if (findedAnswer) {
-    //       if (isJson(findedAnswer[property]) === 'detailed_response') {
-    //         return JSON.parse(findedAnswer[property])
-    //       }
-    //       return findedAnswer[property]
-    //
-    //     }
-    //     if (findedAnswer[property] === 'id_answer') {
-    //       return findedAnswer.id
-    //     }
-    //     return null
-    //
-    //
-    //     if (findedAnswer[property] === 'answer') {
-    //       return JSON.parse(findedAnswer?.value_answer) ?? null
-    //     }
-    //     return null
-    //   }
-    //   return null
-    //
-    //
-    // },
     getPropertyQuestion(idQuestion, property) {
       if (this.getUserId && this.getIdCurrentObject) {
         const findedAnswer = this.$store.getters.getQuestionAnswer(idQuestion)
@@ -361,21 +384,53 @@ export default {
       align-items: center;
     }
   }
-  .more_articles_wrapper {
-    max-width: 970px;
-    margin: 0 auto;
-    opacity: .5;
-    transition: $transition;
 
-    &:hover {
-      opacity: 1;
+  .pdf_prompt_wrapper {
+    display: flex;
+    width: 100%;
+    max-width: 850px;
+    padding: 20px 40px 20px 20px;
+    background-color: $grey4;
+    border-radius: $b-r30;
+    color: $white-color;
+    position: relative;
+
+    .prompt_info {
+      display: grid;
+      grid-row-gap: 4px;
+
+      .prompt_title {
+        @extend .white-small-header-page
+      }
+
+      .prompt_text {
+        max-width: 685px;
+      }
     }
+    .prompt_question_img {
+      position: absolute;
+      top: 10px;
+      right: 110px;
+    }
+    .prompt_img {
+      position: absolute;
+      top: -20px;
+      right: 25px;
+    }
+  }
+
+  .more_articles_wrapper {
+    max-width: 850px;
+    margin: 0 auto;
+    background-color: $white-color;
+    border-radius: $b-r16;
+    padding-bottom: 20px;
+
 
     .wrapper_header {
       display: flex;
-      padding: 0 60px;
-      margin: 20px 0;
-      @extend .header-page;
+      padding: 20px;
+      @extend .main-page-header;
     }
 
     .small_articles_slider {
@@ -440,7 +495,7 @@ export default {
   background-color: #FFFFFF;
   font-family: 'Inter', sans-serif;
   display: flex;
-  justify-content: right;
+  justify-content: space-between;
   align-items: center;
   max-width: 850px;
   margin: 40px auto 0;
@@ -451,6 +506,12 @@ export default {
   bottom: 20px;
   z-index: 4;
   width: 100%;
+
+  .progress_bar {
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+  }
 
   .bookmarks_and_share {
     display: flex;

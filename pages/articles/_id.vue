@@ -43,6 +43,22 @@
           </div>
 
           <div v-if="!renderArticle" class="article-template__content mainContentFont" v-html="refactored_content"/>
+
+          <div class="pdf_prompt_wrapper">
+            <div class="prompt_info">
+              <div class="prompt_title">
+                Затрудняеетесть с заполнением своего объекта?
+              </div>
+              <div class="prompt_text">
+                Ответы будут использованы для создания технического
+                задания  по вашему объекту и генерации PDF-файла,
+                это будет полезно при общении с мастерами или
+                выборе котла на объект
+              </div>
+            </div>
+            <img :src="require(`~/assets/svg/icons/big_red_question.svg`)" class="prompt_question_img">
+            <img :src="require(`~/assets/mascot/pomogaikin_question.svg`)" class="prompt_img">
+          </div>
         </div>
       </template>
 
@@ -62,6 +78,8 @@
         class="main_img inserted_image d-none"
       >
     </ViewerStyled>
+
+
 
     <template v-if="tagsArticles.length && article">
       <div class="tags_and_date_info">
