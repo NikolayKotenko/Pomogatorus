@@ -1,15 +1,28 @@
 <template>
   <v-container class="article-wrapper">
-    <div v-if="!$store.state.ArticleModule.refactoring_content && article" class="position-right">
-      <div class="sticky-right-top">
-        <WrapperStickyCurrentObject
-          class="current_object_sticky"
+    <div
+      v-if="!$store.state.ArticleModule.refactoring_content && article && computedQuestions"
+      class="position_left"
+    >
+      <div class="sticky-left-top">
+        <Biathlon
+          :questions="computedQuestions"
         />
-
         <ArticleAnchors
           v-if="getArticleTitles.length"
           :data-articles="getArticleTitles"
           @scrollInto="scrollIntoArticle"
+        />
+      </div>
+    </div>
+
+    <div
+      v-if="!$store.state.ArticleModule.refactoring_content && article"
+      class="position-right"
+    >
+      <div class="sticky-right-top">
+        <WrapperStickyCurrentObject
+          class="current_object_sticky"
         />
       </div>
     </div>
@@ -190,12 +203,6 @@
 
     <SocialShare/>
 
-    <!--    <Biathlon -->
-    <!--      v-if="!$store.state.ArticleModule.refactoring_content" -->
-    <!--      :article="article" -->
-    <!--      :questions="computedQuestions" -->
-    <!--      :view-action="localViewAction" -->
-    <!--    /> -->
     <v-overlay :value="$store.state.ArticleModule.refactoring_content" opacity="1" z-index="102">
       <v-progress-circular :size="50" color="#FFFFFF" indeterminate style="margin-top: 20px"/>
     </v-overlay>
@@ -215,6 +222,7 @@ import TooltipStyled from '../../components/Common/TooltipStyled.vue'
 import SocialShare from '../../components/Article/SocialShare.vue'
 import ArticleAnchors from '../../components/Widgets/ArticleAnchors'
 import WrapperStickyCurrentObject from '../../components/Widgets/WrapperStickyCurrentObject.vue'
+import Biathlon from '../../components/Common/Biathlon.vue'
 import ViewerStyled from '~/components/Common/ViewerStyled'
 import ImageLayout from '~/components/frontLayouts/ImageLayout'
 import Question from '~/components/frontLayouts/Question'
@@ -227,6 +235,7 @@ const VuetifyClass = require('vuetify')
 
 export default {
   components: {
+    Biathlon,
     WrapperStickyCurrentObject,
     ArticleAnchors,
     SocialShare,
@@ -481,7 +490,6 @@ export default {
       setTimeout(() => {
 
         this.changeIndexQuestion()
-        console.log('change_refactoring_content')
         this.$store.commit('change_refactoring_content', false)
         this.findQuestions()
 
@@ -806,6 +814,30 @@ export default {
   position: relative;
   display: flex;
   flex-direction: column;
+  .position_left {
+    height: 100%;
+    position: absolute;
+    background: transparent;
+    width: 304px;
+    min-height: 400px;
+    top: 260px;
+    left: -200px;
+    z-index: 101;
+    opacity: .5;
+    transition: $transition;
+    &:hover {
+      opacity: 1;
+    }
+
+    .sticky-left-top {
+      position: sticky;
+      top: 80px;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      row-gap: 15px;
+    }
+  }
 }
 
 .article-template {
@@ -1128,5 +1160,6 @@ export default {
   //  right: -310px;
   //  top: 63px;
   //}
+
 }
 </style>

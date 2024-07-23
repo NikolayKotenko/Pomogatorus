@@ -55,7 +55,6 @@ export default {
     },
 
     change_refactoring_content(state, value) {
-      console.log('change_refactoring_content', value)
       state.refactoring_content = value
     },
     change_list_articles(state, arr) {

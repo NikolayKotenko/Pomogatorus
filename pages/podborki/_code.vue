@@ -86,14 +86,29 @@
     <!--    /> -->
 
     <div class="sticky_panel">
-      <div class="progress_bar">
+      <v-progress-circular
+        v-if="$store.state.ArticleModule.isLoadingAnswers"
+        :size="50"
+        color="#000000"
+        indeterminate
+      />
+      <div v-else class="progress_bar">
+        <v-icon
+          v-if="valuePercentage >= 100"
+          color="#FF6347"
+          size="44"
+        >
+          mdi-check-circle
+        </v-icon>
         <v-progress-circular
+          v-else
           size="40"
           width="10"
-          value="15"
+          :value="valuePercentage"
           color="#FF6347"
         />
-        20 из {{ $store.state.PopularSelectionsModule.questions.length }} вопросов заполнено
+        {{ parsedAnswers().length }} из {{ $store.state.PopularSelectionsModule.questions.length }}
+        вопросов заполнено
       </div>
 
 
@@ -122,12 +137,6 @@
     </div>
 
     <SocialShare/>
-
-    <Biathlon
-      v-if="! $store.state.ArticleModule.refactoring_content"
-      :questions="$store.state.PopularSelectionsModule.questions"
-      is-collection
-    />
 
     <v-overlay
       :value="$store.state.PopularSelectionsModule.loadingState && $store.state.ArticleModule.refactoring_content"
@@ -233,13 +242,8 @@ export default {
     article() {
       return article
     },
-
-    filteredAnswers() {
-      const idsInBiathlon = this.questions.map((item) => item.id)
-
-      return this.$store.state.ArticleModule.answersFromServer.filter((answer) => {
-        return idsInBiathlon.includes(answer.id_question)
-      });
+    valuePercentage() {
+      return (this.parsedAnswers().length / this.$store.state.PopularSelectionsModule.questions.length) * 100
     },
   },
   watch: {
@@ -276,6 +280,34 @@ export default {
   },
 
   methods: {
+    filteredAnswers() {
+      const idsInBiathlon = this.$store.state.PopularSelectionsModule.questions.map((item) => item.id)
+
+      return this.$store.state.ArticleModule.answersFromServer.filter((answer) => {
+        return idsInBiathlon.includes(answer.id_question)
+      });
+    },
+
+    parsedAnswers() {
+      const filteredAnswers = this.filteredAnswers()
+      const uniqueAnswers = []
+      const seenQuestions = new Set()
+
+      filteredAnswers.forEach(answer => {
+        if (!seenQuestions.has(answer.id_question)) {
+          seenQuestions.add(answer.id_question)
+          try {
+            uniqueAnswers.push(JSON.parse(answer.value_answer))
+          } catch (error) {
+            console.error(`Ошибка при парсе ${answer.id_question}:`, error)
+            uniqueAnswers.push(null)
+          }
+        }
+      });
+
+      return uniqueAnswers
+    },
+
     openModal() {
       this.$store.dispatch('openShareArticleModal')
     },
@@ -293,7 +325,6 @@ export default {
 
     },
     setAnswer(data) {
-      console.log('setA', data)
       this.$store.commit('PopularSelectionsModule/setAnswer', {
         answer: data.answer, id: data.id
       })

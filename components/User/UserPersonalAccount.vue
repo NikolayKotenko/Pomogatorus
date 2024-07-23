@@ -182,7 +182,6 @@ export default {
     hiddenMenu() {
 
       this.$store.commit('UserSettings/setStateVisibleMenu', false)
-      console.log('hidden',  this.$store.state.UserSettings.stateVisibleMenu)
     },
     setChanged(value) {
       this.isChanged = value
@@ -194,12 +193,10 @@ export default {
       this.isValid = value.isValid
     },
     async saveUser() {
-      console.log('123', this.userData.id)
       await this.$store.dispatch('UserSettings/updateUser', {
         userId: this.userData.id,
         data: this.data,
       })
-      console.log('321', this.userData.id)
       this.$toast.success('Данные сохранены', { duration: 5000 })
     },
 

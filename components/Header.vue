@@ -429,7 +429,6 @@ export default {
     openAccountMenu() {
 
       this.$store.commit('UserSettings/setStateVisibleMenu', true)
-      console.log('openMenu', this.$store.state.UserSettings.stateVisibleMenu)
     },
 
     openModal() {

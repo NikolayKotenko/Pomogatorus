@@ -33,10 +33,8 @@ export default {
       state.list_selections = result
     },
     setAnswer(state, payload) {
-      console.log('payload 1', payload)
       const find = state.questions.find((elem) => elem.id === payload.id)
       if (find) {
-        console.log('payload 2', find)
         find.answer = payload.answer
       }
     },

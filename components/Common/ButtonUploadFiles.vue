@@ -91,7 +91,6 @@ export default {
   },
   methods: {
     sendingData(file, xhr, formData) {
-      console.log('zxcvb', file, xhr, formData)
 
       if (this.currentUserId) {
         formData.append('id_user', this.currentUserId)
@@ -100,7 +99,6 @@ export default {
       formData.append('uuid', file.upload.uuid);
     },
     successData(file, response) {
-      console.log('qwerty', file, response)
       const formatObj = Object.assign({}, response.data);
       this.dzData.push(formatObj);
       this.dropzone_uploaded.push(formatObj);

@@ -100,18 +100,33 @@
     </div>
     <v-divider style="border-color: #DDDDDD;"/>
     <div
-      v-for="(question, index) in questions"
+      v-for="(question, index) in getSortedQuestions"
       :key="index"
       class="questions_wrapper"
+      @click="scrollToQuestion(question)"
     >
-      <v-simple-checkbox
-        :value="matchingParsedAnswers"
-      />
-      <div class="question_title">
-        {{ question.name }}
-      </div>
+      <TooltipStyled
+        :nudge-top="-10"
+        :off-hiding="isScrolling"
+        is-top
+        :title="getQuestionTitle(question)"
+      >
+        <template>
+          <div class="question">
+            <v-simple-checkbox
+              :value="getStateAnswer(question)"
+              on-icon="mdi-check-circle"
+              off-icon="mdi-circle-outline"
+              color="#FF6347"
+            />
+            <div class="question_title">
+              {{ getQuestionTitle(question) }}
+            </div>
+          </div>
+        </template>
+      </TooltipStyled>
       <v-divider
-        v-if="index !== questions.length - 1"
+        v-if="index !== getSortedQuestions.length - 1"
         style="border-color: #DDDDDD;"
       />
     </div>
@@ -155,9 +170,6 @@ export default {
   }),
   computed: {
 
-    matchingParsedAnswers() {
-      return this.parsedValues();
-    },
 
     getSortedQuestions() {
       if (this.isCollection) {
@@ -178,27 +190,7 @@ export default {
     }
   },
   methods: {
-    filteredAnswers() {
-      const idsInBiathlon = this.questions.map((item) => item.id)
-      console.log('idsInBia', this.questions.map((item) => item.id))
 
-      return this.$store.state.ArticleModule.answersFromServer.filter((answer) => {
-        return idsInBiathlon.includes(answer.id_question)
-      });
-    },
-
-    parsedValues() {
-      const filteredAnswers = this.filteredAnswers();
-
-      return filteredAnswers.map(answer => {
-        try {
-          return JSON.parse(answer.value_answer);
-        } catch (error) {
-          console.error(`Error parsing value_answer for id_question ${answer.id_question}:`, error);
-          return null; // или любое другое значение по умолчанию в случае ошибки
-        }
-      });
-    },
 
     getAnswer(item) {
       if (this.isCollection) {
@@ -220,7 +212,7 @@ export default {
     },
     scrollToQuestion(item) {
       if (this.isCollection) {
-        return this.questions;
+        return this.getSortedQuestions;
       }
       const elem = document.getElementById(`component_wrapper-${item?.data?.index}`);
       const heightNav = 70;
@@ -249,7 +241,7 @@ export default {
         window.scrollTo({ top, left: 0, behavior: 'smooth' });
       }
     },
-    getQuestionTitle(item) {
+    getQuestionTooltip(item) {
       if (this.isCollection) {
         return `Вы не заполнили вопрос номер ${item.name ? item.name : ''}, ${item.name}`;
       }
@@ -259,6 +251,19 @@ export default {
 
       return '';
 
+    },
+    getQuestionTitle(item) {
+      if (this.isCollection) {
+        return item.name
+      }
+      if (item?.instance?.question_data?.name) {
+        return item?.instance?.index_questions ? item.instance.question_data.name : ''
+      }
+
+      return '';
+    },
+    getStateAnswer(item) {
+      return !!(item?.instance?.answer || item?.instance?.detailed_response)
     }
   }
 };
@@ -343,13 +348,22 @@ export default {
     margin: 20px auto 10px;
   }
   .questions_wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 10px auto;
-    .question_title {
-
+    display: grid;
+    cursor: pointer;
+    .question {
+      display: flex;
+      align-items: center;
+      justify-content: left;
+      margin: 10px;
+      .question_title {
+        margin-left: 10px;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp:1;
+        -webkit-box-orient: vertical;
+      }
     }
+
   }
 }
 
