@@ -40,16 +40,18 @@
         <span class="text">{{ getCountDisLike }}</span>
       </div>
     </TooltipStyled>
+    <DonatModal/>
   </div>
 </template>
 
 <script>
+import DonatModal from '../Modals/DonatModal.vue'
 import TooltipStyled from '@/components/Common/TooltipStyled';
 import Request from '~/services/request';
 
 export default {
   name: 'ViewsAndLikes',
-  components: { TooltipStyled },
+  components: { DonatModal, TooltipStyled },
   props: {
     article: {
       type: Object,
@@ -113,12 +115,18 @@ export default {
     'viewAction': function(newVal, oldVal) {
       if (!newVal) return false;
       this.setViews();
-    }
+    },
+
   },
   mounted() {
   },
   methods: {
+    // localOpenDonatModal() {
+    //   console.log('localOpenDonat')
+    //   this.$store.state.ArticleModule.stateDonatModal = true
+    // },
     async setLikesDislikes(likeOrDislikeOrNull) {
+      console.log('donat?', likeOrDislikeOrNull)
       // Если не авторизован выкидываем модалку авторизации
       if (!this.$store.getters.stateAuth) {
         await this.$store.dispatch('openAuthModal');
@@ -133,6 +141,7 @@ export default {
             id_article: this.computedArticle.id,
             likes_or_dislikes: likeOrDislikeOrNull
           });
+
       }
       // Если запись НЕ существует, то создаем новую запись
       else {
@@ -141,6 +150,7 @@ export default {
           id_article: this.computedArticle.id,
           likes_or_dislikes: likeOrDislikeOrNull
         });
+
       }
 
       // Запрашиваем новые данные с бэка, чтобы обновить computedArticle
@@ -148,6 +158,10 @@ export default {
         this.$store.state.BASE_URL + '/entity/articles/' + this.computedArticle.id
       );
       this.computedArticle = data;
+
+      if (this.entryLikeDislikeByUser?.likes_or_dislikes === true) {
+        await this.$store.dispatch('openDonatModal')
+      }
     },
     async setViews() {
       if (!this.$store.getters.stateAuth) return false;

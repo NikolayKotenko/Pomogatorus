@@ -18,6 +18,7 @@ export default {
     isAnswered: false,
     isLoadingAnswers: true,
     stateShareArticleModal: false,
+    stateDonatModal: false
   },
   mutations: {
     /* ANSWERS */
@@ -93,8 +94,18 @@ export default {
     set_state_share_article_modal(state, payload) {
       state.stateShareArticleModal = payload
     },
+    set_donat_modal_state(state, payload) {
+      state.stateDonatModal = payload
+    },
   },
   actions: {
+    openDonatModal({ commit }) {
+      console.log('donatmodal!')
+      commit('set_donat_modal_state', true)
+    },
+    closeDonatModal({ commit }) {
+      commit('set_donat_modal_state', false)
+    },
     openShareArticleModal({ commit }) {
       commit('set_state_share_article_modal', true)
     },

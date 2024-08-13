@@ -245,6 +245,25 @@ export default {
   }
 }
 
+.v-btn.support_btn {
+  color: $white-text-color !important;
+  font-weight: 600 !important;
+  font-size: 1.25em !important;
+  font-style: normal;
+  line-height: normal;
+  border-radius: $b-r16;
+  min-height: 60px;
+  width: 100%;
+  background-color: $red !important;
+  padding: 10px 20px !important;
+  transition: $transition;
+  &:hover {
+    @extend  .wide-btn-text;
+    background-color: $grey1 !important;
+  }
+}
+
+
 .btnStyled {
   font-weight: 400;
   text-transform: none !important;
@@ -259,6 +278,8 @@ export default {
   }
 
 }
+
+
 
 //.desktop_style {
 //  height: 3.2em !important;

@@ -67,6 +67,7 @@ const createStore = () => {
       currentPaginationData: {
         hasMorePages: false,
       },
+
     },
     getters: {
       getImageByEClientFilesObj: (state) => (eClientFilesObj) => {
