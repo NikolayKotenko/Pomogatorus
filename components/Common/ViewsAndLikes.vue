@@ -126,7 +126,6 @@ export default {
     //   this.$store.state.ArticleModule.stateDonatModal = true
     // },
     async setLikesDislikes(likeOrDislikeOrNull) {
-      console.log('donat?', likeOrDislikeOrNull)
       // Если не авторизован выкидываем модалку авторизации
       if (!this.$store.getters.stateAuth) {
         await this.$store.dispatch('openAuthModal');

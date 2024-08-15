@@ -10,8 +10,20 @@
           alt=""
         >
         <img
+          v-show="sumDonatPrice < 300"
           :src="require(`~/assets/mascot/pomogaikin_thumb_up.svg`)"
           class="mascot_img"
+        >
+        <img
+          v-show="sumDonatPrice >= 300 && sumDonatPrice < 500"
+          :src="require(`~/assets/mascot/joyful_pomogaikin.svg`)"
+          class="mascot_img"
+        >
+        <img
+          v-show="sumDonatPrice >= 500"
+          :src="require(`~/assets/mascot/jubilant_pomogaikin.svg`)"
+          class="mascot_img"
+          style="right: 0;"
         >
         <div class="popup_wrapper">
           <img
@@ -37,22 +49,24 @@
             Сумма доната, ₽
           </div>
           <v-text-field
+            v-model="sumDonatPrice"
             class="input"
             outlined
             suffix="₽"
             height="40"
             dense
+            type="number"
             hide-details
-            :label="selectDonatPrice"
           />
         </div>
         <div
           class="donat_prices_buttons"
         >
           <div
-            v-for="(donat, index) in donatPrices"
+            v-for="(donat, index) in addingDonationPrices"
             :key="index"
             class="button"
+            @click="calcDonatSum(donat.price)"
           >
             +{{ donat.price }}₽
           </div>
@@ -61,8 +75,11 @@
           :local-text="'Поддержать'"
           local-class="support_btn"
         />
-        <div class="uninteresting_btn">
-          Мне это не интересно
+        <div
+          class="uninteresting_btn"
+          @click="closeModal"
+        >
+          <div>Мне это не интересно</div>
         </div>
       </div>
     </div>
@@ -78,16 +95,23 @@ export default {
   props: {
   },
   data: () => ({
-    donatPrices: [
+    addingDonationPrices: [
       { price: 100 },
       { price: 200 },
       { price: 300 },
       { price: 400 },
       { price: 500 },
     ],
-    selectDonatPrice: 100,
-
+    sumDonatPrice: 100,
   }),
+  methods: {
+    calcDonatSum(addedValue) {
+      this.sumDonatPrice = +(this.sumDonatPrice || 0) + addedValue;
+    },
+    closeModal(){
+      this.$store.dispatch('closeDonatModal')
+    }
+  },
 }
 </script>
 
@@ -102,11 +126,18 @@ export default {
     background-color: $grey1;
     position: relative;
     max-height: 290px;
+    z-index: 99;
     .mascot_img {
       position: absolute;
       right: 25px;
       bottom: -7px;
-      filter: drop-shadow(5px 5px 10px rgba(255, 99, 77, 0.5))
+      filter: drop-shadow(5px 5px 10px rgba(145, 147, 148, 1));
+      z-index: 100;
+      animation: 1s show ease, 1s fade ease;
+      @keyframes show {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
     }
     .popup_wrapper {
       position: absolute;
@@ -170,7 +201,12 @@ export default {
       }
     }
     .uninteresting_btn {
-      align-self: center;
+      display: flex;
+      justify-content: center;
+      padding-top: 20px;
+      color: $grey3;
+      text-decoration: underline;
+      cursor: pointer;
     }
   }
 }

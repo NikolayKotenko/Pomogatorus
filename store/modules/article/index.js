@@ -100,7 +100,6 @@ export default {
   },
   actions: {
     openDonatModal({ commit }) {
-      console.log('donatmodal!')
       commit('set_donat_modal_state', true)
     },
     closeDonatModal({ commit }) {
