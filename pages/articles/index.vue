@@ -9,7 +9,9 @@
         </div>
       </div>
     </div>
-
+    <v-overlay :value="! loadComponent" opacity="1">
+      <v-progress-circular :size="50" color="#FFFFFF" indeterminate/>
+    </v-overlay>
   </v-container>
 </template>
 

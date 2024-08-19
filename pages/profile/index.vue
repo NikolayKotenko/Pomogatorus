@@ -509,6 +509,9 @@
         </v-tabs-items>
       </div>
     </div>
+    <v-overlay :value="! $store.getters.getUserId" opacity="1">
+      <v-progress-circular :size="50" color="#FFFFFF" indeterminate/>
+    </v-overlay>
   </v-container>
 </template>
 

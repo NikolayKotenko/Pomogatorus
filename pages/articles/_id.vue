@@ -178,16 +178,16 @@
     <div class="sticky_panel">
       <ViewsAndLikes :article="article"/>
       <div class="bookmarks_and_share">
-        <TooltipStyled :is-top="true" :title="'Добавить в закладки'">
-          <div
-            class="btn_wrapper"
-          >
-            <v-icon color="#000000">
-              mdi-bookmark-outline
-            </v-icon>
-            <span>В закладки</span>
-          </div>
-        </TooltipStyled>
+        <!--        <TooltipStyled :is-top="true" :title="'Добавить в закладки'"> -->
+        <!--          <div -->
+        <!--            class="btn_wrapper" -->
+        <!--          > -->
+        <!--            <v-icon color="#000000"> -->
+        <!--              mdi-bookmark-outline -->
+        <!--            </v-icon> -->
+        <!--            <span>В закладки</span> -->
+        <!--          </div> -->
+        <!--        </TooltipStyled> -->
 
         <div
           class="btn_wrapper"
