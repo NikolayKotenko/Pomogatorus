@@ -16,9 +16,9 @@
         <div class="description">
           Некоторые функции сайта ещё недоступны, но вы можете подписаться на уведомления и следить за обновлениями
         </div>
-        <div class="new_feature">
-          Список будущих обновлений
-        </div>
+        <!--        <div class="new_feature"> -->
+        <!--          Список будущих обновлений -->
+        <!--        </div> -->
         <div class="email_wrapper">
           <InputStyled
             :class="'styleTextField'"
@@ -46,6 +46,12 @@ import ButtonStyled from '../../components/Common/ButtonStyled.vue'
 
 export default {
   components: { ButtonStyled, InputStyled, SubHeader },
+  props: {
+    isModal: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       emailRules: [
@@ -70,8 +76,6 @@ export default {
   max-width: 850px;
   display: flex;
   grid-column-gap: 56px;
-  margin-left: auto;
-  margin-right: auto;
   .img_container {
     position: relative;
     .grid_style_img {

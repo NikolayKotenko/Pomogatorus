@@ -105,26 +105,17 @@
       class="questions_wrapper"
       @click="scrollToQuestion(question)"
     >
-      <TooltipStyled
-        :nudge-top="-10"
-        :off-hiding="isScrolling"
-        is-top
-        :title="getQuestionTitle(question)"
-      >
-        <template>
-          <div class="question">
-            <v-simple-checkbox
-              :value="getStateAnswer(question)"
-              on-icon="mdi-check-circle"
-              off-icon="mdi-circle-outline"
-              color="#FF6347"
-            />
-            <div class="question_title">
-              {{ getQuestionTitle(question) }}
-            </div>
-          </div>
-        </template>
-      </TooltipStyled>
+      <div class="question">
+        <v-simple-checkbox
+          :value="getStateAnswer(question)"
+          on-icon="mdi-check-circle"
+          off-icon="mdi-circle-outline"
+          color="#FF6347"
+        />
+        <div class="question_title">
+          {{ getQuestionTitle(question) }}
+        </div>
+      </div>
       <v-divider
         v-if="index !== getSortedQuestions.length - 1"
         style="border-color: #DDDDDD;"
@@ -359,7 +350,7 @@ export default {
         margin-left: 10px;
         overflow: hidden;
         display: -webkit-box;
-        -webkit-line-clamp:1;
+        -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
       }
     }

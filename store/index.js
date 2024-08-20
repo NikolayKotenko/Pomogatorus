@@ -159,11 +159,6 @@ const createStore = () => {
             icon: 'mdi-home',
             visible: false,
           },
-          {
-            title: 'В разработке',
-            path: '/developed',
-            visible: false
-          }
         ]
       },
       optionsDropzone(state) {

@@ -57,6 +57,8 @@
                 :is-loading="loading"
                 :is-placeholder="'Поиск'"
                 :full-width="'300'"
+                :height="30"
+                :is-solo="true"
                 class="styleSearch"
                 @redirect="redirectData"
                 @update-search-input="localGetListItems"
@@ -157,6 +159,7 @@
 
                     <!-- Ваши специалисты -->
                     <DropDownMenuStyled
+                      v-if="!isDeveloped"
                       :is-left="true"
                       :is-offset-y="true"
                       :close-on-click-outside="true"
@@ -179,6 +182,7 @@
 
                     <!-- Избранные бренды -->
                     <DropDownMenuStyled
+                      v-if="!isDeveloped"
                       :is-left="true"
                       :is-offset-y="true"
                       :close-on-click-outside="true"
@@ -199,6 +203,7 @@
                       </template>
                     </DropDownMenuStyled>
                     <div
+                      v-if="!isDeveloped"
                       class="action_elem"
                       style="margin-top: 10px;"
                       @click="openModal"
@@ -212,6 +217,7 @@
                   </div>
                   <v-divider style="border-color: black;"/>
                   <div class="exit" @click="logout">
+                    <img :src="require('/assets/svg/icons/logout_icon.svg')" style="width: 20px;">
                     Выйти
                   </div>
                 </div>
@@ -336,7 +342,12 @@ export default {
     TaskModal,
     UserPersonalAccount
   },
-  props: {},
+  props: {
+    isDeveloped: {
+      type: Boolean,
+      default: true
+    }
+  },
   data() {
     return {
       debounceTimeout: null,
@@ -722,16 +733,19 @@ export default {
     color: #000000 !important;
   }
 
-  font-size: 1.8em !important;
-  border-radius: 25px;
+  color: $black-color !important;
+  border-radius: 20px;
   //min-width: 1144px;
 
   .v-input__slot {
-    height: 40px;
+    min-height: 30px !important;
   }
 
   .v-select__selections {
-    height: 40px;
+    min-height: 30px !important;
+  }
+  .v-input__control {
+    min-height: 30px !important;
   }
 
   .v-input__append-inner {
@@ -754,8 +768,8 @@ export default {
     }
 
     input::placeholder {
-      color: #878787;
-      font-size: 0.8em;
+      color: $black-text-color !important;
+      font-size: 0.875em;
 
     }
     .theme--dark.v-input input {
@@ -817,6 +831,9 @@ export default {
       }
     }
     .exit {
+      display: flex;
+      column-gap: 7px;
+      align-content: center;
       cursor: pointer;
       padding: 20px 0 0 20px;
     }

@@ -22,8 +22,9 @@
     :return-object="isReturnObject"
     :rounded="isRounded"
     :search-input.sync="localSearchInputSync"
+    :height="height"
+    :solo="isSolo"
     background-color="#ffffff"
-    color="black"
     @change="$emit('change-search', localSelected)"
     @click:clear="$emit('click-clear')"
     @update:search-input="$emit('update-search-input', localSearchInputSync)"
@@ -180,6 +181,14 @@ export default {
     iconPrepend: {
       type: String,
       default: ''
+    },
+    height: {
+      type: Number,
+      default: null
+    },
+    isSolo: {
+      type: Boolean,
+      default: false
     },
     clearAfterSelect: {
       type: Boolean,

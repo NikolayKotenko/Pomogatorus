@@ -1,139 +1,145 @@
 <template>
-  <v-container class="products_page_wrapper">
-    <!--    <div class="search_container"> -->
-    <!--      <SearchStyled -->
-    <!--        :is-class="'styleSearch'" -->
-    <!--        :is-placeholder="'Поиск оборудования'" -->
-    <!--        :is-loading="$store.state.PopularSelectionsModule.loadingState" -->
-    <!--        :is-disabled="$store.state.PopularSelectionsModule.loadingState" -->
-    <!--        :is-items="$store.state.PopularSelectionsModule.list_selections" -->
-    <!--        :is-clearable="true" -->
-    <!--        :is-item-text="'text'" -->
-    <!--        :is-item-value="'text'" -->
-    <!--        :is-hide-selected="true" -->
-    <!--        @update-search-input="localGetListItems" -->
-    <!--        @click-clear="$store.dispatch('PopularSelectionsModule/getListSelections');" -->
-    <!--      /> -->
-    <!--      <TooltipStyled :title="'Настроить фильтрацию'"> -->
-    <!--        <v-menu :close-on-content-click="false" left offset-y> -->
-    <!--          <template #activator="{ on, attrs }"> -->
-    <!--            <div v-bind="attrs" v-on="on"> -->
-    <!--              <v-icon -->
-    <!--                class="share" -->
-    <!--                color="#ADADAD" -->
-    <!--                size="60" -->
-    <!--                v-bind="attrs" -->
-    <!--                v-on="on" -->
-    <!--              > -->
-    <!--                mdi-tune-variant -->
-    <!--              </v-icon> -->
-    <!--            </div> -->
-    <!--          </template> -->
-    <!--          <UniversalFilter/> -->
-    <!--        </v-menu> -->
-    <!--      </TooltipStyled> -->
-    <!--    </div> -->
+  <div class="products_page_wrapper">
+    <DevelopedMessage
+      v-if="isDeveloped"
+    />
+    <v-container v-else>
+      <!--    <div class="search_container"> -->
+      <!--      <SearchStyled -->
+      <!--        :is-class="'styleSearch'" -->
+      <!--        :is-placeholder="'Поиск оборудования'" -->
+      <!--        :is-loading="$store.state.PopularSelectionsModule.loadingState" -->
+      <!--        :is-disabled="$store.state.PopularSelectionsModule.loadingState" -->
+      <!--        :is-items="$store.state.PopularSelectionsModule.list_selections" -->
+      <!--        :is-clearable="true" -->
+      <!--        :is-item-text="'text'" -->
+      <!--        :is-item-value="'text'" -->
+      <!--        :is-hide-selected="true" -->
+      <!--        @update-search-input="localGetListItems" -->
+      <!--        @click-clear="$store.dispatch('PopularSelectionsModule/getListSelections');" -->
+      <!--      /> -->
+      <!--      <TooltipStyled :title="'Настроить фильтрацию'"> -->
+      <!--        <v-menu :close-on-content-click="false" left offset-y> -->
+      <!--          <template #activator="{ on, attrs }"> -->
+      <!--            <div v-bind="attrs" v-on="on"> -->
+      <!--              <v-icon -->
+      <!--                class="share" -->
+      <!--                color="#ADADAD" -->
+      <!--                size="60" -->
+      <!--                v-bind="attrs" -->
+      <!--                v-on="on" -->
+      <!--              > -->
+      <!--                mdi-tune-variant -->
+      <!--              </v-icon> -->
+      <!--            </div> -->
+      <!--          </template> -->
+      <!--          <UniversalFilter/> -->
+      <!--        </v-menu> -->
+      <!--      </TooltipStyled> -->
+      <!--    </div> -->
 
-    <div class="products-filters">
-      <div
-        ref="sticky-widget"
-        :class="{'sticky-widget': isStickyWidget, 'absolute-widget': !isStickyWidget}"
-        class="products-filters-sticky"
-      >
-        <CustomFilters
-          ref="filters"
-          :filter-data="filterData"
-          :filters-list="filtersList"
-          :is-loading-filters="isLoadingFilters"
-          @acceptFilters="acceptFilters"
-          @pushElem="pushElem"
-          @removeElem="removeElem"
-          @resetFilters="resetFilters"
-          @setFilterData="setFilterData"
-          @setSliderData="setSliderData"
-        />
+      <div class="products-filters">
+        <div
+          ref="sticky-widget"
+          :class="{'sticky-widget': isStickyWidget, 'absolute-widget': !isStickyWidget}"
+          class="products-filters-sticky"
+        >
+          <CustomFilters
+            ref="filters"
+            :filter-data="filterData"
+            :filters-list="filtersList"
+            :is-loading-filters="isLoadingFilters"
+            @acceptFilters="acceptFilters"
+            @pushElem="pushElem"
+            @removeElem="removeElem"
+            @resetFilters="resetFilters"
+            @setFilterData="setFilterData"
+            @setSliderData="setSliderData"
+          />
 
-        <CustomSelectedParams :is-loading-params="isLoadingParams" :params-data="paramsList"/>
-      </div>
-    </div>
-
-    <div class="products_page_wrapper__main">
-      <SubHeader :additional-breadcrumb="['отопительные котлы']"/>
-
-      <!--   TODO: INLINE STYLE убрать, нужно чистить все файлы со стилями, из-за important. Сейчас это самый быстрый вариант   -->
-      <div class="products_page_wrapper__main__input">
-        <InputStyled
-          :data="searchEquipment"
-          :prepend-icon-inner="'mdi-magnify'"
-          class="c-input"
-          full-sinc-prop
-          is-outlined
-          single-line
-          style="width: 100%; border-radius: 30px !important;"
-          @update-input="changeSearchData"
-        />
+          <CustomSelectedParams :is-loading-params="isLoadingParams" :params-data="paramsList"/>
+        </div>
       </div>
 
+      <div class="products_page_wrapper__main">
+        <SubHeader :additional-breadcrumb="['отопительные котлы']"/>
 
-      <div class="products_page_wrapper__main__title">
-        Отопительные котлы
-      </div>
+        <!--   TODO: INLINE STYLE убрать, нужно чистить все файлы со стилями, из-за important. Сейчас это самый быстрый вариант   -->
+        <div class="products_page_wrapper__main__input">
+          <InputStyled
+            :data="searchEquipment"
+            :prepend-icon-inner="'mdi-magnify'"
+            class="c-input"
+            full-sinc-prop
+            is-outlined
+            single-line
+            style="width: 100%; border-radius: 30px !important;"
+            @update-input="changeSearchData"
+          />
+        </div>
 
-      <div class="tags-wrapper">
-        <!--    TODO: transition не работает, похоже v-for шалит    -->
-        <transition name="fade">
-          <div v-if="restructuredFilterData.length" class="tags-wrapper__tags">
-            <div
-              v-for="tag in restructuredFilterData"
-              :key="'tag-' + tag.key"
-              class="tags-wrapper__tags__elem"
-            >
-              <v-icon
-                color="#8A8784"
-                size="14"
-                @click="removeTag(tag)"
+
+        <div class="products_page_wrapper__main__title">
+          Отопительные котлы
+        </div>
+
+        <div class="tags-wrapper">
+          <!--    TODO: transition не работает, похоже v-for шалит    -->
+          <transition name="fade">
+            <div v-if="restructuredFilterData.length" class="tags-wrapper__tags">
+              <div
+                v-for="tag in restructuredFilterData"
+                :key="'tag-' + tag.key"
+                class="tags-wrapper__tags__elem"
               >
-                mdi-close-thick
-              </v-icon>
-              <div class="tags-wrapper__tags__elem__title">
-                {{ tag.name }}
+                <v-icon
+                  color="#8A8784"
+                  size="14"
+                  @click="removeTag(tag)"
+                >
+                  mdi-close-thick
+                </v-icon>
+                <div class="tags-wrapper__tags__elem__title">
+                  {{ tag.name }}
+                </div>
+              </div>
+
+              <div class="tags-wrapper__tags__reset" @click="resetFilters">
+                Сбросить
               </div>
             </div>
+          </transition>
+        </div>
 
-            <div class="tags-wrapper__tags__reset" @click="resetFilters">
-              Сбросить
-            </div>
-          </div>
-        </transition>
+        <div class="products_page_wrapper__main__products">
+          <ProductCard
+            v-for="(item) in $store.state.NomenclatureModule.listNomenclature"
+            :key="item.id"
+            :data="item"
+          />
+        </div>
+
+        <v-btn
+          :disabled="!$store.getters.statePaginationHasMorePage"
+          block
+          class="mt-5 mb-5 products_page_wrapper__main__button"
+          elevation="2"
+          outlined
+          @click="getNextPageData"
+        >
+          {{ $store.getters.statePaginationHasMorePage ? 'Показать еще' : 'Показаны все элементы' }}
+        </v-btn>
       </div>
-
-      <div class="products_page_wrapper__main__products">
-        <ProductCard
-          v-for="(item) in $store.state.NomenclatureModule.listNomenclature"
-          :key="item.id"
-          :data="item"
-        />
-      </div>
-
-      <v-btn
-        :disabled="!$store.getters.statePaginationHasMorePage"
-        block
-        class="mt-5 mb-5 products_page_wrapper__main__button"
-        elevation="2"
-        outlined
-        @click="getNextPageData"
-      >
-        {{ $store.getters.statePaginationHasMorePage ? 'Показать еще' : 'Показаны все элементы' }}
-      </v-btn>
-    </div>
-    <!--    <WrapperStickyCurrentObject class="current_object_sticky"/> -->
-  </v-container>
+      <!--    <WrapperStickyCurrentObject class="current_object_sticky"/> -->
+    </v-container>
+  </div>
 </template>
 <script>
 import Vue from 'vue'
 import CustomSelectedParams from '../../components/Common/CustomSelectedParams'
 import SubHeader from '../../components/SubHeader'
 import InputStyled from '../../components/Common/InputStyled'
+import DevelopedMessage from '../../components/frontLayouts/DevelopedMessage.vue'
 import ProductCard from '@/components/Products/ProductCard.vue'
 import CustomFilters from '@/components/Common/CustomFilters'
 
@@ -142,11 +148,18 @@ export default {
   name: 'index.vue',
   // eslint-disable-next-line vue/no-unused-components
   components: {
+    DevelopedMessage,
     InputStyled,
     SubHeader,
     CustomSelectedParams,
     ProductCard,
     CustomFilters
+  },
+  props: {
+    isDeveloped: {
+      type: Boolean,
+      default: true
+    }
   },
   data: () => ({
     /* FILTERS */
@@ -595,6 +608,8 @@ export default {
   position: relative;
   // TODO: MOBILE VERSION
   max-width: 850px;
+  margin-left: auto;
+  margin-right: auto;
   // ЧТОБЫ ФИЛЬТРЫ ОТОБРАЗИЛИСЬ КОРРЕКТНО - 1650px
   // TODO: Для теста скролла, убрать на 1650px
   min-height: 3650px;

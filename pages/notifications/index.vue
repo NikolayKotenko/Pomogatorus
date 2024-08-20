@@ -1,126 +1,139 @@
 <template>
-  <v-container
-    class="notification_wrapper"
-  >
-    <div class="notification_container">
-      <v-tabs
-        fixed-tabs
-        background-color="#F2F2F2"
-        class="cards_wrapper"
-        color="#00000"
-      >
-        <v-tab
-          :key="0"
-          @click="objTask = {}"
+  <div style="max-width: 850px; margin-right: auto; margin-left: auto;">
+    <DevelopedMessage
+      v-if="isDeveloped"
+    />
+    <v-container
+      v-else
+      class="notification_wrapper"
+    >
+      <div class="notification_container">
+        <v-tabs
+          fixed-tabs
+          background-color="#F2F2F2"
+          class="cards_wrapper"
+          color="#00000"
         >
-          Входящие
-          <!--          <v-badge -->
-          <!--            content="2" -->
-          <!--            value="2" -->
-          <!--            color="#95D7AE" -->
-          <!--          /> -->
-        </v-tab>
-        <v-tab
-          :key="1"
-          @click="objTask = {}"
-        >
-          Исходящие
-          <v-badge
-            :content="$store.getters['NotificationModule/getCountTasks']"
-            :value="$store.getters['NotificationModule/getCountTasks']"
-            color="#95D7AE"
-          />
-        </v-tab>
-        <v-tab-item :key="0">
-          <div
-            class="empty_messages"
+          <v-tab
+            :key="0"
+            @click="objTask = {}"
           >
-            У вас нет входящих уведомлений
-          </div>
-        </v-tab-item>
-        <v-tab-item :key="1">
-          <div class="preview_card_wrapper">
+            Входящие
+            <!--          <v-badge -->
+            <!--            content="2" -->
+            <!--            value="2" -->
+            <!--            color="#95D7AE" -->
+            <!--          /> -->
+          </v-tab>
+          <v-tab
+            :key="1"
+            @click="objTask = {}"
+          >
+            Исходящие
+            <v-badge
+              :content="$store.getters['NotificationModule/getCountTasks']"
+              :value="$store.getters['NotificationModule/getCountTasks']"
+              color="#95D7AE"
+            />
+          </v-tab>
+          <v-tab-item :key="0">
             <div
-              v-if="$store.getters['NotificationModule/getListTasksByToday'].length"
-              class="preview_card"
+              class="empty_messages"
             >
-              <div class="date_text">
-                Сегодня
-              </div>
-              <CardPreviewNotification
-                v-for="(item, index) in $store.getters['NotificationModule/getListTasksByToday']"
-                :key="index"
-                :task-object="item"
-                :date-state="true"
-                @click-card="setObjTask(item)"
-              />
+              У вас нет входящих уведомлений
             </div>
-            <div
-              v-if="$store.getters['NotificationModule/getListTasksByYesterday'].length"
-              class="preview_card"
-            >
-              <div class="date_text">
-                Вчера
+          </v-tab-item>
+          <v-tab-item :key="1">
+            <div class="preview_card_wrapper">
+              <div
+                v-if="$store.getters['NotificationModule/getListTasksByToday'].length"
+                class="preview_card"
+              >
+                <div class="date_text">
+                  Сегодня
+                </div>
+                <CardPreviewNotification
+                  v-for="(item, index) in $store.getters['NotificationModule/getListTasksByToday']"
+                  :key="index"
+                  :task-object="item"
+                  :date-state="true"
+                  @click-card="setObjTask(item)"
+                />
               </div>
-              <CardPreviewNotification
-                v-for="(item, index) in $store.getters['NotificationModule/getListTasksByYesterday']"
-                :key="index"
-                :task-object="item"
-                @click-card="setObjTask(item)"
-              />
-            </div>
-            <div
-              v-if="$store.getters['NotificationModule/getListTasksByWeek'].length"
-              class="preview_card"
-            >
-              <div class="date_text">
-                Неделя
+              <div
+                v-if="$store.getters['NotificationModule/getListTasksByYesterday'].length"
+                class="preview_card"
+              >
+                <div class="date_text">
+                  Вчера
+                </div>
+                <CardPreviewNotification
+                  v-for="(item, index) in $store.getters['NotificationModule/getListTasksByYesterday']"
+                  :key="index"
+                  :task-object="item"
+                  @click-card="setObjTask(item)"
+                />
               </div>
-              <CardPreviewNotification
-                v-for="(item, index) in $store.getters['NotificationModule/getListTasksByWeek']"
-                :key="index"
-                :task-object="item"
-                @click-card="setObjTask(item)"
-              />
-            </div>
-            <div
-              v-if="$store.getters['NotificationModule/getListTasksByMonth'].length"
-              class="preview_card"
-            >
-              <div class="date_text">
-                Месяц
+              <div
+                v-if="$store.getters['NotificationModule/getListTasksByWeek'].length"
+                class="preview_card"
+              >
+                <div class="date_text">
+                  Неделя
+                </div>
+                <CardPreviewNotification
+                  v-for="(item, index) in $store.getters['NotificationModule/getListTasksByWeek']"
+                  :key="index"
+                  :task-object="item"
+                  @click-card="setObjTask(item)"
+                />
               </div>
-              <!-- <v-btn @click="getMessage">asfaf</v-btn> -->
-              <CardPreviewNotification
-                v-for="(item, index) in $store.getters['NotificationModule/getListTasksByMonth']"
-                :key="index"
-                :task-object="item"
-                @click-card="setObjTask(item)"
-              />
+              <div
+                v-if="$store.getters['NotificationModule/getListTasksByMonth'].length"
+                class="preview_card"
+              >
+                <div class="date_text">
+                  Месяц
+                </div>
+                <!-- <v-btn @click="getMessage">asfaf</v-btn> -->
+                <CardPreviewNotification
+                  v-for="(item, index) in $store.getters['NotificationModule/getListTasksByMonth']"
+                  :key="index"
+                  :task-object="item"
+                  @click-card="setObjTask(item)"
+                />
+              </div>
             </div>
-          </div>
-        </v-tab-item>
-      </v-tabs>
-    </div>
-    <v-divider vertical/>
-    <div class="card_task">
-      <TaskWatchArea
-        v-if="Object.keys(objTask).length"
-        :task-data-for-view="objTask"
-      />
-    </div>
-  </v-container>
+          </v-tab-item>
+        </v-tabs>
+      </div>
+      <v-divider vertical/>
+      <div class="card_task">
+        <TaskWatchArea
+          v-if="Object.keys(objTask).length"
+          :task-data-for-view="objTask"
+        />
+      </div>
+    </v-container>
+  </div>
 </template>
 
 <script>
 import CardPreviewNotification from '../../components/Notification/CardPreviewNotification.vue';
 import TaskWatchArea from '../../components/Notification/TaskWatchArea.vue';
+import DevelopedMessage from '../../components/frontLayouts/DevelopedMessage.vue'
 
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Index',
-  components: { TaskWatchArea, CardPreviewNotification },
+  components: { DevelopedMessage, TaskWatchArea, CardPreviewNotification },
+  props: {
+    isDeveloped: {
+      type: Boolean,
+      default: true
+    }
+  },
   data() {
     return {
       objTask: {},

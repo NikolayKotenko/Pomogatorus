@@ -61,12 +61,12 @@
           local-class="wide_style_btn"
           @click-button="setObject"
         />
-        <ButtonStyled
-          class="change_info_btn"
-          :local-text="'Открыть'"
-          local-class="wide_style_btn"
-          @click-button="openDetailCard"
-        />
+        <!--        <ButtonStyled -->
+        <!--          class="change_info_btn" -->
+        <!--          :local-text="'Открыть'" -->
+        <!--          local-class="wide_style_btn" -->
+        <!--          @click-button="openDetailCard" -->
+        <!--        /> -->
       </div>
     </div>
   </div>
