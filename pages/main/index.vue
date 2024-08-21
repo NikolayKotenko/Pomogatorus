@@ -671,7 +671,7 @@ export default {
         height: 250px;
         width: 430px;
         margin: 0 8px;
-        border-radius: 30px;
+        border-radius: 30px !important;
         position: relative;
         .article_img {
           position: absolute;

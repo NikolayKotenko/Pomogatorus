@@ -80,7 +80,7 @@ export default {
 <style lang="scss" scoped>
 .article_card {
   max-width: 850px;
-  border-radius: 30px;
+  border-radius: 30px !important;
 }
 .list_elem_wrapper {
   display: grid;

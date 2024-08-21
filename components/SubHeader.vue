@@ -100,7 +100,7 @@ class ConstructBreadcrumbs {
   width: 100%;
 
   .v-breadcrumbs {
-    padding: 40px 0;
+    padding: 40px 0 25px;
 
     .item_style {
       font-size: 0.88em;

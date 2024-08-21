@@ -2,9 +2,9 @@
   <v-container class="search_page">
     <div class="wrapper_search">
       <SubHeader/>
+      <div class="title">Список статей</div>
       <div v-if="listArticles.length" class="list_container">
         <div v-for="(article, index) in listArticles" :key="index">
-          <v-divider style="margin: 0 30px 20px 30px; border-width: 0.1px;"/>
           <Article :article="article"/>
         </div>
       </div>
@@ -96,6 +96,8 @@ export default {
 </script>
 
 <style lang='scss' scoped>
+@import 'assets/styles/style';
+
 .search_page{
   display: grid;
   grid-row-gap: 2em;
@@ -106,6 +108,12 @@ export default {
   width: 100%;
   margin: 0 !important;
   padding: 0 !important;
+  .title {
+    max-width: 850px;
+    margin: 0 auto;
+    padding-bottom: 20px;
+    @extend .header-page;
+  }
 }
 
 </style>

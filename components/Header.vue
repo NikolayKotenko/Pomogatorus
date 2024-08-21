@@ -226,6 +226,7 @@
             <ButtonStyled
               v-else
               local-class="regular_style_btn"
+              class="login_btn"
               :local-text="'Войти'"
               @click-button="$store.dispatch('openAuthModal')"
             />
@@ -570,6 +571,7 @@ export default {
 @import 'assets/styles/style';
 
 .header {
+  font-family: 'Inter', sans-serif;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -597,6 +599,7 @@ export default {
         margin: 0 20px;
         text-transform: none !important;
         font-weight: 400;
+        font-size: 1em !important;
         font-style: normal !important;
         letter-spacing: 0 !important;
       }
@@ -624,10 +627,18 @@ export default {
 
 }
 
+.login_btn {
+  min-width: auto !important;
+  font-size: 0.875em !important;
+  min-height: 30px !important;
+  height: 30px !important;
+}
+
 .v-btn:not(.v-btn--round).v-size--default {
-  padding: 0 !important;
+  padding: 0;
   min-width: 0;
 }
+
 
 .theme--dark.v-app-bar.v-toolbar.v-sheet {
   background: #000000;
