@@ -103,7 +103,7 @@ class ConstructBreadcrumbs {
     padding: 40px 0 25px;
 
     .item_style {
-      font-size: 0.88em;
+      font-size: 0.875em;
       color: #7D7D7D !important;
       text-transform: lowercase;
 

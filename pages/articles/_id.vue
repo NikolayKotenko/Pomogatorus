@@ -114,12 +114,7 @@
             {{ article.updated_at }}
           </div>
           <div class="views">
-            <v-icon
-              color="#777777"
-              size="18"
-            >
-              mdi-eye-outline
-            </v-icon>
+            <img :src="require('/assets/svg/icons/eye_icon.svg')">
             {{ article.views }}
           </div>
         </div>
@@ -1063,6 +1058,11 @@ export default {
     @extend .grey-text14;
     display: flex;
     grid-column-gap: 20px;
+    .views {
+      display: flex;
+      align-items: center;
+      column-gap: 4px;
+    }
   }
 }
 

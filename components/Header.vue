@@ -75,9 +75,9 @@
               :nudge-right="40"
             >
               <template #icon>
-                <v-icon size="32">
-                  mdi-menu
-                </v-icon>
+                <div style="display: flex; align-items: center;">
+                  <img :src="require('/assets/svg/icons/burger_menu_icon.svg')">
+                </div>
               </template>
               <template #content>
                 <div class="menu_wrapper">
@@ -324,6 +324,7 @@ import CardObject from './UserObjects/CardObject.vue'
 import CurrentObjects from './Widgets/CurrentObjects.vue'
 import { getNameStateModalByUrlHash } from '~/helpers/urlHelper';
 import CreateObjectModal from '~/components/Modals/CreateObjectModal';
+import { req } from 'vuelidate/lib/validators/common';
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -438,6 +439,7 @@ export default {
 
   },
   methods: {
+    req,
     openAccountMenu() {
 
       this.$store.commit('UserSettings/setStateVisibleMenu', true)
@@ -637,6 +639,7 @@ export default {
 .v-btn:not(.v-btn--round).v-size--default {
   padding: 0;
   min-width: 0;
+  font-size: 1em !important;
 }
 
 

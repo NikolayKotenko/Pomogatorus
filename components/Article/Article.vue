@@ -29,9 +29,7 @@
             <div
               class="views"
             >
-              <v-icon class="icons">
-                mdi-eye
-              </v-icon>
+              <img :src="require('/assets/svg/icons/eye_icon.svg')">
               <span class="text">{{ getViews }}</span>
             </div>
           </TooltipStyled>
@@ -46,6 +44,7 @@ import ButtonStyled from '../Common/ButtonStyled.vue';
 import TooltipStyled from '../Common/TooltipStyled.vue';
 import ViewsAndLikes from '../Common/ViewsAndLikes.vue';
 import Author from './Author';
+import { req } from 'vuelidate/lib/validators/common';
 
 export default {
   name: 'Article',
@@ -73,11 +72,14 @@ export default {
     }
   },
   methods: {
+    req
   }
 };
 </script>
 
 <style lang="scss" scoped>
+@import 'assets/styles/style';
+
 .article_card {
   max-width: 850px;
   border-radius: 30px !important;
@@ -104,12 +106,17 @@ export default {
       text-overflow: ellipsis;
     }
     .article_info {
-      font-size: 0.9em;
+      font-size: 0.875em;
       color: #898989;
       text-transform: uppercase;
       display: flex;
       grid-column-gap: 20px;
       align-items: center;
+      .views {
+        display: flex;
+        align-items: center;
+        column-gap: 4px;
+      }
     }
   }
 
@@ -145,6 +152,7 @@ export default {
       position: absolute;
       bottom: 20px;
       right: 20px;
+      box-shadow: $shadowBox;
     }
   }
 

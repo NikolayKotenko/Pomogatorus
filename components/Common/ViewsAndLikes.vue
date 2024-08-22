@@ -1,18 +1,5 @@
 <template>
   <div :class="{ views_and_likes_wrapper: !isBigArticle, is_big_article_style: isBigArticle}">
-    <template v-if="isBigArticle">
-      <TooltipStyled :is-top="true" :title="'Кол-во просмотров'">
-        <div
-          class="wrapper"
-          :class="{'animation_pulse': animationViews}"
-        >
-          <v-icon class="icons" :class="{'hover': animationViews}">
-            mdi-eye-outline
-          </v-icon>
-          <span class="text">{{ getViews }}</span>
-        </div>
-      </TooltipStyled>
-    </template>
 
     <TooltipStyled :is-top="true" :title="'Понравилось'">
       <div
