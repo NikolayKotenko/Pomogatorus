@@ -16,12 +16,20 @@
     max-width: 720px !important;
   }
   @media only screen and (min-width: 992px) {
-    max-width: 960px !important;
+    max-width: 850px !important;
   }
   @media only screen and (min-width: 1200px) {
-    max-width: 1140px !important;
+    max-width: 850px !important;
   }
 }
+
+.main_content {
+  @media only screen and (min-width: 1333px) {
+    font-size: 0.875em !important;
+  }
+}
+
+
 
 @media only screen and (max-width: 1268px) {
   //.main__left_column {

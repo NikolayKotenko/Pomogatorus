@@ -73,7 +73,7 @@
               :loading="loading"
               :local-text="'Войти'"
               class="login_btn"
-              local-class="style_button"
+              local-class="bordered_regular_style_btn"
               @click-button="localLoginUser"
             />
           </div>
@@ -330,6 +330,7 @@ export default {
     .login_btn {
       display: flex;
       justify-content: center;
+      padding: 10px 100px !important;
       margin: 0 auto;
     }
   }

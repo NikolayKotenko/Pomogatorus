@@ -69,7 +69,18 @@
           @answer="setAnswer"
         />
       </template>
-      <template v-else>
+      <template v-if="!$store.getters.stateAuth">
+        <div class="authorization_message">
+          Чтобы увидеть вопросы -
+          <div
+            class="btn"
+            @click="$store.dispatch('openAuthModal')"
+          >
+            авторизуйтесь
+          </div>
+        </div>
+      </template>
+      <template v-if="$store.state.ArticleModule.isLoadingAnswers && $store.getters.stateAuth">
         <div class="load_questions">
           <v-progress-circular
             color="#FF6347"
@@ -86,31 +97,32 @@
     <!--    /> -->
 
     <div class="sticky_panel">
-      <v-progress-circular
-        v-if="$store.state.ArticleModule.isLoadingAnswers"
-        :size="50"
-        color="#000000"
-        indeterminate
-      />
-      <div v-else class="progress_bar">
-        <v-icon
-          v-if="valuePercentage >= 100"
-          color="#FF6347"
-          size="44"
-        >
-          mdi-check-circle
-        </v-icon>
+      <template v-if="$store.getters.stateAuth && parsedAnswers().length">
         <v-progress-circular
-          v-else
-          size="40"
-          width="10"
-          :value="valuePercentage"
-          color="#FF6347"
+          v-if="$store.state.ArticleModule.isLoadingAnswers"
+          :size="50"
+          color="#000000"
+          indeterminate
         />
-        {{ parsedAnswers().length }} из {{ $store.state.PopularSelectionsModule.questions.length }}
-        вопросов заполнено
-      </div>
-
+        <div v-else class="progress_bar">
+          <v-icon
+            v-if="valuePercentage >= 100"
+            color="#FF6347"
+            size="44"
+          >
+            mdi-check-circle
+          </v-icon>
+          <v-progress-circular
+            v-else
+            size="40"
+            width="10"
+            :value="valuePercentage"
+            color="#FF6347"
+          />
+          {{ parsedAnswers().length }} из {{ $store.state.PopularSelectionsModule.questions.length }}
+          вопросов заполнено
+        </div>
+      </template>
 
       <div class="bookmarks_and_share">
         <!--        <TooltipStyled :is-top="true" :title="'Добавить в закладки'"> -->
@@ -396,7 +408,18 @@ export default {
     background-color: $white-color;
     padding: 20px;
 
-
+    .authorization_message {
+      display: flex;
+      padding: 10px;
+      background-color: $grey1;
+      border-radius: $b-r16;
+      .btn {
+        color: $red;
+        cursor: pointer;
+        text-decoration: underline;
+        margin-left: 4px;
+      }
+    }
     .tags_title {
       @extend .main-page-header;
     }
@@ -547,6 +570,7 @@ export default {
   .bookmarks_and_share {
     display: flex;
     grid-column-gap: 20px;
+    margin-left: auto;
 
     .btn_wrapper {
       display: flex;
