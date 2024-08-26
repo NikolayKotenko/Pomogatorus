@@ -43,9 +43,9 @@
       <div class="question_wrapper__content__question">
         <v-icon
           v-if="answer"
+          class="check_answer_icon"
           color="#FF6347"
           size="24"
-          class="check_answer_icon"
         >
           mdi-check-circle
         </v-icon>
@@ -321,14 +321,14 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
-import CompareArrays from '../../utils/compareArrays'
-import AuthModal from '../Modals/AuthModal'
-import InputStyled from '../Common/InputStyled'
-import TextAreaStyled from '../Common/TextAreaStyled'
-import TooltipStyled from '../Common/TooltipStyled.vue'
-import DropzoneInput from '../Common/DropzoneInput'
-import Answers from '@/services/answers/answers'
+import { mapActions, mapGetters } from 'vuex';
+import CompareArrays from '../../utils/compareArrays';
+import AuthModal from '../Modals/AuthModal';
+import InputStyled from '../Common/InputStyled';
+import TextAreaStyled from '../Common/TextAreaStyled';
+import TooltipStyled from '../Common/TooltipStyled.vue';
+import DropzoneInput from '../Common/DropzoneInput';
+import Answers from '@/services/answers/answers';
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -807,12 +807,15 @@ export default {
         }
       } else {
         let parsed = null
-        parsed = JSON.parse(JSON.parse(this.question_data.value_type_answer))
-        if (Array.isArray(parsed)) {
+        this.value_type_answer = []
+
+        parsed = JSON.parse(this.question_data.value_type_answer);
+        if (Array.isArray(parsed)){
           this.value_type_answer = parsed
-        } else {
-          this.value_type_answer = []
+          return false;
         }
+        parsed = JSON.parse(parsed);
+        this.value_type_answer = parsed
       }
     },
     getWidthOfControls() {
