@@ -393,9 +393,6 @@ export default {
 .tags_detail {
   display: flex;
   flex-direction: column;
-  max-width: 850px;
-  margin-right: auto;
-  margin-left: auto;
   row-gap: 20px;
   font-family: 'Inter', sans-serif;
   align-items: center;
@@ -474,12 +471,10 @@ export default {
   }
 
   .more_articles_wrapper {
-    max-width: 850px;
-    margin: 0 auto;
+    width: 100%;
     background-color: $white-color;
     border-radius: $b-r16;
     padding-bottom: 20px;
-
 
     .wrapper_header {
       display: flex;
@@ -489,7 +484,7 @@ export default {
 
     .small_articles_slider {
       display: flex;
-
+      grid-column-gap: 20px;
       .slider_item_style {
         flex: 0 0 auto;
         max-width: 50%;
@@ -520,8 +515,8 @@ export default {
   background: transparent;
   width: 304px;
   min-height: 400px;
-  top: 133px;;
-  right: -200px;
+  top: 118px;;
+  right: -314px;
   z-index: 101;
   opacity: .5;
   transition: $transition;
@@ -592,6 +587,14 @@ export default {
   .more_article {
     display: grid;
     justify-content: center;
+  }
+}
+@media only screen and (max-width: 1600px) {
+  .position-right {
+    display: none !important;
+  }
+  .position_left {
+    display: none !important;
   }
 }
 </style>

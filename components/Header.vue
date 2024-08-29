@@ -718,21 +718,30 @@ export default {
   top: 0 !important;
 }
 
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 1333px) {
   .search_container {
     width: 200px;
   }
-}
-
-@media screen and (max-width: 800px) {
-  .search_container {
-    width: 100px;
+  .header_left {
+    display: none;
+  }
+  .header {
+    font-size: 0.875em !important;
   }
 }
 
-@media screen and (max-width: 750px) {
+@media screen and (max-width: 992px) {
   .search_container {
-    width: 50px;
+    width: 100px;
+  }
+  .header {
+    font-size: 0.75em !important;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .search_container {
+    width: 75px;
   }
 }
 
@@ -852,6 +861,17 @@ export default {
       padding: 20px 0 0 20px;
     }
   }
+}
+
+
+.main {
+  @media only screen and (max-width: 1333px) {
+    font-size: 0.875em !important;
+  }
+  @media only screen and (max-width: 992px) {
+    font-size: 0.75em !important;
+  }
+
 }
 
 </style>

@@ -216,6 +216,12 @@ body {
 .header_wrapper {
   position: sticky !important;
   margin: 40px 100px 84px 100px !important;
+  @media only screen and (max-width: 768px) {
+    margin: 20px 50px 42px 50px !important;
+  }
+  @media only screen and (max-width: 576px) {
+    margin: 20px !important;
+  }
 }
 
 .main {
@@ -227,6 +233,9 @@ body {
   margin: 5px auto 0 auto;
   border-radius: 124px;
   padding: unset !important;
+  @media only screen and (max-width: 768px) {
+    border-radius: 50px !important;
+  }
 
 
   &__left_column {

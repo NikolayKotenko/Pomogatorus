@@ -31,33 +31,33 @@
         <!--          </div> -->
         <!--        </div> -->
       </div>
-      <div class="article_info_wrapper__info__right">
-        <v-btn-toggle v-model="articleView" color="deep-purple accent-3" dense @change="setView">
-          <TooltipStyled :title="'Переключить на обычное отображение статьи'">
-            <template>
-              <v-btn
-                large
-                value="normal"
-              >
-                <v-icon>
-                  mdi-text-box-search-outline
-                </v-icon>
-              </v-btn>
-            </template>
-          </TooltipStyled>
+<!--      <div class="article_info_wrapper__info__right">-->
+<!--        <v-btn-toggle v-model="articleView" color="deep-purple accent-3" dense @change="setView">-->
+<!--          <TooltipStyled :title="'Переключить на обычное отображение статьи'">-->
+<!--            <template>-->
+<!--              <v-btn-->
+<!--                large-->
+<!--                value="normal"-->
+<!--              >-->
+<!--                <v-icon>-->
+<!--                  mdi-text-box-search-outline-->
+<!--                </v-icon>-->
+<!--              </v-btn>-->
+<!--            </template>-->
+<!--          </TooltipStyled>-->
 
-          <TooltipStyled :title="'Оставить только вопросы'">
-            <template>
-              <v-btn
-                large
-                value="flat"
-              >
-                <v-icon> mdi-form-select</v-icon>
-              </v-btn>
-            </template>
-          </TooltipStyled>
-        </v-btn-toggle>
-      </div>
+<!--          <TooltipStyled :title="'Оставить только вопросы'">-->
+<!--            <template>-->
+<!--              <v-btn-->
+<!--                large-->
+<!--                value="flat"-->
+<!--              >-->
+<!--                <v-icon> mdi-form-select</v-icon>-->
+<!--              </v-btn>-->
+<!--            </template>-->
+<!--          </TooltipStyled>-->
+<!--        </v-btn-toggle>-->
+<!--      </div>-->
     </div>
     <v-img
       :src="$store.getters.getImageByEClientFilesObj(articleData.e_client_files)"

@@ -991,4 +991,23 @@ export default {
   display: grid;
 
 }
+
+.question_wrapper {
+  @media only screen and (max-width: 1333px) {
+    font-size: 0.875em !important;
+  }
+  @media only screen and (max-width: 992px) {
+    font-size: 0.75em !important;
+  }
+
+}
+
+.answerList {
+  @media only screen and (max-width: 1333px) {
+    font-size: 0.875em !important;
+  }
+  @media only screen and (max-width: 992px) {
+    font-size: 0.75em !important;
+  }
+}
 </style>
