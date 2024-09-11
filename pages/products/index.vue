@@ -1,7 +1,7 @@
 <template>
   <div class="products_page_wrapper">
     <DevelopedMessage
-      v-if="isDeveloped"
+      v-if="!isDeveloped"
     />
     <v-container v-else>
       <!--    <div class="search_container"> -->

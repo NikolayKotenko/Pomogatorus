@@ -1,15 +1,15 @@
 <template>
   <div :class="{ views_and_likes_wrapper: !isBigArticle, is_big_article_style: isBigArticle}">
-
     <TooltipStyled :is-top="true" :title="'Понравилось'">
       <div
         class="wrapper"
         @click="setLikesDislikes(stateLike ? null : 1)"
         @submit.prevent="$store.dispatch('linkToArticle', article.id)"
       >
-        <v-icon :class="{active: stateLike}" class="icons">
-          mdi-thumb-up
-        </v-icon>
+        <img
+          :src="require('/assets/svg/icons/thumb_up.svg')"
+          :class="{active: stateLike}"
+        >
         <span class="text">{{ getCountLike }}</span>
       </div>
     </TooltipStyled>
@@ -21,9 +21,10 @@
         class="wrapper"
         @click="setLikesDislikes(stateDislike ? null : 0)"
       >
-        <v-icon :class="{active: stateDislike}" class="icons">
-          mdi-thumb-down
-        </v-icon>
+        <img
+          :src="require('/assets/svg/icons/thumb_down.svg')"
+          :class="{active: stateLike}"
+        >
         <span class="text">{{ getCountDisLike }}</span>
       </div>
     </TooltipStyled>
@@ -187,14 +188,16 @@ export default {
 .views_and_likes_wrapper {
   display: flex;
   align-items: center;
-  grid-column-gap: 20px;
+  grid-column-gap: 10px;
+  font-size: 0.875em;
   .wrapper {
     display: flex;
     grid-column-gap: 5px;
     align-items: center;
     background-color: #DDDDDD;
-    border-radius: 15px;
-    padding: 10px 20px;
+    border-radius: $b-r8;
+    height: 30px;
+    padding: 5px 10px;
     cursor: pointer;
   }
 }
@@ -232,7 +235,7 @@ body .icons {
   }
 
   &:active, &.active {
-    color: #FF6347 !important;
+    fill: #FF6347 !important;
   }
 }
 

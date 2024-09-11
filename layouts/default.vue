@@ -7,7 +7,7 @@
       <!--        v-if="$store.state.stateVerticalMenu" -->
       <!--        class="fixed_left_menu" -->
       <!--      /> -->
-      <Nuxt :class="{ custom_grid_system : ! isListObjects || ! isArticlePage }"/>
+      <Nuxt :class="{ custom_grid_system : ! isListObjects || isArticlePage }"/>
 
       <!--   WIDGETS   -->
       <!--      <WrapperStickyCurrentObject v-if="!listExcludedRightColumn && $device.isDesktop"/> -->

@@ -7,20 +7,54 @@
     <template v-if="Object.keys(question_data).length">
       <div class="question_wrapper__content">
         <div class="question_wrapper__title">
-          <h3>{{ question_data.name }}</h3>
-          <div v-if="question_data.title" class="helper_wrapper">
-            <v-tooltip bottom>
-              <template #activator="{ on, attrs }">
+          <div>{{ question_data.name }}</div>
+          <div v-if="question_data.title || question_data.name" class="helper_wrapper">
+            <DropDownMenuStyled
+              :is-left="true"
+              :is-top="true"
+              :is-offset-y="false"
+            >
+              <template #icon>
                 <img
-                  :src="require(`~/assets/svg/help-circle.svg`)"
+                  :src="require(`~/assets/svg/icons/question_icon.svg`)"
                   alt="help"
-                  class="help_img"
-                  v-bind="attrs"
-                  v-on="on"
+                  style="height: 24px; display: flex;'"
                 >
               </template>
-              <span>{{ question_data.title }}</span>
-            </v-tooltip>
+              <template #content>
+                <div class="advice_wrapper">
+                  <div class="popup_img">
+                    <v-img
+                      :src="require(`~/assets/mascot/pomogaikin_with_popup.svg`)"
+                      cover
+                      width="315"
+                      height="284"
+                    />
+                    <div class="popup_content">
+                      <div class="popup_title">
+                        Как узнать мощность необходимую для отопления объекта?
+                      </div>
+                      <div class="popup_text">
+                        {{ question_data.title }}
+                      </div>
+                      <div class="popup_btn">
+                        <v-divider style="border-color: #777777;"/>
+                        <p class="btn_text">
+                          OK
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!--                <span>{{ question_data.title }}</span> -->
+              </template>
+            </DropDownMenuStyled>
+            <v-divider style="border-color: #DDDDDD !important;" vertical/>
+            <img
+              v-if="answer"
+              :src="require(`~/assets/svg/icons/check_icon.svg`)"
+              alt="check"
+            >
           </div>
         </div>
         <!-- STATUS -->
@@ -888,7 +922,8 @@ export default {
   height: auto;
 
   &__content {
-    font-size: 1.1em;
+    font-size: 1em;
+    font-weight: 600;
   }
 
 
@@ -919,6 +954,7 @@ export default {
       transition: $transition;
       padding-bottom: 10px;
       color: #000000 !important;
+      font-size: 0.875em;
       .check_answer_icon {
         position: absolute;
         top: -36px;
@@ -990,5 +1026,25 @@ export default {
   height: 50px !important;
   display: grid;
 
+}
+
+.question_wrapper {
+  @media only screen and (max-width: 1333px) {
+    font-size: 0.875em !important;
+  }
+  @media only screen and (max-width: 992px) {
+    font-size: 0.75em !important;
+  }
+
+}
+
+.answerList {
+  font-size: 0.875em;
+  @media only screen and (max-width: 1333px) {
+    font-size: 0.875em !important;
+  }
+  @media only screen and (max-width: 992px) {
+    font-size: 0.75em !important;
+  }
 }
 </style>

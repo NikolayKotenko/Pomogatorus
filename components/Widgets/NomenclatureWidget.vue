@@ -45,27 +45,27 @@
       </VueSlickCarousel>
     </div>
 
-    <div class="w-slider-wrapper-info">
-      <template v-if="getCurrentNomenclature.isLoading">
-        <ShimmerNomenclatureWidget/>
-      </template>
+    <!--    <div class="w-slider-wrapper-info"> -->
+    <!--      <template v-if="getCurrentNomenclature.isLoading"> -->
+    <!--        <ShimmerNomenclatureWidget/> -->
+    <!--      </template> -->
 
-      <template v-else-if="!getCurrentNomenclature || !Object.keys(getCurrentNomenclature).length">
-        <span class="c-slider-error">Ошибка получения данных</span>
+    <!--      <template v-else-if="!getCurrentNomenclature || !Object.keys(getCurrentNomenclature).length"> -->
+    <!--        <span class="c-slider-error">Ошибка получения данных</span> -->
 
-        <v-icon class="mt-1" color="orange">
-          mdi-alert
-        </v-icon>
-      </template>
+    <!--        <v-icon class="mt-1" color="orange"> -->
+    <!--          mdi-alert -->
+    <!--        </v-icon> -->
+    <!--      </template> -->
 
-      <template v-else>
-        <div class="w-slider-wrapper-info__wrapper">
-          <div class="w-slider-wrapper-info__wrapper__label">
-            {{ getCurrentNomenclature.data.name }}
-          </div>
-        </div>
-      </template>
-    </div>
+    <!--      <template v-else> -->
+    <!--        <div class="w-slider-wrapper-info__wrapper"> -->
+    <!--          <div class="w-slider-wrapper-info__wrapper__label"> -->
+    <!--            {{ getCurrentNomenclature.data.name }} -->
+    <!--          </div> -->
+    <!--        </div> -->
+    <!--      </template> -->
+    <!--    </div> -->
   </div>
 </template>
 
@@ -126,11 +126,11 @@ export default {
     ],
 
     sliderOptions: {
-      'dots': false,
-      'infinite': true,
+      'dots': true,
+      'infinite': false,
       'speed': 500,
-      'slidesToShow': 1,
-      'slidesToScroll': 1,
+      'slidesToShow': 3,
+      'slidesToScroll': 3,
       'initialSlide': 0
     }
   }),
@@ -232,3 +232,4 @@ export default {
   }
 }
 </script>
+

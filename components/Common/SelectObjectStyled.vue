@@ -20,6 +20,7 @@
     :placeholder="computedPlaceholder"
     :search-input.sync="blockSearch"
     :solo="isSolo"
+    outlined
     dense
     filled
     hide-details
@@ -248,23 +249,30 @@ export default {
 </script>
 
 <style lang='scss'>
-@import '@/assets/styles/global.scss';
+@import 'assets/styles/style';
 
 
 .selector-custom {
+  border-radius: $b-r8;
+  border-color: $grey2;
+  padding: 10px 0 !important;
   .v-select__selections {
-
     input {
       position: absolute !important;
       pointer-events: none !important;
       opacity: 1;
+      height: 32px !important;
     }
   }
 
   .v-input__control {
+    height: 32px !important;
+    min-height: 32px !important;
     .v-input__slot {
-      font-size: 1.25em;
+      font-size: 0.75em;
       box-shadow: none !important;
+      height: 32px !important;
+      min-height: 32px !important;
     }
   }
 }

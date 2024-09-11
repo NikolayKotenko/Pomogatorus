@@ -44,7 +44,7 @@ export default {
 
 <style lang='scss' scoped>
 .article-description-widget {
-
+  font-size: 0.75em;
   &__links {
     display: flex;
     flex-direction: column;
@@ -72,7 +72,7 @@ export default {
     }
 
     &__content {
-      width: 276px;
+      width: 270px;
       border-radius: 0 0 15px 15px;
       background: white;
 
