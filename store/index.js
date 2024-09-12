@@ -131,13 +131,13 @@ const createStore = () => {
             title: 'Заявки',
             path: '/notifications',
             icon: 'mdi-bell-outline',
-            visible: true,
+            visible: false,
           },
           {
             title: 'Специалисты',
             path: '/people',
             icon: 'mdi-account-group-outline',
-            visible: true,
+            visible: false,
           },
           {
             title: 'Личный кабинет',

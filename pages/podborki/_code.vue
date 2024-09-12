@@ -69,7 +69,18 @@
           @answer="setAnswer"
         />
       </template>
-      <template v-else>
+      <template v-if="!$store.getters.stateAuth">
+        <div class="authorization_message">
+          Чтобы увидеть вопросы -
+          <div
+            class="btn"
+            @click="$store.dispatch('openAuthModal')"
+          >
+            авторизуйтесь
+          </div>
+        </div>
+      </template>
+      <template v-if="$store.state.ArticleModule.isLoadingAnswers && $store.getters.stateAuth">
         <div class="load_questions">
           <v-progress-circular
             color="#FF6347"
@@ -86,31 +97,32 @@
     <!--    /> -->
 
     <div class="sticky_panel">
-      <v-progress-circular
-        v-if="$store.state.ArticleModule.isLoadingAnswers"
-        :size="50"
-        color="#000000"
-        indeterminate
-      />
-      <div v-else class="progress_bar">
-        <v-icon
-          v-if="valuePercentage >= 100"
-          color="#FF6347"
-          size="44"
-        >
-          mdi-check-circle
-        </v-icon>
+      <template v-if="$store.getters.stateAuth && parsedAnswers().length">
         <v-progress-circular
-          v-else
-          size="40"
-          width="10"
-          :value="valuePercentage"
-          color="#FF6347"
+          v-if="$store.state.ArticleModule.isLoadingAnswers"
+          :size="50"
+          color="#000000"
+          indeterminate
         />
-        {{ parsedAnswers().length }} из {{ $store.state.PopularSelectionsModule.questions.length }}
-        вопросов заполнено
-      </div>
-
+        <div v-else class="progress_bar">
+          <v-icon
+            v-if="valuePercentage >= 100"
+            color="#FF6347"
+            size="44"
+          >
+            mdi-check-circle
+          </v-icon>
+          <v-progress-circular
+            v-else
+            size="40"
+            width="10"
+            :value="valuePercentage"
+            color="#FF6347"
+          />
+          {{ parsedAnswers().length }} из {{ $store.state.PopularSelectionsModule.questions.length }}
+          вопросов заполнено
+        </div>
+      </template>
 
       <div class="bookmarks_and_share">
         <!--        <TooltipStyled :is-top="true" :title="'Добавить в закладки'"> -->
@@ -381,9 +393,6 @@ export default {
 .tags_detail {
   display: flex;
   flex-direction: column;
-  max-width: 850px;
-  margin-right: auto;
-  margin-left: auto;
   row-gap: 20px;
   font-family: 'Inter', sans-serif;
   align-items: center;
@@ -396,7 +405,18 @@ export default {
     background-color: $white-color;
     padding: 20px;
 
-
+    .authorization_message {
+      display: flex;
+      padding: 10px;
+      background-color: $grey1;
+      border-radius: $b-r16;
+      .btn {
+        color: $red;
+        cursor: pointer;
+        text-decoration: underline;
+        margin-left: 4px;
+      }
+    }
     .tags_title {
       @extend .main-page-header;
     }
@@ -451,12 +471,10 @@ export default {
   }
 
   .more_articles_wrapper {
-    max-width: 850px;
-    margin: 0 auto;
+    width: 100%;
     background-color: $white-color;
     border-radius: $b-r16;
     padding-bottom: 20px;
-
 
     .wrapper_header {
       display: flex;
@@ -466,7 +484,7 @@ export default {
 
     .small_articles_slider {
       display: flex;
-
+      grid-column-gap: 20px;
       .slider_item_style {
         flex: 0 0 auto;
         max-width: 50%;
@@ -497,8 +515,8 @@ export default {
   background: transparent;
   width: 304px;
   min-height: 400px;
-  top: 133px;;
-  right: -200px;
+  top: 118px;;
+  right: -314px;
   z-index: 101;
   opacity: .5;
   transition: $transition;
@@ -547,6 +565,7 @@ export default {
   .bookmarks_and_share {
     display: flex;
     grid-column-gap: 20px;
+    margin-left: auto;
 
     .btn_wrapper {
       display: flex;
@@ -568,6 +587,14 @@ export default {
   .more_article {
     display: grid;
     justify-content: center;
+  }
+}
+@media only screen and (max-width: 1600px) {
+  .position-right {
+    display: none !important;
+  }
+  .position_left {
+    display: none !important;
   }
 }
 </style>

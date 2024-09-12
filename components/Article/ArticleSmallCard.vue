@@ -62,7 +62,6 @@ export default {
       display: block;
       width: 100%;
       border-radius: $b-r30 !important;
-      border: $img-border;
 
     }
     &::before {
@@ -106,7 +105,7 @@ export default {
   display: grid;
   position: relative;
   border-radius: $b-r30 !important;
-  width: 354px;
+  width: 340px;
   max-height: 220px;
   cursor: pointer;
   transition: $transition;
@@ -119,7 +118,6 @@ export default {
     display: inline-block;
     overflow: hidden;
     border-radius: $b-r30 !important;
-    border: $img-border;
     .img {
       height: auto;
       display: block;

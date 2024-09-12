@@ -21,7 +21,7 @@
   font-family: 'Inter', sans-serif !important;
   font-size: 1em;
   color: #000000;
-  
+
   h2 {
     border-bottom: 1px solid #DDDDDD !important;
   }
@@ -30,6 +30,17 @@
     list-style-type: disc !important;
   }
 }
+
+.main {
+  @media only screen and (max-width: 1333px) {
+    font-size: 0.875em !important;
+  }
+  @media only screen and (max-width: 992px) {
+    font-size: 0.75em !important;
+  }
+
+}
+
 
 .activeElement {
   color: #95D7AE;

@@ -40,9 +40,9 @@
               height="93"
             />
             <v-divider class="divider" vertical/>
-            <h1 class="article-template__header__title">
-              <div>{{ article.name }}</div>
-            </h1>
+            <div class="article_name">
+              {{ article.name }}
+            </div>
           </div>
           <div class="article_purpose">
             {{ article.purpose_of_article }}
@@ -881,8 +881,8 @@ export default {
     background: transparent;
     width: 304px;
     min-height: 400px;
-    top: 260px;
-    left: -200px;
+    top: 196px;
+    left: -340px;
     z-index: 101;
     opacity: .5;
     transition: $transition;
@@ -1215,7 +1215,7 @@ export default {
   display: flex;
   font-family: 'Inter', sans-serif;
   justify-content: space-between;
-  width: 850px;
+  width: 100%;
   margin: 0 auto;
   padding: 20px 20px;
 
@@ -1292,8 +1292,8 @@ export default {
   background: transparent;
   width: 304px;
   min-height: 400px;
-  top: 260px;
-  right: -200px;
+  top: 196px;
+  right: -314px;
   z-index: 101;
   opacity: .5;
   transition: $transition;
@@ -1316,5 +1316,28 @@ export default {
   //  top: 63px;
   //}
 
+}
+@media only screen and (max-width: 1600px) {
+  .position-right {
+    display: none !important;
+  }
+  .position_left {
+    display: none !important;
+  }
+}
+
+.article_name {
+  margin: 10px 0 10px 0;
+  padding-bottom: 6px;
+  font-size: 2em !important;
+  font-weight: 700;
+
+  @media only screen and (max-width: 1333px) {
+    font-size: 1.5em !important;
+  }
+
+  @media only screen and (max-width: 992px) {
+    font-size: 1em !important;
+  }
 }
 </style>

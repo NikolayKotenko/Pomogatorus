@@ -7,7 +7,7 @@
     <template v-if="Object.keys(question_data).length">
       <div class="question_wrapper__content">
         <div class="question_wrapper__title">
-          <div>{{ question_data.name }}</div>
+          <h3>{{ question_data.name }}</h3>
           <div v-if="question_data.title || question_data.name" class="helper_wrapper">
             <DropDownMenuStyled
               :is-left="true"
@@ -73,16 +73,10 @@
         </transition>
       </div>
 
+      <v-divider style="padding: 10px 0;  border-color: #DDDDDD;"/>
+
       <!-- QUESTION -->
       <div class="question_wrapper__content__question">
-        <v-icon
-          v-if="answer"
-          class="check_answer_icon"
-          color="#FF6347"
-          size="24"
-        >
-          mdi-check-circle
-        </v-icon>
         <template v-if="question_data.id_type_answer == '1'">
           <InputStyled
             :data="answer"
@@ -356,18 +350,21 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import { req } from 'vuelidate/lib/validators/common'
 import CompareArrays from '../../utils/compareArrays';
 import AuthModal from '../Modals/AuthModal';
 import InputStyled from '../Common/InputStyled';
 import TextAreaStyled from '../Common/TextAreaStyled';
 import TooltipStyled from '../Common/TooltipStyled.vue';
 import DropzoneInput from '../Common/DropzoneInput';
+import DropDownMenuStyled from '../Common/DropDownMenuStyled.vue'
+import BrandCard from '../Common/BrandCard.vue'
 import Answers from '@/services/answers/answers';
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Question',
-  components: { DropzoneInput, TooltipStyled, TextAreaStyled, InputStyled, AuthModal },
+  components: { BrandCard, DropDownMenuStyled, DropzoneInput, TooltipStyled, TextAreaStyled, InputStyled, AuthModal },
   props: {
     propsData: {
       type: Object,
@@ -524,6 +521,7 @@ export default {
     }
   },
   methods: {
+    req,
     ...mapActions('Objects', ['createNewObject']),
     ...mapGetters(['getQuestionAnswer']),
 
@@ -929,9 +927,11 @@ export default {
 
   &__title {
     display: flex;
+    width: 100%;
     column-gap: 15px;
     padding-bottom: 5px;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: space-between;
   }
 
   &__divider {
@@ -968,15 +968,15 @@ export default {
 }
 
 .v-menu__content {
-  background: #ffffff;
+  background: none;
   padding: 15px;
 }
 
 .helper_wrapper {
   display: flex;
   justify-content: center;
-  align-items: center;
-  padding-top: 2px;
+  column-gap: 10px;
+
 }
 
 .helper_wrapper__help {
@@ -984,12 +984,39 @@ export default {
   transition: $transition;
 }
 
-.help_img {
-  width: 20px;
-  height: 20px;
-  margin-bottom: 3px;
-  //padding-top: 2px;
+.advice_wrapper {
+  position: relative;
+  width: 315px;
+  .popup_img {
+    position: relative;
+    .popup_content {
+      position: absolute;
+      top: 10px;
+      padding: 20px;
+      left: 10px;
+      max-width: 248px;
+      display: grid;
+      row-gap: 12px;
+      .popup_title {
+        @extend .text14;
+        font-weight: 700 !important;
+      }
+      .popup_text {
+        @extend .grey-text14;
+      }
+      .popup_btn {
+        display: grid;
+        row-gap: 8px;
+        .btn_text {
+          display: flex;
+          justify-content: center;
+          @extend .text12;
+        }
+      }
+    }
+  }
 }
+
 
 .file_input {
   display: grid;
@@ -1039,7 +1066,6 @@ export default {
 }
 
 .answerList {
-  font-size: 0.875em;
   @media only screen and (max-width: 1333px) {
     font-size: 0.875em !important;
   }
