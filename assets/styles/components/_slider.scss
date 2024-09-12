@@ -155,6 +155,7 @@
     }
   }
 
+
   .slick-prev {
     left: 10px;
     z-index: 1;
@@ -169,7 +170,7 @@
   }
 
   .slick-list {
-    height: 250px;
+    height: 180px;
   }
 
   .w-slider-nomenclature {
@@ -280,6 +281,14 @@
 
 .hovered-widget {
   background: #FFF4CB !important;
+}
+
+.slick-next::before {
+  color: black;
+}
+
+.slick-prev::before{
+  color: black;
 }
 
 @media only screen and (max-width: 768px) {

@@ -3,7 +3,7 @@
     <div class="w-slider-wrapper-slider-container">
       <VueSlickCarousel
         v-if="nomenclatureList.length"
-        ref="v-carousel"
+        ref="carousel"
         v-bind="sliderOptions"
         @beforeChange="changeSlide"
         @init="onInitCarousel"
@@ -12,7 +12,6 @@
           v-for="(slide, index) in nomenclatureList"
           :key="index"
           class="w-slider-nomenclature"
-          draggable="false"
         >
           <div class="w-slider-nomenclature__slide" draggable="false">
             <!--     LOADER STATE     -->
@@ -38,11 +37,21 @@
 
             <!--     SUCCESS STATE     -->
             <template v-else>
-              <NomenclatureCard :nomenclature-data="slide" no-info @click="onCLickNomenclature"/>
+              <NomenclatureCard :nomenclature-data="slide" no-info/>
             </template>
           </div>
         </div>
       </VueSlickCarousel>
+<!--      <v-btn-->
+<!--        @click="showNext"-->
+<!--      >-->
+<!--        След-->
+<!--      </v-btn>-->
+<!--      <v-btn-->
+<!--        @click="showPrev"-->
+<!--      >-->
+<!--        Пред-->
+<!--      </v-btn>-->
     </div>
 
     <!--    <div class="w-slider-wrapper-info"> -->
@@ -70,7 +79,7 @@
 </template>
 
 <script>
-import VueSlickCarousel from 'vue-slick-carousel'
+import VueSlickCarousel from 'vue-slick-carousel';
 import 'vue-slick-carousel/dist/vue-slick-carousel.css'
 import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
 
@@ -126,12 +135,14 @@ export default {
     ],
 
     sliderOptions: {
-      'dots': true,
-      'infinite': false,
-      'speed': 500,
-      'slidesToShow': 3,
-      'slidesToScroll': 3,
-      'initialSlide': 0
+      dots: true,
+      arrows: true,
+      focusOnSelect: true,
+      infinite: false,
+      speed: 500,
+      slidesToShow: 3,
+      slidesToScroll: 3,
+      touchThreshold: 5
     }
   }),
   computed: {
@@ -174,6 +185,14 @@ export default {
     this.getNomenclature('start')
   },
   methods: {
+    showNext() {
+      this.$refs.carousel.next()
+      console.log("showNext")
+    },
+    showPrev() {
+      this.$refs.carousel.prev()
+      console.log("showPrev")
+    },
     async getNomenclature(type) {
       // TODO переделать на эндпоинт в store store/modules/nomenclature/index.js - getListNomenclature
       const url = this.$store.state.BASE_URL + '/entity/nomenclature'

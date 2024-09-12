@@ -28,6 +28,7 @@
 
     <!--     INFO     -->
     <div class="c-nomenclature__info">
+      <img :src="require('/assets/svg/icons/grey_dottet_bg.svg')">
       <div class="price_and_name">
         <div class="price">
           9990 P
@@ -118,7 +119,15 @@ export default {
     width: 100%;
     height: 100%;
     border-radius: 0 0 8px 8px;
+    position: relative;
+    z-index: 9;
+    img {
+      position: absolute;
+      z-index: 12;
+      padding: 2px 5px 5px;
+    }
     .price_and_name {
+      z-index: 11;
       padding: 5px 10px 10px;
       .price {
         @extend .text14;

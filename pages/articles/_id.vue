@@ -81,7 +81,7 @@
 
         <div class="main_article_wrapper">
           <div class="left_column_wrapper">
-            <div v-if="!renderArticle" class="content_wrapper" v-html="refactored_content"/>
+            <div v-if="!renderArticle" class="content_wrapper mainContentFont" v-html="refactored_content"/>
 
             <template v-if="tagsArticles.length && article">
               <div class="date_info">
@@ -117,7 +117,7 @@
                       <div class="rectangle_red"/>
                       <img class="pomogaikin_img" :src="require('/assets/mascot/pomogaikin_approves.svg')">
                     </div>
-                    <NomenclatureWidget/>
+<!--                    <NomenclatureWidget/>-->
                   </div>
                 </div>
               </div>
@@ -126,22 +126,49 @@
               <div v-if="tagsArticles[0].articles.length > 2" class="more_articles_wrapper">
                 <div class="wrapper_header">
                   <v-divider style="border-width: 2px; border-color: #111111 !important;" vertical/>
-                  <span class="text">
-                    Похожие статьи по тегам
-                  </span>
+                  <div class="title_and_tags">
+                    <div class="title">
+                      Похожие статьи по тегам
+                    </div>
+                    <div class="tags">
+                      <div class="tags_title">
+                        Теги:
+                      </div>
+                      <a
+                        v-for="(tag, index) in formattedTags"
+                        :key="index"
+                        :href="'/podborki/' + tag.code"
+                        class="tags_text"
+                      >
+                        {{ tag.name }}
+                      </a>
+                    </div>
+                  </div>
                 </div>
                 <div class="small_articles_slider">
-                  <v-slide-group>
-                    <v-slide-item
+                  <VueSlickCarousel
+                    v-bind="settingsCarousel"
+                  >
+                    <ArticleSmallCard
                       v-for="(article, index) in tagsArticles[0].articles"
                       :key="index"
-                      class="slider_item_style"
-                    >
-                      <ArticleSmallCard
-                        :article="article"
-                      />
-                    </v-slide-item>
-                  </v-slide-group>
+                      :article="article"
+                    />
+                  </VueSlickCarousel>
+
+<!--                  <v-slide-group-->
+<!--                    :show-arrows="false"-->
+<!--                  >-->
+<!--                    <v-slide-item-->
+<!--                      v-for="(article, index) in tagsArticles[0].articles"-->
+<!--                      :key="index"-->
+<!--                      class="slider_item_style"-->
+<!--                    >-->
+<!--                      <ArticleSmallCard-->
+<!--                        :article="article"-->
+<!--                      />-->
+<!--                    </v-slide-item>-->
+<!--                  </v-slide-group>-->
                 </div>
               </div>
               <div v-else class="another_slider_style">
@@ -152,35 +179,31 @@
                   </span>
                 </div>
                 <div class="small_articles_wrapper">
-                  <ArticleSmallCard
+                  <div
                     v-for="(article, index) in tagsArticles[0].articles"
                     :key="index"
-                    :article="article"
-                  />
+                  >
+                    <ArticleSmallCard
+                      :article="article"
+                    />
+                  </div>
                 </div>
               </div>
 
-              <!--      <template v-for="(tag, index) in tagsArticles"> -->
-              <!--        <div v-if="tag.articles.length" :key="index + '_tags'" class="article_info_wrapper__more_article"> -->
-              <!--          <h3> -->
-              <!--            Ещё статьи по тегу: -->
-              <!--            <HashTagStyled :text="tag.name"/> -->
-              <!--          </h3> -->
-              <!--          <div class="article_info_wrapper__more_article__wrapper"> -->
 
-              <!--          </div> -->
-              <!--        </div> -->
-              <!--      </template> -->
             </template>
           </div>
           <div class="right_column_wrapper">
-            <Biathlon
-              :questions="computedQuestions"
-            />
             <ArticleAnchors
               v-if="articleContentTitles.length"
-              :data-articles="articleContentTitles"
+              :array-titles-article="articleContentTitles"
+              :article-data="article"
               @scrollInto="scrollIntoArticle"
+              @scroll-to-object="scrollToObject"
+              @scroll-to-header="scrollToHeader"
+            />
+            <Biathlon
+              :questions="computedQuestions"
             />
           </div>
         </div>
@@ -279,6 +302,7 @@ import NomenclatureArticle from '~/components/frontLayouts/NomenclatureArticle'
 import LoginAuth from '~/components/frontLayouts/LoginAuth'
 import ArticleInfo from '~/components/Article/ArticleInfo'
 import Request from '~/services/request'
+import VueSlickCarousel from 'vue-slick-carousel';
 
 const VuetifyClass = require('vuetify')
 
@@ -294,7 +318,8 @@ export default {
     SubHeader,
     ArticleSmallCard,
     ArticleInfo,
-    ViewerStyled
+    ViewerStyled,
+    VueSlickCarousel
   },
   async asyncData({ store, params }) {
     try {
@@ -319,6 +344,14 @@ export default {
     debounceTimeout: null,
     localViewAction: false,
     articleContentTitles: [],
+    settingsCarousel: {
+      'dots': true,
+      'infinite': false,
+      'speed': 500,
+      'slidesToShow': 2,
+      'slidesToScroll': 1,
+    }
+
   }),
   head() {
     return {
@@ -600,7 +633,7 @@ export default {
         return
       }
 
-      const y = [...titles][index].getBoundingClientRect().top + window.scrollY - 70
+      const y = [...titles][index].getBoundingClientRect().top + window.scrollY - 90
 
       window.scroll({
         top: y,
@@ -608,6 +641,36 @@ export default {
       })
 
       // [...titles][index].scrollIntoView({ block: 'start', behavior: 'smooth' })
+    },
+
+    scrollToObject() {
+      const wrapper =  document.querySelector('.widgets_wrapper')
+
+      if (!wrapper) {
+        return
+      }
+
+      const y = wrapper.getBoundingClientRect().top + window.scrollY - 90
+
+      window.scroll({
+        top: y,
+        behavior: 'smooth'
+      })
+    },
+
+    scrollToHeader() {
+      const wrapper =  document.querySelector('.article_header_wrapper')
+
+      if (!wrapper) {
+        return
+      }
+
+      const y = wrapper.getBoundingClientRect().top + window.scrollY - 90
+
+      window.scroll({
+        top: y,
+        behavior: 'smooth'
+      })
     },
 
     openModal() {
@@ -932,7 +995,7 @@ export default {
       }
       .divider {
         border-color: #000000 !important;
-        border-width: 3px;
+        border-width: 2px;
         @media only screen and (max-width: 992px) {
           display: none;
         }
@@ -953,6 +1016,8 @@ export default {
         border-radius: $b-r16;
         margin-top: 20px;
         padding: 20px;
+        font-size: 0.875em;
+
       }
       .date_info {
         display: flex;
@@ -983,7 +1048,7 @@ export default {
             display: flex;
             .divider {
               border-color: #000000 !important;
-              border-width: 3px;
+              border-width: 2px;
               margin-right: 10px;
               @media only screen and (max-width: 992px) {
                 display: none;
@@ -1050,7 +1115,7 @@ export default {
 
       .divider {
         border-color: #000000 !important;
-        border-width: 3px;
+        border-width: 2px;
         margin-right: 20px;
         @media only screen and (max-width: 992px) {
           display: none;
@@ -1221,39 +1286,53 @@ export default {
 
   .tags {
     display: flex;
-
+  }
+}
 
 .more_articles_wrapper {
-
-  margin: 0 auto;
-  opacity: .5;
+  margin: 0 auto 100px;
   transition: $transition;
   &:hover {
-    opacity: 1;
   }
 
   .wrapper_header {
     display: flex;
-    padding: 0 60px;
-    margin: 20px 0;
+    margin: 40px 0 20px;
+    column-gap: 20px;
 
-    .text {
-      margin-left: 20px;
-      @extend .header-page;
+    .title_and_tags {
+      display: grid;
+      row-gap: 10px;
+      .title {
+        @extend .header-page;
+      }
+      .tags {
+        display: flex;
+
+        .tags_title {
+          margin-right: 4px;
+          @extend .grey-text14;
+        }
+
+        .tags_text {
+          margin-right: 4px;
+          @extend .grey-text14;
+        }
+      }
 
     }
   }
 
-  .small_articles_slider {
-    display: flex;
-
-    .slider_item_style {
-      flex: 0 0 auto;
-      max-width: 50%;
-      margin: 10px;
-    }
-
-  }
+  //.small_articles_slider {
+  //  display: flex;
+  //
+  //  .slider_item_style {
+  //    flex: 0 0 auto;
+  //    max-width: 50%;
+  //    margin: 10px;
+  //  }
+  //
+  //}
 }
 
 .another_slider_style {
@@ -1286,58 +1365,60 @@ export default {
   }
 }
 
-.position-right {
-  height: 100%;
-  position: absolute;
-  background: transparent;
-  width: 304px;
-  min-height: 400px;
-  top: 196px;
-  right: -314px;
-  z-index: 101;
-  opacity: .5;
-  transition: $transition;
-  &:hover {
-    opacity: 1;
-  }
+//.position-right {
+//  height: 100%;
+//  position: absolute;
+//  background: transparent;
+//  width: 304px;
+//  min-height: 400px;
+//  top: 260px;
+//  right: -200px;
+//  z-index: 101;
+//  opacity: .5;
+//  transition: $transition;
+//  &:hover {
+//    opacity: 1;
+//  }
+//
+//  .sticky-right-top {
+//    position: sticky;
+//    top: 80px;
+//    right: 0;
+//    display: flex;
+//    flex-direction: column;
+//    row-gap: 15px;
+//  }
+//
+//  //.current_object_sticky {
+//  //  position: absolute;
+//  //  right: -310px;
+//  //  top: 63px;
+//  //}
+//
+//}
 
-  .sticky-right-top {
-    position: sticky;
-    top: 80px;
-    right: 0;
-    display: flex;
-    flex-direction: column;
-    row-gap: 15px;
-  }
-
-  //.current_object_sticky {
-  //  position: absolute;
-  //  right: -310px;
-  //  top: 63px;
-  //}
-
-}
-@media only screen and (max-width: 1600px) {
-  .position-right {
-    display: none !important;
-  }
-  .position_left {
-    display: none !important;
-  }
-}
-
-.article_name {
-  margin: 10px 0 10px 0;
-  padding-bottom: 6px;
-  font-size: 2em !important;
-  font-weight: 700;
-
-  @media only screen and (max-width: 1333px) {
-    font-size: 1.5em !important;
-  }
-
-  @media only screen and (max-width: 992px) {
-    font-size: 1em !important;
-  }
-}
+//}
+//@media only screen and (max-width: 1600px) {
+//  .position-right {
+//    display: none !important;
+//  }
+//  .position_left {
+//    display: none !important;
+//  }
+//}
+//
+//.article_name {
+//  margin: 10px 0 10px 0;
+//  padding-bottom: 6px;
+//  font-size: 2em !important;
+//  font-weight: 700;
+//
+//  @media only screen and (max-width: 1333px) {
+//    font-size: 1.5em !important;
+//  }
+//
+//  @media only screen and (max-width: 992px) {
+//    font-size: 1em !important;
+//  }
+//}
 </style>

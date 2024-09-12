@@ -4,14 +4,17 @@
       <div class="article-description-widget__links__header">
         <div class="article-description-widget__links__header__red"/>
 
-        <div class="article-description-widget__links__header__title">
-          Описание
+        <div
+          class="article-description-widget__links__header__title"
+          @click="scrollToHeaderArticle"
+        >
+          {{ articleData.name }}
         </div>
       </div>
 
       <div class="article-description-widget__links__content">
         <div
-          v-for="(link, lIndex) in dataArticles"
+          v-for="(link, lIndex) in arrayTitlesArticle"
           :key="'article-' + lIndex"
           class="article-description-widget__links__content__elem"
           @click="scrollIntoArticle(lIndex)"
@@ -20,23 +23,51 @@
             {{ link.name }}
           </div>
         </div>
+        <div
+          class="article-description-widget__links__content__elem"
+          @click="scrollToCurrentObj"
+        >
+          <img :src="require('/assets/svg/icons/home_icon.svg')">
+          Текущий объект
+        </div>
+        <div
+          class="article-description-widget__links__content__elem"
+          @click="scrollToCurrentObj"
+        >
+          <img :src="require('/assets/svg/icons/thump_up_poof.svg')">
+          Рекомендации от Помогайкина
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { req } from 'vuelidate/lib/validators/common';
+
 export default {
   name: 'ArticleAnchors',
   props: {
-    dataArticles: {
+    arrayTitlesArticle: {
       type: Array,
       required: true
+    },
+    articleData: {
+      type: Object,
+      default: () => {
+      }
     }
   },
   methods: {
+    req,
     scrollIntoArticle(index) {
       this.$emit('scrollInto', index)
+    },
+    scrollToCurrentObj() {
+      this.$emit('scroll-to-object')
+    },
+    scrollToHeaderArticle() {
+      this.$emit('scroll-to-header')
     }
   }
 }
@@ -49,6 +80,8 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
+
+
 
     &__header {
       width: 100%;
@@ -65,9 +98,14 @@ export default {
 
       &__title {
         flex: 1;
-        padding-left: 34px;
+        padding: 10px 30px 10px 20px;
         display: flex;
         align-items: center;
+        cursor: pointer;
+        transition: all 0.4s ease-in-out;
+        &:hover {
+          background: darken(white, 10%);
+        }
       }
     }
 
@@ -81,6 +119,8 @@ export default {
         border-bottom: 1px solid #DDDDDD;
         cursor: pointer;
         transition: all 0.4s ease-in-out;
+        display: flex;
+        column-gap: 6px;
 
         &:last-child {
           border-bottom: unset;

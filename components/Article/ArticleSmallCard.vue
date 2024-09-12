@@ -1,21 +1,67 @@
 <template>
-  <div
-    :class="{'article_small_card' : ! isTagsPage, 'tags_article_small_card' : isTagsPage }"
-    @click="$store.dispatch('linkToArticle', article.id)"
-  >
-    <div class="img_container">
+  <div class="article_wrapper">
+    <div class="article_header">
       <v-img
-        :class="{'empty_img': ! $store.getters.getImageByEClientFilesObj(article.e_client_files) }"
         :src="$store.getters.getImageByEClientFilesObj(article.e_client_files)"
         class="img"
-        cover
+        width="54"
+        height="54"
       />
+      <div class="article_name">
+        {{ article.name }}
+      </div>
+    </div>
+    <div class="article_description">
+      {{ article.purpose_of_article }}
+    </div>
+    <div class="article_footer">
+      <div class="date_and_views">
+        <div class="date">
+          {{ article.updated_at }}
+        </div>
+        <div v-if="article.views" class="views">
+          <img :src="require('/assets/svg/icons/eye_icon.svg')">
+          {{ article.views }}
+        </div>
+      </div>
+      <div class="likes_dislikes">
+        <div class="likes">
+          <img :src="require('/assets/svg/icons/thumb_up.svg')">
+          {{ article.likes }}
+        </div>
+        <div class="dislikes">
+          <img :src="require('/assets/svg/icons/thumb_down.svg')">
+          {{ article.dislikes }}
+        </div>
+      </div>
     </div>
 
-    <div class="article_name">
-      {{ article.name }}
-    </div>
+    <v-divider style="margin-top: 20px"/>
+
+    <img
+      :src="require('/assets/svg/icons/dottet_bg_for_small_article.svg')"
+      class="dottet_bg"
+    >
   </div>
+
+
+<!--  <div-->
+<!--    :class="{'article_small_card' : ! isTagsPage, 'tags_article_small_card' : isTagsPage }"-->
+<!--    @click="$store.dispatch('linkToArticle', article.id)"-->
+<!--  >-->
+<!--    <div class="img_container">-->
+<!--      <v-img-->
+<!--        :class="{'empty_img': ! $store.getters.getImageByEClientFilesObj(article.e_client_files) }"-->
+<!--        :src="$store.getters.getImageByEClientFilesObj(article.e_client_files)"-->
+<!--        class="img"-->
+<!--        cover-->
+<!--      />-->
+<!--    </div>-->
+
+<!--    <div class="article_name">-->
+<!--      {{ article.name }}-->
+<!--    </div>-->
+<!--  </div>-->
 </template>
 
 <script>
@@ -40,6 +86,70 @@ export default {
 
 <style lang="scss" scoped>
 @import 'assets/styles/style';
+.article_wrapper {
+  display: flex;
+  flex-direction: column;
+  border-radius: $b-r8;
+  background-color: $white-color;
+  width: 415px;
+  height: 290px;
+  padding: 12px 0 0;
+  font-size: 0.875em;
+  .article_header {
+    background-color: $grey1;
+    padding: 10px;
+    display: flex;
+    column-gap: 10px;
+    margin: 0 12px;
+    .img {
+      max-width: 54px;
+      border-radius: 4px;
+    }
+    .article_name {
+      font-weight: 600;
+    }
+  }
+  .article_description {
+    margin: 12px 12px 30px;
+    color: $grey4;
+    height: 85px;
+  }
+  .article_footer {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 12px;
+    .date_and_views {
+      @extend .grey-text14;
+      display: flex;
+      grid-column-gap: 20px;
+      align-items: center;
+      .views {
+        display: flex;
+        align-items: center;
+        column-gap: 4px;
+      }
+    }
+    .likes_dislikes {
+      display: flex;
+      align-items: center;
+      column-gap: 10px;
+      .likes {
+        display: flex;
+        align-items: center;
+        column-gap: 6px;
+      }
+      .dislikes {
+        display: flex;
+        align-items: center;
+        column-gap: 6px;
+      }
+    }
+  }
+  .dottet_bg {
+    padding: 5px 6px 8px;
+  }
+}
+
 .article_small_card {
   display: grid;
   position: relative;
@@ -59,6 +169,7 @@ export default {
     border-radius: $b-r30 !important;
     .img {
       height: auto;
+      max-height: 250px;
       display: block;
       width: 100%;
       border-radius: $b-r30 !important;
@@ -98,6 +209,7 @@ export default {
 .empty_img {
   background: #ADADAD;
   height: 100%;
+  max-height: 250px;
   width: 100%;
 }
 
@@ -120,6 +232,7 @@ export default {
     border-radius: $b-r30 !important;
     .img {
       height: auto;
+      max-height: 250px;
       display: block;
       width: 100%;
       border-radius: $b-r30 !important;

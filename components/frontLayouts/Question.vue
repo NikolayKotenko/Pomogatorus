@@ -104,12 +104,12 @@
               :key="index"
               :disabled="(check_status && status_question.type === 'sending') || $store.state.ArticleModule.isLoadingAnswers"
               :value="item.answer"
-              color="#95D7AE"
+              color="#FF6347"
               @change="changeAnswer(item.dataEnv)"
               @click="getIdElem($event)"
             >
               <template slot="label">
-                <div style="display: flex; column-gap: 20px; align-items: flex-start">
+                <div style="display: flex; column-gap: 20px; align-items: center">
                   <span class="answerList" @click.stop v-html="item.answer"/>
                   <div v-if="item.commentary" class="helper_wrapper" @click.stop="stopEvent">
                     <TooltipStyled :title="item.commentary">
@@ -929,7 +929,7 @@ export default {
     display: flex;
     width: 100%;
     column-gap: 15px;
-    padding-bottom: 5px;
+    padding-bottom: 10px;
     align-items: center;
     justify-content: space-between;
   }
@@ -1066,6 +1066,7 @@ export default {
 }
 
 .answerList {
+  font-size: 0.875em;
   @media only screen and (max-width: 1333px) {
     font-size: 0.875em !important;
   }
