@@ -1,16 +1,42 @@
 <template>
-  <div class="article_wrapper">
+  <div
+    class="article_wrapper"
+    @click="$store.dispatch('linkToArticle', article.id)"
+  >
     <div class="article_header">
       <v-img
         :src="$store.getters.getImageByEClientFilesObj(article.e_client_files)"
-        :class="{'empty_img': ! $store.getters.getImageByEClientFilesObj(article.e_client_files) }"
+        class="img"
         width="54"
         height="54"
       />
+      <div class="article_name">
+        {{ article.name }}
+      </div>
     </div>
-
-    <div class="article_name">
-      {{ article.name }}
+    <div class="article_description">
+      {{ article.purpose_of_article }}
+    </div>
+    <div class="article_footer">
+      <div class="date_and_views">
+        <div class="date">
+          {{ article.updated_at }}
+        </div>
+        <div v-if="article.views" class="views">
+          <img :src="require('/assets/svg/icons/eye_icon.svg')">
+          {{ article.views }}
+        </div>
+      </div>
+      <div class="likes_dislikes">
+        <div class="likes">
+          <img :src="require('/assets/svg/icons/thumb_up.svg')">
+          {{ article.likes }}
+        </div>
+        <div class="dislikes">
+          <img :src="require('/assets/svg/icons/thumb_down.svg')">
+          {{ article.dislikes }}
+        </div>
+      </div>
     </div>
 
     <v-divider style="margin-top: 20px"/>
@@ -54,6 +80,7 @@ export default {
   height: 290px;
   padding: 12px 0 0;
   font-size: 0.875em;
+  cursor: pointer;
   .article_header {
     background-color: $grey1;
     padding: 10px;

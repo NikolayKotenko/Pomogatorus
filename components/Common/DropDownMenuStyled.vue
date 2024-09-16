@@ -1,5 +1,6 @@
 <template>
   <v-menu
+    v-model="menu"
     :close-on-click="closeOnClickOutside"
     :close-on-content-click="closeOnContentClick"
     :open-on-hover="openOnHover"
@@ -26,7 +27,9 @@
         <slot name="icon"/>
       </div>
     </template>
-    <slot name="content" :class="{ 'custom_position': isCustomPosition}"/>
+    <div @click="handleCloseMenu">
+      <slot name="content" :class="{ 'custom_position': isCustomPosition}"/>
+    </div>
   </v-menu>
 </template>
 
@@ -105,9 +108,37 @@ export default {
     isDisabled: {
       type: Boolean,
       default: false
-    }
+    },
+    isOpen: {
+      type: Boolean,
+      default: false,
+    },
 
-  }
+  },
+  data() {
+    return {
+      menu: this.isOpen
+    }
+  },
+  mounted() {
+    document.addEventListener('keydown', this.handleEsc);
+  },
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.handleEsc);
+  },
+  methods: {
+    handleCloseMenu() {
+      this.menu = false;
+      this.$emit('close-menu');
+    },
+    handleEsc(event) {
+      if (event.key === 'Escape') {
+        this.handleCloseMenu();
+      }
+    }
+  },
+
+
 };
 </script>
 

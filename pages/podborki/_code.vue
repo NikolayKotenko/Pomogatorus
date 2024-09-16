@@ -17,18 +17,27 @@
         Статьи по тегу: {{ mainTag.name }}
       </span>
       <div class="small_articles_slider">
-        <v-slide-group>
-          <v-slide-item
+        <VueSlickCarousel
+          v-bind="settingsCarousel"
+        >
+          <ArticleSmallCard
             v-for="(article, index) in $store.state.PopularSelectionsModule.article"
             :key="index"
-            class="slider_item_style"
-          >
-            <ArticleSmallCard
-              :is-tags-page="true"
-              :article="article"
-            />
-          </v-slide-item>
-        </v-slide-group>
+            :article="article"
+          />
+        </VueSlickCarousel>
+        <!--        <v-slide-group> -->
+        <!--          <v-slide-item -->
+        <!--            v-for="(article, index) in $store.state.PopularSelectionsModule.article" -->
+        <!--            :key="index" -->
+        <!--            class="slider_item_style" -->
+        <!--          > -->
+        <!--            <ArticleSmallCard -->
+        <!--              :is-tags-page="true" -->
+        <!--              :article="article" -->
+        <!--            /> -->
+        <!--          </v-slide-item> -->
+        <!--        </v-slide-group> -->
       </div>
     </div>
 
@@ -167,6 +176,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import VueSlickCarousel from 'vue-slick-carousel'
 import Question from '../../components/frontLayouts/Question'
 import Request from '../../services/request'
 import ArticleSmallCard from '../../components/Article/ArticleSmallCard.vue'
@@ -195,7 +205,8 @@ export default {
     Biathlon,
     ArticleSmallCard,
     Question,
-    HashTagStyled
+    HashTagStyled,
+    VueSlickCarousel
   },
   async asyncData({ store, params }) {
     try {
@@ -215,6 +226,14 @@ export default {
     coordYNav: null,
     heightNav: 70,
     localViewAction: false,
+    settingsCarousel: {
+      'dots': true,
+      'infinite': false,
+      'arrows': false,
+      'speed': 500,
+      'slidesToShow': 2,
+      'slidesToScroll': 1,
+    }
   }),
   head() {
     return {
@@ -399,6 +418,7 @@ export default {
   font-family: 'Inter', sans-serif;
   align-items: center;
   position: relative;
+  padding: 0 !important;
   .content_wrapper {
     display: grid;
     grid-row-gap: 20px;
@@ -474,10 +494,7 @@ export default {
 
   .more_articles_wrapper {
     width: 100%;
-    background-color: $white-color;
-    border-radius: $b-r16;
-    padding-bottom: 20px;
-
+    margin: 0 auto 20px;
     .wrapper_header {
       display: flex;
       padding: 20px;
@@ -485,8 +502,6 @@ export default {
     }
 
     .small_articles_slider {
-      display: flex;
-      grid-column-gap: 20px;
 
       .slider_item_style {
         flex: 0 0 auto;

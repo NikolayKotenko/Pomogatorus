@@ -91,13 +91,13 @@
                       <div class="rectangle_red"/>
                       <img class="pomogaikin_img" :src="require('/assets/mascot/pomogaikin_approves.svg')">
                     </div>
-                    <!--                    <NomenclatureWidget/> -->
+                    <NomenclatureWidget/>
                   </div>
                 </div>
               </div>
 
 
-              <div v-if="tagsArticles[0].articles.length > 2" class="more_articles_wrapper">
+              <div class="more_articles_wrapper">
                 <div class="wrapper_header">
                   <v-divider style="border-width: 2px; border-color: #111111 !important;" vertical/>
                   <div class="title_and_tags">
@@ -111,15 +111,15 @@
                       <a
                         v-for="(tag, index) in formattedTags"
                         :key="index"
-                        :href="'/podborki/' + tag.code"
                         class="tags_text"
+                        @click="getArticlesByTag(tag.code)"
                       >
                         {{ tag.name }}
                       </a>
                     </div>
                   </div>
                 </div>
-                <div class="small_articles_slider">
+                <div v-if="filteredArticlesByTag" class="small_articles_slider">
                   <VueSlickCarousel
                     v-bind="settingsCarousel"
                   >
@@ -129,44 +129,11 @@
                       :article="article"
                     />
                   </VueSlickCarousel>
-
-                  <!--                  <v-slide-group -->
-                  <!--                    :show-arrows="false" -->
-                  <!--                  > -->
-                  <!--                    <v-slide-item -->
-                  <!--                      v-for="(article, index) in tagsArticles[0].articles" -->
-                  <!--                      :key="index" -->
-                  <!--                      class="slider_item_style" -->
-                  <!--                    > -->
-                  <!--                      <ArticleSmallCard -->
-                  <!--                        :article="article" -->
-                  <!--                      /> -->
-                  <!--                    </v-slide-item> -->
-                  <!--                  </v-slide-group> -->
-                </div>
-              </div>
-              <div v-else class="another_slider_style">
-                <div class="wrapper_header">
-                  <v-divider style="border-width: 2px; border-color: #111111 !important;" vertical/>
-                  <span class="text">
-                    Похожие статьи по тегам
-                  </span>
-                </div>
-                <div class="small_articles_wrapper">
-                  <div
-                    v-for="(article, index) in tagsArticles[0].articles"
-                    :key="index"
-                  >
-                    <ArticleSmallCard
-                      :article="article"
-                    />
-                  </div>
                 </div>
               </div>
             </template>
           </div>
           <div class="right_column_wrapper">
-            <!--            <test/> -->
             <ArticleAnchors
               v-if="articleContentTitles.length"
               :array-titles-article="articleContentTitles"
@@ -180,58 +147,8 @@
             />
           </div>
         </div>
-
-        <!--        <div ref="nav" class="article-template__header"> -->
-        <!--          &lt;!&ndash;          <div class="title"> &ndash;&gt; -->
-        <!--          &lt;!&ndash;            <v-divider class="divider" vertical/> &ndash;&gt; -->
-        <!--          &lt;!&ndash;            <div class="article_name"> &ndash;&gt; -->
-        <!--          &lt;!&ndash;              {{ article.name }} &ndash;&gt; -->
-        <!--          &lt;!&ndash;            </div> &ndash;&gt; -->
-        <!--          &lt;!&ndash;          </div> &ndash;&gt; -->
-        <!--          &lt;!&ndash;          &lt;!&ndash;          <ArticleInfo :article-data="article" @set-view="setView"/> &ndash;&gt; &ndash;&gt; -->
-
-        <!--          &lt;!&ndash;          <div class="pdf_prompt_wrapper"> &ndash;&gt; -->
-        <!--          &lt;!&ndash;            <div class="prompt_info"> &ndash;&gt; -->
-        <!--          &lt;!&ndash;              <div class="prompt_title"> &ndash;&gt; -->
-        <!--          &lt;!&ndash;                Затрудняеетесть с заполнением своего объекта? &ndash;&gt; -->
-        <!--          &lt;!&ndash;              </div> &ndash;&gt; -->
-        <!--          &lt;!&ndash;              <div class="prompt_text"> &ndash;&gt; -->
-        <!--          &lt;!&ndash;                Ответы будут использованы для создания технического &ndash;&gt; -->
-        <!--          &lt;!&ndash;                задания  по вашему объекту и генерации PDF-файла, &ndash;&gt; -->
-        <!--          &lt;!&ndash;                это будет полезно при общении с мастерами или &ndash;&gt; -->
-        <!--          &lt;!&ndash;                выборе котла на объект &ndash;&gt; -->
-        <!--          &lt;!&ndash;              </div> &ndash;&gt; -->
-        <!--          &lt;!&ndash;            </div> &ndash;&gt; -->
-        <!--          &lt;!&ndash;            <img :src="require(`~/assets/svg/icons/big_red_question.svg`)" class="prompt_question_img"> &ndash;&gt; -->
-        <!--          &lt;!&ndash;            <img :src="require(`~/assets/mascot/pomogaikin_question.svg`)" class="prompt_img"> &ndash;&gt; -->
-        <!--          &lt;!&ndash;          </div> &ndash;&gt; -->
-
-
-
-        <!--          &lt;!&ndash;          <div class="pdf_prompt_wrapper"> &ndash;&gt; -->
-        <!--          &lt;!&ndash;            <div class="prompt_info"> &ndash;&gt; -->
-        <!--          &lt;!&ndash;              <div class="prompt_title"> &ndash;&gt; -->
-        <!--          &lt;!&ndash;                Затрудняеетесть с заполнением своего объекта? &ndash;&gt; -->
-        <!--          &lt;!&ndash;              </div> &ndash;&gt; -->
-        <!--          &lt;!&ndash;              <div class="prompt_text"> &ndash;&gt; -->
-        <!--          &lt;!&ndash;                Ответы будут использованы для создания технического &ndash;&gt; -->
-        <!--          &lt;!&ndash;                задания  по вашему объекту и генерации PDF-файла, &ndash;&gt; -->
-        <!--          &lt;!&ndash;                это будет полезно при общении с мастерами или &ndash;&gt; -->
-        <!--          &lt;!&ndash;                выборе котла на объект &ndash;&gt; -->
-        <!--          &lt;!&ndash;              </div> &ndash;&gt; -->
-        <!--          &lt;!&ndash;            </div> &ndash;&gt; -->
-        <!--          &lt;!&ndash;            <img :src="require(`~/assets/svg/icons/big_red_question.svg`)" class="prompt_question_img"> &ndash;&gt; -->
-        <!--          &lt;!&ndash;            <img :src="require(`~/assets/mascot/pomogaikin_question.svg`)" class="prompt_img"> &ndash;&gt; -->
-        <!--          &lt;!&ndash;          </div> &ndash;&gt; -->
-        <!--        </div> -->
       </template>
-
-      <!--      <div v-if="$store.state.ArticleModule.refactoring_content || !article" class="hidden-mask"/> -->
     </div>
-
-
-    <!--  DEPRECATED  -->
-    <!--    <ProductsWidget/> -->
 
     <ViewerStyled ref="viewer" :images="totalImages" class="viewer">
       <img
@@ -263,7 +180,6 @@ import VueSlickCarousel from 'vue-slick-carousel';
 import ArticleSmallCard from '../../components/Article/ArticleSmallCard.vue'
 import SubHeader from '../../components/SubHeader.vue'
 import ViewsAndLikes from '../../components/Common/ViewsAndLikes.vue'
-import TooltipStyled from '../../components/Common/TooltipStyled.vue'
 import SocialShare from '../../components/Article/SocialShare.vue'
 import ArticleAnchors from '../../components/Widgets/ArticleAnchors'
 import WrapperStickyCurrentObject from '../../components/Widgets/WrapperStickyCurrentObject.vue'
@@ -274,7 +190,6 @@ import ImageLayout from '~/components/frontLayouts/ImageLayout'
 import Question from '~/components/frontLayouts/Question'
 import NomenclatureArticle from '~/components/frontLayouts/NomenclatureArticle'
 import LoginAuth from '~/components/frontLayouts/LoginAuth'
-import ArticleInfo from '~/components/Article/ArticleInfo'
 import Request from '~/services/request'
 
 const VuetifyClass = require('vuetify')
@@ -286,11 +201,9 @@ export default {
     WrapperStickyCurrentObject,
     ArticleAnchors,
     SocialShare,
-    TooltipStyled,
     ViewsAndLikes,
     SubHeader,
     ArticleSmallCard,
-    ArticleInfo,
     ViewerStyled,
     VueSlickCarousel,
   },
@@ -324,7 +237,8 @@ export default {
       'speed': 500,
       'slidesToShow': 2,
       'slidesToScroll': 1,
-    }
+    },
+    filteredArticlesByTag: []
 
   }),
   head() {
@@ -382,38 +296,38 @@ export default {
     ...mapGetters(['getUserId']),
     ...mapGetters('Objects', ['getIdCurrentObject']),
 
-    getArticleTitles() {
-      if (!process.client) {
-        return []
-      }
-
-      const result = []
-
-      if (!this.refactored_content || this.renderArticle) {
-        return result
-      }
-
-      const wrapper = document.querySelector('.article-template__content')
-
-      if (!wrapper) {
-        return result
-      }
-
-      const titles = wrapper.getElementsByTagName('h2')
-
-      if (!titles) {
-        return result
-      }
-
-      [...titles].forEach((elem) => {
-        result.push({
-          name: elem?.innerText ?? '',
-          link: elem
-        })
-      })
-
-      return result
-    },
+    // getArticleTitles() {
+    //   if (!process.client) {
+    //     return []
+    //   }
+    //
+    //   const result = []
+    //
+    //   if (!this.refactored_content || this.renderArticle) {
+    //     return result
+    //   }
+    //
+    //   const wrapper = document.querySelector('.article-template__content')
+    //
+    //   if (!wrapper) {
+    //     return result
+    //   }
+    //
+    //   const titles = wrapper.getElementsByTagName('h2')
+    //
+    //   if (!titles) {
+    //     return result
+    //   }
+    //
+    //   [...titles].forEach((elem) => {
+    //     result.push({
+    //       name: elem?.innerText ?? '',
+    //       link: elem
+    //     })
+    //   })
+    //
+    //   return result
+    // },
     formattedTags() {
       if (!this.article) {
         return []
@@ -567,6 +481,8 @@ export default {
 
     this.getArticleTitles()
 
+
+
   },
   created() {
     // eslint-disable-next-line nuxt/no-globals-in-created
@@ -623,6 +539,10 @@ export default {
 
         return this.articleContentTitles
       })
+    },
+    getArticlesByTag(tagCode) {
+      console.log(this.tagsArticles)
+      this.tagsArticles = this.tagsArticles.filter((elem) => elem.code === tagCode)
     },
     req,
     /* ARTICLE TITLES */
@@ -1324,7 +1244,7 @@ export default {
 }
 
 .more_articles_wrapper {
-  margin: 0 auto 100px;
+  margin: 75px auto 100px;
   transition: $transition;
   &:hover {
   }

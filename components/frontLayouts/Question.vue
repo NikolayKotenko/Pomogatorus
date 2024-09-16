@@ -10,9 +10,12 @@
           <h3>{{ question_data.name }}</h3>
           <div v-if="question_data.title || question_data.name" class="helper_wrapper">
             <DropDownMenuStyled
+              :is-open="stateMenuClue"
               :is-left="true"
               :is-top="true"
               :is-offset-y="false"
+              @update:is-open="stateMenuClue = $event"
+              @close-menu="closeMenuClue"
             >
               <template #icon>
                 <img
@@ -37,10 +40,13 @@
                       <div class="popup_text">
                         {{ question_data.title }}
                       </div>
-                      <div class="popup_btn">
+                      <div
+                        class="popup_btn"
+                        @click="closeMenuClue"
+                      >
                         <v-divider style="border-color: #777777;"/>
                         <p class="btn_text">
-                          OK
+                          Понятно
                         </p>
                       </div>
                     </div>
@@ -417,7 +423,8 @@ export default {
     files: [],
     isSelecting: false,
     selectedFile: null,
-    uploadedFiles: []
+    uploadedFiles: [],
+    stateMenuClue: false,
   }),
   watch: {
     answer: {
@@ -521,6 +528,10 @@ export default {
     }
   },
   methods: {
+    closeMenuClue() {
+      console.log('CHEEECK', this.stateMenuClue)
+      this.stateMenuClue = false
+    },
     req,
     ...mapActions('Objects', ['createNewObject']),
     ...mapGetters(['getQuestionAnswer']),

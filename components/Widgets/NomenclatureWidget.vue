@@ -1,4 +1,11 @@
 <template>
+  <!--  <div class="widget_wrapper"> -->
+  <!--    <NomenclatureCard -->
+  <!--      v-for="(slide, index) in $store.dispatch('NomenclatureModule/getListNomenclature')" -->
+  <!--      :key="index" -->
+  <!--      :nomenclature-data="slide" -->
+  <!--    /> -->
+  <!--  </div> -->
   <!--  <div class="nomenclature_widget_wrapper"> -->
   <!--    <VueSlickCarousel -->
   <!--      v-bind="sliderOptions" -->
@@ -54,39 +61,29 @@
           </div>
         </div>
       </VueSlickCarousel>
-<!--      <v-btn-->
-<!--        @click="showNext"-->
-<!--      >-->
-<!--        След-->
-<!--      </v-btn>-->
-<!--      <v-btn-->
-<!--        @click="showPrev"-->
-<!--      >-->
-<!--        Пред-->
-<!--      </v-btn>-->
     </div>
 
-    <!--    <div class="w-slider-wrapper-info"> -->
-    <!--      <template v-if="getCurrentNomenclature.isLoading"> -->
-    <!--        <ShimmerNomenclatureWidget/> -->
-    <!--      </template> -->
+    <div class="w-slider-wrapper-info">
+      <template v-if="getCurrentNomenclature.isLoading">
+        <ShimmerNomenclatureWidget/>
+      </template>
 
-    <!--      <template v-else-if="!getCurrentNomenclature || !Object.keys(getCurrentNomenclature).length"> -->
-    <!--        <span class="c-slider-error">Ошибка получения данных</span> -->
+      <template v-else-if="!getCurrentNomenclature || !Object.keys(getCurrentNomenclature).length">
+        <span class="c-slider-error">Ошибка получения данных</span>
 
-    <!--        <v-icon class="mt-1" color="orange"> -->
-    <!--          mdi-alert -->
-    <!--        </v-icon> -->
-    <!--      </template> -->
+        <v-icon class="mt-1" color="orange">
+          mdi-alert
+        </v-icon>
+      </template>
 
-    <!--      <template v-else> -->
-    <!--        <div class="w-slider-wrapper-info__wrapper"> -->
-    <!--          <div class="w-slider-wrapper-info__wrapper__label"> -->
-    <!--            {{ getCurrentNomenclature.data.name }} -->
-    <!--          </div> -->
-    <!--        </div> -->
-    <!--      </template> -->
-    <!--    </div> -->
+      <template v-else>
+        <div class="w-slider-wrapper-info__wrapper">
+          <div class="w-slider-wrapper-info__wrapper__label">
+            {{ getCurrentNomenclature.data.name }}
+          </div>
+        </div>
+      </template>
+    </div>
   </div>
 </template>
 
@@ -199,11 +196,11 @@ export default {
   methods: {
     showNext() {
       this.$refs.carousel.next()
-      console.log("showNext")
+      console.log('showNext')
     },
     showPrev() {
       this.$refs.carousel.prev()
-      console.log("showPrev")
+      console.log('showPrev')
     },
     async getNomenclature(type) {
       // TODO переделать на эндпоинт в store store/modules/nomenclature/index.js - getListNomenclature
@@ -264,3 +261,10 @@ export default {
 }
 </script>
 
+<style lang="scss" scoped>
+@import 'assets/styles/style';
+.widget_wrapper {
+  width: 100%;
+}
+
+</style>
