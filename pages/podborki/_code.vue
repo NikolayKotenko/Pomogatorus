@@ -187,8 +187,10 @@ export default {
   name: '_code.vue',
   components: {
     SocialShare,
-    ViewsAndLikes, TooltipStyled,
-    ArticleAnchors, WrapperStickyCurrentObject,
+    ViewsAndLikes,
+    TooltipStyled,
+    ArticleAnchors,
+    WrapperStickyCurrentObject,
     SubHeader,
     Biathlon,
     ArticleSmallCard,

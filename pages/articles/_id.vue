@@ -269,7 +269,6 @@ import ArticleAnchors from '../../components/Widgets/ArticleAnchors'
 import WrapperStickyCurrentObject from '../../components/Widgets/WrapperStickyCurrentObject.vue'
 import Biathlon from '../../components/Common/Biathlon.vue'
 import NomenclatureWidget from '../../components/Widgets/NomenclatureWidget.vue'
-import test from '../../components/Common/test.vue'
 import ViewerStyled from '~/components/Common/ViewerStyled'
 import ImageLayout from '~/components/frontLayouts/ImageLayout'
 import Question from '~/components/frontLayouts/Question'
@@ -294,7 +293,6 @@ export default {
     ArticleInfo,
     ViewerStyled,
     VueSlickCarousel,
-    test
   },
   async asyncData({ store, params }) {
     try {
