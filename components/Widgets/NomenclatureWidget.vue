@@ -1,4 +1,16 @@
 <template>
+  <!--  <div class="nomenclature_widget_wrapper"> -->
+  <!--    <VueSlickCarousel -->
+  <!--      v-bind="sliderOptions" -->
+  <!--    > -->
+  <!--      <div -->
+  <!--        v-for="(slide, index) in nomenclatureList" -->
+  <!--        :key="index" -->
+  <!--      > -->
+  <!--        <NomenclatureCard :nomenclature-data="slide"/> -->
+  <!--      </div> -->
+  <!--    </VueSlickCarousel> -->
+  <!--  </div> -->
   <div :class="{'hovered-widget': getIsAnswered}" class="w-slider-wrapper">
     <div class="w-slider-wrapper-slider-container">
       <VueSlickCarousel
@@ -174,6 +186,14 @@ export default {
     this.getNomenclature('start')
   },
   methods: {
+    showNext() {
+      this.$refs.carousel.next()
+      console.log("showNext")
+    },
+    showPrev() {
+      this.$refs.carousel.prev()
+      console.log("showPrev")
+    },
     async getNomenclature(type) {
       // TODO переделать на эндпоинт в store store/modules/nomenclature/index.js - getListNomenclature
       const url = this.$store.state.BASE_URL + '/entity/nomenclature'

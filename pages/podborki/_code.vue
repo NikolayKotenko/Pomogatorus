@@ -485,6 +485,7 @@ export default {
     .small_articles_slider {
       display: flex;
       grid-column-gap: 20px;
+
       .slider_item_style {
         flex: 0 0 auto;
         max-width: 50%;
