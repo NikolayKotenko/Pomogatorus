@@ -87,8 +87,8 @@ export default {
 }
 
 .wrapper_current_object {
-  width: 290px;
-  min-width: 290px;
+  width: 270px;
+  min-width: 270px;
   //position: sticky;
   //top: 15px;
   //height: 1px;

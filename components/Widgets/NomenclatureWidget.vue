@@ -15,7 +15,7 @@
     <div class="w-slider-wrapper-slider-container">
       <VueSlickCarousel
         v-if="nomenclatureList.length"
-        ref="v-carousel"
+        ref="carousel"
         v-bind="sliderOptions"
         @beforeChange="changeSlide"
         @init="onInitCarousel"
@@ -24,7 +24,6 @@
           v-for="(slide, index) in nomenclatureList"
           :key="index"
           class="w-slider-nomenclature"
-          draggable="false"
         >
           <div class="w-slider-nomenclature__slide" draggable="false">
             <!--     LOADER STATE     -->
@@ -50,39 +49,49 @@
 
             <!--     SUCCESS STATE     -->
             <template v-else>
-              <NomenclatureCard :nomenclature-data="slide" no-info @click="onCLickNomenclature"/>
+              <NomenclatureCard :nomenclature-data="slide" no-info/>
             </template>
           </div>
         </div>
       </VueSlickCarousel>
+<!--      <v-btn-->
+<!--        @click="showNext"-->
+<!--      >-->
+<!--        След-->
+<!--      </v-btn>-->
+<!--      <v-btn-->
+<!--        @click="showPrev"-->
+<!--      >-->
+<!--        Пред-->
+<!--      </v-btn>-->
     </div>
 
-    <div class="w-slider-wrapper-info">
-      <template v-if="getCurrentNomenclature.isLoading">
-        <ShimmerNomenclatureWidget/>
-      </template>
+    <!--    <div class="w-slider-wrapper-info"> -->
+    <!--      <template v-if="getCurrentNomenclature.isLoading"> -->
+    <!--        <ShimmerNomenclatureWidget/> -->
+    <!--      </template> -->
 
-      <template v-else-if="!getCurrentNomenclature || !Object.keys(getCurrentNomenclature).length">
-        <span class="c-slider-error">Ошибка получения данных</span>
+    <!--      <template v-else-if="!getCurrentNomenclature || !Object.keys(getCurrentNomenclature).length"> -->
+    <!--        <span class="c-slider-error">Ошибка получения данных</span> -->
 
-        <v-icon class="mt-1" color="orange">
-          mdi-alert
-        </v-icon>
-      </template>
+    <!--        <v-icon class="mt-1" color="orange"> -->
+    <!--          mdi-alert -->
+    <!--        </v-icon> -->
+    <!--      </template> -->
 
-      <template v-else>
-        <div class="w-slider-wrapper-info__wrapper">
-          <div class="w-slider-wrapper-info__wrapper__label">
-            {{ getCurrentNomenclature.data.name }}
-          </div>
-        </div>
-      </template>
-    </div>
+    <!--      <template v-else> -->
+    <!--        <div class="w-slider-wrapper-info__wrapper"> -->
+    <!--          <div class="w-slider-wrapper-info__wrapper__label"> -->
+    <!--            {{ getCurrentNomenclature.data.name }} -->
+    <!--          </div> -->
+    <!--        </div> -->
+    <!--      </template> -->
+    <!--    </div> -->
   </div>
 </template>
 
 <script>
-import VueSlickCarousel from 'vue-slick-carousel'
+import VueSlickCarousel from 'vue-slick-carousel';
 import 'vue-slick-carousel/dist/vue-slick-carousel.css'
 import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
 
@@ -138,12 +147,14 @@ export default {
     ],
 
     sliderOptions: {
-      'dots': false,
-      'infinite': true,
-      'speed': 500,
-      'slidesToShow': 1,
-      'slidesToScroll': 1,
-      'initialSlide': 0
+      dots: true,
+      arrows: true,
+      focusOnSelect: true,
+      infinite: false,
+      speed: 500,
+      slidesToShow: 3,
+      slidesToScroll: 3,
+      touchThreshold: 5
     }
   }),
   computed: {
@@ -252,3 +263,4 @@ export default {
   }
 }
 </script>
+

@@ -241,15 +241,15 @@ export default {
       )
       return wtf
     },
-    getFilteredListServicesByName(state) {
-      if (!state.searchServiceByName) return state.selectedRawServicesBased
-
-      return state.selectedRawServicesBased.filter((elem) => {
-        const haystack = elem?.service_data.name?.toLowerCase()
-        const needle = state?.searchServiceByName?.toLowerCase()
-        return !!haystack.match(needle)
-      })
-    },
+    // getFilteredListServicesByName(state) {
+    //   if (!state.searchServiceByName) return state.selectedRawServicesBased
+    //
+    //   return state.selectedRawServicesBased.filter((elem) => {
+    //     const haystack = elem?.service_data.name?.toLowerCase()
+    //     const needle = state?.searchServiceByName?.toLowerCase()
+    //     return !!haystack.match(needle)
+    //   })
+    // },
     getListServicesExcludeAdded(state, getters, rootState) {
       const arrA = rootState.CollaborationModule.listServices.map(
         (elem) => elem.id

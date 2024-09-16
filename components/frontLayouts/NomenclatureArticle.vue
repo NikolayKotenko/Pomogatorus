@@ -151,6 +151,7 @@ export default {
     async getNomenclatureInfo() {
       const values = []
 
+      console.log('nomList', this.nomenclatureList)
       this.nomenclatureList.map(elem => elem.id).filter((value, index, array) => array.indexOf(value) === index).forEach((elem) => {
         values.push({ ids_nomenclatures: elem })
       })

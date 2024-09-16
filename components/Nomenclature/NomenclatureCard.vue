@@ -5,12 +5,12 @@
     draggable="false"
   >
     <div class="c-nomenclature__img">
-      <div class="c-nomenclature__img__like" draggable="false">
-        <AddToFavoritesNomenclatures
-          :favorite-object="favoriteData"
-          draggable="false"
-        />
-      </div>
+      <!--      <div class="c-nomenclature__img__like" draggable="false"> -->
+      <!--        <AddToFavoritesNomenclatures -->
+      <!--          :favorite-object="favoriteData" -->
+      <!--          draggable="false" -->
+      <!--        /> -->
+      <!--      </div> -->
 
       <template v-if="getPhoto(nomenclatureData.data)">
         <img :alt="nomenclatureData.data.name" :src="getPhoto(nomenclatureData.data)" draggable="false">
@@ -27,10 +27,16 @@
     </div>
 
     <!--     INFO     -->
-    <div v-if="!noInfo" class="c-nomenclature__info">
-      <h4 class="c-nomenclature__info__label">
-        {{ nomenclatureData.data.name }}
-      </h4>
+    <div class="c-nomenclature__info">
+      <img :src="require('/assets/svg/icons/grey_dottet_bg.svg')">
+      <div class="price_and_name">
+        <div class="price">
+          9990 P
+        </div>
+        <div class="name">
+          {{ nomenclatureData.data._family.name + '' + nomenclatureData.data.name }}
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -74,3 +80,101 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+@import 'assets/styles/style';
+.c-nomenclature {
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 180px;
+  width: 125px;
+
+
+  &__img {
+    height: 100px;
+    width: 125px;
+    position: relative;
+    background: #FFFFFF;
+    border-radius: 8px 8px 0 0;
+
+    &__like {
+      position: absolute;
+      right: 0;
+      padding: 10px;
+    }
+
+    img {
+      height: 100px;
+      width: 125px;
+      margin: 0 auto;
+      object-fit: contain;
+    }
+  }
+
+  &__info {
+    background-color: $grey3;
+    width: 100%;
+    height: 100%;
+    border-radius: 0 0 8px 8px;
+    position: relative;
+    z-index: 9;
+    img {
+      position: absolute;
+      z-index: 12;
+      padding: 2px 5px 5px;
+    }
+    .price_and_name {
+      z-index: 11;
+      padding: 5px 10px 10px;
+      .price {
+        @extend .text14;
+        color: $white-text-color !important;
+        font-weight: 500 !important;
+      }
+      .name {
+        @extend .text12;
+        color: $white-text-color !important;
+        font-weight: 500 !important;
+        word-break: break-all;
+      }
+
+    }
+  }
+}
+
+.c-nomenclature-info {
+  padding: 20px;
+  background: #E3E3E3;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 290px;
+  min-height: 370px;
+
+  &:hover {
+    @extend .background-hover;
+  }
+}
+
+@media only screen and (max-width: 1200px) {
+  .c-nomenclature__img {
+    width: 200px;
+  }
+
+  .c-nomenclature__img img {
+    width: 200px;
+  }
+
+  .c-nomenclature-info {
+    width: 250px;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .c-nomenclature-info {
+    width: 100%;
+  }
+}
+</style>

@@ -362,16 +362,20 @@ export default {
 }
 
 .v-btn.style_object_button {
-  background-color: $background-element-color !important;
-  color: $black-text-color;
-  border: 1px solid #000000;
-  max-width: 375px !important;
-  width: 375px !important;
+  font-family: "Roboto", sans-serif !important;
+  @extend  .wide-btn-text;
+  font-size: 0.75em !important;
+  font-weight: 500 !important;
+  background-color: $white-color !important;
+  color: $black-color;
+  border: 1px solid $black-color;
+  border-radius: $b-r8;
+  height: 30px !important;
+  padding: 8px 13px !important;
   transition: $transition;
-
   &:hover {
-    background: #000000 !important;
-    color: #FFFFFF;
+    background: $black-color !important;
+    color: $white-color !important;
   }
 }
 

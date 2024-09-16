@@ -14,7 +14,7 @@
           <div class="brand_name">
             Baxi
           </div>
-          <h3>{{ data.name }}</h3>
+          <h3>{{ data._family.name + ' ' + data.name }}</h3>
         </div>
         <!--        <AddToFavoriteNomenclatures -->
         <!--          :favorite-object="favoriteData" -->

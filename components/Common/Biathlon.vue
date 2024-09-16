@@ -106,12 +106,8 @@
       @click="scrollToQuestion(question)"
     >
       <div class="question">
-        <v-simple-checkbox
-          :value="getStateAnswer(question)"
-          on-icon="mdi-check-circle"
-          off-icon="mdi-circle-outline"
-          color="#FF6347"
-        />
+        <img v-if="getStateAnswer(question)" :src="require('/assets/svg/icons/red_check.svg')">
+        <img v-else :src="require('/assets/svg/icons/grey_check.svg')">
         <div class="question_title">
           {{ getQuestionTitle(question) }}
         </div>
@@ -329,14 +325,17 @@ export default {
   font-family: 'Inter', sans-serif;
   background-color: $white-color;
   border-radius: $b-r16;
-  max-width: 276px;
+  max-width: 270px;
   width: 100%;
+  height: auto;
   padding: 0 !important;
   .header {
-    @extend .header-page;
+    @extend .text14;
+    font-weight: 600 !important;
     display: flex;
     justify-content: center;
-    margin: 20px auto 10px;
+    padding: 10px 0;
+    align-items: center;
   }
   .questions_wrapper {
     display: grid;
@@ -352,6 +351,8 @@ export default {
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
+        @extend .text12;
+        font-weight: 500 !important;
       }
     }
 
