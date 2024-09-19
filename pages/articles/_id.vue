@@ -92,6 +92,20 @@
                       <img class="pomogaikin_img" :src="require('/assets/mascot/pomogaikin_approves.svg')">
                     </div>
                     <NomenclatureWidget/>
+<!--                    <VueSlickCarousel-->
+<!--                      v-if="$store.state.NomenclatureModule.listNomenclature"-->
+<!--                      v-bind="settingsCarousel"-->
+<!--                    >-->
+<!--                      <div-->
+<!--                        v-for="(slide, index) in $store.state.NomenclatureModule.listNomenclature"-->
+<!--                        :key="index"-->
+<!--                        style="max-width: 125px"-->
+<!--                      >-->
+<!--                        <NomenclatureCard-->
+<!--                          :nomenclature-data="slide"-->
+<!--                        />-->
+<!--                      </div>-->
+<!--                    </VueSlickCarousel>-->
                   </div>
                 </div>
               </div>
@@ -191,11 +205,13 @@ import Question from '~/components/frontLayouts/Question'
 import NomenclatureArticle from '~/components/frontLayouts/NomenclatureArticle'
 import LoginAuth from '~/components/frontLayouts/LoginAuth'
 import Request from '~/services/request'
+import NomenclatureCard from '../../components/Nomenclature/NomenclatureCard.vue';
 
 const VuetifyClass = require('vuetify')
 
 export default {
   components: {
+    NomenclatureCard,
     NomenclatureWidget,
     Biathlon,
     WrapperStickyCurrentObject,
@@ -451,6 +467,8 @@ export default {
     }
   },
   async mounted() {
+    await this.$store.dispatch('NomenclatureModule/getListNomenclature')
+
     this.$route.meta.title = this.article?.name
 
     // eslint-disable-next-line nuxt/no-env-in-hooks

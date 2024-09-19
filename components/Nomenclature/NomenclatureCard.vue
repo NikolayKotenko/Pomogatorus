@@ -1,21 +1,29 @@
 <template>
-  <div class="nomenclature_card_wrapper">
+  <div class="nomenclature_card_wrapper" draggable="false">
     <v-img
-      v-if="getPhoto(nomenclatureData.data)"
-      :src="getPhoto(nomenclatureData.data)"
-      class="img"
+      v-if="getPhoto(nomenclatureData)"
+      :src="getPhoto(nomenclatureData)"
       height="100"
+      max-height="100"
+      class="img"
       contain
+      draggable="false"
     />
-    <div v-else class="empty_img"/>
-    <div class="nomenclature_info">
-      <img :src="require('/assets/svg/icons/grey_dottet_bg.svg')">
-      <div class="price_and_name">
-        <div class="price">
+    <img v-else :src="require('/assets/svg/icons/no_img_icon.svg')" draggable="false" class="empty_img"/>
+    <div
+      draggable="false"
+      class="nomenclature_info"
+    >
+      <div style="display: flex; justify-content: center">
+        <hr class="hr"/>
+      </div>
+      <img draggable="false" :src="require('/assets/svg/icons/dottet_big_bg.svg')">
+      <div draggable="false" class="price_and_name">
+        <div draggable="false" class="price">
           9900P
         </div>
-        <div class="name">
-          {{ nomenclatureData.data._family.name + '' + nomenclatureData.data.name }}
+        <div draggable="false" class="name">
+          {{ getNameNomenclature }}
         </div>
       </div>
     </div>
@@ -86,6 +94,9 @@ export default {
         this.$store.getters.getUserId,
         this.nomenclatureData.data.id
       )
+    },
+    getNameNomenclature() {
+      return this.nomenclatureData?._family?.name + ' ' + this.nomenclatureData?.name
     }
   },
   methods: {
@@ -113,47 +124,67 @@ export default {
   max-width: 125px;
   max-height: 180px;
   min-width: 125px;
+  min-height: 180px;
+  transition: all 0.5s ease;
   height: 180px;
   .img {
     height: 100px;
     width: 125px;
-    position: relative;
+    z-index: 15;
     background: $white-color;
     border-radius: 8px 8px 0 0;
+    transform-origin: top;
   }
   .empty_img {
-    background-color: $white-color;
-    width: 125px;
     height: 100px;
-    background-image: url("assets/svg/icons/no_img_icon.svg");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 50%;
+    width: 125px;
+    z-index: 15;
+    background-color: $white-color;
     border-radius: 8px 8px 0 0;
-    display: flex;
+    transform-origin: top;
   }
   .nomenclature_info {
-    position: relative;
-    z-index: 10;
-    height: 100%;
-    max-height: 80px;
+    position: absolute;
+    overflow: hidden;
+    max-width: 125px;
+    bottom: 0;
+    z-index: 50;
+    height: 80px;
     width: 100%;
     border-radius: 0 0 8px 8px;
+    transition: all 0.5s ease;
     background-color: $grey3;
+    transform-origin: bottom;
+
     img {
       position: absolute;
-      z-index: 12;
+      z-index: 10;
       padding: 2px 5px 5px;
+      transition: all 0.5s ease;
+    }
+    .hr {
+      opacity: 0;
+      color: $white-color;
+      width: 45px;
+      text-align: center;
+      transition: all 1s ease-in;
+      margin: 15px auto 0;
+      z-index: 51;
+      position: absolute;
+      border: 1px solid;
     }
     .price_and_name {
-      z-index: 13;
+      z-index: 20;
       width: 100%;
       height: 100%;
       border-radius: 0 0 8px 8px;
+      padding: 10px;
+      transition: all 0.5s ease;
       .price {
         @extend .text14;
         color: $white-text-color !important;
         font-weight: 500 !important;
+        padding-bottom: 5px;
       }
       .name {
         @extend .text12;
@@ -163,6 +194,19 @@ export default {
       }
     }
   }
+  &:hover {
+    .nomenclature_info {
+      height: 180px;
+      border-radius: $b-r8;
+    }
+    .hr {
+      opacity: 1;
+    }
+    .price_and_name {
+      padding: 25px 10px 10px;
+    }
+  }
+
 }
 
 

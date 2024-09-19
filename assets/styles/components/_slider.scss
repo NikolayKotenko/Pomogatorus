@@ -84,7 +84,6 @@
           font-size: 32px !important;
 
           &::after {
-            display: none;
           }
 
           &:hover {
@@ -225,7 +224,6 @@
       padding-left: 5px !important;
 
       &__options {
-        list-style: none;
 
         &:before {
           content: "·";
