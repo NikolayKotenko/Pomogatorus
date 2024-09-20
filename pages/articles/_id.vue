@@ -91,21 +91,9 @@
                       <div class="rectangle_red"/>
                       <img class="pomogaikin_img" :src="require('/assets/mascot/pomogaikin_approves.svg')">
                     </div>
-                    <NomenclatureWidget/>
-<!--                    <VueSlickCarousel-->
-<!--                      v-if="$store.state.NomenclatureModule.listNomenclature"-->
-<!--                      v-bind="settingsCarousel"-->
-<!--                    >-->
-<!--                      <div-->
-<!--                        v-for="(slide, index) in $store.state.NomenclatureModule.listNomenclature"-->
-<!--                        :key="index"-->
-<!--                        style="max-width: 125px"-->
-<!--                      >-->
-<!--                        <NomenclatureCard-->
-<!--                          :nomenclature-data="slide"-->
-<!--                        />-->
-<!--                      </div>-->
-<!--                    </VueSlickCarousel>-->
+                    <NomenclatureWidget
+                      v-if="$store.getters.stateAuth"
+                    />
                   </div>
                 </div>
               </div>
@@ -199,13 +187,13 @@ import ArticleAnchors from '../../components/Widgets/ArticleAnchors'
 import WrapperStickyCurrentObject from '../../components/Widgets/WrapperStickyCurrentObject.vue'
 import Biathlon from '../../components/Common/Biathlon.vue'
 import NomenclatureWidget from '../../components/Widgets/NomenclatureWidget.vue'
+import NomenclatureCard from '../../components/Nomenclature/NomenclatureCard.vue';
 import ViewerStyled from '~/components/Common/ViewerStyled'
 import ImageLayout from '~/components/frontLayouts/ImageLayout'
 import Question from '~/components/frontLayouts/Question'
 import NomenclatureArticle from '~/components/frontLayouts/NomenclatureArticle'
 import LoginAuth from '~/components/frontLayouts/LoginAuth'
 import Request from '~/services/request'
-import NomenclatureCard from '../../components/Nomenclature/NomenclatureCard.vue';
 
 const VuetifyClass = require('vuetify')
 
@@ -523,7 +511,6 @@ export default {
   },
   methods: {
     getArticleTitles() {
-      console.log('cheeeck')
       if (!process.client) {
         return []
       }
@@ -536,7 +523,6 @@ export default {
       this.$nextTick(() => {
         const wrapper = document.querySelector('.content_wrapper')
 
-        console.log('wrapper', wrapper)
 
         if (!wrapper) {
           return this.articleContentTitles
@@ -559,7 +545,6 @@ export default {
       })
     },
     getArticlesByTag(tagCode) {
-      console.log(this.tagsArticles)
       this.tagsArticles = this.tagsArticles.filter((elem) => elem.code === tagCode)
     },
     req,

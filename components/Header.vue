@@ -75,9 +75,13 @@
               :nudge-right="40"
             >
               <template #icon>
-                <div style="display: flex; align-items: center;">
-                  <img :src="require('/assets/svg/icons/burger_menu_icon.svg')">
-                </div>
+                <v-avatar size="30">
+                  <v-img
+                    v-if="$store.getters.getUserAvatar"
+                    :src="$store.getters.getUserAvatar"
+                  />
+                  <div v-else class="empty_avatar"/>
+                </v-avatar>
               </template>
               <template #content>
                 <div class="menu_wrapper">
@@ -310,6 +314,7 @@
 </template>
 <script>
 import { mapState } from 'vuex';
+import { req } from 'vuelidate/lib/validators/common';
 import TooltipStyled from './Common/TooltipStyled';
 import Collaboration from './Modals/Collaboration.vue';
 import SearchStyled from './Common/SearchStyled.vue';
@@ -324,7 +329,6 @@ import CardObject from './UserObjects/CardObject.vue'
 import CurrentObjects from './Widgets/CurrentObjects.vue'
 import { getNameStateModalByUrlHash } from '~/helpers/urlHelper';
 import CreateObjectModal from '~/components/Modals/CreateObjectModal';
-import { req } from 'vuelidate/lib/validators/common';
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names

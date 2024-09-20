@@ -6,18 +6,18 @@
   <!--      :nomenclature-data="slide" -->
   <!--    /> -->
   <!--  </div> -->
-<!--  <div class="nomenclature_widget_wrapper">-->
-<!--    <VueSlickCarousel-->
-<!--      v-bind="sliderOptions"-->
-<!--    >-->
-<!--      <div-->
-<!--        v-for="(slide, index) in nomenclatureList"-->
-<!--        :key="index"-->
-<!--      >-->
-<!--        <NomenclatureCard :nomenclature-data="slide"/>-->
-<!--      </div>-->
-<!--    </VueSlickCarousel>-->
-<!--  </div>-->
+  <!--  <div class="nomenclature_widget_wrapper"> -->
+  <!--    <VueSlickCarousel -->
+  <!--      v-bind="sliderOptions" -->
+  <!--    > -->
+  <!--      <div -->
+  <!--        v-for="(slide, index) in nomenclatureList" -->
+  <!--        :key="index" -->
+  <!--      > -->
+  <!--        <NomenclatureCard :nomenclature-data="slide"/> -->
+  <!--      </div> -->
+  <!--    </VueSlickCarousel> -->
+  <!--  </div> -->
   <div class="w-slider-wrapper">
     <div class="w-slider-wrapper-slider-container">
       <VueSlickCarousel
@@ -35,27 +35,27 @@
       </VueSlickCarousel>
     </div>
 
-<!--    <div class="w-slider-wrapper-info">-->
-<!--      <template v-if="getCurrentNomenclature.isLoading">-->
-<!--        <ShimmerNomenclatureWidget/>-->
-<!--      </template>-->
+    <!--    <div class="w-slider-wrapper-info"> -->
+    <!--      <template v-if="getCurrentNomenclature.isLoading"> -->
+    <!--        <ShimmerNomenclatureWidget/> -->
+    <!--      </template> -->
 
-<!--      <template v-else-if="!getCurrentNomenclature || !Object.keys(getCurrentNomenclature).length">-->
-<!--        <span class="c-slider-error">Ошибка получения данных</span>-->
+    <!--      <template v-else-if="!getCurrentNomenclature || !Object.keys(getCurrentNomenclature).length"> -->
+    <!--        <span class="c-slider-error">Ошибка получения данных</span> -->
 
-<!--        <v-icon class="mt-1" color="orange">-->
-<!--          mdi-alert-->
-<!--        </v-icon>-->
-<!--      </template>-->
+    <!--        <v-icon class="mt-1" color="orange"> -->
+    <!--          mdi-alert -->
+    <!--        </v-icon> -->
+    <!--      </template> -->
 
-<!--      <template v-else>-->
-<!--        <div class="w-slider-wrapper-info__wrapper">-->
-<!--          <div class="w-slider-wrapper-info__wrapper__label">-->
-<!--            {{ getCurrentNomenclature.data.name }}-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </template>-->
-<!--    </div>-->
+    <!--      <template v-else> -->
+    <!--        <div class="w-slider-wrapper-info__wrapper"> -->
+    <!--          <div class="w-slider-wrapper-info__wrapper__label"> -->
+    <!--            {{ getCurrentNomenclature.data.name }} -->
+    <!--          </div> -->
+    <!--        </div> -->
+    <!--      </template> -->
+    <!--    </div> -->
   </div>
 </template>
 
@@ -158,10 +158,15 @@ export default {
 
         await this.$store.dispatch('NomenclatureModule/getListFavoriteNomenclatureByUserAndObjectId');
       }
+    },
+    '$store.getters.stateAuth': {
+      async handler(v) {
+        await this.$store.dispatch('NomenclatureModule/getListNomenclature')
+      }
     }
   },
-  mounted() {
-    this.$store.dispatch('NomenclatureModule/getListNomenclature')
+  async mounted() {
+    await this.$store.dispatch('NomenclatureModule/getListNomenclature')
     // this.getNomenclature()
   },
   methods: {

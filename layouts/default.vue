@@ -231,7 +231,7 @@ body {
 
   //max-width: $max-width;
   margin: 5px auto 0 auto;
-  border-radius: 124px;
+  border-radius: 124px 124px 0 0;
   padding: unset !important;
   @media only screen and (max-width: 768px) {
     border-radius: 50px !important;

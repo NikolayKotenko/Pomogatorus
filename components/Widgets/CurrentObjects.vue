@@ -33,7 +33,7 @@
 
     <div>
       <v-img
-        v-if="$store.state.Objects.currentObject.main_photo_compile"
+        v-if="$store.state.Objects.currentObject.main_photo_compile && $store.getters.stateAuth"
         :src="$store.state.Objects.currentObject.main_photo_compile.url"
         max-height="125"
         class="object_image"
@@ -205,8 +205,8 @@ export default {
     margin: 0 20px;
     border-radius: $b-r8;
     border: 1px solid #AAAAAA;
-    max-height: 200px;
-    max-width: 375px;
+    max-height: 125px;
+    max-width: 230px;
     width: 100%;
     background-color: #DDDDDD;
     .no_photo_icon {

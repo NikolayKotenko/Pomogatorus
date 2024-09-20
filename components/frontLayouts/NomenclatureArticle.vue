@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="$store.getters.stateAuth"
     :id="`component_wrapper-${index_component}`"
     :data-id="dataId"
     class="componentArticle_wrapper c-slider-wrapper component_container"
@@ -38,7 +39,7 @@
 
           <!--     SUCCESS STATE     -->
           <template v-else>
-            <NomenclatureCard :nomenclature-data="slide" @click="onCLickNomenclature"/>
+            <NomenclatureCard :nomenclature-data="slide.data" @click="onCLickNomenclature"/>
           </template>
         </div>
       </div>
@@ -88,12 +89,12 @@ export default {
       }
     ],
     sliderOptions: {
-      'dots': false,
+      'dots': true,
       'infinite': true,
       'speed': 500,
-      'slidesToShow': 3,
-      'slidesToScroll': 3,
-      'variableWidth': true,
+      'slidesToShow': 5,
+      'slidesToScroll': 1,
+      'variableWidth': false,
       'responsive': [
         {
           'breakpoint': 1024,
@@ -127,9 +128,17 @@ export default {
       return this.nomenclature_data.id
     }
   },
-  mounted() {
-    this.getData()
-    this.getNomenclatureInfo()
+  watch: {
+    '$store.getters.stateAuth': {
+      async handler(v) {
+        await this.getData()
+        await this.getNomenclatureInfo()
+      }
+    }
+  },
+  async mounted() {
+    await this.getData()
+    await this.getNomenclatureInfo()
   },
   methods: {
     /* GET INFO NOMENCLATURE */
@@ -142,6 +151,7 @@ export default {
           {},
           this.$store.state.ArticleModule.selectedComponent
         )
+        console.log('nomenclature_data', this.nomenclature_data.nomenclatures_id)
 
         this.nomenclatureList = this.nomenclature_data.nomenclatures_id.map(elem => {
           return { id: elem, isLoading: true }
@@ -156,10 +166,16 @@ export default {
         values.push({ ids_nomenclatures: elem })
       })
 
-      const query = constructFilterQuery(values, true)
+
+      const arrIdsNomenclature = this.nomenclature_data.nomenclatures_id.map((item) => {
+        return { ids_nomenclatures: item }
+      })
+      const query = constructFilterQuery(arrIdsNomenclature, true)
+      console.log('query', query)
 
       const result = await Request.get(
         `${this.$store.state.BASE_URL}/entity/nomenclature${query}`
+
       )
 
       if (!result.data) {
@@ -181,6 +197,7 @@ export default {
         elem.data = value
         elem.isLoading = false
       })
+      console.log('nomList2', this.nomenclatureList)
     },
     getPhoto(slide) {
       const url = (slide?._family?.photos && slide?._family?.photos[0]) ?? null

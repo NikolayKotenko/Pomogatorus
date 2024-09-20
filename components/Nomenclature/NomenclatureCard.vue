@@ -1,5 +1,5 @@
 <template>
-  <div class="nomenclature_card_wrapper" draggable="false">
+  <div v-if="$store.getters.stateAuth" class="nomenclature_card_wrapper" draggable="false">
     <v-img
       v-if="getPhoto(nomenclatureData)"
       :src="getPhoto(nomenclatureData)"
@@ -9,13 +9,13 @@
       contain
       draggable="false"
     />
-    <img v-else :src="require('/assets/svg/icons/no_img_icon.svg')" draggable="false" class="empty_img"/>
+    <img v-else :src="require('/assets/svg/icons/no_img_icon.svg')" draggable="false" class="empty_img">
     <div
       draggable="false"
       class="nomenclature_info"
     >
       <div style="display: flex; justify-content: center">
-        <hr class="hr"/>
+        <hr class="hr">
       </div>
       <img draggable="false" :src="require('/assets/svg/icons/dottet_big_bg.svg')">
       <div draggable="false" class="price_and_name">
@@ -24,6 +24,15 @@
         </div>
         <div draggable="false" class="name">
           {{ getNameNomenclature }}
+        </div>
+        <div
+          v-for="(characteristic, index) in nomenclatureData._characteristics"
+          :key="index"
+          class="characteristics"
+        >
+          <div>
+            {{ characteristic.value }}
+          </div>
         </div>
       </div>
     </div>
@@ -88,6 +97,9 @@ export default {
     }
   },
   computed: {
+    getCharacteristicNameAndValue() {
+
+    },
     favoriteData() {
       return new FavoriteNomenclature(
         this.$store.getters['Objects/getIdCurrentObject'],
@@ -133,6 +145,7 @@ export default {
     z-index: 15;
     background: $white-color;
     border-radius: 8px 8px 0 0;
+    border: 1px $grey1 solid;
     transform-origin: top;
   }
   .empty_img {
@@ -141,6 +154,7 @@ export default {
     z-index: 15;
     background-color: $white-color;
     border-radius: 8px 8px 0 0;
+    border: 1px $grey1 solid;
     transform-origin: top;
   }
   .nomenclature_info {
@@ -167,7 +181,7 @@ export default {
       color: $white-color;
       width: 45px;
       text-align: center;
-      transition: all 1s ease-in;
+      transition: all 0.5s ease-in;
       margin: 15px auto 0;
       z-index: 51;
       position: absolute;
@@ -191,6 +205,18 @@ export default {
         color: $white-text-color !important;
         font-weight: 500 !important;
         word-break: break-all;
+        padding-bottom: 10px;
+      }
+      .characteristics {
+        opacity: 0;
+        transition: all 0.5s ease;
+        display: flex;
+        flex-direction: column;
+        row-gap: 5px;
+        @extend .text12;
+        color: $grey1 !important;
+        font-weight: 500 !important;
+        word-break: break-all;
       }
     }
   }
@@ -198,6 +224,9 @@ export default {
     .nomenclature_info {
       height: 180px;
       border-radius: $b-r8;
+      .characteristics {
+        opacity: 1;
+      }
     }
     .hr {
       opacity: 1;
@@ -205,6 +234,7 @@ export default {
     .price_and_name {
       padding: 25px 10px 10px;
     }
+
   }
 
 }
@@ -269,7 +299,9 @@ export default {
         word-break: break-all;
       }
 
+
     }
+
   }
 }
 
